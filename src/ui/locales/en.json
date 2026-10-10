@@ -1,0 +1,33 @@
+{
+  "home": {
+    "signedIn": "Signed in as {{email}}",
+    "signedOut": "You are signed out.",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "login": {
+    "title": "Sign in",
+    "description": "Use your Google account to continue.",
+    "google": "Continue with Google"
+  },
+  "errors": {
+    "UNAUTHORIZED_ACCESS": "Your session has expired, sign in again.",
+    "AUTHORIZATION_FAILURE": "You are not allowed to do this.",
+    "VALIDATION_ERROR": "Some fields are not valid.",
+    "ROW_NOT_FOUND": "The requested item does not exist.",
+    "ROUTE_NOT_FOUND": "The requested resource does not exist.",
+    "INTERNAL_SERVER_ERROR": "Something went wrong, try again later.",
+    "AUTH_GOOGLE_FAILED": "Google sign in failed.",
+    "WORKSPACE_ALREADY_MEMBER": "You already belong to a company.",
+    "WORKSPACE_NOT_FOUND": "You do not belong to a company yet.",
+    "WORKSPACE_INVITATION_INVALID": "This invitation is not valid.",
+    "YQ_PLATE_NOT_FOUND": "No vehicle found for this plate.",
+    "YQ_CATALOG_NODE_NOT_FOUND": "This catalog category does not exist.",
+    "YQ_REQUEST_FAILED": "The vehicle catalog is not available right now.",
+    "YQ_TIMEOUT": "The vehicle catalog took too long to answer.",
+    "TECDOC_REQUEST_FAILED": "The parts catalog is not available right now.",
+    "TECDOC_TIMEOUT": "The parts catalog took too long to answer.",
+    "NETWORK_ERROR": "Cannot reach the server, check your connection.",
+    "UNKNOWN": "Something went wrong."
+  }
+}

@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  sevalla:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sevalla-hosting/sevalla-deploy@v2.0.0
+        with:
+          action: deploy-static-site
+          sevalla-token: ${{ secrets.SEVALLA_TOKEN }}
+          static-site-id: ${{ secrets.SEVALLA_STATIC_SITE_ID }}
+          branch: main
+          wait-for-finish: true
