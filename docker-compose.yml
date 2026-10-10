@@ -1,0 +1,16 @@
+name: openparts-ui
+
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/javascript-node:24-trixie
+    init: true
+    command: sleep infinity
+    working_dir: /workspace
+    environment:
+      CHOKIDAR_USEPOLLING: ${CHOKIDAR_USEPOLLING:-0}
+    volumes:
+      - .:/workspace:cached
+      - bun-cache:/home/node/.bun/install/cache
+
+volumes:
+  bun-cache:

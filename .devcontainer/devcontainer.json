@@ -1,0 +1,46 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "OpenParts UI",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "overrideCommand": false,
+  "initializeCommand": "test -f .env || cp .env.example .env",
+  "remoteUser": "node",
+  "updateRemoteUserUID": true,
+
+  "features": {
+    "ghcr.io/devcontainers-extra/features/bun:1": { "version": "latest" }
+  },
+
+  "forwardPorts": [5173],
+  "portsAttributes": {
+    "5173": { "label": "UI", "onAutoForward": "notify" }
+  },
+
+  "remoteEnv": {
+    "PATH": "${containerWorkspaceFolder}/node_modules/.bin:${containerEnv:PATH}"
+  },
+
+  "onCreateCommand": "bash .devcontainer/on-create.sh",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+  "waitFor": "postCreateCommand",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "oven.bun-vscode",
+        "oxc.oxc-vscode",
+        "EditorConfig.EditorConfig",
+        "mikestead.dotenv"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "oxc.fmt.disableNestedConfig": true,
+        "files.watcherExclude": { "**/node_modules/**": true, "**/dist/**": true }
+      }
+    }
+  }
+}
