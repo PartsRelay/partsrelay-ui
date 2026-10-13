@@ -1,4 +1,4 @@
-name: openparts-ui
+name: partsrelay-ui
 
 services:
   app:

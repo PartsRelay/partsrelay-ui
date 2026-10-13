@@ -1,6 +1,6 @@
-# openparts-ui
+# partsrelay-ui
 
-React frontend for OpenParts. Bun, TypeScript, Vite+, TanStack (Router, Query, Store, Pacer, Devtools, Intent), axios, Orval, T3 env, react-i18next, Sonner, shadcn/ui and Tailwind.
+React frontend for PartsRelay. Bun, TypeScript, Vite+, TanStack (Router, Query, Store, Pacer, Devtools, Intent), axios, Orval, T3 env, react-i18next, Sonner, shadcn/ui and Tailwind.
 
 ## Development
 

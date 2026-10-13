@@ -1,6 +1,6 @@
 import { createStore } from '@tanstack/store'
 
-const STORAGE_KEY = 'openparts.token'
+const STORAGE_KEY = 'partsrelay.token'
 
 const store = createStore<{ token: string | null }>({
   token: window.localStorage.getItem(STORAGE_KEY),
