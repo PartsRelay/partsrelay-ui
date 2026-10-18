@@ -24,5 +24,10 @@
     "TECDOC_TIMEOUT": "Il catalogo ricambi non ha risposto in tempo.",
     "NETWORK_ERROR": "Impossibile raggiungere il server, controlla la connessione.",
     "UNKNOWN": "Qualcosa è andato storto."
+  },
+  "common": {
+    "close": "Chiudi",
+    "loading": "Caricamento",
+    "more": "Altro"
   }
 }

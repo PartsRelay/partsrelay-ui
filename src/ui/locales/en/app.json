@@ -24,5 +24,10 @@
     "TECDOC_TIMEOUT": "The parts catalog took too long to answer.",
     "NETWORK_ERROR": "Cannot reach the server, check your connection.",
     "UNKNOWN": "Something went wrong."
+  },
+  "common": {
+    "close": "Close",
+    "loading": "Loading",
+    "more": "More"
   }
 }
