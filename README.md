@@ -4,7 +4,15 @@ React frontend for PartsRelay. Bun, TypeScript, Vite+, TanStack (Router, Query, 
 
 ## Development
 
-In development the API answers from the MSW mocks that Orval generates from the core OpenAPI, so no core is needed. The Google sign in still redirects to the core at `VITE_API_URL`.
+In development the API answers from MSW mocks, so no core is needed: `src/ui/mocks/auth.ts` plays Better Auth, the rest comes from the mocks Orval generates from the core OpenAPI. A few `localStorage` keys change what the mocks return:
+
+| Key               | Values                              | Effect                                      |
+| ----------------- | ----------------------------------- | ------------------------------------------- |
+| `mock.user`       | `owner`, `admin`, `viewer` or `new` | Who is signed in, `new` has no name yet     |
+| `mock.setup`      | `pending`                           | The company still waits for its setup       |
+| `mock.invitation` | `1`                                 | An invitation to another company is waiting |
+
+Set `VITE_API_MOCKS=false` to talk to a core at `VITE_API_URL` instead. The core only trusts its `UI_URL`, so open the UI from that origin.
 
 ```sh
 cp .env.example .env
@@ -31,16 +39,18 @@ OPENAPI_URL=http://localhost:3333/openapi.json bun run generate
 
 Variables are validated at startup with T3 env in `src/core/config/env.ts`.
 
-| Variable       | Default | Content                                 |
-| -------------- | ------- | --------------------------------------- |
-| `VITE_API_URL` | empty   | Core origin, empty uses the same origin |
+| Variable                | Default | Content                                                        |
+| ----------------------- | ------- | -------------------------------------------------------------- |
+| `VITE_API_URL`          | empty   | Core origin, empty uses the same origin                        |
+| `VITE_API_MOCKS`        | `true`  | `false` turns the MSW mocks off in development                 |
+| `VITE_GOOGLE_CLIENT_ID` | empty   | Google client id of the core, turns Google One Tap on when set |
 
 ## Layout
 
 | Folder             | Content                                                            |
 | ------------------ | ------------------------------------------------------------------ |
 | `src/core`         | TypeScript only: env, axios client, generated API                  |
-| `src/modules/core` | TypeScript only: feature logic (session store, bootstrap)          |
+| `src/modules/core` | TypeScript only: feature logic, Better Auth client, queries, forms |
 | `src/ui`           | React: entry, router, providers, components, generated query hooks |
 | `src/ui/routes`    | File based routes, grouped like modules, for example `(auth)`      |
 | `src/modules/ui`   | React feature components and hooks                                 |
@@ -49,7 +59,13 @@ The core layers never import React or the ui layers, enforced by an Oxlint rule 
 
 Every Orval client goes through the `http` mutator in `src/core/http/client.ts`.
 
-Texts live in `src/ui/locales` and follow the browser language, with English as fallback. When a query or mutation fails, `src/ui/providers/query-client.ts` shows a toast translated from the core error `code` (`errors.<CODE>`).
+## Sign in
+
+Better Auth runs in the core at `/api/auth` and keeps the session in a cookie: the Better Auth client in `src/modules/core/auth/auth.client.ts` and axios both send credentials. People sign in with Google, with a link sent by email or with Google One Tap, and accept invitations at `/invitations/:id` the same way. Every account belongs to one company: owners with a new company go through `/setup` first.
+
+## Texts
+
+Texts live in `src/ui/locales/<language>/<area>.json`. They follow the browser language until sign in, then the company language chosen by the owner, with English as fallback. Only `app.json` holds `errors`, since the area files merge shallowly. When a query or mutation fails, `src/ui/providers/query-client.ts` shows a toast translated from the error `code` (`errors.<CODE>`) of the core or Better Auth.
 
 ## Workflow
 
