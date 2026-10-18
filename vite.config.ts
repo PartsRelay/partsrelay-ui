@@ -8,7 +8,6 @@ import { defineConfig } from 'vite-plus'
 const generated = [
   '**/dist/**',
   'src/core/api/**',
-  'src/ui/api/**',
   'src/ui/routeTree.gen.ts',
   'public/mockServiceWorker.js',
 ]

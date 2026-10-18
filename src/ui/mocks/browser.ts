@@ -1,5 +1,8 @@
 import { setupWorker } from 'msw/browser'
-import * as mocks from '@/ui/api/endpoints/index.msw'
+import * as authApiMocks from '@/core/api/auth/endpoints/index.msw'
+import * as restApiMocks from '@/core/api/rest/endpoints/index.msw'
 import { authMocks } from '@/ui/mocks/auth'
 
-export const worker = setupWorker(...authMocks, ...Object.values(mocks).flatMap((mock) => mock()))
+const generated = [...Object.values(authApiMocks), ...Object.values(restApiMocks)]
+
+export const worker = setupWorker(...authMocks, ...generated.flatMap((mock) => mock()))

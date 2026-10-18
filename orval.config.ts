@@ -1,31 +1,45 @@
-import { defineConfig } from 'orval'
+import { defineConfig, type OutputOptions } from 'orval'
 
-const input = process.env.OPENAPI_URL ?? 'http://localhost:3333/openapi.json'
-const mutator = { path: './src/core/http/client.ts', name: 'http' }
+const LOCAL_CORE = 'http://localhost:3333'
+
+// The local core first, then staging
+async function coreUrl() {
+  const local = await fetch(`${LOCAL_CORE}/openapi.json`, {
+    signal: AbortSignal.timeout(2000),
+  }).catch(() => null)
+
+  if (local?.ok) return LOCAL_CORE
+  if (process.env.CORE_STAGING_URL) return process.env.CORE_STAGING_URL.replace(/\/$/, '')
+
+  throw new Error('Start the core locally or set CORE_STAGING_URL')
+}
+
+const core = await coreUrl()
+
+const output = (name: string): OutputOptions => ({
+  client: 'react-query',
+  httpClient: 'axios',
+  mode: 'tags-split',
+  target: `./src/core/api/${name}/endpoints`,
+  schemas: `./src/core/api/${name}/models`,
+  clean: true,
+  mock: { indexMockFiles: true, generators: [{ type: 'msw' }] },
+  override: {
+    mutator: { path: './src/core/http/client.ts', name: 'http' },
+    query: { useSuspenseQuery: true, signal: true },
+  },
+})
 
 export default defineConfig({
-  core: {
-    input,
-    output: {
-      client: 'axios-functions',
-      mode: 'tags-split',
-      target: './src/core/api/endpoints',
-      schemas: './src/core/api/models',
-      clean: ['./src/core/api'],
-      override: { mutator },
-    },
+  rest: {
+    input: `${core}/openapi.json`,
+    output: output('rest'),
   },
-  ui: {
-    input,
-    output: {
-      client: 'react-query',
-      httpClient: 'axios',
-      mode: 'tags-split',
-      target: './src/ui/api/endpoints',
-      schemas: './src/core/api/models',
-      clean: ['./src/ui/api'],
-      mock: { indexMockFiles: true, generators: [{ type: 'msw' }] },
-      override: { mutator },
+  auth: {
+    input: {
+      target: `${core}/api/auth/open-api/generate-schema`,
+      override: { transformer: './orval.better-auth.ts' },
     },
+    output: { ...output('auth'), baseUrl: '/api/auth' },
   },
 })
