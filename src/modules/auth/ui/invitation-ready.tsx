@@ -9,20 +9,27 @@ import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useT } from '@/ui/components/use-t'
 import { Button } from '@/ui/components/button'
 import { Card, CardContent } from '@/ui/components/card'
+import { Spinner } from '@/ui/components/spinner'
 
 type InvitationReadyProps = {
   details: InvitationDetails
+  confirm: boolean
   email: string | null
   accept: UseMutationOptions<unknown, Error, void>
 }
 
-export function InvitationReady({ details, email, accept }: InvitationReadyProps) {
+export function InvitationReady({ details, confirm, email, accept }: InvitationReadyProps) {
   const { t } = useTranslation()
   const translate = useT()
   const navigate = useNavigate()
   const join = useMutation(accept)
   const [confirming, setConfirming] = useState(false)
   const failure = join.error && acceptError(join.error)
+  const joinNow = () =>
+    join.mutate(undefined, {
+      onSuccess: () => navigate({ to: '/' }),
+      onError: () => setConfirming(false),
+    })
 
   return (
     <Card>
@@ -33,10 +40,22 @@ export function InvitationReady({ details, email, accept }: InvitationReadyProps
             {t('invitation.signedInAs', { email })}
           </p>
         )}
-        <Callout tone="warning">{t('invitation.warning')}</Callout>
+        {confirm ? (
+          <Callout tone="warning">{t('invitation.warning')}</Callout>
+        ) : (
+          <Callout tone="neutral">
+            {t('invitation.setupPending', { workspace: details.workspace })}
+          </Callout>
+        )}
         {failure && <Callout tone="danger">{translate(failure)}</Callout>}
         <div className="grid gap-2">
-          <Button onClick={() => setConfirming(true)}>{t('invitation.accept')}</Button>
+          <Button
+            disabled={join.isPending}
+            onClick={() => (confirm ? setConfirming(true) : joinNow())}
+          >
+            {join.isPending && !confirm && <Spinner data-icon="inline-start" />}
+            {t('invitation.accept')}
+          </Button>
           <Button variant="ghost" asChild>
             <Link to="/">{t('invitation.actions.notNow')}</Link>
           </Button>
@@ -46,12 +65,7 @@ export function InvitationReady({ details, email, accept }: InvitationReadyProps
         spec={confirming ? joinConfirm(details.workspace) : null}
         pending={join.isPending}
         onClose={() => setConfirming(false)}
-        onConfirm={() =>
-          join.mutate(undefined, {
-            onSuccess: () => navigate({ to: '/' }),
-            onError: () => setConfirming(false),
-          })
-        }
+        onConfirm={joinNow}
       />
     </Card>
   )

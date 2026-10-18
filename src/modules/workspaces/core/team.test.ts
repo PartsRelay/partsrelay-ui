@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vite-plus/test'
-import { EMPTY_VALUE } from '@/core/format'
 import { message } from '@/core/message'
 import { createInviteForm, roleHint } from '@/modules/workspaces/core/invite-form'
 import {
@@ -70,14 +69,15 @@ describe('members', () => {
     expect(teamSearchSchema.parse({})).toEqual({})
   })
 
-  it('counts the members and the pending invitations', () => {
+  it('counts the members and the invitations still valid', () => {
     const workspace = companyFixture()
     workspace.invitations.push(
       invitation('i3', 'viewer', 'F.Romano@ricambirossi.it', '2026-10-18T10:00:00Z'),
-      { ...invitation('i4', 'viewer', 'gone@x.it', '2026-10-18T10:00:00Z'), status: 'canceled' }
+      { ...invitation('i4', 'viewer', 'gone@x.it', '2026-10-18T10:00:00Z'), status: 'canceled' },
+      invitation('i5', 'viewer', 'new@x.it', '2026-10-19T10:00:00Z')
     )
 
-    expect(teamSummary(workspace)).toEqual([
+    expect(teamSummary(workspace, now)).toEqual([
       message('team.summary.members', { count: 3 }),
       message('team.summary.invitations', { count: 2 }),
     ])
@@ -124,14 +124,15 @@ describe('invitations', () => {
     workspace.invitations.push(
       invitation('i3', 'admin', 'Officina.Neri@gmail.com', '2026-10-18T10:00:00Z'),
       { ...invitation('i4', 'viewer', 'gone@x.it', '2026-10-18T10:00:00Z'), status: 'canceled' },
-      { ...invitation('i5', 'viewer', 'old@x.it', '2026-10-14T10:00:00Z'), createdAt: null }
+      invitation('i5', 'viewer', 'old@x.it', '2026-10-14T10:00:00Z'),
+      { ...invitation('i6', 'viewer', 'old@x.it', '2026-10-16T10:00:00Z'), status: 'accepted' },
+      invitation('i7', 'viewer', 'Luca@ricambirossi.it', '2026-10-16T10:00:00Z')
     )
     const rows = invitationRows(workspace, meIn(workspace, '102'), now, origin)
 
-    expect(rows.map((row) => [row.invitation.id, row.canManage, row.sent])).toEqual([
-      ['i3', false, expect.any(String)],
-      ['i1', true, expect.any(String)],
-      ['i5', true, EMPTY_VALUE],
+    expect(rows.map((row) => [row.invitation.id, row.canManage])).toEqual([
+      ['i3', false],
+      ['i1', true],
     ])
   })
 

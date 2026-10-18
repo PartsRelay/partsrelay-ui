@@ -19,7 +19,8 @@ export function TeamPage() {
     <>
       <TeamHeader />
       <MembersTable onTransfer={() => setTransfer(true)} />
-      <InviteCard />
+      {/* A new form when an ownership hand-over changes my roles */}
+      <InviteCard key={me.role} />
       <InvitationsTable />
       <TransferOwnershipDialog
         open={transfer === true && me.permissions.transferOwnership}

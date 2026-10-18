@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { ConfirmSpec } from '@/core/confirm'
-import { EMPTY_VALUE, formatDate } from '@/core/format'
+import { formatDate } from '@/core/format'
 import { type Message, message } from '@/core/message'
 import { canManageRole } from '@/modules/workspaces/core/permissions'
 import { type Role, roleLabel } from '@/modules/workspaces/core/role'
@@ -36,18 +36,21 @@ function byRole(members: Member[]) {
   )
 }
 
+// Newest invitation per email decides, the core keeps old rows
 function pendingInvitations(workspace: Workspace) {
-  const latest = new Map<string, Invitation>()
+  const newest = new Map<string, Invitation>()
 
   for (const invitation of workspace.invitations) {
-    if (invitation.status !== 'pending') continue
-
     const email = invitation.email.toLowerCase()
-    const current = latest.get(email)
-    if (!current || invitation.expiresAt > current.expiresAt) latest.set(email, invitation)
+    const current = newest.get(email)
+    if (!current || invitation.createdAt > current.createdAt) newest.set(email, invitation)
   }
 
-  return [...latest.values()].sort((a, b) => b.expiresAt.getTime() - a.expiresAt.getTime())
+  const members = new Set(workspace.members.map(({ email }) => email.toLowerCase()))
+
+  return [...newest.values()]
+    .filter(({ status, email }) => status === 'pending' && !members.has(email.toLowerCase()))
+    .sort((a, b) => b.expiresAt.getTime() - a.expiresAt.getTime())
 }
 
 export function memberRows(workspace: Workspace, me: Me): MemberRow[] {
@@ -79,10 +82,12 @@ export function transferAction(candidate?: Member) {
     : message('team.transfer.title')
 }
 
-export function teamSummary(workspace: Workspace) {
+export function teamSummary(workspace: Workspace, now: Date) {
+  const waiting = pendingInvitations(workspace).filter(({ expiresAt }) => expiresAt > now)
+
   return [
     message('team.summary.members', { count: workspace.members.length }),
-    message('team.summary.invitations', { count: pendingInvitations(workspace).length }),
+    message('team.summary.invitations', { count: waiting.length }),
   ]
 }
 
@@ -100,7 +105,7 @@ export function invitationRows(
   return pendingInvitations(workspace).map((invitation) => ({
     invitation,
     roleLabel: roleLabel(invitation.role),
-    sent: invitation.createdAt ? formatDate(invitation.createdAt, locale) : EMPTY_VALUE,
+    sent: formatDate(invitation.createdAt, locale),
     expired: invitation.expiresAt <= now,
     canManage: canManageRole(me.role, invitation.role),
     link: invitationLink(invitation.id, origin),

@@ -23,6 +23,15 @@ export function MagicLinkForm({ send }: MagicLinkFormProps) {
   const [now, setNow] = useState(Date.now)
   const wait = resendWait(sentAt, now)
   const input = useRef<HTMLInputElement>(null)
+  const status = useRef<HTMLDivElement>(null)
+  const wasSent = useRef(false)
+
+  // Keeps focus on screen when the form and status swap
+  useEffect(() => {
+    if (sent) status.current?.focus()
+    else if (wasSent.current) input.current?.focus()
+    wasSent.current = sent !== null
+  }, [sent])
 
   useEffect(() => {
     if (wait === 0) return
@@ -43,17 +52,27 @@ export function MagicLinkForm({ send }: MagicLinkFormProps) {
     })
 
   if (sent) {
+    const waiting = wait > 0 || mutation.isPending
+
     return (
       <div className="grid gap-4">
-        <Callout icon={MailCheckIcon} title={t('login.magicLink.sent.title')}>
+        <Callout
+          ref={status}
+          role="status"
+          tabIndex={-1}
+          className="outline-none"
+          icon={MailCheckIcon}
+          title={t('login.magicLink.sent.title')}
+        >
           {t('login.magicLink.sent.description', { email: sent, minutes: MAGIC_LINK_MINUTES })}
         </Callout>
         {error && <Callout tone="danger">{translate(error)}</Callout>}
         <div className="grid gap-2">
           <Button
             variant="outline"
-            disabled={wait > 0 || mutation.isPending}
-            onClick={() => deliver(sent)}
+            aria-disabled={waiting}
+            className="aria-disabled:opacity-50"
+            onClick={() => !waiting && deliver(sent)}
           >
             {mutation.isPending && <Spinner data-icon="inline-start" />}
             {wait > 0

@@ -1,14 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { message } from '@/core/message'
-import { type InvitationRow, invitationRows, revokeConfirm } from '@/modules/workspaces/core/team'
-import {
-  cancelInvitationMutation,
-  resendInvitationMutation,
-} from '@/modules/workspaces/core/team.mutation'
+import { type InvitationRow, invitationRows } from '@/modules/workspaces/core/team'
+import { resendInvitationMutation } from '@/modules/workspaces/core/team.mutation'
+import { RevokeInvitationDialog } from '@/modules/workspaces/ui/revoke-invitation-dialog'
 import { useMe } from '@/modules/workspaces/ui/use-me'
-import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { CopyButton } from '@/ui/components/copy-button'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { useT } from '@/ui/components/use-t'
@@ -31,12 +28,18 @@ export function InvitationsTable() {
   const translate = useT()
   const { workspace, me } = useMe()
   const rows = invitationRows(workspace, me, new Date(), window.location.origin, i18n.language)
+  const heading = useRef<HTMLHeadingElement>(null)
+  // Outlives the row, which leaves before the core answers
+  const [revoking, setRevoking] = useState<InvitationRow | null>(null)
+  const [confirming, setConfirming] = useState(false)
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>{t('team.invitations.title')}</h2>
+          <h2 ref={heading} tabIndex={-1} className="outline-none">
+            {t('team.invitations.title')}
+          </h2>
         </CardTitle>
         <CardDescription>{t('team.invitations.description')}</CardDescription>
       </CardHeader>
@@ -70,23 +73,36 @@ export function InvitationsTable() {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <InvitationActions row={row} />
+                    <InvitationActions
+                      row={row}
+                      onRevoke={() => {
+                        setRevoking(row)
+                        setConfirming(true)
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         )}
+        {revoking && (
+          <RevokeInvitationDialog
+            key={revoking.invitation.id}
+            row={revoking}
+            open={confirming}
+            onClose={() => setConfirming(false)}
+            returnTo={heading}
+          />
+        )}
       </CardContent>
     </Card>
   )
 }
 
-function InvitationActions({ row }: { row: InvitationRow }) {
+function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: () => void }) {
   const { t } = useTranslation()
-  const [revoking, setRevoking] = useState(false)
   const resend = useMutation(resendInvitationMutation(row.invitation))
-  const revoke = useMutation(cancelInvitationMutation(row.invitation))
   const { email } = row.invitation
 
   if (!row.canManage) {
@@ -113,18 +129,9 @@ function InvitationActions({ row }: { row: InvitationRow }) {
       >
         {t('team.actions.resend')}
       </ActionButton>
-      <ActionButton
-        aria-label={t('team.actions.revokeFor', { email })}
-        onClick={() => setRevoking(true)}
-      >
+      <ActionButton aria-label={t('team.actions.revokeFor', { email })} onClick={onRevoke}>
         {t('team.actions.revoke')}
       </ActionButton>
-      <ConfirmDialog
-        spec={revoking ? revokeConfirm(row) : null}
-        pending={revoke.isPending}
-        onConfirm={() => revoke.mutate(undefined, { onSuccess: () => setRevoking(false) })}
-        onClose={() => setRevoking(false)}
-      />
     </div>
   )
 }

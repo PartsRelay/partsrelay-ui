@@ -39,6 +39,7 @@ export function InvitationScreen({
       return (
         <InvitationReady
           details={view.details}
+          confirm={view.confirm}
           email={session.email}
           accept={accept(view.details.workspace)}
         />

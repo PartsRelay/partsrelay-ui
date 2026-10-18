@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { type RefObject, useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { canConfirm, type ConfirmSpec } from '@/core/confirm'
 import { Facts } from '@/ui/components/facts'
@@ -23,14 +23,15 @@ type ConfirmDialogProps = {
   pending?: boolean
   onConfirm: () => void
   onClose: () => void
+  returnTo?: RefObject<HTMLElement | null>
 }
 
-export function ConfirmDialog({ spec, pending, onConfirm, onClose }: ConfirmDialogProps) {
+export function ConfirmDialog({ spec, pending, onConfirm, onClose, returnTo }: ConfirmDialogProps) {
   const { t } = useTranslation()
   const translate = useT()
   const [typed, setTyped] = useState('')
   const [acknowledged, setAcknowledged] = useState(false)
-  const returnFocus = useReturnFocus(spec !== null)
+  const returnFocus = useReturnFocus(spec !== null, returnTo)
   const typedId = useId()
   const acknowledgeId = useId()
 

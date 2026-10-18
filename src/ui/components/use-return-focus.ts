@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { type RefObject, useState } from 'react'
 
-export function useReturnFocus(open: boolean) {
+export function useReturnFocus(open: boolean, fallback?: RefObject<HTMLElement | null>) {
   const [opener, setOpener] = useState<HTMLElement | null>(null)
   const [wasOpen, setWasOpen] = useState(open)
 
@@ -11,9 +11,10 @@ export function useReturnFocus(open: boolean) {
   }
 
   return (event: Event) => {
-    if (!opener?.isConnected) return
+    const target = opener?.isConnected ? opener : fallback?.current
+    if (!target) return
 
     event.preventDefault()
-    opener.focus()
+    target.focus()
   }
 }

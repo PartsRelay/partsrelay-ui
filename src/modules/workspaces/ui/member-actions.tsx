@@ -1,21 +1,14 @@
-import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { type MemberRow, removeMemberConfirm } from '@/modules/workspaces/core/team'
-import { removeMemberMutation } from '@/modules/workspaces/core/team.mutation'
-import { useMe } from '@/modules/workspaces/ui/use-me'
-import { ConfirmDialog } from '@/ui/components/confirm-dialog'
+import type { MemberRow } from '@/modules/workspaces/core/team'
 import { ActionButton } from '@/modules/workspaces/ui/action-button'
 import { ChangeRoleDialog } from '@/modules/workspaces/ui/change-role-dialog'
 
-type MemberActionsProps = { row: MemberRow; onTransfer: () => void }
+type MemberActionsProps = { row: MemberRow; onTransfer: () => void; onRemove: () => void }
 
-export function MemberActions({ row, onTransfer }: MemberActionsProps) {
+export function MemberActions({ row, onTransfer, onRemove }: MemberActionsProps) {
   const { t } = useTranslation()
-  const { workspace } = useMe()
-  const [dialog, setDialog] = useState<'role' | 'remove' | null>(null)
-  const remove = useMutation(removeMemberMutation(row.member))
-  const close = () => setDialog(null)
+  const [changingRole, setChangingRole] = useState(false)
   const { member, roleOptions } = row
 
   if (!row.canTransfer && !roleOptions && !row.canRemove) return null
@@ -29,32 +22,26 @@ export function MemberActions({ row, onTransfer }: MemberActionsProps) {
         <>
           <ActionButton
             aria-label={t('team.actions.changeRoleOf', { name: member.name })}
-            onClick={() => setDialog('role')}
+            onClick={() => setChangingRole(true)}
           >
             {t('team.actions.changeRole')}
           </ActionButton>
           <ChangeRoleDialog
             member={member}
             roles={roleOptions}
-            open={dialog === 'role'}
-            onOpenChange={(open) => setDialog(open ? 'role' : null)}
+            open={changingRole}
+            onOpenChange={setChangingRole}
           />
         </>
       )}
       {row.canRemove && (
         <ActionButton
           aria-label={t('team.actions.removeMember', { name: member.name })}
-          onClick={() => setDialog('remove')}
+          onClick={onRemove}
         >
           {t('team.actions.remove')}
         </ActionButton>
       )}
-      <ConfirmDialog
-        spec={dialog === 'remove' ? removeMemberConfirm(member, workspace) : null}
-        pending={remove.isPending}
-        onConfirm={() => remove.mutate(undefined, { onSuccess: close })}
-        onClose={close}
-      />
     </div>
   )
 }

@@ -23,7 +23,7 @@ export type Invitation = {
   role: Role
   status: string
   expiresAt: Date
-  createdAt: Date | null
+  createdAt: Date
 }
 
 export type Metadata = Record<string, unknown>
@@ -81,7 +81,7 @@ export function toWorkspace(organization: FullOrganization): Workspace {
       role: toRole(invitation.role),
       status: invitation.status,
       expiresAt: toDate(invitation.expiresAt),
-      createdAt: invitation.createdAt ? toDate(invitation.createdAt) : null,
+      createdAt: toDate(invitation.createdAt),
     })),
   }
 }

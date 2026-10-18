@@ -19,7 +19,7 @@ export type InvitationView =
   | { state: 'unavailable'; reason: Message }
   | { state: 'signIn' }
   | { state: 'otherAccount' }
-  | { state: 'ready'; details: InvitationDetails }
+  | { state: 'ready'; details: InvitationDetails; confirm: boolean }
 
 type Invitation = {
   organizationId: string
@@ -29,7 +29,7 @@ type Invitation = {
   expiresAt: Date | string
 }
 
-type Company = Pick<Workspace, 'id' | 'members'>
+type Company = Pick<Workspace, 'id' | 'members' | 'setup'>
 
 const NOT_RECIPIENT = 'YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION'
 
@@ -82,7 +82,8 @@ function joinable(
     return { state: 'unavailable', reason: message('invitation.unavailable.companyNotEmpty') }
   }
 
-  return { state: 'ready', details: details(invitation) }
+  // A company never set up has nothing to lose
+  return { state: 'ready', details: details(invitation), confirm: company.data.setup === 'done' }
 }
 
 export function invitationView({

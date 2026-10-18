@@ -14,7 +14,11 @@ export function TeamHeader() {
     <PageHeader
       title={t('team.title')}
       description={t('team.description')}
-      badge={<Badge variant="secondary">{teamSummary(workspace).map(translate).join(' · ')}</Badge>}
+      badge={
+        <Badge variant="secondary">
+          {teamSummary(workspace, new Date()).map(translate).join(' · ')}
+        </Badge>
+      }
     />
   )
 }

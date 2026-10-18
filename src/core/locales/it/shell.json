@@ -17,7 +17,6 @@
   },
   "shell": {
     "user": {
-      "menu": "Menu dell'account",
       "profile": "Profilo",
       "signOut": "Esci"
     },

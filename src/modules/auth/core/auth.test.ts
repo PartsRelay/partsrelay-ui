@@ -73,6 +73,7 @@ describe('login', () => {
     expect(loginError('failed_to_create_session')).toEqual(
       message('errors.failed_to_create_session')
     )
+    expect(loginError('email_not_verified')).toEqual(message('errors.EMAIL_NOT_VERIFIED'))
     expect(loginError('state_mismatch')).toEqual(message('login.errors.failed'))
     expect(loginError('toString')).toEqual(message('login.errors.failed'))
   })
@@ -133,6 +134,14 @@ describe('invitation sign in', () => {
   })
 })
 
+// What the core does with the emailed link URLs
+function landing(sent: string) {
+  const link = new URL('https://core.test/api/auth/magic-link/verify')
+  link.searchParams.set('callbackURL', sent)
+
+  return new URL(decodeURIComponent(link.searchParams.get('callbackURL')!))
+}
+
 describe('magic link', () => {
   it('sends absolute links back to the login', async () => {
     const flow = loginFlow('/team')
@@ -140,10 +149,20 @@ describe('magic link', () => {
 
     expect(signInWithMagicLink).toHaveBeenCalledWith({
       email: 'marco@ricambirossi.it',
-      callbackURL: 'https://app.test/login?next=%2Fteam&signedIn=true',
-      errorCallbackURL: 'https://app.test/login?next=%2Fteam',
+      callbackURL: 'https://app.test/login?next=%252Fteam&signedIn=true',
+      errorCallbackURL: 'https://app.test/login?next=%252Fteam',
     })
     expect(flow.afterSignIn).toBe('/login?next=%2Fteam&signedIn=true')
+  })
+
+  it('keeps every search param of the way back', async () => {
+    const next = '/contacts?status=active&page=2'
+    await run(loginFlow(next).magicLink, 'marco@ricambirossi.it')
+    const [{ callbackURL, errorCallbackURL }] = vi.mocked(signInWithMagicLink).mock.calls[0]!
+
+    expect(landing(callbackURL!).searchParams.get('next')).toBe(next)
+    expect(landing(callbackURL!).searchParams.get('signedIn')).toBe('true')
+    expect(landing(errorCallbackURL!).searchParams.get('next')).toBe(next)
   })
 
   it('checks the address before sending', () => {
@@ -303,9 +322,13 @@ describe('invitation', () => {
     roleLabel: message('roles.viewer'),
     expiresAt: new Date('2026-10-19T10:00:00Z'),
   }
-  const solo = { data: { id: '9', members: [member('1', 'owner', 'Luca Ferri')] }, error: null }
-  const view = (company: { data?: Pick<Workspace, 'id' | 'members'>; error: unknown } = solo) =>
-    invitationView({ invitation: invited, error: null, signedIn: true, company })
+  const solo = {
+    data: { id: '9', setup: 'done' as const, members: [member('1', 'owner', 'Luca Ferri')] },
+    error: null,
+  }
+  const view = (
+    company: { data?: Pick<Workspace, 'id' | 'members' | 'setup'>; error: unknown } = solo
+  ) => invitationView({ invitation: invited, error: null, signedIn: true, company })
   const failing = (error: unknown) =>
     invitationView({ invitation: undefined, error, signedIn: true, company: solo })
   const expired = { state: 'unavailable', reason: message('invitation.unavailable.expired') }
@@ -358,7 +381,15 @@ describe('invitation', () => {
       state: 'failed',
       reason: message('errors.NETWORK_ERROR'),
     })
-    expect(view()).toEqual({ state: 'ready', details })
+    expect(view()).toEqual({ state: 'ready', details, confirm: true })
+  })
+
+  it('asks no confirmation when the company was never set up', () => {
+    expect(view({ data: { ...solo.data, setup: 'pending' }, error: null })).toEqual({
+      state: 'ready',
+      details,
+      confirm: false,
+    })
   })
 
   it('waits for the invitation to load', () => {

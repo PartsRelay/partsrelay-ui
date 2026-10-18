@@ -24,6 +24,7 @@ const LOGIN_ERRORS = new Map([
   ['access_denied', 'login.errors.cancelled'],
   ['INVALID_TOKEN', 'errors.INVALID_TOKEN'],
   ['failed_to_create_session', 'errors.failed_to_create_session'],
+  ['email_not_verified', 'errors.EMAIL_NOT_VERIFIED'],
 ])
 
 function absolute(path: string) {
@@ -54,14 +55,19 @@ export function signInMutation(back: string, failed: string, selectAccount = fal
   } satisfies MutationOptions<unknown, Error, void>
 }
 
+// The core decodes magic link URLs once more
+function encodedAgain(path: string) {
+  return absolute(path).replaceAll('%', '%25')
+}
+
 export function magicLinkMutation(back: string, failed: string) {
   return {
     mutationKey: ['sign-in', 'magic-link'],
     mutationFn: (email: string) =>
       signInWithMagicLink({
         email,
-        callbackURL: absolute(back),
-        errorCallbackURL: absolute(failed),
+        callbackURL: encodedAgain(back),
+        errorCallbackURL: encodedAgain(failed),
       }),
     meta: { silent: true },
   } satisfies MutationOptions<unknown, Error, string>
