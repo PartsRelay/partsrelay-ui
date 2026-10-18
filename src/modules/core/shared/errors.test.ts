@@ -4,9 +4,10 @@ import {
   errorMessage,
   errorNotice,
   errorStatus,
+  fieldErrors,
   sessionEnded,
 } from '@/modules/core/shared/errors'
-import { message, messageKeys } from '@/modules/core/shared/message'
+import { literal, message, messageKeys } from '@/modules/core/shared/message'
 import { authError, axiosError } from '@/modules/core/testing/fixtures'
 
 describe('errors', () => {
@@ -18,14 +19,55 @@ describe('errors', () => {
     expect(errorMessage(error)).toEqual(message('errors.VALIDATION_ERROR'))
   })
 
+  it('shows the message of the core, already in the company language', () => {
+    const error = axiosError(403, {
+      error: {
+        code: 'AUTHORIZATION_FAILURE',
+        status: 403,
+        message: 'Non hai i permessi per questa operazione',
+      },
+    })
+
+    expect(errorMessage(error)).toEqual(
+      literal('errors.AUTHORIZATION_FAILURE', 'Non hai i permessi per questa operazione')
+    )
+    expect(errorNotice(error, true)).toEqual(errorMessage(error))
+    expect(errorMessage(axiosError(500, { error: { code: 'X', message: '' } }))).toEqual(
+      message('errors.X')
+    )
+  })
+
+  it('reads the message of each invalid field', () => {
+    const error = axiosError(422, {
+      error: {
+        code: 'VALIDATION_ERROR',
+        status: 422,
+        message: 'Request payload failed validation',
+        details: [
+          { field: 'phone', rule: 'waId', message: 'Must start with +' },
+          { field: 'phone', rule: 'database.unique', message: 'Already in use' },
+          { field: 'name', rule: 'maxLength', message: 'Too long' },
+        ],
+      },
+    })
+
+    expect(fieldErrors(error)).toEqual({
+      phone: literal('errors.VALIDATION_ERROR', 'Must start with +'),
+      name: literal('errors.VALIDATION_ERROR', 'Too long'),
+    })
+    expect(fieldErrors(axiosError(422, { error: { code: 'VALIDATION_ERROR' } }))).toEqual({})
+    expect(fieldErrors(authError(400, 'INVALID_EMAIL'))).toEqual({})
+  })
+
   it('tells network failures apart', () => {
     expect(errorCode(axiosError())).toBe('NETWORK_ERROR')
     expect(errorCode(new TypeError('Failed to fetch'))).toBe('NETWORK_ERROR')
   })
 
-  it('reads Better Auth errors', () => {
+  it('translates Better Auth errors by code', () => {
     const error = authError(403, 'WORKSPACE_NOT_RELEASABLE')
 
+    expect(errorMessage(error)).toEqual(message('errors.WORKSPACE_NOT_RELEASABLE'))
     expect(errorCode(error)).toBe('WORKSPACE_NOT_RELEASABLE')
     expect(errorStatus(error)).toBe(403)
     expect(errorCode(authError(400))).toBe('UNKNOWN')

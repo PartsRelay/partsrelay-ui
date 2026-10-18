@@ -1,7 +1,8 @@
 import { isAxiosError } from 'axios'
-import { message } from '@/modules/core/shared/message'
+import { literal, type Message, message } from '@/modules/core/shared/message'
 
-type ApiErrorBody = { error?: { code?: string } }
+type ApiErrorDetail = { field?: string; message?: string }
+type ApiErrorBody = { error?: { code?: string; message?: string; details?: ApiErrorDetail[] } }
 type AuthError = { status?: number; error?: { code?: string } }
 
 // Other 401s, like removing a member, keep the session
@@ -9,6 +10,10 @@ const SESSION_CODES = ['UNAUTHORIZED', 'UNAUTHORIZED_ACCESS']
 
 function codeless(status: number | undefined) {
   return status === 429 ? 'TOO_MANY_REQUESTS' : 'UNKNOWN'
+}
+
+function apiError(error: unknown) {
+  return isAxiosError<ApiErrorBody>(error) ? error.response?.data?.error : undefined
 }
 
 export function errorStatus(error: unknown) {
@@ -33,7 +38,21 @@ export function errorCode(error: unknown) {
 }
 
 export function errorMessage(error: unknown) {
-  return message(`errors.${errorCode(error)}`)
+  const key = `errors.${errorCode(error)}`
+  // Core messages arrive in the company language
+  const text = apiError(error)?.message
+
+  return typeof text === 'string' && text !== '' ? literal(key, text) : message(key)
+}
+
+export function fieldErrors(error: unknown) {
+  const fields: Record<string, Message> = {}
+
+  for (const { field, message: text } of apiError(error)?.details ?? []) {
+    if (field && text && !fields[field]) fields[field] = literal('errors.VALIDATION_ERROR', text)
+  }
+
+  return fields
 }
 
 export function sessionEnded(error: unknown) {

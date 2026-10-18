@@ -29,8 +29,8 @@ void i18n
     interpolation: { escapeValue: false },
   })
 
-export function translate(text: Message) {
-  return i18n.t(messageKeys(text), text.values)
+export function translate(value: Message) {
+  return value.text ?? i18n.t(messageKeys(value), value.values)
 }
 
 export function followCompanyLanguage(client: QueryClient) {

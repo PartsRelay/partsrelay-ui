@@ -4,5 +4,5 @@ import { type Message, messageKeys } from '@/modules/core/shared/message'
 export function useT() {
   const { t } = useTranslation()
 
-  return (text: Message) => t(messageKeys(text), text.values)
+  return (value: Message) => value.text ?? t(messageKeys(value), value.values)
 }

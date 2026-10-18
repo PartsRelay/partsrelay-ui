@@ -66,7 +66,7 @@ Better Auth runs in the core at `/api/auth` and keeps the session in a cookie: t
 
 ## Texts
 
-Texts live in `src/ui/locales/<language>/<area>.json`. They follow the browser language until sign in, then the company language chosen by the owner, with English as fallback. Only `app.json` holds `errors`, since the area files merge shallowly. When a query or mutation fails, `src/ui/providers/query-client.ts` shows a toast translated from the error `code` (`errors.<CODE>`) of the core or Better Auth.
+Texts live in `src/ui/locales/<language>/<area>.json`. They follow the browser language until sign in, then the company language chosen by the owner, with English as fallback. Only `app.json` holds `errors`, since the area files merge shallowly. When a query or mutation fails, `src/ui/providers/query-client.ts` shows a toast with the `message` of the core, already in the company language, or with the text of the Better Auth error `code` (`errors.<CODE>`).
 
 ## Workflow
 
