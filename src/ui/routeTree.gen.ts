@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authInvitationsInvitationIdRouteImport } from './routes/(auth)/invitations.$invitationId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -27,27 +28,41 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => authRouteRoute,
 } as any)
+const authInvitationsInvitationIdRoute =
+  authInvitationsInvitationIdRouteImport.update({
+    id: '/invitations/$invitationId',
+    path: '/invitations/$invitationId',
+    getParentRoute: () => authRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
+  '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
+  '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
+  '/(auth)/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths: '/' | '/login' | '/invitations/$invitationId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/(auth)' | '/(auth)/login'
+  to: '/' | '/login' | '/invitations/$invitationId'
+  id:
+    | '__root__'
+    | '/'
+    | '/(auth)'
+    | '/(auth)/login'
+    | '/(auth)/invitations/$invitationId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,15 +93,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/(auth)/invitations/$invitationId': {
+      id: '/(auth)/invitations/$invitationId'
+      path: '/invitations/$invitationId'
+      fullPath: '/invitations/$invitationId'
+      preLoaderRoute: typeof authInvitationsInvitationIdRouteImport
+      parentRoute: typeof authRouteRoute
+    }
   }
 }
 
 interface authRouteRouteChildren {
   authLoginRoute: typeof authLoginRoute
+  authInvitationsInvitationIdRoute: typeof authInvitationsInvitationIdRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
   authLoginRoute: authLoginRoute,
+  authInvitationsInvitationIdRoute: authInvitationsInvitationIdRoute,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(

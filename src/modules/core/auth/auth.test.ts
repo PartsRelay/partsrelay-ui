@@ -1,13 +1,22 @@
 import { type MutationOptions, MutationObserver, QueryClient } from '@tanstack/query-core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { authClient } from '@/modules/core/auth/auth.client'
+import { acceptError, invitationHeadline, invitationView } from '@/modules/core/auth/invitation'
+import { acceptInvitationMutation, invitationKeys } from '@/modules/core/auth/invitation.query'
 import { createMagicLinkForm, resendWait } from '@/modules/core/auth/magic-link'
 import { cancelOneTap, oneTapError, startOneTap } from '@/modules/core/auth/one-tap'
 import { redirectSignedIn, requireSession, sessionQuery } from '@/modules/core/auth/session.query'
-import { loginError, loginFlow, loginSearchSchema } from '@/modules/core/auth/sign-in'
+import {
+  invitationFlow,
+  loginError,
+  loginFlow,
+  loginSearchSchema,
+} from '@/modules/core/auth/sign-in'
 import { signOutMutation } from '@/modules/core/auth/sign-out.mutation'
 import { message } from '@/modules/core/shared/message'
-import { authError } from '@/modules/core/testing/fixtures'
+import { authError, axiosError, companyFixture, member } from '@/modules/core/testing/fixtures'
+import type { Workspace } from '@/modules/core/workspace/workspace'
+import { workspaceKeys } from '@/modules/core/workspace/workspace.query'
 
 const env = vi.hoisted(() => ({ VITE_GOOGLE_CLIENT_ID: 'client.apps.googleusercontent.com' }))
 
@@ -77,6 +86,27 @@ describe('google sign in', () => {
         additionalParams: undefined,
       },
     ])
+  })
+})
+
+describe('invitation sign in', () => {
+  it('comes back to the invitation with any sign in method', async () => {
+    const flow = invitationFlow('/invitations/12?error=access_denied&error_description=no')
+    await run(flow.google, undefined)
+    await run(flow.magicLink, 'luca@gmail.com')
+
+    expect(authClient.signIn.social).toHaveBeenCalledWith({
+      provider: 'google',
+      callbackURL: 'https://app.test/invitations/12',
+      errorCallbackURL: 'https://app.test/invitations/12',
+      additionalParams: { prompt: 'select_account' },
+    })
+    expect(authClient.signIn.magicLink).toHaveBeenCalledWith({
+      email: 'luca@gmail.com',
+      callbackURL: 'https://app.test/invitations/12',
+      errorCallbackURL: 'https://app.test/invitations/12',
+    })
+    expect(flow.afterSignIn).toBe('/invitations/12')
   })
 })
 
@@ -204,6 +234,128 @@ describe('session guard', () => {
       href: '/',
       notice: message('auth.notices.signedIn', { email: 'marco@ricambirossi.it' }),
     })
+  })
+})
+
+describe('invitation', () => {
+  const invited = {
+    organizationId: '7',
+    organizationName: 'Officina Ferri S.r.l.',
+    inviterEmail: 's.ferri@officinaferri.it',
+    role: 'viewer',
+    email: 'luca@gmail.com',
+    status: 'pending',
+    expiresAt: '2026-10-19T10:00:00Z',
+  }
+  const details = {
+    workspace: 'Officina Ferri S.r.l.',
+    inviter: 's.ferri@officinaferri.it',
+    role: 'viewer' as const,
+    roleLabel: message('roles.viewer'),
+    expiresAt: new Date('2026-10-19T10:00:00Z'),
+  }
+  const solo = { data: { id: '9', members: [member('1', 'owner', 'Luca Ferri')] }, error: null }
+  const view = (company: { data?: Pick<Workspace, 'id' | 'members'>; error: unknown } = solo) =>
+    invitationView({ invitation: invited, error: null, signedIn: true, company })
+  const failing = (error: unknown) =>
+    invitationView({ invitation: undefined, error, signedIn: true, company: solo })
+  const expired = { state: 'unavailable', reason: message('invitation.unavailable.expired') }
+
+  it('asks to sign in before loading the invitation', () => {
+    expect(
+      invitationView({ invitation: undefined, error: null, signedIn: false, company: solo })
+    ).toEqual({ state: 'signIn' })
+  })
+
+  it('asks for the invited account', () => {
+    expect(failing(authError(403, 'YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION'))).toEqual({
+      state: 'otherAccount',
+    })
+  })
+
+  it('explains why it cannot be used', () => {
+    expect(failing(authError(400))).toEqual(expired)
+    expect(failing(authError(400, 'INVITER_IS_NO_LONGER_A_MEMBER_OF_THE_ORGANIZATION'))).toEqual({
+      state: 'unavailable',
+      reason: message('errors.INVITER_IS_NO_LONGER_A_MEMBER_OF_THE_ORGANIZATION'),
+    })
+    expect(acceptError(authError(403, 'WORKSPACE_NOT_RELEASABLE'))).toEqual(
+      message('invitation.unavailable.companyNotEmpty')
+    )
+    expect(acceptError(authError(400, 'INVITATION_NOT_FOUND'))).toEqual(
+      message('errors.INVITATION_NOT_FOUND')
+    )
+  })
+
+  it('tells a failure apart from an expired invitation', () => {
+    expect(failing(axiosError())).toEqual({
+      state: 'failed',
+      reason: message('errors.NETWORK_ERROR'),
+    })
+    expect(failing(authError(500))).toEqual({ state: 'failed', reason: message('errors.UNKNOWN') })
+  })
+
+  it('joins only from a company nobody else would lose', () => {
+    expect(view({ data: { ...companyFixture(), id: '7' }, error: null })).toEqual({
+      state: 'unavailable',
+      reason: message('invitation.unavailable.alreadyMember', { workspace: details.workspace }),
+    })
+    expect(view({ data: companyFixture(), error: null })).toEqual({
+      state: 'unavailable',
+      reason: message('invitation.unavailable.companyNotEmpty'),
+    })
+    expect(view({ error: null })).toEqual({ state: 'loading' })
+    expect(view({ error: axiosError() })).toEqual({
+      state: 'failed',
+      reason: message('errors.NETWORK_ERROR'),
+    })
+    expect(view()).toEqual({ state: 'ready', details })
+  })
+
+  it('waits for the invitation to load', () => {
+    expect(
+      invitationView({
+        invitation: undefined,
+        error: null,
+        loading: true,
+        signedIn: false,
+        company: solo,
+      })
+    ).toEqual({ state: 'loading' })
+    expect(failing(null)).toEqual({ state: 'loading' })
+  })
+
+  it('names the inviter in the headline', () => {
+    expect(invitationHeadline(details)).toEqual(
+      message('invitation.headline', {
+        inviter: 's.ferri@officinaferri.it',
+        workspace: 'Officina Ferri S.r.l.',
+      })
+    )
+  })
+})
+
+describe('accepting', () => {
+  it('forgets the company left behind once the join succeeds', async () => {
+    const client = new QueryClient()
+    client.setQueryData(workspaceKeys.all, { ...companyFixture(), setup: 'pending' })
+    vi.mocked(authClient.organization.acceptInvitation).mockResolvedValue({} as never)
+
+    await new MutationObserver(client, acceptInvitationMutation('31', 'Officina Ferri')).mutate()
+
+    expect(client.getQueryData(workspaceKeys.all)).toBeUndefined()
+  })
+
+  it('checks the company again when the join is refused', async () => {
+    const client = new QueryClient()
+    client.setQueryData(invitationKeys.company, companyFixture())
+    vi.mocked(authClient.organization.acceptInvitation).mockRejectedValue(
+      authError(403, 'WORKSPACE_NOT_RELEASABLE')
+    )
+    const accept = acceptInvitationMutation('12', 'Officina Ferri S.r.l.')
+
+    await expect(new MutationObserver(client, accept).mutate()).rejects.toBeTruthy()
+    expect(client.getQueryState(invitationKeys.company)?.isInvalidated).toBe(true)
   })
 })
 

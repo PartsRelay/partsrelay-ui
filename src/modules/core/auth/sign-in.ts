@@ -75,6 +75,24 @@ export function loginFlow(next?: unknown): SignInFlow {
   }
 }
 
+function withoutSignInError(href: string) {
+  const url = new URL(href, window.location.origin)
+  url.searchParams.delete('error')
+  url.searchParams.delete('error_description')
+
+  return `${url.pathname}${url.search}${url.hash}`
+}
+
+export function invitationFlow(href: string): SignInFlow {
+  const back = withoutSignInError(href)
+
+  return {
+    google: signInMutation(back, back, true),
+    magicLink: magicLinkMutation(back, back),
+    afterSignIn: back,
+  }
+}
+
 export function loginError(error: string | undefined) {
   if (!error) return null
 

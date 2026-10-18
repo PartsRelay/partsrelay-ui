@@ -5,6 +5,15 @@
     "signIn": "Sign in",
     "signOut": "Sign out"
   },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "viewer": "Viewer"
+  },
+  "confirm": {
+    "cancel": "Cancel",
+    "typeToConfirm": "Type {{text}} to confirm"
+  },
   "errors": {
     "UNAUTHORIZED_ACCESS": "Your session has expired, sign in again.",
     "AUTHORIZATION_FAILURE": "You are not allowed to do this.",

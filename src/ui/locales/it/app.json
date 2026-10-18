@@ -5,6 +5,15 @@
     "signIn": "Accedi",
     "signOut": "Esci"
   },
+  "roles": {
+    "owner": "Proprietario",
+    "admin": "Amministratore",
+    "viewer": "Visualizzatore"
+  },
+  "confirm": {
+    "cancel": "Annulla",
+    "typeToConfirm": "Scrivi {{text}} per confermare"
+  },
   "errors": {
     "UNAUTHORIZED_ACCESS": "La sessione è scaduta, accedi di nuovo.",
     "AUTHORIZATION_FAILURE": "Non hai i permessi per farlo.",
