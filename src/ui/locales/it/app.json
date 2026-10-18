@@ -23,6 +23,9 @@
   "validation": {
     "tooLong": "Usa al massimo {{max}} caratteri."
   },
+  "notices": {
+    "copyFailed": "Copia non riuscita, seleziona il testo e copialo a mano."
+  },
   "errors": {
     "UNAUTHORIZED_ACCESS": "La sessione è scaduta, accedi di nuovo.",
     "AUTHORIZATION_FAILURE": "Non hai i permessi per farlo.",

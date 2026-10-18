@@ -1,6 +1,108 @@
 {
   "team": {
     "title": "Team",
-    "description": "Invite people, choose their role and hand over ownership."
+    "description": "Invite people, choose their role and hand over ownership.",
+    "summary": {
+      "members_one": "{{count}} member",
+      "members_other": "{{count}} members",
+      "invitations_one": "{{count}} pending invitation",
+      "invitations_other": "{{count}} pending invitations"
+    },
+    "members": {
+      "title": "Members",
+      "description": "Owner: company and team. Admin: contacts and viewers. Viewer: searches and contacts, without managing them.",
+      "columns": {
+        "member": "Member",
+        "role": "Role",
+        "actions": "Actions"
+      },
+      "you": "{{name}} (you)"
+    },
+    "actions": {
+      "transfer": "Transfer ownership",
+      "changeRole": "Change role",
+      "changeRoleOf": "Change role of {{name}}",
+      "remove": "Remove",
+      "removeMember": "Remove {{name}}",
+      "copyLink": "Copy link",
+      "copyLinkFor": "Copy the invitation link for {{email}}",
+      "resend": "Resend",
+      "resendTo": "Resend the invitation to {{email}}",
+      "revoke": "Revoke",
+      "revokeFor": "Revoke the invitation for {{email}}"
+    },
+    "changeRole": {
+      "title": "Change role of {{name}}",
+      "description": "Choose the access this person needs.",
+      "save": "Save role"
+    },
+    "transfer": {
+      "title": "Transfer ownership",
+      "description": "The new owner manages the company, its language and the team, and can delete the company. You become an Admin, and only the new owner can undo this.",
+      "nobody": "Nobody else is in the team yet. Invite someone first, then transfer ownership to them.",
+      "newOwner": "New owner",
+      "choose": "Choose a member",
+      "candidate": "{{name}} · {{role}}",
+      "action": "Transfer ownership to {{name}}"
+    },
+    "invitations": {
+      "title": "Pending invitations",
+      "description": "Each link works only for the invited email address and expires after 7 days.",
+      "columns": {
+        "invitation": "Email",
+        "role": "Role",
+        "sent": "Sent",
+        "actions": "Actions"
+      },
+      "expired": "Expired",
+      "ownerOnly": "Owner only",
+      "empty": "No pending invitations."
+    },
+    "invite": {
+      "title": "Invite someone",
+      "description": "They get an email with a link and sign in with Google or a link sent to the same address.",
+      "email": "Email",
+      "emailPlaceholder": "name@company.com",
+      "role": "Role",
+      "send": "Send invitation",
+      "errors": {
+        "email": "Enter a valid email address.",
+        "member": "This person is already in the team.",
+        "invited": "This person already has a pending invitation."
+      },
+      "hints": {
+        "admin": "Admins manage contacts and can invite or remove viewers.",
+        "viewer": "Viewers run searches and see contacts, without managing them.",
+        "adminInvitesViewers": "As an admin you can invite viewers."
+      }
+    },
+    "confirm": {
+      "email": "Email",
+      "role": "Role",
+      "sent": "Sent",
+      "remove": {
+        "title": "Remove {{name}}?",
+        "body": "{{name}} loses access to {{company}} and their account is deleted, together with the invitations they sent. Searches they ran stay with the company.",
+        "action": "Remove and delete account"
+      },
+      "revoke": {
+        "title": "Revoke the invitation for {{email}}?",
+        "body": "The invitation link stops working straight away. You can invite them again later.",
+        "action": "Revoke invitation"
+      }
+    },
+    "notices": {
+      "roleChanged": {
+        "owner": "{{name}} is now Owner.",
+        "admin": "{{name}} is now Admin.",
+        "viewer": "{{name}} is now Viewer."
+      },
+      "ownershipTransferred": "Ownership transferred to {{name}}. You're now an Admin.",
+      "memberRemoved": "{{name}} was removed and their account deleted.",
+      "invitationSent": "Invitation sent to {{email}}.",
+      "invitationResent": "Invitation sent again to {{email}}.",
+      "invitationRevoked": "Invitation revoked. The link no longer works.",
+      "linkCopied": "Invitation link copied."
+    }
   }
 }

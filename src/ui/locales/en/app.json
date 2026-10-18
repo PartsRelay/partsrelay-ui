@@ -23,6 +23,9 @@
   "validation": {
     "tooLong": "Use at most {{max}} characters."
   },
+  "notices": {
+    "copyFailed": "Copy failed, select the text and copy it by hand."
+  },
   "errors": {
     "UNAUTHORIZED_ACCESS": "Your session has expired, sign in again.",
     "AUTHORIZATION_FAILURE": "You are not allowed to do this.",
