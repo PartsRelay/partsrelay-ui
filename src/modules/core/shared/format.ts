@@ -41,6 +41,18 @@ export function formatWhen(value: Date | string, now: Date, locale?: string) {
   return message('format.dateAt', { date: day, time })
 }
 
+// The catalog has no prices yet, the core sends null
+export const NO_PRICE = '-'
+
+export function formatPrice(price: number | null, locale?: string) {
+  if (price === null) return NO_PRICE
+
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price)
+}
+
 // WhatsApp ids are the international number without the plus
 export function formatPhone(waId: string) {
   const phone = `+${waId}`

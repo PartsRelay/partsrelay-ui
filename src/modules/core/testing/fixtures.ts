@@ -1,5 +1,9 @@
 import { AxiosError, AxiosHeaders } from 'axios'
-import type { ContactObject, GetApiV1WorkspaceContacts200Metadata } from '@/core/api/models'
+import type {
+  ContactObject,
+  GetApiV1WorkspaceContacts200Metadata,
+  LookupObject,
+} from '@/core/api/models'
 import type { Invitation, Member, Workspace } from '@/modules/core/workspace/workspace'
 import { findMe } from '@/modules/core/workspace/workspace'
 
@@ -97,4 +101,48 @@ export function pageFixture<T>(data: T[], page = 1, perPage = 20, total = data.l
   }
 
   return { data, metadata }
+}
+
+export function lookupFixture(id: number, overrides: Partial<LookupObject> = {}): LookupObject {
+  return {
+    id,
+    plate: 'CA770NE',
+    vin: 'ZFA31200003456789',
+    nodeIds: ['g1'],
+    status: 'done',
+    source: 'web',
+    searcher: { type: 'user', id: 101, name: 'Marco Rossi' },
+    vehicleDescription: 'Fiat Panda 1.2',
+    categories: [
+      {
+        id: 'g1',
+        name: 'Filtro olio',
+        units: [
+          {
+            code: 'u1',
+            name: 'Filtro olio motore',
+            imageUrl: 'https://images.example/u1.jpg',
+            original: [
+              {
+                code: '03L115562',
+                name: 'Filtro olio',
+                price: null,
+                aftermarket: [
+                  {
+                    code: 'HU 7008 z',
+                    brand: 'MANN-FILTER',
+                    description: 'Filtro olio',
+                    price: null,
+                  },
+                  { code: 'F 026 407 157', brand: 'BOSCH', description: null, price: null },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    createdAt: '2026-10-12T09:59:30.000+00:00',
+    ...overrides,
+  }
 }
