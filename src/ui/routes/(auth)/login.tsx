@@ -1,13 +1,13 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { redirectSignedIn } from '@/modules/core/auth/session.query'
-import { loginError, loginFlow, loginSearchSchema } from '@/modules/core/auth/sign-in'
-import { AuthTitle } from '@/modules/ui/auth/auth-title'
-import { SignInOptions } from '@/modules/ui/auth/sign-in-options'
-import { Callout } from '@/modules/ui/shared/callout'
-import { notify } from '@/modules/ui/shared/notify'
-import { useT } from '@/modules/ui/shared/use-t'
-import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
+import { redirectSignedIn } from '@/modules/auth/core/session.query'
+import { loginError, loginFlow, loginSearchSchema } from '@/modules/auth/core/sign-in'
+import { AuthTitle } from '@/modules/auth/ui/auth-title'
+import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
+import { Callout } from '@/ui/components/callout'
+import { notify } from '@/ui/components/notify'
+import { useT } from '@/ui/components/use-t'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/card'
 
 export const Route = createFileRoute('/(auth)/login')({
   validateSearch: loginSearchSchema,

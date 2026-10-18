@@ -11,13 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
-import { Route as SetupRouteImport } from './routes/setup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
-import { Route as AppIndexRouteImport } from './routes/_app/index'
-import { Route as AppCompanyRouteImport } from './routes/_app/company'
-import { Route as AppProfileRouteImport } from './routes/_app/profile'
-import { Route as AppTeamRouteImport } from './routes/_app/team'
+import { Route as workspacesSetupRouteImport } from './routes/(workspaces)/setup'
 import { Route as authInvitationsInvitationIdRouteImport } from './routes/(auth)/invitations.$invitationId'
+import { Route as AppauthProfileRouteImport } from './routes/_app/(auth)/profile'
+import { Route as AppworkspacesIndexRouteImport } from './routes/_app/(workspaces)/index'
+import { Route as AppworkspacesCompanyRouteImport } from './routes/_app/(workspaces)/company'
+import { Route as AppworkspacesTeamRouteImport } from './routes/_app/(workspaces)/team'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -27,35 +27,15 @@ const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SetupRoute = SetupRouteImport.update({
-  id: '/setup',
-  path: '/setup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const authLoginRoute = authLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => authRouteRoute,
 } as any)
-const AppIndexRoute = AppIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppCompanyRoute = AppCompanyRouteImport.update({
-  id: '/company',
-  path: '/company',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppProfileRoute = AppProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppTeamRoute = AppTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => AppRouteRoute,
+const workspacesSetupRoute = workspacesSetupRouteImport.update({
+  id: '/(workspaces)/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const authInvitationsInvitationIdRoute =
   authInvitationsInvitationIdRouteImport.update({
@@ -63,73 +43,93 @@ const authInvitationsInvitationIdRoute =
     path: '/invitations/$invitationId',
     getParentRoute: () => authRouteRoute,
   } as any)
+const AppauthProfileRoute = AppauthProfileRouteImport.update({
+  id: '/(auth)/profile',
+  path: '/profile',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppworkspacesIndexRoute = AppworkspacesIndexRouteImport.update({
+  id: '/(workspaces)/',
+  path: '/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppworkspacesCompanyRoute = AppworkspacesCompanyRouteImport.update({
+  id: '/(workspaces)/company',
+  path: '/company',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppworkspacesTeamRoute = AppworkspacesTeamRouteImport.update({
+  id: '/(workspaces)/team',
+  path: '/team',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
-  '/setup': typeof SetupRoute
+  '/': typeof AppworkspacesIndexRoute
   '/login': typeof authLoginRoute
-  '/company': typeof AppCompanyRoute
-  '/profile': typeof AppProfileRoute
-  '/team': typeof AppTeamRoute
+  '/setup': typeof workspacesSetupRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
+  '/profile': typeof AppauthProfileRoute
+  '/company': typeof AppworkspacesCompanyRoute
+  '/team': typeof AppworkspacesTeamRoute
 }
 export interface FileRoutesByTo {
-  '/setup': typeof SetupRoute
   '/login': typeof authLoginRoute
-  '/company': typeof AppCompanyRoute
-  '/profile': typeof AppProfileRoute
-  '/team': typeof AppTeamRoute
-  '/': typeof AppIndexRoute
+  '/setup': typeof workspacesSetupRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
+  '/profile': typeof AppauthProfileRoute
+  '/company': typeof AppworkspacesCompanyRoute
+  '/team': typeof AppworkspacesTeamRoute
+  '/': typeof AppworkspacesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(auth)': typeof authRouteRouteWithChildren
   '/_app': typeof AppRouteRouteWithChildren
-  '/setup': typeof SetupRoute
   '/(auth)/login': typeof authLoginRoute
-  '/_app/company': typeof AppCompanyRoute
-  '/_app/profile': typeof AppProfileRoute
-  '/_app/team': typeof AppTeamRoute
-  '/_app/': typeof AppIndexRoute
+  '/(workspaces)/setup': typeof workspacesSetupRoute
   '/(auth)/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
+  '/_app/(auth)/profile': typeof AppauthProfileRoute
+  '/_app/(workspaces)/company': typeof AppworkspacesCompanyRoute
+  '/_app/(workspaces)/team': typeof AppworkspacesTeamRoute
+  '/_app/(workspaces)/': typeof AppworkspacesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/setup'
     | '/login'
-    | '/company'
-    | '/profile'
-    | '/team'
+    | '/setup'
     | '/invitations/$invitationId'
+    | '/profile'
+    | '/company'
+    | '/team'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/setup'
     | '/login'
-    | '/company'
+    | '/setup'
+    | '/invitations/$invitationId'
     | '/profile'
+    | '/company'
     | '/team'
     | '/'
-    | '/invitations/$invitationId'
   id:
     | '__root__'
     | '/(auth)'
     | '/_app'
-    | '/setup'
     | '/(auth)/login'
-    | '/_app/company'
-    | '/_app/profile'
-    | '/_app/team'
-    | '/_app/'
+    | '/(workspaces)/setup'
     | '/(auth)/invitations/$invitationId'
+    | '/_app/(auth)/profile'
+    | '/_app/(workspaces)/company'
+    | '/_app/(workspaces)/team'
+    | '/_app/(workspaces)/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   authRouteRoute: typeof authRouteRouteWithChildren
   AppRouteRoute: typeof AppRouteRouteWithChildren
-  SetupRoute: typeof SetupRoute
+  workspacesSetupRoute: typeof workspacesSetupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -148,13 +148,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/setup': {
-      id: '/setup'
-      path: '/setup'
-      fullPath: '/setup'
-      preLoaderRoute: typeof SetupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(auth)/login': {
       id: '/(auth)/login'
       path: '/login'
@@ -162,33 +155,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof authRouteRoute
     }
-    '/_app/': {
-      id: '/_app/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/_app/company': {
-      id: '/_app/company'
-      path: '/company'
-      fullPath: '/company'
-      preLoaderRoute: typeof AppCompanyRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/_app/profile': {
-      id: '/_app/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AppProfileRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/_app/team': {
-      id: '/_app/team'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof AppTeamRouteImport
-      parentRoute: typeof AppRouteRoute
+    '/(workspaces)/setup': {
+      id: '/(workspaces)/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof workspacesSetupRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(auth)/invitations/$invitationId': {
       id: '/(auth)/invitations/$invitationId'
@@ -196,6 +168,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/invitations/$invitationId'
       preLoaderRoute: typeof authInvitationsInvitationIdRouteImport
       parentRoute: typeof authRouteRoute
+    }
+    '/_app/(auth)/profile': {
+      id: '/_app/(auth)/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppauthProfileRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/(workspaces)/': {
+      id: '/_app/(workspaces)/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppworkspacesIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/(workspaces)/company': {
+      id: '/_app/(workspaces)/company'
+      path: '/company'
+      fullPath: '/company'
+      preLoaderRoute: typeof AppworkspacesCompanyRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/(workspaces)/team': {
+      id: '/_app/(workspaces)/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AppworkspacesTeamRouteImport
+      parentRoute: typeof AppRouteRoute
     }
   }
 }
@@ -215,17 +215,17 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 )
 
 interface AppRouteRouteChildren {
-  AppCompanyRoute: typeof AppCompanyRoute
-  AppProfileRoute: typeof AppProfileRoute
-  AppTeamRoute: typeof AppTeamRoute
-  AppIndexRoute: typeof AppIndexRoute
+  AppauthProfileRoute: typeof AppauthProfileRoute
+  AppworkspacesCompanyRoute: typeof AppworkspacesCompanyRoute
+  AppworkspacesTeamRoute: typeof AppworkspacesTeamRoute
+  AppworkspacesIndexRoute: typeof AppworkspacesIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
-  AppCompanyRoute: AppCompanyRoute,
-  AppProfileRoute: AppProfileRoute,
-  AppTeamRoute: AppTeamRoute,
-  AppIndexRoute: AppIndexRoute,
+  AppauthProfileRoute: AppauthProfileRoute,
+  AppworkspacesCompanyRoute: AppworkspacesCompanyRoute,
+  AppworkspacesTeamRoute: AppworkspacesTeamRoute,
+  AppworkspacesIndexRoute: AppworkspacesIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -235,7 +235,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   authRouteRoute: authRouteRouteWithChildren,
   AppRouteRoute: AppRouteRouteWithChildren,
-  SetupRoute: SetupRoute,
+  workspacesSetupRoute: workspacesSetupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

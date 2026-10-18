@@ -5,7 +5,7 @@
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "src/ui/styles/index.css",
+    "css": "src/index.css",
     "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
@@ -15,9 +15,9 @@
   "aliases": {
     "components": "@/ui/components",
     "utils": "@/ui/lib/utils",
-    "ui": "@/ui/components/ui",
+    "ui": "@/ui/components",
     "lib": "@/ui/lib",
-    "hooks": "@/ui/hooks"
+    "hooks": "@/ui/components"
   },
   "menuColor": "default",
   "menuAccent": "subtle",

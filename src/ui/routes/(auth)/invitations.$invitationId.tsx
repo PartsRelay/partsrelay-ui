@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useLocation } from '@tanstack/react-router'
-import { invitationView } from '@/modules/core/auth/invitation'
+import { invitationView } from '@/modules/auth/core/invitation'
 import {
   acceptInvitationMutation,
   currentCompanyQuery,
   invitationQuery,
-} from '@/modules/core/auth/invitation.query'
-import { loginError, signInErrorSearchSchema } from '@/modules/core/auth/sign-in'
-import { InvitationScreen } from '@/modules/ui/auth/invitation-screen'
-import { useSession } from '@/modules/ui/auth/use-session'
+} from '@/modules/auth/core/invitation.query'
+import { loginError, signInErrorSearchSchema } from '@/modules/auth/core/sign-in'
+import { InvitationScreen } from '@/modules/auth/ui/invitation-screen'
+import { useSession } from '@/modules/auth/ui/use-session'
 
 export const Route = createFileRoute('/(auth)/invitations/$invitationId')({
   validateSearch: signInErrorSearchSchema,

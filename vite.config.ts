@@ -12,7 +12,7 @@ const generated = [
   'public/mockServiceWorker.js',
 ]
 
-const reactImports = ['react', 'react-dom', '@tanstack/react-*', '@/ui/*', '@/modules/ui/*']
+const reactImports = ['react', 'react-dom', '@tanstack/react-*', '@/ui/*', '@/modules/*/ui/*']
 
 export default defineConfig({
   plugins: [
@@ -44,7 +44,7 @@ export default defineConfig({
     options: { typeAware: true, typeCheck: true },
     overrides: [
       {
-        files: ['src/core/**', 'src/modules/core/**'],
+        files: ['src/core/**', 'src/modules/*/core/**'],
         rules: {
           'no-restricted-imports': [
             'error',
