@@ -1,5 +1,6 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { requireSession } from '@/modules/core/auth/session.query'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { createFileRoute, Navigate, redirect } from '@tanstack/react-router'
+import { requireSession, sessionQuery } from '@/modules/core/auth/session.query'
 import { loadAccount } from '@/modules/core/workspace/account'
 import { SetupLayout } from '@/modules/ui/setup/setup-layout'
 import { WorkspaceForm } from '@/modules/ui/setup/workspace-form'
@@ -19,6 +20,9 @@ export const Route = createFileRoute('/setup')({
 
 function SetupPage() {
   const { session, workspace } = Route.useRouteContext()
+  const { data: current } = useSuspenseQuery(sessionQuery)
+
+  if (!current) return <Navigate to="/login" replace />
 
   return (
     <SetupLayout>

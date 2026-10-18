@@ -48,6 +48,17 @@ describe('errors', () => {
     ).toEqual(message('errors.AUTHORIZATION_FAILURE'))
   })
 
+  it('ends the session on a 401 without a code', () => {
+    const missing = (error: unknown) => ({ status: 401, statusText: 'Unauthorized', error })
+
+    expect(sessionEnded(missing({ message: 'User not found' }))).toBe(true)
+    expect(sessionEnded(missing({ message: 'Not authenticated' }))).toBe(true)
+    expect(sessionEnded(missing(''))).toBe(true)
+    expect(sessionEnded(axiosError(401))).toBe(true)
+    expect(sessionEnded(authError(400))).toBe(false)
+    expect(sessionEnded(new TypeError('Failed to fetch'))).toBe(false)
+  })
+
   it('keeps the session on a refused removal', () => {
     const refused = authError(401, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER')
 

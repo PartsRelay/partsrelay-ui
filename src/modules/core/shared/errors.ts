@@ -4,7 +4,7 @@ import { message } from '@/modules/core/shared/message'
 type ApiErrorBody = { error?: { code?: string } }
 type AuthError = { status?: number; error?: { code?: string } }
 
-// Other 401s, like removing a member, keep the session
+// Other coded 401s, like removing a member, keep the session
 const SESSION_CODES = ['UNAUTHORIZED', 'UNAUTHORIZED_ACCESS']
 
 function codeless(status: number | undefined) {
@@ -37,7 +37,10 @@ export function errorMessage(error: unknown) {
 }
 
 export function sessionEnded(error: unknown) {
-  return errorStatus(error) === 401 && SESSION_CODES.includes(errorCode(error))
+  const code = errorCode(error)
+
+  // Better Auth sends some missing sessions without a code
+  return errorStatus(error) === 401 && (SESSION_CODES.includes(code) || code === 'UNKNOWN')
 }
 
 export function errorNotice(error: unknown, signedIn: boolean) {
