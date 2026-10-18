@@ -1,8 +1,13 @@
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
-import en from '@/ui/locales/en.json'
-import it from '@/ui/locales/it.json'
+
+type Catalog = Record<string, Record<string, unknown>>
+
+const en: Catalog = import.meta.glob('@/ui/locales/en/*.json', { eager: true, import: 'default' })
+const it: Catalog = import.meta.glob('@/ui/locales/it/*.json', { eager: true, import: 'default' })
+
+const translation = (catalog: Catalog) => Object.assign({}, ...Object.values(catalog))
 
 i18n.on('languageChanged', (language) => document.documentElement.setAttribute('lang', language))
 
@@ -10,7 +15,7 @@ void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: { en: { translation: en }, it: { translation: it } },
+    resources: { en: { translation: translation(en) }, it: { translation: translation(it) } },
     supportedLngs: ['en', 'it'],
     fallbackLng: 'en',
     detection: {

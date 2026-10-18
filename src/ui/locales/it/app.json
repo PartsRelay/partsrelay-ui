@@ -5,11 +5,6 @@
     "signIn": "Accedi",
     "signOut": "Esci"
   },
-  "login": {
-    "title": "Accedi",
-    "description": "Usa il tuo account Google per continuare.",
-    "google": "Continua con Google"
-  },
   "errors": {
     "UNAUTHORIZED_ACCESS": "La sessione è scaduta, accedi di nuovo.",
     "AUTHORIZATION_FAILURE": "Non hai i permessi per questa operazione.",

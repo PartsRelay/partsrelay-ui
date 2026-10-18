@@ -5,11 +5,6 @@
     "signIn": "Sign in",
     "signOut": "Sign out"
   },
-  "login": {
-    "title": "Sign in",
-    "description": "Use your Google account to continue.",
-    "google": "Continue with Google"
-  },
   "errors": {
     "UNAUTHORIZED_ACCESS": "Your session has expired, sign in again.",
     "AUTHORIZATION_FAILURE": "You are not allowed to do this.",
