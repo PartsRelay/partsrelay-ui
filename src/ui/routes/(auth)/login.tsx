@@ -1,21 +1,43 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { GoogleLogin } from '@/modules/ui/auth/google-login'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { toast } from 'sonner'
+import { redirectSignedIn } from '@/modules/core/auth/session.query'
+import { loginError, loginFlow, loginSearchSchema } from '@/modules/core/auth/sign-in'
+import { AuthTitle } from '@/modules/ui/auth/auth-title'
+import { SignInOptions } from '@/modules/ui/auth/sign-in-options'
+import { Callout } from '@/modules/ui/shared/callout'
+import { useT } from '@/modules/ui/shared/use-t'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
+import { translate } from '@/ui/providers/i18n'
 
-export const Route = createFileRoute('/(auth)/login')({ component: LoginPage })
+export const Route = createFileRoute('/(auth)/login')({
+  validateSearch: loginSearchSchema,
+  beforeLoad: async ({ context, search }) => {
+    const signedIn = await redirectSignedIn(context.queryClient, search)
+    if (!signedIn) return
+
+    const { notice, href } = signedIn
+    if (notice) toast.success(translate(notice), { id: 'signed-in' })
+    throw redirect({ href })
+  },
+  component: LoginPage,
+})
 
 function LoginPage() {
   const { t } = useTranslation()
+  const translateMessage = useT()
+  const { next, error } = Route.useSearch()
+  const failure = loginError(error)
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('login.title')}</CardTitle>
+        <AuthTitle>{t('login.title')}</AuthTitle>
         <CardDescription>{t('login.description')}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <GoogleLogin />
+      <CardContent className="grid gap-6">
+        {failure && <Callout tone="danger">{translateMessage(failure)}</Callout>}
+        <SignInOptions flow={loginFlow(next)} />
       </CardContent>
     </Card>
   )

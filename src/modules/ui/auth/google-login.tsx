@@ -1,23 +1,17 @@
+import { type UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { authClient } from '@/modules/core/auth/auth.client'
 import { Button } from '@/ui/components/ui/button'
+import { Spinner } from '@/ui/components/ui/spinner'
 
-export function GoogleLogin() {
+type GoogleLoginProps = { signIn: UseMutationOptions<unknown, Error, void> }
+
+export function GoogleLogin({ signIn }: GoogleLoginProps) {
   const { t } = useTranslation()
-  const { origin } = window.location
+  const mutation = useMutation(signIn)
 
   return (
-    <Button
-      size="lg"
-      className="w-full"
-      onClick={() =>
-        void authClient.signIn.social({
-          provider: 'google',
-          callbackURL: new URL('/', origin).href,
-          errorCallbackURL: new URL('/login', origin).href,
-        })
-      }
-    >
+    <Button className="w-full" disabled={mutation.isPending} onClick={() => mutation.mutate()}>
+      {mutation.isPending && <Spinner data-icon="inline-start" />}
       {t('login.google')}
     </Button>
   )

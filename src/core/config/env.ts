@@ -6,6 +6,7 @@ export const env = createEnv({
   client: {
     VITE_API_URL: z.url().default(''),
     VITE_API_MOCKS: z.enum(['true', 'false']).default('true'),
+    VITE_GOOGLE_CLIENT_ID: z.string().optional(),
   },
   runtimeEnv: import.meta.env,
   emptyStringAsUndefined: true,

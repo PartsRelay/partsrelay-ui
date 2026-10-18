@@ -26,6 +26,7 @@ export const authMocks = [
 
     return ok({ url: (await request.json()).callbackURL, redirect: true })
   }),
+  http.post('*/api/auth/sign-in/magic-link', () => ok({ status: true })),
   http.post('*/api/auth/sign-out', () => {
     mockSession.end()
 
