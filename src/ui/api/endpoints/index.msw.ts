@@ -1,6 +1,4 @@
 export { getCatalogNodesMock } from './catalog-nodes/catalog-nodes.msw'
-export { getInvitationsMock } from './invitations/invitations.msw'
+export { getContactsMock } from './contacts/contacts.msw'
 export { getLookupsMock } from './lookups/lookups.msw'
-export { getMembersMock } from './members/members.msw'
-export { getSessionsMock } from './sessions/sessions.msw'
-export { getWorkspacesMock } from './workspaces/workspaces.msw'
+export { getWorkspaceLookupsMock } from './workspace-lookups/workspace-lookups.msw'
