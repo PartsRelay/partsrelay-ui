@@ -1,13 +1,24 @@
 import { useTranslation } from 'react-i18next'
-import { env } from '@/core/config/env'
+import { authClient } from '@/modules/core/auth/auth.client'
 import { Button } from '@/ui/components/ui/button'
 
 export function GoogleLogin() {
   const { t } = useTranslation()
+  const { origin } = window.location
 
   return (
-    <Button asChild size="lg" className="w-full">
-      <a href={`${env.VITE_API_URL}/api/v1/auth/google/redirect`}>{t('login.google')}</a>
+    <Button
+      size="lg"
+      className="w-full"
+      onClick={() =>
+        void authClient.signIn.social({
+          provider: 'google',
+          callbackURL: new URL('/', origin).href,
+          errorCallbackURL: new URL('/login', origin).href,
+        })
+      }
+    >
+      {t('login.google')}
     </Button>
   )
 }
