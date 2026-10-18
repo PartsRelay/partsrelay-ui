@@ -9,24 +9,47 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppCompanyRouteImport } from './routes/_app/company'
+import { Route as AppProfileRouteImport } from './routes/_app/profile'
+import { Route as AppTeamRouteImport } from './routes/_app/team'
 import { Route as authInvitationsInvitationIdRouteImport } from './routes/(auth)/invitations.$invitationId'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => authRouteRoute,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppCompanyRoute = AppCompanyRouteImport.update({
+  id: '/company',
+  path: '/company',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppTeamRoute = AppTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const authInvitationsInvitationIdRoute =
   authInvitationsInvitationIdRouteImport.update({
@@ -36,54 +59,80 @@ const authInvitationsInvitationIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppIndexRoute
   '/login': typeof authLoginRoute
+  '/company': typeof AppCompanyRoute
+  '/profile': typeof AppProfileRoute
+  '/team': typeof AppTeamRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/login': typeof authLoginRoute
+  '/company': typeof AppCompanyRoute
+  '/profile': typeof AppProfileRoute
+  '/team': typeof AppTeamRoute
+  '/': typeof AppIndexRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
+  '/_app': typeof AppRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
+  '/_app/company': typeof AppCompanyRoute
+  '/_app/profile': typeof AppProfileRoute
+  '/_app/team': typeof AppTeamRoute
+  '/_app/': typeof AppIndexRoute
   '/(auth)/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/invitations/$invitationId'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/company'
+    | '/profile'
+    | '/team'
+    | '/invitations/$invitationId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/invitations/$invitationId'
+  to:
+    | '/login'
+    | '/company'
+    | '/profile'
+    | '/team'
+    | '/'
+    | '/invitations/$invitationId'
   id:
     | '__root__'
-    | '/'
     | '/(auth)'
+    | '/_app'
     | '/(auth)/login'
+    | '/_app/company'
+    | '/_app/profile'
+    | '/_app/team'
+    | '/_app/'
     | '/(auth)/invitations/$invitationId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
+  AppRouteRoute: typeof AppRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(auth)': {
       id: '/(auth)'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof authRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/login': {
@@ -92,6 +141,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof authRouteRoute
+    }
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/company': {
+      id: '/_app/company'
+      path: '/company'
+      fullPath: '/company'
+      preLoaderRoute: typeof AppCompanyRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/profile': {
+      id: '/_app/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/team': {
+      id: '/_app/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AppTeamRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/(auth)/invitations/$invitationId': {
       id: '/(auth)/invitations/$invitationId'
@@ -117,9 +194,27 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
+interface AppRouteRouteChildren {
+  AppCompanyRoute: typeof AppCompanyRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppTeamRoute: typeof AppTeamRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppCompanyRoute: AppCompanyRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppTeamRoute: AppTeamRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
+  AppRouteRoute: AppRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

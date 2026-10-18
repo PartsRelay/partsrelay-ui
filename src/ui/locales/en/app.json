@@ -1,9 +1,15 @@
 {
-  "home": {
-    "signedIn": "Signed in as {{email}}",
-    "signedOut": "You are signed out.",
-    "signIn": "Sign in",
-    "signOut": "Sign out"
+  "app": {
+    "name": "Parts Relay",
+    "goHome": "Back to home",
+    "error": {
+      "title": "Couldn't load the page",
+      "retry": "Try again"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "description": "The address may be wrong, or the page no longer exists."
+    }
   },
   "roles": {
     "owner": "Owner",

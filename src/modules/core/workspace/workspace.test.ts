@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vite-plus/test'
+import { message } from '@/modules/core/shared/message'
 import { companyFixture, meIn } from '@/modules/core/testing/fixtures'
 import { preferredLocale, toLocale } from '@/modules/core/workspace/locale'
+import {
+  breadcrumbs,
+  canOpen,
+  homePath,
+  navigation,
+  ownerOf,
+  pageAt,
+} from '@/modules/core/workspace/navigation'
 import { canManageRole, permissionsFor } from '@/modules/core/workspace/permissions'
 import { type FullOrganization, needsSetup, toWorkspace } from '@/modules/core/workspace/workspace'
 
@@ -40,6 +49,60 @@ describe('permissions', () => {
     expect(canManageRole('admin', 'viewer')).toBe(true)
     expect(canManageRole('admin', 'admin')).toBe(false)
     expect(canManageRole('viewer', 'viewer')).toBe(false)
+  })
+})
+
+describe('navigation', () => {
+  const permissionsOf = (userId: string) => meIn(companyFixture(), userId).permissions
+
+  it('lists the sections a role can open', () => {
+    const sectionsOf = (userId: string) =>
+      navigation(permissionsOf(userId), null).map((item) => item.page)
+
+    expect(sectionsOf('101')).toEqual(['team', 'company'])
+    expect(sectionsOf('102')).toEqual(['team'])
+    expect(sectionsOf('103')).toEqual([])
+  })
+
+  it('links, labels and marks the current section', () => {
+    expect(navigation(permissionsOf('101'), 'company')).toEqual([
+      { page: 'team', path: '/team', label: message('nav.team'), active: false },
+      { page: 'company', path: '/company', label: message('nav.company'), active: true },
+    ])
+  })
+
+  it('reads the page from the path', () => {
+    expect(pageAt('/team')).toBe('team')
+    expect(pageAt('/company/')).toBe('company')
+    expect(pageAt('/profile')).toBe('profile')
+    expect(pageAt('/teams')).toBeNull()
+    expect(pageAt('/')).toBeNull()
+  })
+
+  it('opens team and company only with the permission', () => {
+    expect(canOpen('team', permissionsOf('102'))).toBe(true)
+    expect(canOpen('team', permissionsOf('103'))).toBe(false)
+    expect(canOpen('company', permissionsOf('102'))).toBe(false)
+    expect(canOpen('company', permissionsOf('101'))).toBe(true)
+    expect(canOpen('profile', permissionsOf('103'))).toBe(true)
+    expect(canOpen(null, permissionsOf('103'))).toBe(true)
+  })
+
+  it('starts managers on the team and viewers on their profile', () => {
+    expect(homePath(permissionsOf('101'))).toBe('/team')
+    expect(homePath(permissionsOf('102'))).toBe('/team')
+    expect(homePath(permissionsOf('103'))).toBe('/profile')
+  })
+
+  it('builds the breadcrumb of every page', () => {
+    expect(breadcrumbs('team')).toEqual([message('crumbs.workspace'), message('crumbs.team')])
+    expect(breadcrumbs('company')).toEqual([message('crumbs.workspace'), message('crumbs.company')])
+    expect(breadcrumbs('profile')).toEqual([message('crumbs.account'), message('crumbs.profile')])
+  })
+
+  it('finds the owner', () => {
+    expect(ownerOf(companyFixture())?.name).toBe('Marco Rossi')
+    expect(ownerOf({ ...companyFixture(), members: [] })).toBeNull()
   })
 })
 

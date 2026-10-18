@@ -1,8 +1,31 @@
 {
   "nav": {
+    "team": "Team",
+    "company": "Azienda",
+    "sections": "Area di lavoro",
     "menu": "Menu",
     "menuDescription": "Pagine di Parts Relay.",
     "toggle": "Mostra o nascondi il menu",
     "breadcrumb": "Percorso"
+  },
+  "crumbs": {
+    "workspace": "Area di lavoro",
+    "account": "Account",
+    "team": "Team",
+    "company": "Azienda",
+    "profile": "Profilo"
+  },
+  "shell": {
+    "user": {
+      "menu": "Menu dell'account",
+      "profile": "Profilo",
+      "signOut": "Esci"
+    },
+    "accessDenied": {
+      "title": "Non hai accesso a questa pagina.",
+      "askOwner": "Chiedi aiuto a {{owner}}, il proprietario della tua azienda.",
+      "askAnyOwner": "Chiedi aiuto al proprietario della tua azienda.",
+      "back": "Torna alla home"
+    }
   }
 }
