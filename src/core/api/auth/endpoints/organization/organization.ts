@@ -617,7 +617,7 @@ export const getFullOrganization = (
 ) => {
 
 
-      return http<FullOrganization | null>(
+      return http<FullOrganization>(
       {url: `/api/auth/organization/get-full-organization`, method: 'GET', signal
     },
       options);

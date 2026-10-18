@@ -1,20 +1,26 @@
 import { MutationObserver, QueryClient } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { authClient } from '@/modules/auth/core/auth.client'
+import { updateUser } from '@/core/api/auth/endpoints/default/default'
+import { postOrganizationLeave } from '@/core/api/auth/endpoints/organization/organization'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { createUserNameForm, leaveCompanyConfirm, profileView } from '@/modules/auth/core/profile'
 import { leaveCompanyMutation, updateNameMutation } from '@/modules/auth/core/profile.mutation'
 import { errorMessage } from '@/core/errors'
 import { message } from '@/core/message'
 import { resolveNotice } from '@/core/notice'
-import { authError, companyFixture, meIn } from '@/core/testing/fixtures'
-import { workspaceKeys } from '@/modules/workspaces/core/workspace.query'
+import { authError, companyFixture, meIn, organizationFixture } from '@/core/testing/fixtures'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
-vi.mock('@/modules/auth/core/auth.client', () => ({
-  authClient: { getSession: vi.fn(), updateUser: vi.fn(), organization: { leave: vi.fn() } },
+vi.mock('@/core/api/auth/endpoints/default/default', async (original) => ({
+  ...(await original()),
+  updateUser: vi.fn(),
+}))
+vi.mock('@/core/api/auth/endpoints/organization/organization', async (original) => ({
+  ...(await original()),
+  postOrganizationLeave: vi.fn(),
 }))
 
-const leave = vi.mocked(authClient.organization.leave)
+const leave = vi.mocked(postOrganizationLeave)
 
 beforeEach(() => vi.resetAllMocks())
 
@@ -62,29 +68,29 @@ describe('profile', () => {
 describe('update name', () => {
   it('saves through Better Auth and refreshes the session and the team', async () => {
     const client = new QueryClient()
-    client.setQueryData(sessionQuery.queryKey, { user: { id: '103', name: '' } })
-    client.setQueryData(workspaceKeys.all, companyFixture())
-    vi.mocked(authClient.updateUser).mockResolvedValue({ status: true } as never)
+    client.setQueryData(sessionQuery.queryKey, { user: { id: '103', name: '' } } as never)
+    client.setQueryData(workspaceKey, organizationFixture())
+    vi.mocked(updateUser).mockResolvedValue({ status: true } as never)
 
     await new MutationObserver(client, updateNameMutation).mutate('Luca Ferri')
 
-    expect(authClient.updateUser).toHaveBeenCalledWith({ name: 'Luca Ferri' })
+    expect(updateUser).toHaveBeenCalledWith({ name: 'Luca Ferri' })
     expect(client.getQueryState(sessionQuery.queryKey)?.isInvalidated).toBe(true)
-    expect(client.getQueryState(workspaceKeys.all)?.isInvalidated).toBe(true)
+    expect(client.getQueryState(workspaceKey)?.isInvalidated).toBe(true)
   })
 })
 
 describe('leave company', () => {
   it('ends the session once the core deletes the account', async () => {
     const client = new QueryClient()
-    client.setQueryData(workspaceKeys.all, companyFixture())
+    client.setQueryData(workspaceKey, organizationFixture())
     leave.mockResolvedValue({} as never)
     const options = leaveCompanyMutation(companyFixture())
 
     await new MutationObserver(client, options).mutate()
 
     expect(leave).toHaveBeenCalledWith({ organizationId: '1' })
-    expect(client.getQueryData(workspaceKeys.all)).toBeUndefined()
+    expect(client.getQueryData(workspaceKey)).toBeUndefined()
     expect(client.getQueryData(sessionQuery.queryKey)).toBeNull()
     expect(resolveNotice(options.meta, undefined, undefined)).toEqual(
       message('profile.notices.left', { company: 'Ricambi Rossi S.r.l.' })
@@ -93,7 +99,7 @@ describe('leave company', () => {
 
   it('keeps the owner signed in when the core refuses', async () => {
     const client = new QueryClient()
-    client.setQueryData(workspaceKeys.all, companyFixture())
+    client.setQueryData(workspaceKey, organizationFixture())
     const refused = authError(400, 'YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER')
     leave.mockRejectedValue(refused)
 
@@ -101,7 +107,7 @@ describe('leave company', () => {
       new MutationObserver(client, leaveCompanyMutation(companyFixture())).mutate()
     ).rejects.toBe(refused)
 
-    expect(client.getQueryData(workspaceKeys.all)).toBeDefined()
+    expect(client.getQueryData(workspaceKey)).toBeDefined()
     expect(errorMessage(refused)).toEqual(
       message('errors.YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER')
     )

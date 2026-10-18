@@ -1,8 +1,4 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { homePath } from '@/modules/workspaces/core/navigation'
+import { createFileRoute } from '@tanstack/react-router'
+import { redirectHome } from '@/modules/workspaces/ui/app-layout'
 
-export const Route = createFileRoute('/_app/(workspaces)/')({
-  beforeLoad: ({ context }) => {
-    throw redirect({ to: homePath(context.me.permissions) })
-  },
-})
+export const Route = createFileRoute('/_app/(workspaces)/')({ beforeLoad: redirectHome })

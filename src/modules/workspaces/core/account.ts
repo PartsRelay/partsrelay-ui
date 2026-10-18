@@ -1,8 +1,8 @@
 import { hashKey, type QueryClient } from '@tanstack/query-core'
 import { type Session, sessionQuery } from '@/modules/auth/core/session.query'
 import type { Locale } from '@/modules/workspaces/core/locale'
-import { findMe, type Workspace } from '@/modules/workspaces/core/workspace'
-import { workspaceKeys, workspaceQuery } from '@/modules/workspaces/core/workspace.query'
+import { findMe, toWorkspace, type Workspace } from '@/modules/workspaces/core/workspace'
+import { workspaceKey, workspaceQuery } from '@/modules/workspaces/core/workspace.query'
 
 function accountIn(workspace: Workspace, userId: string) {
   const me = findMe(workspace, userId)
@@ -13,8 +13,8 @@ function accountIn(workspace: Workspace, userId: string) {
 export async function loadAccount(client: QueryClient, userId: string) {
   const cached = await client.ensureQueryData({ ...workspaceQuery, revalidateIfStale: true })
   const account =
-    accountIn(cached, userId) ??
-    accountIn(await client.fetchQuery({ ...workspaceQuery, staleTime: 0 }), userId)
+    accountIn(toWorkspace(cached), userId) ??
+    accountIn(toWorkspace(await client.fetchQuery({ ...workspaceQuery, staleTime: 0 })), userId)
   if (!account) throw new Error('Missing membership')
 
   return account
@@ -36,7 +36,8 @@ export function watchAccount(client: QueryClient, onChange: () => void) {
 
 export function companyLocale(client: QueryClient): Locale | null {
   const session = client.getQueryData<Session>(sessionQuery.queryKey)
-  const workspace = client.getQueryData<Workspace>(workspaceKeys.all)
+  const organization = client.getQueryData(workspaceKey)
+  const workspace = organization && toWorkspace(organization)
   // A pending setup keeps the browser language
   if (!session || !workspace || workspace.setup === 'pending') return null
 
@@ -44,7 +45,7 @@ export function companyLocale(client: QueryClient): Locale | null {
 }
 
 export function watchCompanyLocale(client: QueryClient, onChange: (locale: Locale | null) => void) {
-  const watched = [hashKey(sessionQuery.queryKey), hashKey(workspaceKeys.all)]
+  const watched = [hashKey(sessionQuery.queryKey), hashKey(workspaceKey)]
   let current = companyLocale(client)
 
   return client.getQueryCache().subscribe(({ query }) => {

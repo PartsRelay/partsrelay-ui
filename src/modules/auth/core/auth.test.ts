@@ -1,8 +1,11 @@
 import { type MutationOptions, MutationObserver, QueryClient } from '@tanstack/query-core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { authClient } from '@/modules/auth/core/auth.client'
+import { signOut, socialSignIn } from '@/core/api/auth/endpoints/default/default'
+import { signInWithMagicLink } from '@/core/api/auth/endpoints/magic-link/magic-link'
+import { postOneTapCallback } from '@/core/api/auth/endpoints/one-tap/one-tap'
+import { postOrganizationAcceptInvitation } from '@/core/api/auth/endpoints/organization/organization'
 import { acceptError, invitationHeadline, invitationView } from '@/modules/auth/core/invitation'
-import { acceptInvitationMutation, invitationKeys } from '@/modules/auth/core/invitation.query'
+import { acceptInvitationMutation, currentCompanyKey } from '@/modules/auth/core/invitation.query'
 import { createMagicLinkForm, resendWait } from '@/modules/auth/core/magic-link'
 import { cancelOneTap, oneTapError, startOneTap } from '@/modules/auth/core/one-tap'
 import { redirectSignedIn, requireSession, sessionQuery } from '@/modules/auth/core/session.query'
@@ -14,27 +17,43 @@ import {
 } from '@/modules/auth/core/sign-in'
 import { signOutMutation } from '@/modules/auth/core/sign-out.mutation'
 import { message } from '@/core/message'
-import { authError, axiosError, companyFixture, member } from '@/core/testing/fixtures'
+import {
+  authError,
+  axiosError,
+  companyFixture,
+  member,
+  organizationFixture,
+} from '@/core/testing/fixtures'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
-import { workspaceKeys } from '@/modules/workspaces/core/workspace.query'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
 const env = vi.hoisted(() => ({ VITE_GOOGLE_CLIENT_ID: 'client.apps.googleusercontent.com' }))
 
 vi.mock('@/env', () => ({ env }))
 
-vi.mock('@/modules/auth/core/auth.client', () => ({
-  authClient: {
-    getSession: vi.fn(),
-    signOut: vi.fn(),
-    oneTap: vi.fn(),
-    signIn: { social: vi.fn(), magicLink: vi.fn() },
-    organization: { acceptInvitation: vi.fn() },
-  },
+vi.mock('@/core/api/auth/endpoints/default/default', async (original) => ({
+  ...(await original()),
+  signOut: vi.fn(),
+  socialSignIn: vi.fn(),
 }))
+vi.mock('@/core/api/auth/endpoints/magic-link/magic-link', () => ({
+  signInWithMagicLink: vi.fn(),
+}))
+vi.mock('@/core/api/auth/endpoints/one-tap/one-tap', () => ({ postOneTapCallback: vi.fn() }))
+vi.mock('@/core/api/auth/endpoints/organization/organization', async (original) => ({
+  ...(await original()),
+  postOrganizationAcceptInvitation: vi.fn(),
+}))
+
+const location = { origin: 'https://app.test', assign: vi.fn() }
 
 beforeEach(() => {
   vi.resetAllMocks()
-  vi.stubGlobal('window', { location: { origin: 'https://app.test' } })
+  vi.mocked(socialSignIn).mockResolvedValue({
+    url: 'https://accounts.google.com/o',
+    redirect: true,
+  })
+  vi.stubGlobal('window', { location })
 })
 
 afterEach(() => vi.unstubAllGlobals())
@@ -72,20 +91,23 @@ describe('google sign in', () => {
     await run(loginFlow('/team').google, undefined)
     await run(loginFlow('//evil.com').google, undefined)
 
-    expect(vi.mocked(authClient.signIn.social).mock.calls.map(([body]) => body)).toEqual([
+    expect(vi.mocked(socialSignIn).mock.calls.map(([body]) => body)).toEqual([
       {
         provider: 'google',
         callbackURL: 'https://app.test/login?next=%2Fteam&signedIn=true',
         errorCallbackURL: 'https://app.test/login?next=%2Fteam',
+        disableRedirect: true,
         additionalParams: undefined,
       },
       {
         provider: 'google',
         callbackURL: 'https://app.test/login?signedIn=true',
         errorCallbackURL: 'https://app.test/login',
+        disableRedirect: true,
         additionalParams: undefined,
       },
     ])
+    expect(location.assign).toHaveBeenCalledWith('https://accounts.google.com/o')
   })
 })
 
@@ -95,13 +117,14 @@ describe('invitation sign in', () => {
     await run(flow.google, undefined)
     await run(flow.magicLink, 'luca@gmail.com')
 
-    expect(authClient.signIn.social).toHaveBeenCalledWith({
+    expect(socialSignIn).toHaveBeenCalledWith({
       provider: 'google',
       callbackURL: 'https://app.test/invitations/12',
       errorCallbackURL: 'https://app.test/invitations/12',
+      disableRedirect: true,
       additionalParams: { prompt: 'select_account' },
     })
-    expect(authClient.signIn.magicLink).toHaveBeenCalledWith({
+    expect(signInWithMagicLink).toHaveBeenCalledWith({
       email: 'luca@gmail.com',
       callbackURL: 'https://app.test/invitations/12',
       errorCallbackURL: 'https://app.test/invitations/12',
@@ -115,7 +138,7 @@ describe('magic link', () => {
     const flow = loginFlow('/team')
     await run(flow.magicLink, 'marco@ricambirossi.it')
 
-    expect(authClient.signIn.magicLink).toHaveBeenCalledWith({
+    expect(signInWithMagicLink).toHaveBeenCalledWith({
       email: 'marco@ricambirossi.it',
       callbackURL: 'https://app.test/login?next=%2Fteam&signedIn=true',
       errorCallbackURL: 'https://app.test/login?next=%2Fteam',
@@ -160,50 +183,76 @@ describe('magic link', () => {
 })
 
 describe('one tap', () => {
-  const oneTap = vi.mocked(authClient.oneTap)
+  const callback = vi.mocked(postOneTapCallback)
 
-  it('reports the session without leaving the page', async () => {
-    oneTap.mockImplementation(async (options) => {
-      await options?.fetchOptions?.onSuccess?.({} as never)
-    })
+  function google() {
+    const identity = {
+      initialize: vi.fn(),
+      prompt: vi.fn(() => {
+        identity.initialize.mock.calls[0]![0].callback({ credential: 'google-id-token' })
+      }),
+      cancel: vi.fn(),
+      disableAutoSelect: vi.fn(),
+    }
+    const script = {
+      addEventListener: (type: string, done: () => void) => type === 'load' && done(),
+    }
+    vi.stubGlobal('document', { createElement: () => script, head: { append: vi.fn() } })
+    vi.stubGlobal('window', { location, google: { accounts: { id: identity } } })
+
+    return identity
+  }
+
+  it('sends the Google credential to the core and reports the session', async () => {
+    const identity = google()
+    callback.mockResolvedValue({ token: 't', user: {} } as never)
     const onSuccess = vi.fn()
     const onError = vi.fn()
 
-    startOneTap({ onSuccess, onError })
+    await startOneTap({ onSuccess, onError })
 
     await vi.waitFor(() => expect(onSuccess).toHaveBeenCalledOnce())
+    expect(callback).toHaveBeenCalledWith({ idToken: 'google-id-token' })
+    expect(identity.initialize.mock.calls[0]![0]).toMatchObject({
+      client_id: 'client.apps.googleusercontent.com',
+      auto_select: false,
+    })
     expect(onError).not.toHaveBeenCalled()
-    expect(oneTap.mock.calls[0]![0]).not.toHaveProperty('callbackURL')
   })
 
-  it('reports a refused account', async () => {
+  it('reports a refused account or an unreachable core', async () => {
+    google()
     const refused = authError(403, 'EMAIL_NOT_VERIFIED')
-    oneTap.mockRejectedValue(refused)
+    callback.mockRejectedValue(refused)
     const onError = vi.fn()
 
-    startOneTap({ onSuccess: vi.fn(), onError })
+    await startOneTap({ onSuccess: vi.fn(), onError })
 
     await vi.waitFor(() => expect(onError).toHaveBeenCalledWith(refused))
     expect(oneTapError(refused)).toEqual(message('errors.EMAIL_NOT_VERIFIED'))
     expect(oneTapError(authError(400))).toEqual(message('errors.AUTH_GOOGLE_FAILED'))
-    expect(oneTapError(new Error('Failed to load Google Identity Services script'))).toBeNull()
+    expect(oneTapError(axiosError())).toEqual(message('errors.NETWORK_ERROR'))
+    expect(oneTapError(new Error('Google Identity Services did not load'))).toBeNull()
   })
 
-  it('stays off without a Google client id', () => {
+  it('stays off without a Google client id', async () => {
+    const identity = google()
     env.VITE_GOOGLE_CLIENT_ID = ''
-    startOneTap({ onSuccess: vi.fn(), onError: vi.fn() })
+    await startOneTap({ onSuccess: vi.fn(), onError: vi.fn() })
     env.VITE_GOOGLE_CLIENT_ID = 'client.apps.googleusercontent.com'
 
-    expect(oneTap).not.toHaveBeenCalled()
+    expect(identity.initialize).not.toHaveBeenCalled()
   })
 
-  it('closes the prompt', () => {
-    const cancel = vi.fn()
-    vi.stubGlobal('window', { google: { accounts: { id: { cancel } } } })
+  it('closes the prompt and stops automatic sign in after signing out', () => {
+    const identity = google()
 
     cancelOneTap()
+    expect(identity.cancel).toHaveBeenCalledOnce()
+    expect(identity.disableAutoSelect).not.toHaveBeenCalled()
 
-    expect(cancel).toHaveBeenCalledOnce()
+    cancelOneTap({ signedOut: true })
+    expect(identity.disableAutoSelect).toHaveBeenCalledOnce()
   })
 })
 
@@ -338,36 +387,39 @@ describe('invitation', () => {
 describe('accepting', () => {
   it('forgets the company left behind once the join succeeds', async () => {
     const client = new QueryClient()
-    client.setQueryData(workspaceKeys.all, { ...companyFixture(), setup: 'pending' })
-    vi.mocked(authClient.organization.acceptInvitation).mockResolvedValue({} as never)
+    client.setQueryData(workspaceKey, {
+      ...organizationFixture(),
+      metadata: JSON.stringify({ setup: 'pending' }),
+    })
+    vi.mocked(postOrganizationAcceptInvitation).mockResolvedValue({} as never)
 
     await new MutationObserver(client, acceptInvitationMutation('31', 'Officina Ferri')).mutate()
 
-    expect(client.getQueryData(workspaceKeys.all)).toBeUndefined()
+    expect(client.getQueryData(workspaceKey)).toBeUndefined()
   })
 
   it('checks the company again when the join is refused', async () => {
     const client = new QueryClient()
-    client.setQueryData(invitationKeys.company, companyFixture())
-    vi.mocked(authClient.organization.acceptInvitation).mockRejectedValue(
+    client.setQueryData(currentCompanyKey, organizationFixture())
+    vi.mocked(postOrganizationAcceptInvitation).mockRejectedValue(
       authError(403, 'WORKSPACE_NOT_RELEASABLE')
     )
     const accept = acceptInvitationMutation('12', 'Officina Ferri S.r.l.')
 
     await expect(new MutationObserver(client, accept).mutate()).rejects.toBeTruthy()
-    expect(client.getQueryState(invitationKeys.company)?.isInvalidated).toBe(true)
+    expect(client.getQueryState(currentCompanyKey)?.isInvalidated).toBe(true)
   })
 })
 
 describe('sign out', () => {
   it('forgets everything about the account', async () => {
     const client = new QueryClient()
-    client.setQueryData(['workspace'], { name: 'Ricambi Rossi S.r.l.' })
-    vi.mocked(authClient.signOut).mockResolvedValue({ success: true } as never)
+    client.setQueryData(workspaceKey, organizationFixture())
+    vi.mocked(signOut).mockResolvedValue({ success: true } as never)
 
     await new MutationObserver(client, signOutMutation).mutate()
 
-    expect(client.getQueryData(['workspace'])).toBeUndefined()
+    expect(client.getQueryData(workspaceKey)).toBeUndefined()
     expect(client.getQueryData(sessionQuery.queryKey)).toBeNull()
   })
 })

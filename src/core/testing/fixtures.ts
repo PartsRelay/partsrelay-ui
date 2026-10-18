@@ -1,6 +1,7 @@
 import { AxiosError, AxiosHeaders } from 'axios'
+import type { FullOrganization } from '@/core/api/auth/models'
 import type { Invitation, Member, Workspace } from '@/modules/workspaces/core/workspace'
-import { findMe } from '@/modules/workspaces/core/workspace'
+import { findMe, toWorkspace } from '@/modules/workspaces/core/workspace'
 
 export function member(id: string, role: Member['role'], name: string): Member {
   return {
@@ -25,23 +26,50 @@ export function invitation(id: string, role: Invitation['role'], email: string, 
   } satisfies Invitation
 }
 
-export function companyFixture(): Workspace {
+const people = [
+  { id: '3', role: 'viewer', name: 'Luca Ferri' },
+  { id: '1', role: 'owner', name: 'Marco Rossi' },
+  { id: '2', role: 'admin', name: 'Giulia Bianchi' },
+] as const
+
+// The organization as the core sends it
+export function organizationFixture(): FullOrganization {
   return {
     id: '1',
     name: 'Ricambi Rossi S.r.l.',
+    slug: 'ricambi-rossi',
+    createdAt: '2026-01-12T09:00:00Z',
     locale: 'it',
-    setup: 'done',
-    metadata: { setup: 'done' },
-    members: [
-      member('3', 'viewer', 'Luca Ferri'),
-      member('1', 'owner', 'Marco Rossi'),
-      member('2', 'admin', 'Giulia Bianchi'),
-    ],
+    metadata: JSON.stringify({ setup: 'done' }),
+    members: people.map(({ id, role, name }) => {
+      const { userId, email } = member(id, role, name)
+
+      return {
+        id,
+        organizationId: '1',
+        userId,
+        role,
+        createdAt: '2026-01-12T09:00:00Z',
+        user: { id: userId, name, email, image: null },
+      }
+    }),
     invitations: [
       invitation('i1', 'viewer', 'f.romano@ricambirossi.it', '2026-10-15T10:00:00Z'),
       invitation('i2', 'admin', 'officina.neri@gmail.com', '2026-10-06T10:00:00Z'),
-    ],
+    ].map((item) => ({
+      ...item,
+      organizationId: '1',
+      inviterId: '101',
+      role: item.role === 'owner' ? 'admin' : item.role,
+      status: 'pending' as const,
+      expiresAt: item.expiresAt.toISOString(),
+      createdAt: item.createdAt.toISOString(),
+    })),
   }
+}
+
+export function companyFixture(): Workspace {
+  return toWorkspace(organizationFixture())
 }
 
 export function meIn(workspace: Workspace, userId: string) {
@@ -61,6 +89,7 @@ export function axiosError(status?: number, data?: unknown) {
   return new AxiosError('failed', 'ERR', config, null, response)
 }
 
+// Better Auth sends its code at the top of the body
 export function authError(status: number, code?: string) {
-  return { status, statusText: '', error: code ? { code, message: code } : { message: 'failed' } }
+  return axiosError(status, code ? { code, message: code } : { message: 'failed' })
 }

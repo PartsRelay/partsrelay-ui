@@ -2,15 +2,13 @@ import { MutationObserver } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { message } from '@/core/message'
-import { authError } from '@/core/testing/fixtures'
+import { authError, axiosError } from '@/core/testing/fixtures'
 import { notify } from '@/ui/components/notify'
 import { queryClient } from '@/query-client'
 
 vi.mock('@/ui/components/notify', () => ({ notify: vi.fn() }))
 
-vi.mock('@/modules/auth/core/auth.client', () => ({ authClient: {} }))
-
-const signedIn = { user: { id: '101', email: 'marco@ricambirossi.it' } }
+const signedIn = { user: { id: '101', email: 'marco@ricambirossi.it' } } as never
 
 function failQuery(error: unknown, silent?: boolean) {
   return queryClient
@@ -42,7 +40,7 @@ describe('query client', () => {
   })
 
   it('ends the session when Better Auth sends no code', async () => {
-    await failMutation({ status: 401, statusText: '', error: { message: 'User not found' } })
+    await failMutation(axiosError(401, { message: 'User not found' }))
 
     expect(queryClient.getQueryData(sessionQuery.queryKey)).toBeNull()
     expect(notify).toHaveBeenCalledWith('error', message('errors.UNAUTHORIZED_ACCESS'), {
@@ -51,7 +49,7 @@ describe('query client', () => {
   })
 
   it('ends the session from a silent mutation', async () => {
-    await failMutation({ status: 401, statusText: '', error: '' }, true)
+    await failMutation(axiosError(401, ''), true)
 
     expect(queryClient.getQueryData(sessionQuery.queryKey)).toBeNull()
     expect(notify).not.toHaveBeenCalled()

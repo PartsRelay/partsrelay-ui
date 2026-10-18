@@ -1,15 +1,18 @@
 import type { QueryClient } from '@tanstack/query-core'
-import { authClient } from '@/modules/auth/core/auth.client'
+import {
+  getGetSessionQueryOptions,
+  getGetSessionSuspenseQueryOptions,
+} from '@/core/api/auth/endpoints/default/default'
+import type { GetSession200 } from '@/core/api/auth/models'
 import { redirectPath } from '@/modules/auth/core/redirect-path'
 import { errorNotice, sessionEnded } from '@/core/errors'
 import { message } from '@/core/message'
 
-export type Session = Awaited<ReturnType<typeof authClient.getSession>> | null
+export type Session = GetSession200
 
-export const sessionQuery = {
-  queryKey: ['session'] as const,
-  queryFn: (): Promise<Session> => authClient.getSession(),
-}
+export const sessionQuery = getGetSessionQueryOptions()
+
+export const sessionSuspenseQuery = getGetSessionSuspenseQueryOptions()
 
 export async function requireSession(client: QueryClient, href: string) {
   const session = await client.ensureQueryData(sessionQuery)

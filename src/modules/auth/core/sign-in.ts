@@ -1,6 +1,7 @@
 import type { MutationOptions } from '@tanstack/query-core'
 import { z } from 'zod'
-import { authClient } from '@/modules/auth/core/auth.client'
+import { socialSignIn } from '@/core/api/auth/endpoints/default/default'
+import { signInWithMagicLink } from '@/core/api/auth/endpoints/magic-link/magic-link'
 import { redirectPath } from '@/modules/auth/core/redirect-path'
 import { message } from '@/core/message'
 
@@ -40,13 +41,16 @@ function loginPath(next: string, signedIn = false) {
 export function signInMutation(back: string, failed: string, selectAccount = false) {
   return {
     mutationKey: ['sign-in', 'google'],
-    mutationFn: () =>
-      authClient.signIn.social({
+    mutationFn: async () => {
+      const { url } = await socialSignIn({
         provider: 'google',
         callbackURL: absolute(back),
         errorCallbackURL: absolute(failed),
+        disableRedirect: true,
         additionalParams: selectAccount ? { prompt: 'select_account' } : undefined,
-      }),
+      })
+      if (url) window.location.assign(url)
+    },
   } satisfies MutationOptions<unknown, Error, void>
 }
 
@@ -54,7 +58,7 @@ export function magicLinkMutation(back: string, failed: string) {
   return {
     mutationKey: ['sign-in', 'magic-link'],
     mutationFn: (email: string) =>
-      authClient.signIn.magicLink({
+      signInWithMagicLink({
         email,
         callbackURL: absolute(back),
         errorCallbackURL: absolute(failed),

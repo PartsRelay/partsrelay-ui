@@ -125,10 +125,13 @@ describe('workspace', () => {
   const organization: FullOrganization = {
     id: '7',
     name: 'Officina',
+    slug: 'officina',
+    createdAt: '2026-10-01T08:00:00.000Z',
     locale: 'it',
     members: [
       {
         id: '1',
+        organizationId: '7',
         role: 'owner',
         userId: '10',
         createdAt: '2026-10-01T08:00:00.000Z',
@@ -138,10 +141,13 @@ describe('workspace', () => {
     invitations: [
       {
         id: '5',
+        organizationId: '7',
         email: 'c@d.it',
-        role: 'unknown',
+        role: 'unknown' as never,
         status: 'pending',
+        inviterId: '10',
         expiresAt: '2026-10-20T08:00:00.000Z',
+        createdAt: '2026-10-13T08:00:00.000Z',
       },
     ],
   }
@@ -152,12 +158,12 @@ describe('workspace', () => {
     expect(workspace).toMatchObject({ locale: 'it', setup: 'done', metadata: {} })
     expect(workspace.members[0]).toMatchObject({ name: 'a@b.it', image: null, role: 'owner' })
     expect(workspace.members[0]!.joinedAt).toBeInstanceOf(Date)
-    expect(workspace.invitations[0]).toMatchObject({ role: 'viewer', createdAt: null })
-    expect(toWorkspace({ ...organization, locale: 'fr' }).locale).toBe('en')
+    expect(workspace.invitations[0]).toMatchObject({ role: 'viewer' })
+    expect(toWorkspace({ ...organization, locale: 'fr' as never }).locale).toBe('en')
     expect(toWorkspace({ ...organization, locale: undefined }).locale).toBe('en')
   })
 
-  it('reads the metadata as a JSON string or an object', () => {
+  it('reads the metadata JSON text', () => {
     const read = (metadata: FullOrganization['metadata']) => {
       const { setup, metadata: kept } = toWorkspace({ ...organization, metadata })
 
@@ -165,10 +171,6 @@ describe('workspace', () => {
     }
 
     expect(read('{"setup":"pending"}')).toEqual({ setup: 'pending', kept: { setup: 'pending' } })
-    expect(read({ setup: 'pending', plan: 'pro' })).toEqual({
-      setup: 'pending',
-      kept: { setup: 'pending', plan: 'pro' },
-    })
     expect(read('{"setup":"done","since":"2026-10-01T08:00:00.000Z"}')).toEqual({
       setup: 'done',
       kept: { setup: 'done', since: '2026-10-01T08:00:00.000Z' },
@@ -176,7 +178,7 @@ describe('workspace', () => {
     expect(read('{"plan":"pro"}').setup).toBe('done')
     expect(read('not json')).toEqual({ setup: 'done', kept: {} })
     expect(read('[1]')).toEqual({ setup: 'done', kept: {} })
-    expect(read(null)).toEqual({ setup: 'done', kept: {} })
+    expect(read(undefined)).toEqual({ setup: 'done', kept: {} })
   })
 
   it('sends only the owner of a new company to the setup', () => {

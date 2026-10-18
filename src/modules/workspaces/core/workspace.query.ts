@@ -1,9 +1,14 @@
-import { authClient } from '@/modules/auth/core/auth.client'
+import {
+  getGetFullOrganizationQueryOptions,
+  getGetFullOrganizationSuspenseQueryOptions,
+} from '@/core/api/auth/endpoints/organization/organization'
 import { toWorkspace } from '@/modules/workspaces/core/workspace'
 
-export const workspaceKeys = { all: ['workspace'] as const }
+// The cache keeps the organization, select maps it to the model
+export const workspaceKey = getGetFullOrganizationQueryOptions().queryKey
 
-export const workspaceQuery = {
-  queryKey: workspaceKeys.all,
-  queryFn: async () => toWorkspace(await authClient.organization.getFullOrganization()),
-}
+export const workspaceQuery = getGetFullOrganizationQueryOptions({ query: { select: toWorkspace } })
+
+export const workspaceSuspenseQuery = getGetFullOrganizationSuspenseQueryOptions({
+  query: { select: toWorkspace },
+})

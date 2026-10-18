@@ -58,9 +58,8 @@ export default function betterAuth(spec: Spec): Spec {
   }
 
   const paths = spec.paths
-  paths['/organization/get-full-organization'].get.responses['200'] = json({
-    oneOf: [ref('FullOrganization'), { type: 'null' }],
-  })
+  // The core always keeps an active company on the session
+  paths['/organization/get-full-organization'].get.responses['200'] = json(ref('FullOrganization'))
   paths['/organization/update-member-role'].post.responses['200'] = json(ref('Member'))
   paths['/one-tap/callback'].post.responses['200'] = json({
     type: 'object',

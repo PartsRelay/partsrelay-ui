@@ -14,7 +14,7 @@ describe('errors', () => {
 
   it('tells network failures apart', () => {
     expect(errorCode(axiosError())).toBe('NETWORK_ERROR')
-    expect(errorCode(new TypeError('Failed to fetch'))).toBe('NETWORK_ERROR')
+    expect(errorCode(new TypeError('Failed to fetch'))).toBe('UNKNOWN')
   })
 
   it('reads Better Auth errors', () => {
@@ -43,14 +43,14 @@ describe('errors', () => {
   })
 
   it('ends the session on a 401 without a code', () => {
-    const missing = (error: unknown) => ({ status: 401, statusText: 'Unauthorized', error })
+    const missing = (body: unknown) => axiosError(401, body)
 
     expect(sessionEnded(missing({ message: 'User not found' }))).toBe(true)
     expect(sessionEnded(missing({ message: 'Not authenticated' }))).toBe(true)
     expect(sessionEnded(missing(''))).toBe(true)
     expect(sessionEnded(axiosError(401))).toBe(true)
     expect(sessionEnded(authError(400))).toBe(false)
-    expect(sessionEnded(new TypeError('Failed to fetch'))).toBe(false)
+    expect(sessionEnded(axiosError())).toBe(false)
   })
 
   it('keeps the session on a refused removal', () => {

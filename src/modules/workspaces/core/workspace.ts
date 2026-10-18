@@ -1,33 +1,11 @@
-import { parseJSON } from 'better-auth/client'
 import { z } from 'zod'
+import type { FullOrganization } from '@/core/api/auth/models'
 import { firstName, initials, toDate } from '@/core/format'
 import { type Locale, toLocale } from '@/modules/workspaces/core/locale'
 import { type Permissions, permissionsFor } from '@/modules/workspaces/core/permissions'
 import { type Role, toRole } from '@/modules/workspaces/core/role'
 
-type DateLike = Date | string
-
-export type FullOrganization = {
-  id: string
-  name: string
-  locale?: string | null
-  metadata?: string | Record<string, unknown> | null
-  members: Array<{
-    id: string
-    role: string
-    userId: string
-    createdAt: DateLike
-    user: { id: string; email: string; name: string; image?: string | null }
-  }>
-  invitations: Array<{
-    id: string
-    email: string
-    role: string
-    status: string
-    expiresAt: DateLike
-    createdAt?: DateLike | null
-  }>
-}
+export type { FullOrganization }
 
 export type Member = {
   id: string
@@ -70,8 +48,13 @@ export type Me = {
 
 const metadataSchema = z.record(z.string(), z.unknown()).catch({})
 
+// The core stores metadata as JSON text
 function readMetadata(metadata: FullOrganization['metadata']): Metadata {
-  return metadataSchema.parse(parseJSON(metadata, { strict: false, parseDates: false }))
+  try {
+    return metadataSchema.parse(metadata ? JSON.parse(metadata) : {})
+  } catch {
+    return {}
+  }
 }
 
 export function toWorkspace(organization: FullOrganization): Workspace {

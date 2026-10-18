@@ -8,7 +8,7 @@ export function isRole(value: unknown): value is Role {
   return roles.includes(value as Role)
 }
 
-export function toRole(value: string): Role {
+export function toRole(value: string | undefined): Role {
   return isRole(value) ? value : 'viewer'
 }
 

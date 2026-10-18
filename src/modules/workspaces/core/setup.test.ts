@@ -1,16 +1,22 @@
 import { MutationObserver, QueryClient } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { authClient } from '@/modules/auth/core/auth.client'
+import { updateUser } from '@/core/api/auth/endpoints/default/default'
+import { postOrganizationUpdate } from '@/core/api/auth/endpoints/organization/organization'
 import { createSetupForm, pendingInvitation } from '@/modules/workspaces/core/setup'
 import { completeSetupMutation } from '@/modules/workspaces/core/setup.mutation'
 import { message } from '@/core/message'
 import { NAME_MAX } from '@/core/name'
-import { companyFixture } from '@/core/testing/fixtures'
-import type { Workspace } from '@/modules/workspaces/core/workspace'
-import { workspaceKeys } from '@/modules/workspaces/core/workspace.query'
+import { companyFixture, organizationFixture } from '@/core/testing/fixtures'
+import { toWorkspace } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
-vi.mock('@/modules/auth/core/auth.client', () => ({
-  authClient: { getSession: vi.fn(), updateUser: vi.fn(), organization: { update: vi.fn() } },
+vi.mock('@/core/api/auth/endpoints/default/default', async (original) => ({
+  ...(await original()),
+  updateUser: vi.fn(),
+}))
+vi.mock('@/core/api/auth/endpoints/organization/organization', async (original) => ({
+  ...(await original()),
+  postOrganizationUpdate: vi.fn(),
 }))
 
 const now = new Date(2026, 9, 15, 10, 42)
@@ -98,23 +104,26 @@ describe('completing the setup', () => {
 
   it('names the company, sets its language and keeps the other metadata', async () => {
     const client = new QueryClient()
-    client.setQueryData<Workspace>(workspaceKeys.all, workspace)
-    vi.mocked(authClient.organization.update).mockResolvedValue({} as never)
+    client.setQueryData(workspaceKey, {
+      ...organizationFixture(),
+      metadata: JSON.stringify(workspace.metadata),
+    })
+    vi.mocked(postOrganizationUpdate).mockResolvedValue({} as never)
 
     await new MutationObserver(client, completeSetupMutation(workspace)).mutate({
       name: 'Officina Neri',
       locale: 'it',
     })
 
-    expect(authClient.updateUser).not.toHaveBeenCalled()
-    expect(authClient.organization.update).toHaveBeenCalledWith({
+    expect(updateUser).not.toHaveBeenCalled()
+    expect(postOrganizationUpdate).toHaveBeenCalledWith({
       data: {
         name: 'Officina Neri',
         locale: 'it',
         metadata: { setup: 'done', plan: 'pro' },
       },
     })
-    expect(client.getQueryData<Workspace>(workspaceKeys.all)).toMatchObject({
+    expect(toWorkspace(client.getQueryData(workspaceKey)!)).toMatchObject({
       name: 'Officina Neri',
       locale: 'it',
       setup: 'done',
@@ -123,8 +132,8 @@ describe('completing the setup', () => {
 
   it('saves the user name before closing the setup', async () => {
     const client = new QueryClient()
-    vi.mocked(authClient.updateUser).mockResolvedValue({ status: true } as never)
-    vi.mocked(authClient.organization.update).mockResolvedValue({} as never)
+    vi.mocked(updateUser).mockResolvedValue({ status: true } as never)
+    vi.mocked(postOrganizationUpdate).mockResolvedValue({} as never)
 
     await new MutationObserver(client, completeSetupMutation(workspace)).mutate({
       name: 'Officina Neri',
@@ -132,9 +141,9 @@ describe('completing the setup', () => {
       userName: 'Giovanni Neri',
     })
 
-    expect(authClient.updateUser).toHaveBeenCalledWith({ name: 'Giovanni Neri' })
-    expect(vi.mocked(authClient.updateUser).mock.invocationCallOrder[0]).toBeLessThan(
-      vi.mocked(authClient.organization.update).mock.invocationCallOrder[0]!
+    expect(updateUser).toHaveBeenCalledWith({ name: 'Giovanni Neri' })
+    expect(vi.mocked(updateUser).mock.invocationCallOrder[0]).toBeLessThan(
+      vi.mocked(postOrganizationUpdate).mock.invocationCallOrder[0]!
     )
   })
 })

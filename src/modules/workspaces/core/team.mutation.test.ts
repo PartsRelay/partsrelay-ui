@@ -1,6 +1,12 @@
 import { MutationObserver, QueryClient } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { authClient } from '@/modules/auth/core/auth.client'
+import {
+  createOrganizationInvitation,
+  getFullOrganization,
+  postOrganizationRemoveMember,
+  updateOrganizationMemberRole,
+} from '@/core/api/auth/endpoints/organization/organization'
+import { sessionQuery } from '@/modules/auth/core/session.query'
 import { resolveNotice } from '@/core/notice'
 import {
   changeRoleMutation,
@@ -8,29 +14,29 @@ import {
   removeMemberMutation,
   transferOwnershipMutation,
 } from '@/modules/workspaces/core/team.mutation'
-import { authError, companyFixture } from '@/core/testing/fixtures'
-import type { Workspace } from '@/modules/workspaces/core/workspace'
-import { workspaceKeys } from '@/modules/workspaces/core/workspace.query'
+import { authError, companyFixture, organizationFixture } from '@/core/testing/fixtures'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
-vi.mock('@/modules/auth/core/auth.client', () => ({
-  authClient: {
-    getSession: vi.fn(),
-    organization: {
-      getFullOrganization: vi.fn(),
-      updateMemberRole: vi.fn(),
-      removeMember: vi.fn(),
-      inviteMember: vi.fn(),
-    },
-  },
+vi.mock('@/core/api/auth/endpoints/organization/organization', async (original) => ({
+  ...(await original()),
+  getFullOrganization: vi.fn(),
+  updateOrganizationMemberRole: vi.fn(),
+  postOrganizationRemoveMember: vi.fn(),
+  createOrganizationInvitation: vi.fn(),
 }))
 
-const organization = vi.mocked(authClient.organization)
+const organization = {
+  getFullOrganization: vi.mocked(getFullOrganization),
+  updateMemberRole: vi.mocked(updateOrganizationMemberRole),
+  removeMember: vi.mocked(postOrganizationRemoveMember),
+  inviteMember: vi.mocked(createOrganizationInvitation),
+}
 
 function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  client.setQueryData(workspaceKeys.all, companyFixture())
+  client.setQueryData(workspaceKey, organizationFixture())
   const roleOf = (id: string) =>
-    client.getQueryData<Workspace>(workspaceKeys.all)!.members.find((item) => item.id === id)?.role
+    client.getQueryData(workspaceKey)!.members.find((item) => item.id === id)?.role
 
   return { client, roleOf }
 }
@@ -73,7 +79,7 @@ describe('team mutations', () => {
 
   it('hands the company to the chosen member and refreshes the session', async () => {
     const { client } = setup()
-    client.setQueryData(['session'], { user: { id: '101' } })
+    client.setQueryData(sessionQuery.queryKey, { user: { id: '101' } } as never)
     organization.updateMemberRole.mockResolvedValue({} as never)
     organization.getFullOrganization.mockReturnValue(new Promise(() => {}) as never)
     const giulia = companyFixture().members[2]!
@@ -81,7 +87,7 @@ describe('team mutations', () => {
     await new MutationObserver(client, transferOwnershipMutation).mutate(giulia)
 
     expect(organization.updateMemberRole).toHaveBeenCalledWith({ memberId: '2', role: 'owner' })
-    expect(client.getQueryState(['session'])?.isInvalidated).toBe(true)
+    expect(client.getQueryState(sessionQuery.queryKey)?.isInvalidated).toBe(true)
     expect(resolveNotice(transferOwnershipMutation.meta, giulia, undefined)).toEqual({
       key: 'team.notices.ownershipTransferred',
       values: { name: 'Giulia Bianchi' },
@@ -97,6 +103,6 @@ describe('team mutations', () => {
     await expect(
       new MutationObserver(client, inviteMutation).mutate({ email: 'luca@x.it', role: 'viewer' })
     ).rejects.toBeTruthy()
-    expect(client.getQueryState(workspaceKeys.all)?.isInvalidated).toBe(true)
+    expect(client.getQueryState(workspaceKey)?.isInvalidated).toBe(true)
   })
 })

@@ -1,39 +1,42 @@
 import type { MutationOptions } from '@tanstack/query-core'
-import { authClient } from '@/modules/auth/core/auth.client'
-import { sessionQuery } from '@/modules/auth/core/session.query'
+import {
+  postOrganizationDelete,
+  postOrganizationUpdate,
+} from '@/core/api/auth/endpoints/organization/organization'
 import { message } from '@/core/message'
 import { optimistic, type Snapshot } from '@/core/optimistic'
+import { sessionQuery } from '@/modules/auth/core/session.query'
 import { type Locale, localeNames } from '@/modules/workspaces/core/locale'
-import type { Workspace } from '@/modules/workspaces/core/workspace'
-import { workspaceKeys } from '@/modules/workspaces/core/workspace.query'
+import type { FullOrganization, Workspace } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
 export const renameCompanyMutation = {
   mutationKey: ['company', 'rename'],
-  mutationFn: (name: string) => authClient.organization.update({ data: { name } }),
-  ...optimistic<Workspace, string>(workspaceKeys.all, (workspace, name) => ({
-    ...workspace,
+  mutationFn: (name: string) => postOrganizationUpdate({ data: { name } }),
+  ...optimistic<FullOrganization, string>(workspaceKey, (organization, name) => ({
+    ...organization,
     name,
   })),
   meta: { notice: message('company.notices.renamed') },
-} satisfies MutationOptions<unknown, Error, string, Snapshot<Workspace>>
+} satisfies MutationOptions<unknown, Error, string, Snapshot<FullOrganization>>
 
 export const changeLanguageMutation = {
   mutationKey: ['company', 'language'],
-  mutationFn: (locale: Locale) => authClient.organization.update({ data: { locale } }),
-  ...optimistic<Workspace, Locale>(workspaceKeys.all, (workspace, locale) => ({
-    ...workspace,
+  mutationFn: (locale: Locale) => postOrganizationUpdate({ data: { locale } }),
+  ...optimistic<FullOrganization, Locale>(workspaceKey, (organization, locale) => ({
+    ...organization,
     locale,
   })),
   meta: {
     notice: (locale: Locale) =>
       message('company.notices.language', { language: localeNames[locale] }),
   },
-} satisfies MutationOptions<unknown, Error, Locale, Snapshot<Workspace>>
+} satisfies MutationOptions<unknown, Error, Locale, Snapshot<FullOrganization>>
 
 export function deleteCompanyMutation(workspace: Workspace) {
   return {
     mutationKey: ['company', 'delete', workspace.id],
-    mutationFn: () => authClient.organization.delete({ organizationId: workspace.id }),
+    mutationFn: () => postOrganizationDelete({ organizationId: workspace.id }),
     onSuccess: (_data, _variables, _result, { client }) => {
       client.clear()
       client.setQueryData(sessionQuery.queryKey, null)
