@@ -1,5 +1,6 @@
 {
   "nav": {
+    "contacts": "Contacts",
     "team": "Team",
     "company": "Company",
     "sections": "Workspace",
@@ -11,6 +12,7 @@
   "crumbs": {
     "workspace": "Workspace",
     "account": "Account",
+    "contacts": "Contacts",
     "team": "Team",
     "company": "Company",
     "profile": "Profile"

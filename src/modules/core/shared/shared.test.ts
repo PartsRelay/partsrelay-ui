@@ -1,9 +1,17 @@
 import { describe, expect, it } from 'vite-plus/test'
 import { canConfirm } from '@/modules/core/shared/confirm'
-import { firstName, formatDate, initials } from '@/modules/core/shared/format'
+import {
+  firstName,
+  formatDate,
+  formatPhone,
+  formatWhen,
+  initials,
+} from '@/modules/core/shared/format'
 import { message } from '@/modules/core/shared/message'
 import { checkName, NAME_MAX } from '@/modules/core/shared/name'
 import { resolveNotice } from '@/modules/core/shared/notice'
+import { pageInfo } from '@/modules/core/shared/pagination'
+import { pageFixture } from '@/modules/core/testing/fixtures'
 
 describe('format', () => {
   it('builds initials and first names', () => {
@@ -20,6 +28,48 @@ describe('format', () => {
     expect(formatDate(day, 'en')).toBe('15 Oct 2026')
     expect(formatDate(day, 'it')).toBe('15 ott 2026')
     expect(formatDate(day, 'en', 'long')).toBe('15 October 2026')
+  })
+
+  it('tells when something happened, with the year only when it differs', () => {
+    const now = new Date(2026, 9, 15, 11, 5)
+
+    expect(formatWhen(new Date(2026, 9, 15, 9, 26), now, 'en')).toEqual(
+      message('format.todayAt', { time: '09:26' })
+    )
+    expect(formatWhen(new Date(2026, 9, 14, 16, 12).toISOString(), now, 'en')).toEqual(
+      message('format.dateAt', { date: '14 Oct', time: '16:12' })
+    )
+    expect(formatWhen(new Date(2025, 11, 31, 23, 59), now, 'it')).toEqual(
+      message('format.dateAt', { date: '31 dic 2025', time: '23:59' })
+    )
+  })
+
+  it('groups WhatsApp numbers and keeps unknown ones', () => {
+    expect(formatPhone('390287341190')).toBe('+39 02 8734 1190')
+    expect(formatPhone('393335550126')).toBe('+39 333 555 0126')
+    expect(formatPhone('4915112345678')).toBe('+49 1511 2345678')
+    expect(formatPhone('12')).toBe('+12')
+  })
+})
+
+describe('pagination', () => {
+  it('tells the shown range and the pages around it', () => {
+    const second = pageInfo(pageFixture([], 2, 20, 45).metadata)
+
+    expect(second).toMatchObject({ from: 21, to: 40, page: 2, pages: 3, outOfRange: false })
+    expect(second).toMatchObject({ hasPrevious: true, hasNext: true })
+    expect(second.range).toEqual(message('pagination.range', { from: 21, to: 40, total: 45 }))
+    expect(pageInfo(pageFixture([], 3, 20, 45).metadata)).toMatchObject({ to: 45, hasNext: false })
+  })
+
+  it('notices a page past the end and an empty list', () => {
+    expect(pageInfo(pageFixture([], 4, 20, 45).metadata).outOfRange).toBe(true)
+    expect(pageInfo(pageFixture([]).metadata)).toMatchObject({
+      from: 0,
+      to: 0,
+      pages: 1,
+      outOfRange: false,
+    })
   })
 })
 

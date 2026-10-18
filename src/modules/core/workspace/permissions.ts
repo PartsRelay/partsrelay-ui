@@ -3,6 +3,7 @@ import type { Role } from '@/modules/core/workspace/role'
 const MANAGES: Record<Role, Role[]> = { owner: ['admin', 'viewer'], admin: ['viewer'], viewer: [] }
 
 export type Permissions = {
+  manageContacts: boolean
   viewTeam: boolean
   viewCompany: boolean
   inviteRoles: Role[]
@@ -21,6 +22,7 @@ export function permissionsFor(role: Role): Permissions {
   const owner = role === 'owner'
 
   return {
+    manageContacts: role !== 'viewer',
     viewTeam: role !== 'viewer',
     viewCompany: owner,
     inviteRoles: [...MANAGES[role]].reverse(),

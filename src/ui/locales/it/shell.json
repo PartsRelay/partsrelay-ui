@@ -1,5 +1,6 @@
 {
   "nav": {
+    "contacts": "Contatti",
     "team": "Team",
     "company": "Azienda",
     "sections": "Area di lavoro",
@@ -11,6 +12,7 @@
   "crumbs": {
     "workspace": "Area di lavoro",
     "account": "Account",
+    "contacts": "Contatti",
     "team": "Team",
     "company": "Azienda",
     "profile": "Profilo"

@@ -15,6 +15,7 @@ import { Route as SetupRouteImport } from './routes/setup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppCompanyRouteImport } from './routes/_app/company'
+import { Route as AppContactsRouteImport } from './routes/_app/contacts'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppTeamRouteImport } from './routes/_app/team'
 import { Route as authInvitationsInvitationIdRouteImport } from './routes/(auth)/invitations.$invitationId'
@@ -47,6 +48,11 @@ const AppCompanyRoute = AppCompanyRouteImport.update({
   path: '/company',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppContactsRoute = AppContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/setup': typeof SetupRoute
   '/login': typeof authLoginRoute
   '/company': typeof AppCompanyRoute
+  '/contacts': typeof AppContactsRoute
   '/profile': typeof AppProfileRoute
   '/team': typeof AppTeamRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/setup': typeof SetupRoute
   '/login': typeof authLoginRoute
   '/company': typeof AppCompanyRoute
+  '/contacts': typeof AppContactsRoute
   '/profile': typeof AppProfileRoute
   '/team': typeof AppTeamRoute
   '/': typeof AppIndexRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/setup': typeof SetupRoute
   '/(auth)/login': typeof authLoginRoute
   '/_app/company': typeof AppCompanyRoute
+  '/_app/contacts': typeof AppContactsRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/team': typeof AppTeamRoute
   '/_app/': typeof AppIndexRoute
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/login'
     | '/company'
+    | '/contacts'
     | '/profile'
     | '/team'
     | '/invitations/$invitationId'
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/login'
     | '/company'
+    | '/contacts'
     | '/profile'
     | '/team'
     | '/'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/(auth)/login'
     | '/_app/company'
+    | '/_app/contacts'
     | '/_app/profile'
     | '/_app/team'
     | '/_app/'
@@ -176,6 +188,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCompanyRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/contacts': {
+      id: '/_app/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof AppContactsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/profile': {
       id: '/_app/profile'
       path: '/profile'
@@ -216,6 +235,7 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 
 interface AppRouteRouteChildren {
   AppCompanyRoute: typeof AppCompanyRoute
+  AppContactsRoute: typeof AppContactsRoute
   AppProfileRoute: typeof AppProfileRoute
   AppTeamRoute: typeof AppTeamRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -223,6 +243,7 @@ interface AppRouteRouteChildren {
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppCompanyRoute: AppCompanyRoute,
+  AppContactsRoute: AppContactsRoute,
   AppProfileRoute: AppProfileRoute,
   AppTeamRoute: AppTeamRoute,
   AppIndexRoute: AppIndexRoute,

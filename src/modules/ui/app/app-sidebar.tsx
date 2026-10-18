@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Building2Icon, type LucideIcon, UsersIcon } from 'lucide-react'
+import { BookUserIcon, Building2Icon, type LucideIcon, UsersIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { navigation, pageAt, type Section } from '@/modules/core/workspace/navigation'
@@ -21,7 +21,11 @@ import {
   SidebarRail,
 } from '@/ui/components/ui/sidebar'
 
-const icons: Record<Section, LucideIcon> = { team: UsersIcon, company: Building2Icon }
+const icons: Record<Section, LucideIcon> = {
+  contacts: BookUserIcon,
+  team: UsersIcon,
+  company: Building2Icon,
+}
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation()

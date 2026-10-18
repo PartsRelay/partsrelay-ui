@@ -1,3 +1,6 @@
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { message } from '@/modules/core/shared/message'
+
 export const EMPTY_VALUE = '—'
 
 export function toDate(value: Date | string | number) {
@@ -25,4 +28,22 @@ export function formatDate(
   month: 'short' | 'long' = 'short'
 ) {
   return dateFormat(locale, { day: 'numeric', month, year: 'numeric' }).format(toDate(value))
+}
+
+export function formatWhen(value: Date | string, now: Date, locale?: string) {
+  const date = toDate(value)
+  const time = dateFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(date)
+  if (date.toDateString() === now.toDateString()) return message('format.todayAt', { time })
+
+  const year = date.getFullYear() === now.getFullYear() ? undefined : 'numeric'
+  const day = dateFormat(locale, { day: 'numeric', month: 'short', year }).format(date)
+
+  return message('format.dateAt', { date: day, time })
+}
+
+// WhatsApp ids are the international number without the plus
+export function formatPhone(waId: string) {
+  const phone = `+${waId}`
+
+  return parsePhoneNumberFromString(phone)?.formatInternational() ?? phone
 }

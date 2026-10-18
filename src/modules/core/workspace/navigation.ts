@@ -2,7 +2,7 @@ import { message } from '@/modules/core/shared/message'
 import type { Permissions } from '@/modules/core/workspace/permissions'
 import type { Workspace } from '@/modules/core/workspace/workspace'
 
-export const sections = ['team', 'company'] as const
+export const sections = ['contacts', 'team', 'company'] as const
 
 export const pages = [...sections, 'profile'] as const
 
@@ -11,14 +11,16 @@ export type Section = (typeof sections)[number]
 export type Page = (typeof pages)[number]
 
 export const pagePaths = {
+  contacts: '/contacts',
   team: '/team',
   company: '/company',
   profile: '/profile',
 } as const satisfies Record<Page, string>
 
-export type CrumbId = 'team' | 'company' | 'profile'
+export type CrumbId = 'contacts' | 'team' | 'company' | 'profile'
 
 const CRUMB_PARENTS = {
+  contacts: 'workspace',
   team: 'workspace',
   company: 'workspace',
   profile: 'account',

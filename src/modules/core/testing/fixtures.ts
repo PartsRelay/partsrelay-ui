@@ -1,4 +1,5 @@
 import { AxiosError, AxiosHeaders } from 'axios'
+import type { ContactObject, GetApiV1WorkspaceContacts200Metadata } from '@/core/api/models'
 import type { Invitation, Member, Workspace } from '@/modules/core/workspace/workspace'
 import { findMe } from '@/modules/core/workspace/workspace'
 
@@ -63,4 +64,37 @@ export function axiosError(status?: number, data?: unknown) {
 
 export function authError(status: number, code?: string) {
   return { status, statusText: '', error: code ? { code, message: code } : { message: 'failed' } }
+}
+
+export function contactFixture(id: number, overrides: Partial<ContactObject> = {}): ContactObject {
+  return {
+    id,
+    waId: '393334128890',
+    name: null,
+    profileName: `Contact ${id}`,
+    status: 'active',
+    createdAt: '2026-03-12T09:00:00.000+00:00',
+    lookupsCount: 0,
+    monthLookupsCount: 0,
+    lastLookupAt: null,
+    ...overrides,
+  }
+}
+
+export function pageFixture<T>(data: T[], page = 1, perPage = 20, total = data.length) {
+  const lastPage = Math.max(1, Math.ceil(total / perPage))
+  const link = (target: number) => `/?page=${target}`
+  const metadata: GetApiV1WorkspaceContacts200Metadata = {
+    total,
+    perPage,
+    currentPage: page,
+    lastPage,
+    firstPage: 1,
+    firstPageUrl: link(1),
+    lastPageUrl: link(lastPage),
+    previousPageUrl: page > 1 ? link(page - 1) : null,
+    nextPageUrl: page < lastPage ? link(page + 1) : null,
+  }
+
+  return { data, metadata }
 }

@@ -16,6 +16,7 @@ import { type FullOrganization, needsSetup, toWorkspace } from '@/modules/core/w
 describe('permissions', () => {
   it('follows the core rules for each role', () => {
     expect(permissionsFor('owner')).toEqual({
+      manageContacts: true,
       viewTeam: true,
       viewCompany: true,
       inviteRoles: ['viewer', 'admin'],
@@ -26,6 +27,7 @@ describe('permissions', () => {
       leaveCompany: false,
     })
     expect(permissionsFor('admin')).toEqual({
+      manageContacts: true,
       viewTeam: true,
       viewCompany: false,
       inviteRoles: ['viewer'],
@@ -36,6 +38,7 @@ describe('permissions', () => {
       leaveCompany: true,
     })
     expect(permissionsFor('viewer')).toMatchObject({
+      manageContacts: false,
       viewTeam: false,
       viewCompany: false,
       inviteRoles: [],
@@ -59,19 +62,21 @@ describe('navigation', () => {
     const sectionsOf = (userId: string) =>
       navigation(permissionsOf(userId), null).map((item) => item.page)
 
-    expect(sectionsOf('101')).toEqual(['team', 'company'])
-    expect(sectionsOf('102')).toEqual(['team'])
-    expect(sectionsOf('103')).toEqual([])
+    expect(sectionsOf('101')).toEqual(['contacts', 'team', 'company'])
+    expect(sectionsOf('102')).toEqual(['contacts', 'team'])
+    expect(sectionsOf('103')).toEqual(['contacts'])
   })
 
   it('links, labels and marks the current section', () => {
     expect(navigation(permissionsOf('101'), 'company')).toEqual([
+      { page: 'contacts', path: '/contacts', label: message('nav.contacts'), active: false },
       { page: 'team', path: '/team', label: message('nav.team'), active: false },
       { page: 'company', path: '/company', label: message('nav.company'), active: true },
     ])
   })
 
   it('reads the page from the path', () => {
+    expect(pageAt('/contacts')).toBe('contacts')
     expect(pageAt('/team')).toBe('team')
     expect(pageAt('/company/')).toBe('company')
     expect(pageAt('/profile')).toBe('profile')
@@ -84,6 +89,7 @@ describe('navigation', () => {
     expect(canOpen('team', permissionsOf('103'))).toBe(false)
     expect(canOpen('company', permissionsOf('102'))).toBe(false)
     expect(canOpen('company', permissionsOf('101'))).toBe(true)
+    expect(canOpen('contacts', permissionsOf('103'))).toBe(true)
     expect(canOpen('profile', permissionsOf('103'))).toBe(true)
     expect(canOpen(null, permissionsOf('103'))).toBe(true)
   })
@@ -95,6 +101,10 @@ describe('navigation', () => {
   })
 
   it('builds the breadcrumb of every page', () => {
+    expect(breadcrumbs('contacts')).toEqual([
+      message('crumbs.workspace'),
+      message('crumbs.contacts'),
+    ])
     expect(breadcrumbs('team')).toEqual([message('crumbs.workspace'), message('crumbs.team')])
     expect(breadcrumbs('company')).toEqual([message('crumbs.workspace'), message('crumbs.company')])
     expect(breadcrumbs('profile')).toEqual([message('crumbs.account'), message('crumbs.profile')])

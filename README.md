@@ -4,7 +4,7 @@ React frontend for PartsRelay. Bun, TypeScript, Vite+, TanStack (Router, Query, 
 
 ## Development
 
-In development the API answers from MSW mocks, so no core is needed: `src/ui/mocks/auth.ts` plays Better Auth, the rest comes from the mocks Orval generates from the core OpenAPI. A few `localStorage` keys change what the mocks return:
+In development the API answers from MSW mocks, so no core is needed: `src/ui/mocks/auth.ts` plays Better Auth, `src/ui/mocks/contacts.ts` keeps the contacts of each company with the same rules and messages as the core, the rest comes from the mocks Orval generates from the core OpenAPI. A few `localStorage` keys change what the mocks return:
 
 | Key               | Values                              | Effect                                      |
 | ----------------- | ----------------------------------- | ------------------------------------------- |
@@ -66,7 +66,7 @@ Better Auth runs in the core at `/api/auth` and keeps the session in a cookie: t
 
 ## Texts
 
-Texts live in `src/ui/locales/<language>/<area>.json`. They follow the browser language until sign in, then the company language chosen by the owner, with English as fallback. Only `app.json` holds `errors`, since the area files merge shallowly. When a query or mutation fails, `src/ui/providers/query-client.ts` shows a toast with the `message` of the core, already in the company language, or with the text of the Better Auth error `code` (`errors.<CODE>`).
+Texts live in `src/ui/locales/<language>/<area>.json`. They follow the browser language until sign in, then the company language chosen by the owner, with English as fallback. Only `app.json` holds `errors`, since the area files merge shallowly. When a query or mutation fails, `src/ui/providers/query-client.ts` shows a toast with the `message` of the core, already in the company language, or with the text of the Better Auth error `code` (`errors.<CODE>`). Forms show the `details` of a core validation error under each field.
 
 ## Workflow
 

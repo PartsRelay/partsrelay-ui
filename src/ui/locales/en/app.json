@@ -23,6 +23,15 @@
   "validation": {
     "tooLong": "Use at most {{max}} characters."
   },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "range": "{{from}}-{{to}} of {{total}}"
+  },
+  "format": {
+    "todayAt": "Today · {{time}}",
+    "dateAt": "{{date}} · {{time}}"
+  },
   "notices": {
     "copyFailed": "Copy failed, select the text and copy it by hand."
   },

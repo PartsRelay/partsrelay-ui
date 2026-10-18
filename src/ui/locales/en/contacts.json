@@ -1,0 +1,98 @@
+{
+  "contacts": {
+    "title": "Contacts",
+    "description": "Workshops search parts by sending a WhatsApp message from these numbers. Other numbers get a reply asking them to contact you.",
+    "viewOnly": "View only",
+    "retry": "Try again",
+    "whatsappName": "WhatsApp: {{name}}",
+    "list": {
+      "title": "WhatsApp numbers",
+      "description": "Numbers that can search parts on WhatsApp.",
+      "count_one": "{{count}} contact",
+      "count_other": "{{count}} contacts"
+    },
+    "tabs": {
+      "label": "Contacts to show",
+      "all": "All",
+      "active": "Active",
+      "blocked": "Blocked"
+    },
+    "empty": {
+      "all": "No contacts yet",
+      "active": "No active contacts",
+      "blocked": "No blocked contacts",
+      "manager": "Add the WhatsApp number of a workshop so it can search parts by message.",
+      "viewer": "Owners and admins add the WhatsApp numbers of the workshops."
+    },
+    "columns": {
+      "contact": "Contact",
+      "phone": "WhatsApp number",
+      "status": "Status",
+      "searches": "Searches",
+      "month": "This month",
+      "lastSearch": "Last search",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "blocked": "Blocked"
+    },
+    "facts": {
+      "phone": "WhatsApp number",
+      "added": "Added"
+    },
+    "actions": {
+      "rename": "Rename",
+      "renameContact": "Rename {{name}}",
+      "block": "Block…",
+      "blockContact": "Block {{name}}",
+      "unblock": "Unblock",
+      "unblockContact": "Unblock {{name}}",
+      "remove": "Delete…",
+      "removeContact": "Delete {{name}}"
+    },
+    "rename": {
+      "label": "Name of {{name}}",
+      "save": "Save",
+      "hint": "Leave it empty to show the WhatsApp name or the number."
+    },
+    "add": {
+      "open": "Add contact",
+      "title": "Add a contact",
+      "description": "The number can search parts on WhatsApp right away. A number can belong to one company only.",
+      "phone": "WhatsApp number",
+      "phoneHint": "With the international prefix, for example +39.",
+      "phonePlaceholder": "+39 333 123 4567",
+      "name": "Name",
+      "nameHint": "Optional. Shown instead of the WhatsApp name.",
+      "submit": "Add contact",
+      "errors": {
+        "phoneRequired": "Enter the WhatsApp number.",
+        "phone": "Start with the international prefix, for example +39 333 123 4567."
+      }
+    },
+    "errors": {
+      "nameTooLong": "Use at most {{max}} characters."
+    },
+    "confirm": {
+      "block": {
+        "title": "Block {{name}}?",
+        "body": "Messages from this number are ignored until you unblock it, so it cannot search parts. Past searches stay in the history.",
+        "action": "Block contact"
+      },
+      "remove": {
+        "title": "Delete {{name}}?",
+        "body": "The contact and its name are deleted and the number can no longer search parts. Past searches stay in the history without the contact. You can add the number again later.",
+        "action": "Delete contact"
+      }
+    },
+    "notices": {
+      "added": "{{name}} added. The number can search parts now.",
+      "renamed": "Contact renamed to {{name}}.",
+      "nameCleared": "Name removed, the WhatsApp name or the number is shown.",
+      "blocked": "{{name}} is blocked.",
+      "unblocked": "{{name}} is unblocked and can search again.",
+      "removed": "{{name}} was deleted."
+    }
+  }
+}
