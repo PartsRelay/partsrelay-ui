@@ -1,14 +1,13 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 import { redirectSignedIn } from '@/modules/core/auth/session.query'
 import { loginError, loginFlow, loginSearchSchema } from '@/modules/core/auth/sign-in'
 import { AuthTitle } from '@/modules/ui/auth/auth-title'
 import { SignInOptions } from '@/modules/ui/auth/sign-in-options'
 import { Callout } from '@/modules/ui/shared/callout'
+import { notify } from '@/modules/ui/shared/notify'
 import { useT } from '@/modules/ui/shared/use-t'
 import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
-import { translate } from '@/ui/providers/i18n'
 
 export const Route = createFileRoute('/(auth)/login')({
   validateSearch: loginSearchSchema,
@@ -17,7 +16,7 @@ export const Route = createFileRoute('/(auth)/login')({
     if (!signedIn) return
 
     const { notice, href } = signedIn
-    if (notice) toast.success(translate(notice), { id: 'signed-in' })
+    if (notice) notify('success', notice, { id: 'signed-in' })
     throw redirect({ href })
   },
   component: LoginPage,

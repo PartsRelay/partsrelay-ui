@@ -1,24 +1,23 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
 import { failureNotice } from '@/modules/core/auth/session.query'
 import { errorStatus } from '@/modules/core/shared/errors'
 import { resolveNotice } from '@/modules/core/shared/notice'
-import { translate } from '@/ui/providers/i18n'
+import { notify } from '@/modules/ui/shared/notify'
 
-function notify(error: Error, silent?: boolean) {
+function report(error: Error, silent?: boolean) {
   const notice = failureNotice(queryClient, error, silent)
-  if (notice) toast.error(translate(notice), { id: notice.key })
+  if (notice) notify('error', notice, { id: notice.key })
 }
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
-    onError: (error, query) => notify(error, query.meta?.silent),
+    onError: (error, query) => report(error, query.meta?.silent),
   }),
   mutationCache: new MutationCache({
-    onError: (error, _variables, _result, mutation) => notify(error, mutation.meta?.silent),
+    onError: (error, _variables, _result, mutation) => report(error, mutation.meta?.silent),
     onSuccess: (data, variables, _result, mutation) => {
       const notice = resolveNotice(mutation.meta, variables, data)
-      if (notice) toast.success(translate(notice))
+      if (notice) notify('success', notice)
     },
   }),
   defaultOptions: {

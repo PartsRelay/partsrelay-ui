@@ -1,14 +1,12 @@
 import { MutationObserver } from '@tanstack/query-core'
-import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { sessionQuery } from '@/modules/core/auth/session.query'
-import type { Message } from '@/modules/core/shared/message'
+import { message } from '@/modules/core/shared/message'
 import { authError } from '@/modules/core/testing/fixtures'
+import { notify } from '@/modules/ui/shared/notify'
 import { queryClient } from '@/ui/providers/query-client'
 
-vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }))
-
-vi.mock('@/ui/providers/i18n', () => ({ translate: (text: Message) => text.key }))
+vi.mock('@/modules/ui/shared/notify', () => ({ notify: vi.fn() }))
 
 vi.mock('@/modules/core/auth/auth.client', () => ({ authClient: {} }))
 
@@ -40,14 +38,14 @@ describe('query client', () => {
     await failQuery(authError(401, 'UNAUTHORIZED'), true)
 
     expect(queryClient.getQueryData(sessionQuery.queryKey)).toBeNull()
-    expect(toast.error).not.toHaveBeenCalled()
+    expect(notify).not.toHaveBeenCalled()
   })
 
   it('ends the session when Better Auth sends no code', async () => {
     await failMutation({ status: 401, statusText: '', error: { message: 'User not found' } })
 
     expect(queryClient.getQueryData(sessionQuery.queryKey)).toBeNull()
-    expect(toast.error).toHaveBeenCalledWith('errors.UNAUTHORIZED_ACCESS', {
+    expect(notify).toHaveBeenCalledWith('error', message('errors.UNAUTHORIZED_ACCESS'), {
       id: 'errors.UNAUTHORIZED_ACCESS',
     })
   })
@@ -56,15 +54,17 @@ describe('query client', () => {
     await failMutation({ status: 401, statusText: '', error: '' }, true)
 
     expect(queryClient.getQueryData(sessionQuery.queryKey)).toBeNull()
-    expect(toast.error).not.toHaveBeenCalled()
+    expect(notify).not.toHaveBeenCalled()
   })
 
   it('keeps the session on a refused removal', async () => {
     await failMutation(authError(401, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER'))
 
     expect(queryClient.getQueryData(sessionQuery.queryKey)).toEqual(signedIn)
-    expect(toast.error).toHaveBeenCalledWith('errors.YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER', {
-      id: 'errors.YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER',
-    })
+    expect(notify).toHaveBeenCalledWith(
+      'error',
+      message('errors.YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER'),
+      { id: 'errors.YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER' }
+    )
   })
 })
