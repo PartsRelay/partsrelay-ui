@@ -23,6 +23,7 @@ import type {
   GetOrganizationGetActiveMember200,
   GetOrganizationGetInvitation200,
   GetOrganizationListUserInvitations200Item,
+  Invitation,
   Member,
   Organization,
   PostOrganizationAcceptInvitation200,
@@ -36,7 +37,7 @@ export const getPostOrganizationCreateResponseMock = (overrideResponse: Partial<
 
 export const getPostOrganizationUpdateResponseMock = (overrideResponse: Partial<Extract<Organization, object>> = {}): Organization => ({id: faker.string.alpha({length: {min: 10, max: 20}}), name: faker.string.alpha({length: {min: 10, max: 20}}), slug: faker.string.alpha({length: {min: 10, max: 20}}), logo: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', metadata: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), locale: faker.helpers.arrayElement([faker.helpers.arrayElement(['en','it'] as const), undefined]), ...overrideResponse})
 
-export const getPostOrganizationDeleteResponseMock = (): string => (faker.word.sample())
+export const getPostOrganizationDeleteResponseMock = (overrideResponse: Partial<Extract<Organization, object>> = {}): Organization => ({id: faker.string.alpha({length: {min: 10, max: 20}}), name: faker.string.alpha({length: {min: 10, max: 20}}), slug: faker.string.alpha({length: {min: 10, max: 20}}), logo: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', metadata: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), locale: faker.helpers.arrayElement([faker.helpers.arrayElement(['en','it'] as const), undefined]), ...overrideResponse})
 
 export const getSetActiveOrganizationResponseMock = (overrideResponse: Partial<Extract<Organization, object>> = {}): Organization => ({id: faker.string.alpha({length: {min: 10, max: 20}}), name: faker.string.alpha({length: {min: 10, max: 20}}), slug: faker.string.alpha({length: {min: 10, max: 20}}), logo: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', metadata: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), locale: faker.helpers.arrayElement([faker.helpers.arrayElement(['en','it'] as const), undefined]), ...overrideResponse})
 
@@ -47,6 +48,8 @@ export const getGetFullOrganizationResponseMock = (): FullOrganization => ({...{
 export const getGetOrganizationListResponseMock = (): Organization[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.alpha({length: {min: 10, max: 20}}), name: faker.string.alpha({length: {min: 10, max: 20}}), slug: faker.string.alpha({length: {min: 10, max: 20}}), logo: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', metadata: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), locale: faker.helpers.arrayElement([faker.helpers.arrayElement(['en','it'] as const), undefined])})))
 
 export const getCreateOrganizationInvitationResponseMock = (overrideResponse: Partial<Extract<CreateOrganizationInvitation200, object>> = {}): CreateOrganizationInvitation200 => ({id: faker.string.alpha({length: {min: 10, max: 20}}), email: faker.string.alpha({length: {min: 10, max: 20}}), role: faker.string.alpha({length: {min: 10, max: 20}}), organizationId: faker.string.alpha({length: {min: 10, max: 20}}), inviterId: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.string.alpha({length: {min: 10, max: 20}}), expiresAt: faker.string.alpha({length: {min: 10, max: 20}}), createdAt: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
+
+export const getPostOrganizationCancelInvitationResponseMock = (overrideResponse: Partial<Extract<Invitation, object>> = {}): Invitation => ({id: faker.string.alpha({length: {min: 10, max: 20}}), organizationId: faker.string.alpha({length: {min: 10, max: 20}}), email: faker.string.alpha({length: {min: 10, max: 20}}), role: faker.helpers.arrayElement([faker.helpers.arrayElement(['admin','viewer'] as const), undefined]), status: faker.helpers.arrayElement(['pending','accepted','rejected','canceled'] as const), expiresAt: faker.date.past().toISOString().slice(0, 19) + 'Z', createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', inviterId: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
 export const getPostOrganizationAcceptInvitationResponseMock = (overrideResponse: Partial<Extract<PostOrganizationAcceptInvitation200, object>> = {}): PostOrganizationAcceptInvitation200 => ({invitation: faker.helpers.arrayElement([{}, undefined]), member: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
@@ -59,6 +62,8 @@ export const getGetOrganizationGetActiveMemberResponseMock = (overrideResponse: 
 export const getPostOrganizationRemoveMemberResponseMock = (overrideResponse: Partial<Extract<PostOrganizationRemoveMember200, object>> = {}): PostOrganizationRemoveMember200 => ({member: {id: faker.string.alpha({length: {min: 10, max: 20}}), userId: faker.string.alpha({length: {min: 10, max: 20}}), organizationId: faker.string.alpha({length: {min: 10, max: 20}}), role: faker.string.alpha({length: {min: 10, max: 20}})}, ...overrideResponse})
 
 export const getUpdateOrganizationMemberRoleResponseMock = (overrideResponse: Partial<Extract<Member, object>> = {}): Member => ({id: faker.string.alpha({length: {min: 10, max: 20}}), organizationId: faker.string.alpha({length: {min: 10, max: 20}}), userId: faker.string.alpha({length: {min: 10, max: 20}}), role: faker.helpers.arrayElement(['owner','admin','viewer'] as const), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', ...overrideResponse})
+
+export const getPostOrganizationLeaveResponseMock = (overrideResponse: Partial<Extract<Member, object>> = {}): Member => ({id: faker.string.alpha({length: {min: 10, max: 20}}), organizationId: faker.string.alpha({length: {min: 10, max: 20}}), userId: faker.string.alpha({length: {min: 10, max: 20}}), role: faker.helpers.arrayElement(['owner','admin','viewer'] as const), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', ...overrideResponse})
 
 export const getGetOrganizationListUserInvitationsResponseMock = (): GetOrganizationListUserInvitations200Item[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.alpha({length: {min: 10, max: 20}}), email: faker.string.alpha({length: {min: 10, max: 20}}), role: faker.string.alpha({length: {min: 10, max: 20}}), organizationId: faker.string.alpha({length: {min: 10, max: 20}}), organizationName: faker.string.alpha({length: {min: 10, max: 20}}), inviterId: faker.string.alpha({length: {min: 10, max: 20}}), teamId: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), status: faker.string.alpha({length: {min: 10, max: 20}}), expiresAt: faker.string.alpha({length: {min: 10, max: 20}}), createdAt: faker.string.alpha({length: {min: 10, max: 20}})})))
 
@@ -89,7 +94,7 @@ export const getPostOrganizationUpdateMockHandler = (overrideResponse?: Organiza
   }, options)
 }
 
-export const getPostOrganizationDeleteMockHandler = (overrideResponse?: string | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<string> | string), options?: RequestHandlerOptions) => {
+export const getPostOrganizationDeleteMockHandler = (overrideResponse?: Organization | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<Organization> | Organization), options?: RequestHandlerOptions) => {
   return http.post('*/organization/delete', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 
 
@@ -161,11 +166,13 @@ export const getCreateOrganizationInvitationMockHandler = (overrideResponse?: Cr
   }, options)
 }
 
-export const getPostOrganizationCancelInvitationMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+export const getPostOrganizationCancelInvitationMockHandler = (overrideResponse?: Invitation | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<Invitation> | Invitation), options?: RequestHandlerOptions) => {
   return http.post('*/organization/cancel-invitation', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-    return new HttpResponse(null,
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostOrganizationCancelInvitationResponseMock(),
       { status: 200
       })
   }, options)
@@ -263,11 +270,13 @@ export const getUpdateOrganizationMemberRoleMockHandler = (overrideResponse?: Me
   }, options)
 }
 
-export const getPostOrganizationLeaveMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+export const getPostOrganizationLeaveMockHandler = (overrideResponse?: Member | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<Member> | Member), options?: RequestHandlerOptions) => {
   return http.post('*/organization/leave', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-    return new HttpResponse(null,
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostOrganizationLeaveResponseMock(),
       { status: 200
       })
   }, options)

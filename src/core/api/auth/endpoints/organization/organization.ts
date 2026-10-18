@@ -96,6 +96,7 @@ import type {
   GetOrganizationListUserInvitations404,
   GetOrganizationListUserInvitations429,
   GetOrganizationListUserInvitations500,
+  Invitation,
   Member,
   Organization,
   PostOrganizationAcceptInvitation200,
@@ -348,7 +349,7 @@ export const postOrganizationDelete = (
 ) => {
 
 
-      return http<string>(
+      return http<Organization>(
       {url: `/api/auth/organization/delete`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postOrganizationDeleteBody, signal
@@ -960,7 +961,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return http<unknown>(
+      return http<Invitation>(
       {url: `/api/auth/organization/cancel-invitation`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postOrganizationCancelInvitationBody, signal
@@ -1759,7 +1760,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 ) => {
 
 
-      return http<unknown>(
+      return http<Member>(
       {url: `/api/auth/organization/leave`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postOrganizationLeaveBody, signal

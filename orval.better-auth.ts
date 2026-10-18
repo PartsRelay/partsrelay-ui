@@ -61,6 +61,14 @@ export default function betterAuth(spec: Spec): Spec {
   // The core always keeps an active company on the session
   paths['/organization/get-full-organization'].get.responses['200'] = json(ref('FullOrganization'))
   paths['/organization/update-member-role'].post.responses['200'] = json(ref('Member'))
+  paths['/organization/leave'].post.responses['200'] = json(ref('Member'))
+  paths['/organization/cancel-invitation'].post.responses['200'] = json(ref('Invitation'))
+  paths['/organization/delete'].post.responses['200'] = json(ref('Organization'))
+  paths['/update-user'].post.responses['200'] = json({
+    type: 'object',
+    properties: { status: { type: 'boolean' } },
+    required: ['status'],
+  })
   paths['/one-tap/callback'].post.responses['200'] = json({
     type: 'object',
     properties: { token: { type: 'string' }, user: ref('User') },

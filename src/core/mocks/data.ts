@@ -1,29 +1,27 @@
+import type {
+  FullMember,
+  FullOrganization,
+  Invitation,
+  MemberRole,
+  User,
+} from '@/core/api/auth/models'
+
 export const DAY = 86_400_000
 
 export const ago = (ms: number) => new Date(Date.now() - ms).toISOString()
 
+// localStorage switches: user owner|admin|viewer|new, setup pending, invitation 1
 export const setting = (name: 'user' | 'setup' | 'invitation') =>
   localStorage.getItem(`mock.${name}`)
 
-const SIGNED_OUT = 'mock.signedOut'
-
-export const mockSession = {
-  active: () => sessionStorage.getItem(SIGNED_OUT) === null,
-  start: () => sessionStorage.removeItem(SIGNED_OUT),
-  end: () => sessionStorage.setItem(SIGNED_OUT, '1'),
-}
-
-const person = (id: string, name: string, email: string) => ({
+const person = (id: string, name: string, email: string): User => ({
   id,
   name,
   email,
   emailVerified: true,
-  image: null as string | null,
   createdAt: ago(400 * DAY),
   updatedAt: ago(DAY),
 })
-
-export type Person = ReturnType<typeof person>
 
 export const people = {
   marco: person('1', 'Marco Rossi', 'marco.rossi@ricambirossi.it'),
@@ -41,32 +39,30 @@ const users = {
   new: people.newcomer,
 }
 
-export const me = () => users[setting('user') as keyof typeof users] ?? people.marco
+export const signedInAs = () => users[setting('user') as keyof typeof users] ?? people.marco
 
 export const member = (
   organizationId: string,
   id: string,
-  user: Person,
-  role: string,
+  { id: userId, name, email }: User,
+  role: MemberRole,
   createdAt: string
-) => ({
+): FullMember => ({
   id,
   organizationId,
-  userId: user.id,
+  userId,
   role,
   createdAt,
-  user,
+  user: { id: userId, name, email },
 })
-
-export type Member = ReturnType<typeof member>
 
 const invitation = (
   id: string,
   email: string,
-  role: string,
+  role: Invitation['role'],
   sentDaysAgo: number,
-  status = 'pending'
-) => ({
+  status: Invitation['status'] = 'pending'
+): Invitation => ({
   id,
   organizationId: '1',
   email,
@@ -77,32 +73,13 @@ const invitation = (
   expiresAt: ago((sentDaysAgo - 7) * DAY),
 })
 
-export type Invitation = ReturnType<typeof invitation>
-
-export type Company = {
-  organization: {
-    id: string
-    name: string
-    slug: string
-    logo: string | null
-    metadata: string
-    locale: string
-    createdAt: string
-  }
-  members: Member[]
-  invitations: Invitation[]
-}
-
-export const ricambiRossi: Company = {
-  organization: {
-    id: '1',
-    name: 'Ricambi Rossi S.r.l.',
-    slug: 'ricambi-rossi',
-    logo: null,
-    metadata: '{"setup":"done"}',
-    locale: 'en',
-    createdAt: ago(400 * DAY),
-  },
+export const ricambiRossi = (): FullOrganization => ({
+  id: '1',
+  name: 'Ricambi Rossi S.r.l.',
+  slug: 'ricambi-rossi',
+  metadata: '{"setup":"done"}',
+  locale: 'en',
+  createdAt: ago(400 * DAY),
   members: [
     member('1', '1', people.marco, 'owner', ago(400 * DAY)),
     member('1', '2', people.giulia, 'admin', ago(388 * DAY)),
@@ -117,37 +94,31 @@ export const ricambiRossi: Company = {
     invitation('3', 'p.galli@ricambirossi.it', 'viewer', 40, 'canceled'),
     invitation('2', 'm.bassi@gmail.com', 'admin', 60, 'rejected'),
   ],
-}
+})
 
-export function newCompany(owner: Person): Company {
+export function newCompany(owner: User): FullOrganization {
   const createdAt = new Date().toISOString()
 
   return {
-    organization: {
-      id: '2',
-      name: owner.name || owner.email,
-      slug: crypto.randomUUID(),
-      logo: null,
-      metadata: '{"setup":"pending"}',
-      locale: 'en',
-      createdAt,
-    },
+    id: '2',
+    name: owner.name || owner.email,
+    slug: crypto.randomUUID(),
+    metadata: '{"setup":"pending"}',
+    locale: 'en',
+    createdAt,
     members: [member('2', '10', owner, 'owner', createdAt)],
     invitations: [],
   }
 }
 
-export function officinaFerri(newMember: Person, role: string): Company {
+export function officinaFerri(newMember: User, role: MemberRole): FullOrganization {
   return {
-    organization: {
-      id: '3',
-      name: 'Officina Ferri S.r.l.',
-      slug: 'officina-ferri',
-      logo: null,
-      metadata: '{"setup":"done"}',
-      locale: 'it',
-      createdAt: ago(700 * DAY),
-    },
+    id: '3',
+    name: 'Officina Ferri S.r.l.',
+    slug: 'officina-ferri',
+    metadata: '{"setup":"done"}',
+    locale: 'it',
+    createdAt: ago(700 * DAY),
     members: [
       member('3', '20', people.stefano, 'owner', ago(700 * DAY)),
       member('3', '21', newMember, role, new Date().toISOString()),

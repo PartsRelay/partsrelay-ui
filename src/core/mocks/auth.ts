@@ -1,35 +1,122 @@
-import { http, HttpResponse, type JsonBodyType } from 'msw'
+import { HttpResponse } from 'msw'
+import {
+  getGetSessionMockHandler,
+  getSignOutMockHandler,
+  getSocialSignInMockHandler,
+  getUpdateUserMockHandler,
+} from '@/core/api/auth/endpoints/default/default.msw'
+import { getSignInWithMagicLinkMockHandler } from '@/core/api/auth/endpoints/magic-link/magic-link.msw'
+import { getPostOneTapCallbackMockHandler } from '@/core/api/auth/endpoints/one-tap/one-tap.msw'
+import {
+  getCreateOrganizationInvitationMockHandler,
+  getGetFullOrganizationMockHandler,
+  getGetOrganizationGetInvitationMockHandler,
+  getGetOrganizationListUserInvitationsMockHandler,
+  getPostOrganizationAcceptInvitationMockHandler,
+  getPostOrganizationCancelInvitationMockHandler,
+  getPostOrganizationDeleteMockHandler,
+  getPostOrganizationLeaveMockHandler,
+  getPostOrganizationRemoveMemberMockHandler,
+  getPostOrganizationUpdateMockHandler,
+  getUpdateOrganizationMemberRoleMockHandler,
+} from '@/core/api/auth/endpoints/organization/organization.msw'
+import type {
+  CreateOrganizationInvitationBody,
+  FullOrganization,
+  GetOrganizationListUserInvitations200Item,
+  Invitation,
+  MemberRole,
+  PostOrganizationAcceptInvitationBody,
+  PostOrganizationCancelInvitationBody,
+  PostOrganizationRemoveMemberBody,
+  PostOrganizationUpdateBody,
+  SocialSignInBody,
+  UpdateOrganizationMemberRoleBody,
+  UpdateUserBody,
+  User,
+} from '@/core/api/auth/models'
 import {
   ago,
-  type Company,
   DAY,
-  me,
-  mockSession,
   newCompany,
   officinaFerri,
   people,
   ricambiRossi,
   setting,
+  signedInAs,
 } from '@/core/mocks/data'
 
-let startup: Company | undefined
-let moved: Company | undefined
-let offered = true
-let nextInvitation = 100
+type World = {
+  signedIn: boolean
+  me: User
+  company: FullOrganization
+  offered: boolean
+  nextInvitation: number
+}
 
-const pendingSetup = () => setting('setup') === 'pending' || me() === people.newcomer
+const worldKey = () =>
+  `mock.world.${(['user', 'setup', 'invitation'] as const).map(setting).join('.')}`
 
-export const company = () =>
-  moved ?? (pendingSetup() ? (startup ??= newCompany(me())) : ricambiRossi)
+function freshWorld(): World {
+  const me = signedInAs()
+  const pending = setting('setup') === 'pending' || me === people.newcomer
 
-const offers = () =>
-  setting('invitation') === '1' && offered
+  return {
+    signedIn: true,
+    me,
+    company: pending ? newCompany(me) : ricambiRossi(),
+    offered: setting('invitation') === '1',
+    nextInvitation: 100,
+  }
+}
+
+// Kept in sessionStorage, sign in reloads the page
+function world<T>(change: (state: World) => T): T {
+  const saved = sessionStorage.getItem(worldKey())
+  const state: World = saved ? JSON.parse(saved) : freshWorld()
+  const result = change(state)
+  sessionStorage.setItem(worldKey(), JSON.stringify(state))
+
+  return result
+}
+
+const refuse = (status: number, code: string) =>
+  HttpResponse.json({ code, message: code }, { status })
+
+function fail(status: number, code: string): never {
+  throw refuse(status, code)
+}
+
+function signedIn(state: World) {
+  if (!state.signedIn) fail(401, 'UNAUTHORIZED')
+
+  return state
+}
+
+const myRole = ({ company, me }: World) =>
+  company.members.find(({ userId }) => userId === me.id)?.role
+
+function ownerOnly(state: World, code: string) {
+  if (myRole(state) !== 'owner') fail(403, code)
+}
+
+const MANAGES: Record<string, string[]> = { owner: ['admin', 'viewer'], admin: ['viewer'] }
+
+function managed(state: World, role: string | undefined) {
+  if (!MANAGES[myRole(state) ?? '']?.includes(role ?? '')) fail(403, 'WORKSPACE_ROLE_NOT_MANAGED')
+}
+
+const live = (invitation: Invitation) =>
+  invitation.status === 'pending' && new Date(invitation.expiresAt) > new Date()
+
+const offers = ({ offered, me }: World): GetOrganizationListUserInvitations200Item[] =>
+  offered
     ? [
         {
           id: '31',
           organizationId: '3',
           organizationName: 'Officina Ferri S.r.l.',
-          email: me().email,
+          email: me.email,
           role: 'admin',
           status: 'pending',
           inviterId: people.stefano.id,
@@ -39,35 +126,25 @@ const offers = () =>
       ]
     : []
 
-const ok = (value: JsonBodyType = { success: true }) => HttpResponse.json(value)
+// The core deletes the account, signing in again starts over
+function endAccount(state: World) {
+  state.company = newCompany(state.me)
+  state.signedIn = false
+}
 
-const refuse = (status: number, code: string) =>
-  HttpResponse.json({ code, message: code }, { status })
-
-const signedOut = () => (mockSession.active() ? null : refuse(401, 'UNAUTHORIZED'))
-
-const myRole = () => company().members.find(({ userId }) => userId === me().id)?.role
-
-const notOwner = (code: string) => (myRole() === 'owner' ? null : refuse(403, code))
-
-const MANAGES: Record<string, string[]> = { owner: ['admin', 'viewer'], admin: ['viewer'] }
-
-const unmanaged = (role: string) =>
-  MANAGES[myRole() ?? '']?.includes(role) ? null : refuse(403, 'WORKSPACE_ROLE_NOT_MANAGED')
-
-type OrganizationUpdate = { data: { name?: string; locale?: string; metadata?: object } }
+const body = <T>(request: Request) => request.json() as Promise<T>
 
 export const authMocks = [
-  http.get('*/api/auth/get-session', () =>
-    HttpResponse.json(
-      mockSession.active()
+  getGetSessionMockHandler(() =>
+    world(({ signedIn, me, company }) =>
+      signedIn
         ? {
-            user: me(),
+            user: me,
             session: {
               id: '1',
               token: 'mock',
-              userId: me().id,
-              activeOrganizationId: company().organization.id,
+              userId: me.id,
+              activeOrganizationId: company.id,
               expiresAt: ago(-7 * DAY),
               createdAt: ago(0),
               updatedAt: ago(0),
@@ -76,185 +153,203 @@ export const authMocks = [
         : null
     )
   ),
-  http.post<never, { callbackURL: string }>('*/api/auth/sign-in/social', async ({ request }) => {
-    mockSession.start()
+  getSocialSignInMockHandler(async ({ request }) => {
+    const { callbackURL } = await body<SocialSignInBody>(request)
 
-    return ok({ url: (await request.json()).callbackURL, redirect: true })
+    return world((state) => {
+      state.signedIn = true
+
+      return { url: callbackURL, redirect: true }
+    })
   }),
-  http.post('*/api/auth/sign-in/magic-link', () => ok({ status: true })),
-  http.post('*/api/auth/sign-out', () => {
-    mockSession.end()
+  getPostOneTapCallbackMockHandler(() =>
+    world((state) => {
+      state.signedIn = true
 
-    return ok()
-  }),
-  http.get('*/api/auth/organization/get-full-organization', () => {
-    const { organization, members, invitations } = company()
-
-    return signedOut() ?? ok({ ...organization, members, invitations })
-  }),
-  http.post<never, { name?: string }>('*/api/auth/update-user', async ({ request }) => {
-    const { name } = await request.json()
-    const refused = signedOut()
-    if (refused) return refused
-    if (name !== undefined) me().name = name
-
-    return ok({ status: true })
-  }),
-  http.post<never, OrganizationUpdate>('*/api/auth/organization/update', async ({ request }) => {
-    const { data } = await request.json()
-    const { organization } = company()
-    const refused = signedOut() ?? notOwner('YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION')
-    if (refused) return refused
-    if (data.locale !== undefined && !['en', 'it'].includes(data.locale)) {
-      return refuse(400, 'LOCALE_NOT_SUPPORTED')
-    }
-
-    if (data.name !== undefined) organization.name = data.name
-    if (data.locale !== undefined) organization.locale = data.locale
-    if (data.metadata !== undefined) organization.metadata = JSON.stringify(data.metadata)
-
-    return ok(organization)
-  }),
-  http.post<never, { memberId: string; role: string }>(
-    '*/api/auth/organization/update-member-role',
-    async ({ request }) => {
-      const { memberId, role } = await request.json()
-      const current = company()
-      const refused = signedOut() ?? notOwner('YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER')
-      if (refused) return refused
-
-      current.members = current.members.map((item) => {
-        if (item.id === memberId) return { ...item, role }
-
-        return role === 'owner' && item.role === 'owner' ? { ...item, role: 'admin' } : item
-      })
-
-      return ok(current.members.find((item) => item.id === memberId))
-    }
+      return { token: 'mock', user: state.me }
+    })
   ),
-  http.post<never, { memberIdOrEmail: string }>(
-    '*/api/auth/organization/remove-member',
-    async ({ request }) => {
-      const { memberIdOrEmail } = await request.json()
-      const current = company()
-      const member = current.members.find((item) => item.id === memberIdOrEmail)
-      if (signedOut()) return refuse(401, 'UNAUTHORIZED')
-      if (!member) return refuse(400, 'MEMBER_NOT_FOUND')
-      if (myRole() === 'viewer') return refuse(401, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER')
+  getSignInWithMagicLinkMockHandler({ status: true }),
+  getSignOutMockHandler(() =>
+    world((state) => {
+      state.signedIn = false
 
-      const refused = unmanaged(member.role)
-      if (refused) return refused
-
-      current.members = current.members.filter((item) => item !== member)
-      current.invitations = current.invitations.filter((item) => item.inviterId !== member.userId)
-
-      return ok({ member })
-    }
+      return { success: true }
+    })
   ),
-  http.post<never, { email: string; role: string; resend?: boolean }>(
-    '*/api/auth/organization/invite-member',
-    async ({ request }) => {
-      const { email, role, resend } = await request.json()
-      const current = company()
-      if (signedOut()) return refuse(401, 'UNAUTHORIZED')
-      if (myRole() === 'viewer') {
-        return refuse(403, 'YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION')
+  getGetFullOrganizationMockHandler(() => world((state) => signedIn(state).company)),
+  getUpdateUserMockHandler(async ({ request }) => {
+    const { name } = await body<UpdateUserBody>(request)
+
+    return world((state) => {
+      const { me, company } = signedIn(state)
+      if (name === undefined) return { status: true }
+
+      me.name = name
+      for (const { user } of company.members) if (user.id === me.id) user.name = name
+
+      return { status: true }
+    })
+  }),
+  getPostOrganizationUpdateMockHandler(async ({ request }) => {
+    const { data } = await body<PostOrganizationUpdateBody>(request)
+
+    return world((state) => {
+      const { company } = signedIn(state)
+      ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION')
+      if (data.locale != null && data.locale !== 'en' && data.locale !== 'it') {
+        fail(400, 'LOCALE_NOT_SUPPORTED')
       }
 
-      const refused = unmanaged(role)
-      if (refused) return refused
-      if (current.members.some(({ user }) => user.email === email)) {
-        return refuse(400, 'USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION')
+      if (data.name !== undefined) company.name = data.name
+      if (data.locale != null) company.locale = data.locale
+      if (data.metadata !== undefined) company.metadata = JSON.stringify(data.metadata)
+      const { members: _members, invitations: _invitations, ...organization } = company
+
+      return organization
+    })
+  }),
+  getUpdateOrganizationMemberRoleMockHandler(async ({ request }) => {
+    const { memberId, role } = await body<UpdateOrganizationMemberRoleBody & { role: MemberRole }>(
+      request
+    )
+
+    return world((state) => {
+      const { company } = signedIn(state)
+      ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER')
+      const target = company.members.find((item) => item.id === memberId)
+      if (!target) fail(400, 'MEMBER_NOT_FOUND')
+
+      // The core hands the old owner admin rights
+      if (role === 'owner') {
+        for (const item of company.members) if (item.role === 'owner') item.role = 'admin'
+      }
+      target.role = role
+      const { user: _user, ...member } = target
+
+      return member
+    })
+  }),
+  getPostOrganizationRemoveMemberMockHandler(async ({ request }) => {
+    const { memberIdOrEmail } = await body<PostOrganizationRemoveMemberBody>(request)
+
+    return world((state) => {
+      const { company } = signedIn(state)
+      const target = company.members.find((item) => item.id === memberIdOrEmail)
+      if (!target) fail(400, 'MEMBER_NOT_FOUND')
+      if (myRole(state) === 'viewer') fail(401, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER')
+      managed(state, target.role)
+
+      company.members = company.members.filter((item) => item !== target)
+      company.invitations = company.invitations.filter((item) => item.inviterId !== target.userId)
+      const { user: _user, ...member } = target
+
+      return { member }
+    })
+  }),
+  getCreateOrganizationInvitationMockHandler(async ({ request }) => {
+    const { email, role, resend } = await body<
+      CreateOrganizationInvitationBody & { role: Invitation['role'] }
+    >(request)
+
+    return world((state) => {
+      const { company, me } = signedIn(state)
+      if (myRole(state) === 'viewer') {
+        fail(403, 'YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION')
+      }
+      managed(state, role)
+      if (company.members.some(({ user }) => user.email === email)) {
+        fail(400, 'USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION')
       }
 
+      // Like the core, an expired invitation no longer counts
       const expiresAt = ago(-7 * DAY)
-      const pending = current.invitations.find(
-        (item) => item.email === email && item.status === 'pending'
-      )
-      if (pending && !resend) return refuse(400, 'USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION')
-      if (pending) return ok(Object.assign(pending, { expiresAt }))
+      const pending = company.invitations.find((item) => item.email === email && live(item))
+      if (pending && !resend) fail(400, 'USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION')
+      if (pending) return { ...Object.assign(pending, { expiresAt }), role: pending.role ?? role }
 
-      const invitation = {
-        id: String(nextInvitation++),
-        organizationId: current.organization.id,
+      const invitation: Invitation = {
+        id: String(state.nextInvitation++),
+        organizationId: company.id,
         email,
         role,
         status: 'pending',
-        inviterId: me().id,
+        inviterId: me.id,
         createdAt: new Date().toISOString(),
         expiresAt,
       }
-      current.invitations.push(invitation)
+      company.invitations.push(invitation)
 
-      return ok(invitation)
-    }
-  ),
-  http.post<never, { invitationId: string }>(
-    '*/api/auth/organization/cancel-invitation',
-    async ({ request }) => {
-      const { invitationId } = await request.json()
-      const invitation = company().invitations.find((item) => item.id === invitationId)
-      if (signedOut()) return refuse(401, 'UNAUTHORIZED')
-      if (!invitation) return refuse(400, 'INVITATION_NOT_FOUND')
+      return { ...invitation, role }
+    })
+  }),
+  getPostOrganizationCancelInvitationMockHandler(async ({ request }) => {
+    const { invitationId } = await body<PostOrganizationCancelInvitationBody>(request)
 
-      const refused = unmanaged(invitation.role)
-      if (refused) return refused
+    return world((state) => {
+      const { company } = signedIn(state)
+      const invitation = company.invitations.find((item) => item.id === invitationId)
+      if (!invitation) fail(400, 'INVITATION_NOT_FOUND')
+      managed(state, invitation.role)
       invitation.status = 'canceled'
 
-      return ok(invitation)
-    }
+      return invitation
+    })
+  }),
+  getPostOrganizationDeleteMockHandler(() =>
+    world((state) => {
+      const { company } = signedIn(state)
+      ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION')
+      const { members: _members, invitations: _invitations, ...organization } = company
+      endAccount(state)
+
+      return organization
+    })
   ),
-  http.post('*/api/auth/organization/delete', () => {
-    const { organization } = company()
-    const refused = signedOut() ?? notOwner('YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION')
-    if (refused) return refused
+  getPostOrganizationLeaveMockHandler(() =>
+    world((state) => {
+      const { company, me } = signedIn(state)
+      const target = company.members.find(({ userId }) => userId === me.id)
+      if (!target) fail(400, 'MEMBER_NOT_FOUND')
+      if (target.role === 'owner') fail(400, 'YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER')
+      const { user: _user, ...member } = target
+      endAccount(state)
 
-    // Accounts are gone, signing in again starts over
-    moved = newCompany(me())
-    mockSession.end()
-
-    return ok(organization)
-  }),
-  http.post('*/api/auth/organization/leave', () => {
-    const current = company()
-    const member = current.members.find(({ userId }) => userId === me().id)
-    const refused = signedOut()
-    if (refused) return refused
-    if (member?.role === 'owner') {
-      return refuse(400, 'YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER')
-    }
-
-    current.members = current.members.filter((item) => item !== member)
-    current.invitations = current.invitations.filter((item) => item.inviterId !== me().id)
-    // The core deletes the account that leaves
-    moved = newCompany(me())
-    mockSession.end()
-
-    return ok(member)
-  }),
-  http.get('*/api/auth/organization/list-user-invitations', () => signedOut() ?? ok(offers())),
-  http.get('*/api/auth/organization/get-invitation', ({ request }) => {
+      return member
+    })
+  ),
+  getGetOrganizationListUserInvitationsMockHandler(() => world((state) => offers(signedIn(state)))),
+  getGetOrganizationGetInvitationMockHandler(({ request }) => {
     const id = new URL(request.url).searchParams.get('id')
-    const invitation = offers().find((item) => item.id === id)
-    if (!mockSession.active()) return refuse(401, 'UNAUTHORIZED')
-    if (invitation) return ok({ ...invitation, inviterEmail: people.stefano.email })
 
-    return company().invitations.some((item) => item.id === id && item.status === 'pending')
-      ? refuse(403, 'YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION')
-      : HttpResponse.json({ message: 'Invitation not found!' }, { status: 400 })
+    return world((state) => {
+      const { company } = signedIn(state)
+      const offer = offers(state).find((item) => item.id === id)
+      if (offer) {
+        return { ...offer, organizationSlug: 'officina-ferri', inviterEmail: people.stefano.email }
+      }
+
+      if (company.invitations.some((item) => item.id === id && live(item))) {
+        fail(403, 'YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION')
+      }
+      throw HttpResponse.json({ message: 'Invitation not found!' }, { status: 400 })
+    })
   }),
-  http.post<never, { invitationId: string }>(
-    '*/api/auth/organization/accept-invitation',
-    async ({ request }) => {
-      const { invitationId } = await request.json()
-      const invitation = offers().find((item) => item.id === invitationId)
-      if (!invitation) return refuse(400, 'INVITATION_NOT_FOUND')
-      if (company().members.length > 1) return refuse(403, 'WORKSPACE_NOT_RELEASABLE')
+  getPostOrganizationAcceptInvitationMockHandler(async ({ request }) => {
+    const { invitationId } = await body<PostOrganizationAcceptInvitationBody>(request)
 
-      offered = false
-      moved = officinaFerri(me(), invitation.role)
+    return world((state) => {
+      const invitation = offers(signedIn(state)).find((item) => item.id === invitationId)
+      if (!invitation) fail(400, 'INVITATION_NOT_FOUND')
+      if (state.company.members.length > 1) fail(403, 'WORKSPACE_NOT_RELEASABLE')
 
-      return ok({ invitation: { ...invitation, status: 'accepted' }, member: moved.members.at(-1) })
-    }
-  ),
+      state.offered = false
+      state.company = officinaFerri(state.me, invitation.role as MemberRole)
+
+      return {
+        invitation: { ...invitation, status: 'accepted' },
+        member: { ...state.company.members.at(-1) },
+      }
+    })
+  }),
 ]

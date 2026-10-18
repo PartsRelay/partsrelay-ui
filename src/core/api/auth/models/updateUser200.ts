@@ -5,8 +5,7 @@
  * API Reference for your Better Auth Instance
  * OpenAPI spec version: 1.1.0
  */
-import type { User } from './user';
 
 export type UpdateUser200 = {
-  user?: User;
+  status: boolean;
 };
