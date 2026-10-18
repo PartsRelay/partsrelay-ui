@@ -2,8 +2,9 @@ import { QueryClient } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { authClient } from '@/modules/core/auth/auth.client'
 import { sessionQuery } from '@/modules/core/auth/session.query'
-import { loadAccount, watchAccount } from '@/modules/core/workspace/account'
-import { workspaceQuery } from '@/modules/core/workspace/workspace.query'
+import { companyFixture } from '@/modules/core/testing/fixtures'
+import { loadAccount, watchAccount, watchCompanyLocale } from '@/modules/core/workspace/account'
+import { workspaceKeys, workspaceQuery } from '@/modules/core/workspace/workspace.query'
 
 vi.mock('@/modules/core/auth/auth.client', () => ({
   authClient: { getSession: vi.fn(), organization: { getFullOrganization: vi.fn() } },
@@ -81,6 +82,39 @@ describe('watchAccount', () => {
     client.setQueryData(sessionQuery.queryKey, session('2'))
     expect(onChange).toHaveBeenCalledTimes(1)
 
+    stop()
+  })
+})
+
+describe('watchCompanyLocale', () => {
+  it('follows the company language while signed in, else the browser', () => {
+    const client = new QueryClient()
+    const onChange = vi.fn()
+    const stop = watchCompanyLocale(client, onChange)
+
+    client.setQueryData(sessionQuery.queryKey, session('101'))
+    client.setQueryData(workspaceKeys.all, { ...companyFixture(), setup: 'pending' })
+    expect(onChange).not.toHaveBeenCalled()
+
+    client.setQueryData(workspaceKeys.all, companyFixture())
+    client.setQueryData(workspaceKeys.all, { ...companyFixture(), name: 'Rossi Ricambi' })
+    client.setQueryData(workspaceKeys.all, { ...companyFixture(), locale: 'en' })
+    client.clear()
+
+    expect(onChange.mock.calls).toEqual([['it'], ['en'], [null]])
+    stop()
+  })
+
+  it('drops the company language when the session ends', () => {
+    const client = new QueryClient()
+    client.setQueryData(sessionQuery.queryKey, session('101'))
+    client.setQueryData(workspaceKeys.all, companyFixture())
+    const onChange = vi.fn()
+    const stop = watchCompanyLocale(client, onChange)
+
+    client.setQueryData(sessionQuery.queryKey, null)
+
+    expect(onChange).toHaveBeenCalledWith(null)
     stop()
   })
 })

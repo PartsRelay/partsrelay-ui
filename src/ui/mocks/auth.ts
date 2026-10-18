@@ -204,6 +204,17 @@ export const authMocks = [
       return ok(invitation)
     }
   ),
+  http.post('*/api/auth/organization/delete', () => {
+    const { organization } = company()
+    const refused = signedOut() ?? notOwner('YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION')
+    if (refused) return refused
+
+    // Accounts are gone, signing in again starts over
+    moved = newCompany(me())
+    mockSession.end()
+
+    return ok(organization)
+  }),
   http.get('*/api/auth/organization/list-user-invitations', () => signedOut() ?? ok(offers())),
   http.get('*/api/auth/organization/get-invitation', ({ request }) => {
     const id = new URL(request.url).searchParams.get('id')
