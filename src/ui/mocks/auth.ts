@@ -215,6 +215,23 @@ export const authMocks = [
 
     return ok(organization)
   }),
+  http.post('*/api/auth/organization/leave', () => {
+    const current = company()
+    const member = current.members.find(({ userId }) => userId === me().id)
+    const refused = signedOut()
+    if (refused) return refused
+    if (member?.role === 'owner') {
+      return refuse(400, 'YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER')
+    }
+
+    current.members = current.members.filter((item) => item !== member)
+    current.invitations = current.invitations.filter((item) => item.inviterId !== me().id)
+    // The core deletes the account that leaves
+    moved = newCompany(me())
+    mockSession.end()
+
+    return ok(member)
+  }),
   http.get('*/api/auth/organization/list-user-invitations', () => signedOut() ?? ok(offers())),
   http.get('*/api/auth/organization/get-invitation', ({ request }) => {
     const id = new URL(request.url).searchParams.get('id')
