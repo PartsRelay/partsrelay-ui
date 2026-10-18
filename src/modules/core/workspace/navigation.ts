@@ -41,8 +41,9 @@ export function canOpen(page: Page | null, permissions: Permissions) {
   return true
 }
 
-export function homePath(permissions: Permissions) {
-  return permissions.viewTeam ? pagePaths.team : pagePaths.profile
+// Every role can open the contacts
+export function homePath() {
+  return pagePaths.contacts
 }
 
 export function navigation(permissions: Permissions, current: Page | null) {

@@ -94,10 +94,8 @@ describe('navigation', () => {
     expect(canOpen(null, permissionsOf('103'))).toBe(true)
   })
 
-  it('starts managers on the team and viewers on their profile', () => {
-    expect(homePath(permissionsOf('101'))).toBe('/team')
-    expect(homePath(permissionsOf('102'))).toBe('/team')
-    expect(homePath(permissionsOf('103'))).toBe('/profile')
+  it('starts every role on the contacts', () => {
+    expect(homePath()).toBe('/contacts')
   })
 
   it('builds the breadcrumb of every page', () => {
