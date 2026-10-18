@@ -20,6 +20,9 @@
     "cancel": "Annulla",
     "typeToConfirm": "Scrivi {{text}} per confermare"
   },
+  "validation": {
+    "tooLong": "Usa al massimo {{max}} caratteri."
+  },
   "errors": {
     "UNAUTHORIZED_ACCESS": "La sessione è scaduta, accedi di nuovo.",
     "AUTHORIZATION_FAILURE": "Non hai i permessi per farlo.",

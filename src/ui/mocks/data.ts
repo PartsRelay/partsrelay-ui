@@ -55,7 +55,7 @@ export const member = (
   userId: user.id,
   role,
   createdAt,
-  user: { id: user.id, name: user.name, email: user.email, image: user.image },
+  user,
 })
 
 export type Member = ReturnType<typeof member>

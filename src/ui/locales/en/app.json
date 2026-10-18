@@ -20,6 +20,9 @@
     "cancel": "Cancel",
     "typeToConfirm": "Type {{text}} to confirm"
   },
+  "validation": {
+    "tooLong": "Use at most {{max}} characters."
+  },
   "errors": {
     "UNAUTHORIZED_ACCESS": "Your session has expired, sign in again.",
     "AUTHORIZATION_FAILURE": "You are not allowed to do this.",

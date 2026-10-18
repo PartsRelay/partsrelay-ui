@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppCompanyRouteImport } from './routes/_app/company'
@@ -24,6 +25,11 @@ const authRouteRoute = authRouteRouteImport.update({
 } as any)
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
@@ -60,6 +66,7 @@ const authInvitationsInvitationIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/setup': typeof SetupRoute
   '/login': typeof authLoginRoute
   '/company': typeof AppCompanyRoute
   '/profile': typeof AppProfileRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
 }
 export interface FileRoutesByTo {
+  '/setup': typeof SetupRoute
   '/login': typeof authLoginRoute
   '/company': typeof AppCompanyRoute
   '/profile': typeof AppProfileRoute
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(auth)': typeof authRouteRouteWithChildren
   '/_app': typeof AppRouteRouteWithChildren
+  '/setup': typeof SetupRoute
   '/(auth)/login': typeof authLoginRoute
   '/_app/company': typeof AppCompanyRoute
   '/_app/profile': typeof AppProfileRoute
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/setup'
     | '/login'
     | '/company'
     | '/profile'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/invitations/$invitationId'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/setup'
     | '/login'
     | '/company'
     | '/profile'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/(auth)'
     | '/_app'
+    | '/setup'
     | '/(auth)/login'
     | '/_app/company'
     | '/_app/profile'
@@ -117,6 +129,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   authRouteRoute: typeof authRouteRouteWithChildren
   AppRouteRoute: typeof AppRouteRouteWithChildren
+  SetupRoute: typeof SetupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -133,6 +146,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/login': {
@@ -215,6 +235,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   authRouteRoute: authRouteRouteWithChildren,
   AppRouteRoute: AppRouteRouteWithChildren,
+  SetupRoute: SetupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

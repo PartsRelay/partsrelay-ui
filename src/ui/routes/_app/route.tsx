@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { requireSession, type Session, sessionQuery } from '@/modules/core/auth/session.query'
 import { loadAccount } from '@/modules/core/workspace/account'
 import { canOpen, pageAt } from '@/modules/core/workspace/navigation'
-import { findMe } from '@/modules/core/workspace/workspace'
+import { findMe, needsSetup } from '@/modules/core/workspace/workspace'
 import { workspaceQuery } from '@/modules/core/workspace/workspace.query'
 import { AccessDenied } from '@/modules/ui/app/access-denied'
 import { AppHeader } from '@/modules/ui/app/app-header'
@@ -18,7 +18,8 @@ export const Route = createFileRoute('/_app')({
     const { session, redirect: login } = await requireSession(context.queryClient, location.href)
     if (login) throw redirect(login)
 
-    const { me } = await loadAccount(context.queryClient, session.user.id)
+    const { workspace, me } = await loadAccount(context.queryClient, session.user.id)
+    if (needsSetup(workspace, me)) throw redirect({ to: '/setup' })
 
     return { me }
   },

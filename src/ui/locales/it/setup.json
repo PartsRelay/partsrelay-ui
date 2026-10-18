@@ -1,0 +1,28 @@
+{
+  "setup": {
+    "title": "Configura la tua azienda",
+    "description": "Dai un nome alla tua azienda e scegli la sua lingua. Il proprietario può cambiarli in seguito.",
+    "form": {
+      "name": "Nome dell'azienda",
+      "nameHint": "È il nome che vedrà il tuo team.",
+      "language": "Lingua dell'azienda",
+      "languageHint": "Parts Relay la usa nell'app, nelle email e nelle risposte WhatsApp.",
+      "userName": "Il tuo nome",
+      "userNameHint": "Il tuo team lo vede accanto alla tua email.",
+      "submit": "Continua"
+    },
+    "errors": {
+      "nameRequired": "Inserisci il nome dell'azienda.",
+      "userNameRequired": "Inserisci il tuo nome."
+    },
+    "invitation": {
+      "title": "Hai un invito per entrare in {{company}}",
+      "description": "Accetta l'invito per lavorare in quell'azienda invece di configurarne una tua.",
+      "open": "Apri l'invito"
+    },
+    "account": {
+      "signedInAs": "Accesso effettuato come {{email}}",
+      "signOut": "Esci"
+    }
+  }
+}

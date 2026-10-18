@@ -45,6 +45,12 @@ const refuse = (status: number, code: string) =>
 
 const signedOut = () => (mockSession.active() ? null : refuse(401, 'UNAUTHORIZED'))
 
+const myRole = () => company().members.find(({ userId }) => userId === me().id)?.role
+
+const notOwner = (code: string) => (myRole() === 'owner' ? null : refuse(403, code))
+
+type OrganizationUpdate = { data: { name?: string; locale?: string; metadata?: object } }
+
 export const authMocks = [
   http.get('*/api/auth/get-session', () =>
     HttpResponse.json(
@@ -80,6 +86,30 @@ export const authMocks = [
 
     return signedOut() ?? ok({ ...organization, members, invitations })
   }),
+  http.post<never, { name?: string }>('*/api/auth/update-user', async ({ request }) => {
+    const { name } = await request.json()
+    const refused = signedOut()
+    if (refused) return refused
+    if (name !== undefined) me().name = name
+
+    return ok({ status: true })
+  }),
+  http.post<never, OrganizationUpdate>('*/api/auth/organization/update', async ({ request }) => {
+    const { data } = await request.json()
+    const { organization } = company()
+    const refused = signedOut() ?? notOwner('YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION')
+    if (refused) return refused
+    if (data.locale !== undefined && !['en', 'it'].includes(data.locale)) {
+      return refuse(400, 'LOCALE_NOT_SUPPORTED')
+    }
+
+    if (data.name !== undefined) organization.name = data.name
+    if (data.locale !== undefined) organization.locale = data.locale
+    if (data.metadata !== undefined) organization.metadata = JSON.stringify(data.metadata)
+
+    return ok(organization)
+  }),
+  http.get('*/api/auth/organization/list-user-invitations', () => signedOut() ?? ok(offers())),
   http.get('*/api/auth/organization/get-invitation', ({ request }) => {
     const id = new URL(request.url).searchParams.get('id')
     const invitation = offers().find((item) => item.id === id)
