@@ -30,20 +30,21 @@ bun run build
 bun run test
 bun run check
 bun run fix
-OPENAPI_URL=http://localhost:3333/openapi.json bun run generate
+bun run generate
 ```
 
-`generate` reads the OpenAPI of a running core in development and rewrites the client, the query hooks and the mocks.
+`generate` reads the OpenAPI of the core running on http://localhost:3333, or of `OPENAPI_STAGING_URL` when no core runs locally, and rewrites the client, the query hooks and the mocks.
 
 ## Environment
 
-Variables are validated at startup with T3 env in `src/core/config/env.ts`.
+`VITE_` variables are validated at startup with T3 env in `src/core/config/env.ts`.
 
-| Variable                | Default | Content                                                        |
-| ----------------------- | ------- | -------------------------------------------------------------- |
-| `VITE_API_URL`          | empty   | Core origin, empty uses the same origin                        |
-| `VITE_API_MOCKS`        | `true`  | `false` turns the MSW mocks off in development                 |
-| `VITE_GOOGLE_CLIENT_ID` | empty   | Google client id of the core, turns Google One Tap on when set |
+| Variable                | Default | Content                                                                  |
+| ----------------------- | ------- | ------------------------------------------------------------------------ |
+| `VITE_API_URL`          | empty   | Core origin, empty uses the same origin                                  |
+| `VITE_API_MOCKS`        | `true`  | `false` turns the MSW mocks off in development                           |
+| `VITE_GOOGLE_CLIENT_ID` | empty   | Google client id of the core, turns Google One Tap on when set           |
+| `OPENAPI_STAGING_URL`   | empty   | OpenAPI URL of the staging core, used by `generate` without a local core |
 
 ## Layout
 
