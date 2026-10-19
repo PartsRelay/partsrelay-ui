@@ -2,8 +2,6 @@ import type { Message } from '@/core/message'
 
 type NoticeFn = (variables: never, data: never) => Message | null
 
-export type Notice = { tone: 'success' | 'info' | 'error'; message: Message }
-
 export type NoticeMeta = { notice?: Message | NoticeFn; silent?: boolean }
 
 declare module '@tanstack/query-core' {
