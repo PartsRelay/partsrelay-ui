@@ -16,8 +16,6 @@ export const authClient = createAuthClient({
     // One Tap only starts with a client id, see startOneTap
     oneTapClient({
       clientId: env.VITE_GOOGLE_CLIENT_ID ?? '',
-      autoSelect: false,
-      cancelOnTapOutside: true,
       context: 'signin',
       promptOptions: { fedCM: true },
     }),

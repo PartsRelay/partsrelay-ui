@@ -10,8 +10,14 @@ type GoogleWindow = Window & { google?: { accounts: { id: { cancel: () => void }
 export function startOneTap({ onSuccess, onError }: OneTapHandlers) {
   if (!env.VITE_GOOGLE_CLIENT_ID) return
 
-  // fetchOptions keeps the client from redirecting
-  authClient.oneTap({ fetchOptions: { onSuccess: () => onSuccess() } }).catch(onError)
+  authClient
+    .oneTap({
+      autoSelect: false,
+      cancelOnTapOutside: true,
+      // fetchOptions keeps the client from redirecting
+      fetchOptions: { onSuccess: () => onSuccess() },
+    })
+    .catch(onError)
 }
 
 export function cancelOneTap() {

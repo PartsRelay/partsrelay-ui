@@ -193,6 +193,7 @@ describe('one tap', () => {
 
     await vi.waitFor(() => expect(onSuccess).toHaveBeenCalledOnce())
     expect(onError).not.toHaveBeenCalled()
+    expect(oneTap.mock.calls[0]![0]).toMatchObject({ autoSelect: false, cancelOnTapOutside: true })
     expect(oneTap.mock.calls[0]![0]).not.toHaveProperty('callbackURL')
   })
 
