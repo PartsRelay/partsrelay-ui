@@ -1,15 +1,14 @@
 import { QueryClient } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { http } from '@/core/http/client'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { organizationFixture } from '@/core/testing/fixtures'
 import { loadAccount, watchAccount, watchCompanyLocale } from '@/modules/workspaces/core/account'
 import { workspaceKey, workspaceQuery } from '@/modules/workspaces/core/workspace.query'
 
-// The generated query calls the mutator, so the test answers there
-vi.mock('@/core/http/client', () => ({ http: vi.fn() }))
+vi.mock('@/modules/auth/core/auth.client', () => import('@/core/testing/auth-client'))
 
-const fetchOrganization = vi.mocked(http)
+const fetchOrganization = vi.mocked(authClient.organization.getFullOrganization)
 
 function organization(userId: string) {
   return {

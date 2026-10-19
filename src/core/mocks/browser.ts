@@ -1,8 +1,8 @@
 import { setupWorker } from 'msw/browser'
-import * as authApiMocks from '@/core/api/auth/endpoints/index.msw'
 import * as restApiMocks from '@/core/api/rest/endpoints/index.msw'
 import { authMocks } from '@/core/mocks/auth'
 
-const generated = [...Object.values(authApiMocks), ...Object.values(restApiMocks)]
+const generated = Object.values(restApiMocks).flatMap((mock) => mock())
 
-export const worker = setupWorker(...authMocks, ...generated.flatMap((mock) => mock()))
+// The stateful Better Auth mocks first, then the generated REST ones
+export const worker = setupWorker(...authMocks, ...generated)

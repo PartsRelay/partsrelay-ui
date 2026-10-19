@@ -2,15 +2,11 @@ import type { QueryClient } from '@tanstack/query-core'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Navigate, Outlet, redirect, useLocation } from '@tanstack/react-router'
 import { useEffect, useMemo } from 'react'
-import {
-  requireSession,
-  type Session,
-  sessionSuspenseQuery,
-} from '@/modules/auth/core/session.query'
+import { requireSession, type Session, sessionQuery } from '@/modules/auth/core/session.query'
 import { loadAccount } from '@/modules/workspaces/core/account'
 import { canOpen, homePath, pageAt } from '@/modules/workspaces/core/navigation'
 import { findMe, type Me, needsSetup } from '@/modules/workspaces/core/workspace'
-import { workspaceSuspenseQuery } from '@/modules/workspaces/core/workspace.query'
+import { workspaceQuery } from '@/modules/workspaces/core/workspace.query'
 import { AccessDenied } from '@/modules/workspaces/ui/access-denied'
 import { AppHeader } from '@/modules/workspaces/ui/app-header'
 import { AppSidebar } from '@/modules/workspaces/ui/app-sidebar'
@@ -34,7 +30,7 @@ export function redirectHome({ context }: { context: { me: Me } }) {
 }
 
 export function AppLayout() {
-  const { data: session } = useSuspenseQuery(sessionSuspenseQuery)
+  const { data: session } = useSuspenseQuery(sessionQuery)
 
   return session ? <SignedIn session={session} /> : <LoginRedirect />
 }
@@ -46,7 +42,7 @@ function LoginRedirect() {
 }
 
 function SignedIn({ session }: { session: NonNullable<Session> }) {
-  const { data: workspace } = useSuspenseQuery(workspaceSuspenseQuery)
+  const { data: workspace } = useSuspenseQuery(workspaceQuery)
   const account = useMemo(() => {
     const me = findMe(workspace, session.user.id)
 

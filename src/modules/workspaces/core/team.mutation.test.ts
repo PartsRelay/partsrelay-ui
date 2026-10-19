@@ -1,11 +1,6 @@
 import { MutationObserver, QueryClient } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import {
-  createOrganizationInvitation,
-  getFullOrganization,
-  postOrganizationRemoveMember,
-  updateOrganizationMemberRole,
-} from '@/core/api/auth/endpoints/organization/organization'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { resolveNotice } from '@/core/notice'
 import {
@@ -17,20 +12,9 @@ import {
 import { authError, companyFixture, organizationFixture } from '@/core/testing/fixtures'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
-vi.mock('@/core/api/auth/endpoints/organization/organization', async (original) => ({
-  ...(await original()),
-  getFullOrganization: vi.fn(),
-  updateOrganizationMemberRole: vi.fn(),
-  postOrganizationRemoveMember: vi.fn(),
-  createOrganizationInvitation: vi.fn(),
-}))
+vi.mock('@/modules/auth/core/auth.client', () => import('@/core/testing/auth-client'))
 
-const organization = {
-  getFullOrganization: vi.mocked(getFullOrganization),
-  updateMemberRole: vi.mocked(updateOrganizationMemberRole),
-  removeMember: vi.mocked(postOrganizationRemoveMember),
-  inviteMember: vi.mocked(createOrganizationInvitation),
-}
+const organization = vi.mocked(authClient.organization)
 
 function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })

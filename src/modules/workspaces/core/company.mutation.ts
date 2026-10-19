@@ -1,8 +1,5 @@
 import type { MutationOptions } from '@tanstack/query-core'
-import {
-  postOrganizationDelete,
-  postOrganizationUpdate,
-} from '@/core/api/auth/endpoints/organization/organization'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { message } from '@/core/message'
 import { optimistic, type Snapshot } from '@/core/optimistic'
 import { sessionQuery } from '@/modules/auth/core/session.query'
@@ -12,7 +9,7 @@ import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
 export const renameCompanyMutation = {
   mutationKey: ['company', 'rename'],
-  mutationFn: (name: string) => postOrganizationUpdate({ data: { name } }),
+  mutationFn: (name: string) => authClient.organization.update({ data: { name } }),
   ...optimistic<FullOrganization, string>(workspaceKey, (organization, name) => ({
     ...organization,
     name,
@@ -22,7 +19,7 @@ export const renameCompanyMutation = {
 
 export const changeLanguageMutation = {
   mutationKey: ['company', 'language'],
-  mutationFn: (locale: Locale) => postOrganizationUpdate({ data: { locale } }),
+  mutationFn: (locale: Locale) => authClient.organization.update({ data: { locale } }),
   ...optimistic<FullOrganization, Locale>(workspaceKey, (organization, locale) => ({
     ...organization,
     locale,
@@ -36,7 +33,7 @@ export const changeLanguageMutation = {
 export function deleteCompanyMutation(workspace: Workspace) {
   return {
     mutationKey: ['company', 'delete', workspace.id],
-    mutationFn: () => postOrganizationDelete({ organizationId: workspace.id }),
+    mutationFn: () => authClient.organization.delete({ organizationId: workspace.id }),
     onSuccess: (_data, _variables, _result, { client }) => {
       client.clear()
       client.setQueryData(sessionQuery.queryKey, null)

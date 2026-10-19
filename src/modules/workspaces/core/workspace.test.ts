@@ -126,7 +126,7 @@ describe('workspace', () => {
     id: '7',
     name: 'Officina',
     slug: 'officina',
-    createdAt: '2026-10-01T08:00:00.000Z',
+    createdAt: new Date('2026-10-01T08:00:00.000Z'),
     locale: 'it',
     members: [
       {
@@ -134,7 +134,7 @@ describe('workspace', () => {
         organizationId: '7',
         role: 'owner',
         userId: '10',
-        createdAt: '2026-10-01T08:00:00.000Z',
+        createdAt: new Date('2026-10-01T08:00:00.000Z'),
         user: { id: '10', email: 'a@b.it', name: '', image: undefined },
       },
     ],
@@ -146,8 +146,8 @@ describe('workspace', () => {
         role: 'unknown' as never,
         status: 'pending',
         inviterId: '10',
-        expiresAt: '2026-10-20T08:00:00.000Z',
-        createdAt: '2026-10-13T08:00:00.000Z',
+        expiresAt: new Date('2026-10-20T08:00:00.000Z'),
+        createdAt: new Date('2026-10-13T08:00:00.000Z'),
       },
     ],
   }

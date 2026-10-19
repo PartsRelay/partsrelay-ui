@@ -1,9 +1,6 @@
 import { MutationObserver, QueryClient } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import {
-  postOrganizationDelete,
-  postOrganizationUpdate,
-} from '@/core/api/auth/endpoints/organization/organization'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { createCompanyNameForm, deleteCompanyConfirm } from '@/modules/workspaces/core/company'
 import {
@@ -20,13 +17,9 @@ import { authError, companyFixture, organizationFixture } from '@/core/testing/f
 import { toWorkspace } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
-vi.mock('@/core/api/auth/endpoints/organization/organization', async (original) => ({
-  ...(await original()),
-  postOrganizationUpdate: vi.fn(),
-  postOrganizationDelete: vi.fn(),
-}))
+vi.mock('@/modules/auth/core/auth.client', () => import('@/core/testing/auth-client'))
 
-const update = vi.mocked(postOrganizationUpdate)
+const update = vi.mocked(authClient.organization.update)
 
 function cached() {
   const client = new QueryClient()
@@ -124,11 +117,11 @@ describe('delete company', () => {
 
   it('signs everyone out of the cache once deleted', async () => {
     const { client, workspace } = cached()
-    vi.mocked(postOrganizationDelete).mockResolvedValue({} as never)
+    vi.mocked(authClient.organization.delete).mockResolvedValue({} as never)
 
     await new MutationObserver(client, deleteCompanyMutation(companyFixture())).mutate()
 
-    expect(postOrganizationDelete).toHaveBeenCalledWith({ organizationId: '1' })
+    expect(authClient.organization.delete).toHaveBeenCalledWith({ organizationId: '1' })
     expect(workspace()).toBeUndefined()
     expect(client.getQueryData(sessionQuery.queryKey)).toBeNull()
   })

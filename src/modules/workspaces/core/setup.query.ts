@@ -1,5 +1,7 @@
-import { getGetOrganizationListUserInvitationsQueryOptions } from '@/core/api/auth/endpoints/organization/organization'
+import { authClient } from '@/modules/auth/core/auth.client'
 
-export const userInvitationsQuery = getGetOrganizationListUserInvitationsQueryOptions({
-  query: { meta: { silent: true } },
-})
+export const userInvitationsQuery = {
+  queryKey: ['setup', 'invitations'] as const,
+  queryFn: () => authClient.organization.listUserInvitations(),
+  meta: { silent: true },
+}

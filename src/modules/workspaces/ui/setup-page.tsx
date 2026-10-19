@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/query-core'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { getRouteApi, Navigate, redirect } from '@tanstack/react-router'
-import { requireSession, sessionSuspenseQuery } from '@/modules/auth/core/session.query'
+import { requireSession, sessionQuery } from '@/modules/auth/core/session.query'
 import { loadAccount } from '@/modules/workspaces/core/account'
 import { SetupLayout } from '@/modules/workspaces/ui/setup-layout'
 import { WorkspaceForm } from '@/modules/workspaces/ui/workspace-form'
@@ -22,7 +22,7 @@ export async function requireSetupOwner({ context, location }: SetupGuard) {
 
 export function SetupPage() {
   const { session, workspace } = route.useRouteContext()
-  const { data: current } = useSuspenseQuery(sessionSuspenseQuery)
+  const { data: current } = useSuspenseQuery(sessionQuery)
 
   if (!current) return <Navigate to="/login" replace />
 

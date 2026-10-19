@@ -16,30 +16,21 @@ async function coreUrl() {
 
 const core = await coreUrl()
 
-const output = (name: string): OutputOptions => ({
+// Better Auth has its own client, Orval covers the REST API
+const output: OutputOptions = {
   client: 'react-query',
   httpClient: 'axios',
   mode: 'tags-split',
-  target: `./src/core/api/${name}/endpoints`,
-  schemas: `./src/core/api/${name}/models`,
+  target: './src/core/api/rest/endpoints',
+  schemas: './src/core/api/rest/models',
   clean: true,
   mock: { indexMockFiles: true, generators: [{ type: 'msw' }] },
   override: {
     mutator: { path: './src/core/http/client.ts', name: 'http' },
     query: { useSuspenseQuery: true, signal: true },
   },
-})
+}
 
 export default defineConfig({
-  rest: {
-    input: `${core}/openapi.json`,
-    output: output('rest'),
-  },
-  auth: {
-    input: {
-      target: `${core}/api/auth/open-api/generate-schema`,
-      override: { transformer: './orval.better-auth.ts' },
-    },
-    output: { ...output('auth'), baseUrl: '/api/auth' },
-  },
+  rest: { input: `${core}/openapi.json`, output },
 })

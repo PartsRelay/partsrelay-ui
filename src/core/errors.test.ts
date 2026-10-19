@@ -1,55 +1,74 @@
 import { describe, expect, it } from 'vite-plus/test'
-import { errorCode, errorMessage, errorNotice, errorStatus, sessionEnded } from '@/core/errors'
+import {
+  errorCode,
+  errorMessage,
+  errorNotice,
+  errorStatus,
+  isGenericCode,
+  sessionEnded,
+  toAppError,
+} from '@/core/errors'
 import { message, messageKeys } from '@/core/message'
-import { authError, axiosError } from '@/core/testing/fixtures'
+import { authError, axiosError, coreError } from '@/core/testing/fixtures'
 
 describe('errors', () => {
-  it('reads the core error code', () => {
-    const error = axiosError(422, { error: { code: 'VALIDATION_ERROR' } })
+  it('reads the error of the core from the REST API', () => {
+    const error = axiosError(422, coreError(422, 'VALIDATION_ERROR'))
 
-    expect(errorCode(error)).toBe('VALIDATION_ERROR')
+    expect(toAppError(error)).toEqual({
+      code: 'VALIDATION_ERROR',
+      status: 422,
+      message: 'VALIDATION_ERROR',
+    })
     expect(errorStatus(error)).toBe(422)
     expect(errorMessage(error)).toEqual(message('errors.VALIDATION_ERROR'))
   })
 
-  it('tells network failures apart', () => {
-    expect(errorCode(axiosError())).toBe('NETWORK_ERROR')
-    expect(errorCode(new TypeError('Failed to fetch'))).toBe('UNKNOWN')
-  })
-
-  it('reads Better Auth errors', () => {
+  it('reads the same shape from the Better Auth client', () => {
     const error = authError(403, 'WORKSPACE_NOT_RELEASABLE')
 
-    expect(errorCode(error)).toBe('WORKSPACE_NOT_RELEASABLE')
-    expect(errorStatus(error)).toBe(403)
-    expect(errorCode(authError(400))).toBe('UNKNOWN')
-    expect(errorCode(new Error('boom'))).toBe('UNKNOWN')
-    expect(errorCode(null)).toBe('UNKNOWN')
+    expect(toAppError(error)).toEqual({
+      code: 'WORKSPACE_NOT_RELEASABLE',
+      status: 403,
+      message: 'WORKSPACE_NOT_RELEASABLE',
+    })
   })
 
-  it('names rate limited requests that carry no code', () => {
-    expect(errorCode(authError(429))).toBe('TOO_MANY_REQUESTS')
-    expect(errorCode(axiosError(429))).toBe('TOO_MANY_REQUESTS')
+  it('keeps the message out when production leaves it out', () => {
+    const error = axiosError(429, { error: { code: 'TOO_MANY_REQUESTS', status: 429 } })
+
+    expect(toAppError(error)).toEqual({ code: 'TOO_MANY_REQUESTS', status: 429, message: null })
+  })
+
+  it('tells network failures apart', () => {
+    expect(errorCode(axiosError())).toBe('NETWORK_ERROR')
+    expect(errorCode(new TypeError('Failed to fetch'))).toBe('NETWORK_ERROR')
+    expect(errorStatus(new TypeError('Failed to fetch'))).toBeUndefined()
+    expect(errorCode(new Error('boom'))).toBe('UNKNOWN')
+    expect(errorCode(null)).toBe('UNKNOWN')
+    expect(errorCode(axiosError(502, '<html>'))).toBe('UNKNOWN')
+  })
+
+  it('knows the codes the core takes from the status alone', () => {
+    expect(isGenericCode('BAD_REQUEST')).toBe(true)
+    expect(isGenericCode('UNKNOWN')).toBe(true)
+    expect(isGenericCode('EMAIL_NOT_VERIFIED')).toBe(false)
   })
 
   it('reports an ended session once', () => {
-    expect(errorNotice(axiosError(401, { error: { code: 'UNAUTHORIZED_ACCESS' } }), true)).toEqual(
+    expect(errorNotice(axiosError(401, coreError(401, 'UNAUTHORIZED_ACCESS')), true)).toEqual(
       message('errors.UNAUTHORIZED_ACCESS')
     )
     expect(errorNotice(authError(401, 'UNAUTHORIZED'), false)).toBeNull()
-    expect(
-      errorNotice(axiosError(403, { error: { code: 'AUTHORIZATION_FAILURE' } }), true)
-    ).toEqual(message('errors.AUTHORIZATION_FAILURE'))
+    expect(errorNotice(axiosError(403, coreError(403, 'AUTHORIZATION_FAILURE')), true)).toEqual(
+      message('errors.AUTHORIZATION_FAILURE')
+    )
   })
 
-  it('ends the session on a 401 without a code', () => {
-    const missing = (body: unknown) => axiosError(401, body)
-
-    expect(sessionEnded(missing({ message: 'User not found' }))).toBe(true)
-    expect(sessionEnded(missing({ message: 'Not authenticated' }))).toBe(true)
-    expect(sessionEnded(missing(''))).toBe(true)
-    expect(sessionEnded(axiosError(401))).toBe(true)
-    expect(sessionEnded(authError(400))).toBe(false)
+  it('ends the session only on the codes of a missing session', () => {
+    expect(sessionEnded(authError(401, 'UNAUTHORIZED'))).toBe(true)
+    expect(sessionEnded(axiosError(401, coreError(401, 'UNAUTHORIZED_ACCESS')))).toBe(true)
+    expect(sessionEnded(authError(400, 'BAD_REQUEST'))).toBe(false)
     expect(sessionEnded(axiosError())).toBe(false)
   })
 
@@ -57,7 +76,6 @@ describe('errors', () => {
     const refused = authError(401, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER')
 
     expect(sessionEnded(refused)).toBe(false)
-    expect(sessionEnded(authError(401, 'UNAUTHORIZED'))).toBe(true)
     expect(errorNotice(refused, true)).toEqual(
       message('errors.YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER')
     )

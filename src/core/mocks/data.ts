@@ -1,10 +1,46 @@
-import type {
-  FullMember,
-  FullOrganization,
-  Invitation,
-  MemberRole,
-  User,
-} from '@/core/api/auth/models'
+// Shapes of the Better Auth JSON the mocks send
+export type Role = 'owner' | 'admin' | 'viewer'
+
+export type Person = {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image?: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type Member = {
+  id: string
+  organizationId: string
+  userId: string
+  role: Role
+  createdAt: string
+  user: { id: string; name: string; email: string; image?: string | null }
+}
+
+export type Invitation = {
+  id: string
+  organizationId: string
+  email: string
+  role: Exclude<Role, 'owner'>
+  status: 'pending' | 'accepted' | 'rejected' | 'canceled'
+  inviterId: string
+  createdAt: string
+  expiresAt: string
+}
+
+export type Company = {
+  id: string
+  name: string
+  slug: string
+  metadata: string
+  locale: string
+  createdAt: string
+  members: Member[]
+  invitations: Invitation[]
+}
 
 export const DAY = 86_400_000
 
@@ -14,7 +50,7 @@ export const ago = (ms: number) => new Date(Date.now() - ms).toISOString()
 export const setting = (name: 'user' | 'setup' | 'invitation') =>
   localStorage.getItem(`mock.${name}`)
 
-const person = (id: string, name: string, email: string): User => ({
+const person = (id: string, name: string, email: string): Person => ({
   id,
   name,
   email,
@@ -44,10 +80,10 @@ export const signedInAs = () => users[setting('user') as keyof typeof users] ?? 
 export const member = (
   organizationId: string,
   id: string,
-  { id: userId, name, email }: User,
-  role: MemberRole,
+  { id: userId, name, email }: Person,
+  role: Role,
   createdAt: string
-): FullMember => ({
+): Member => ({
   id,
   organizationId,
   userId,
@@ -73,7 +109,7 @@ const invitation = (
   expiresAt: ago((sentDaysAgo - 7) * DAY),
 })
 
-export const ricambiRossi = (): FullOrganization => ({
+export const ricambiRossi = (): Company => ({
   id: '1',
   name: 'Ricambi Rossi S.r.l.',
   slug: 'ricambi-rossi',
@@ -96,7 +132,7 @@ export const ricambiRossi = (): FullOrganization => ({
   ],
 })
 
-export function newCompany(owner: User): FullOrganization {
+export function newCompany(owner: Person): Company {
   const createdAt = new Date().toISOString()
 
   return {
@@ -111,7 +147,7 @@ export function newCompany(owner: User): FullOrganization {
   }
 }
 
-export function officinaFerri(newMember: User, role: MemberRole): FullOrganization {
+export function officinaFerri(newMember: Person, role: Role): Company {
   return {
     id: '3',
     name: 'Officina Ferri S.r.l.',

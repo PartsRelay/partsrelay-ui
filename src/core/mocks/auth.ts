@@ -1,40 +1,4 @@
-import { HttpResponse } from 'msw'
-import {
-  getGetSessionMockHandler,
-  getSignOutMockHandler,
-  getSocialSignInMockHandler,
-  getUpdateUserMockHandler,
-} from '@/core/api/auth/endpoints/default/default.msw'
-import { getSignInWithMagicLinkMockHandler } from '@/core/api/auth/endpoints/magic-link/magic-link.msw'
-import { getPostOneTapCallbackMockHandler } from '@/core/api/auth/endpoints/one-tap/one-tap.msw'
-import {
-  getCreateOrganizationInvitationMockHandler,
-  getGetFullOrganizationMockHandler,
-  getGetOrganizationGetInvitationMockHandler,
-  getGetOrganizationListUserInvitationsMockHandler,
-  getPostOrganizationAcceptInvitationMockHandler,
-  getPostOrganizationCancelInvitationMockHandler,
-  getPostOrganizationDeleteMockHandler,
-  getPostOrganizationLeaveMockHandler,
-  getPostOrganizationRemoveMemberMockHandler,
-  getPostOrganizationUpdateMockHandler,
-  getUpdateOrganizationMemberRoleMockHandler,
-} from '@/core/api/auth/endpoints/organization/organization.msw'
-import type {
-  CreateOrganizationInvitationBody,
-  FullOrganization,
-  GetOrganizationListUserInvitations200Item,
-  Invitation,
-  MemberRole,
-  PostOrganizationAcceptInvitationBody,
-  PostOrganizationCancelInvitationBody,
-  PostOrganizationRemoveMemberBody,
-  PostOrganizationUpdateBody,
-  SocialSignInBody,
-  UpdateOrganizationMemberRoleBody,
-  UpdateUserBody,
-  User,
-} from '@/core/api/auth/models'
+import { http, HttpResponse, type JsonBodyType } from 'msw'
 import {
   ago,
   DAY,
@@ -44,12 +8,16 @@ import {
   ricambiRossi,
   setting,
   signedInAs,
+  type Company,
+  type Invitation,
+  type Person,
+  type Role,
 } from '@/core/mocks/data'
 
 type World = {
   signedIn: boolean
-  me: User
-  company: FullOrganization
+  me: Person
+  company: Company
   offered: boolean
   nextInvitation: number
 }
@@ -80,11 +48,9 @@ function world<T>(change: (state: World) => T): T {
   return result
 }
 
-const refuse = (status: number, code: string) =>
-  HttpResponse.json({ code, message: code }, { status })
-
-function fail(status: number, code: string): never {
-  throw refuse(status, code)
+// Errors in the shape the core sends
+function fail(status: number, code: string, message = code): never {
+  throw HttpResponse.json({ error: { code, status, message } }, { status })
 }
 
 function signedIn(state: World) {
@@ -109,7 +75,9 @@ function managed(state: World, role: string | undefined) {
 const live = (invitation: Invitation) =>
   invitation.status === 'pending' && new Date(invitation.expiresAt) > new Date()
 
-const offers = ({ offered, me }: World): GetOrganizationListUserInvitations200Item[] =>
+type Offer = Omit<Invitation, 'role'> & { role: Role; organizationName: string }
+
+const offers = ({ offered, me }: World): Offer[] =>
   offered
     ? [
         {
@@ -134,8 +102,17 @@ function endAccount(state: World) {
 
 const body = <T>(request: Request) => request.json() as Promise<T>
 
+type Resolve = (info: { request: Request }) => unknown
+
+const respond = (resolve: Resolve) => async (info: { request: Request }) =>
+  HttpResponse.json((await resolve(info)) as JsonBodyType)
+
+const get = (path: string, resolve: Resolve) => http.get(`*/api/auth${path}`, respond(resolve))
+
+const post = (path: string, resolve: Resolve) => http.post(`*/api/auth${path}`, respond(resolve))
+
 export const authMocks = [
-  getGetSessionMockHandler(() =>
+  get('/get-session', () =>
     world(({ signedIn, me, company }) =>
       signedIn
         ? {
@@ -153,8 +130,8 @@ export const authMocks = [
         : null
     )
   ),
-  getSocialSignInMockHandler(async ({ request }) => {
-    const { callbackURL } = await body<SocialSignInBody>(request)
+  post('/sign-in/social', async ({ request }) => {
+    const { callbackURL } = await body<{ callbackURL?: string }>(request)
 
     return world((state) => {
       state.signedIn = true
@@ -162,24 +139,24 @@ export const authMocks = [
       return { url: callbackURL, redirect: true }
     })
   }),
-  getPostOneTapCallbackMockHandler(() =>
+  post('/one-tap/callback', () =>
     world((state) => {
       state.signedIn = true
 
       return { token: 'mock', user: state.me }
     })
   ),
-  getSignInWithMagicLinkMockHandler({ status: true }),
-  getSignOutMockHandler(() =>
+  post('/sign-in/magic-link', () => ({ status: true })),
+  post('/sign-out', () =>
     world((state) => {
       state.signedIn = false
 
       return { success: true }
     })
   ),
-  getGetFullOrganizationMockHandler(() => world((state) => signedIn(state).company)),
-  getUpdateUserMockHandler(async ({ request }) => {
-    const { name } = await body<UpdateUserBody>(request)
+  get('/organization/get-full-organization', () => world((state) => signedIn(state).company)),
+  post('/update-user', async ({ request }) => {
+    const { name } = await body<{ name?: string }>(request)
 
     return world((state) => {
       const { me, company } = signedIn(state)
@@ -191,8 +168,10 @@ export const authMocks = [
       return { status: true }
     })
   }),
-  getPostOrganizationUpdateMockHandler(async ({ request }) => {
-    const { data } = await body<PostOrganizationUpdateBody>(request)
+  post('/organization/update', async ({ request }) => {
+    const { data } = await body<{
+      data: { name?: string; locale?: string | null; metadata?: object }
+    }>(request)
 
     return world((state) => {
       const { company } = signedIn(state)
@@ -209,10 +188,8 @@ export const authMocks = [
       return organization
     })
   }),
-  getUpdateOrganizationMemberRoleMockHandler(async ({ request }) => {
-    const { memberId, role } = await body<UpdateOrganizationMemberRoleBody & { role: MemberRole }>(
-      request
-    )
+  post('/organization/update-member-role', async ({ request }) => {
+    const { memberId, role } = await body<{ memberId: string; role: Role }>(request)
 
     return world((state) => {
       const { company } = signedIn(state)
@@ -230,8 +207,8 @@ export const authMocks = [
       return member
     })
   }),
-  getPostOrganizationRemoveMemberMockHandler(async ({ request }) => {
-    const { memberIdOrEmail } = await body<PostOrganizationRemoveMemberBody>(request)
+  post('/organization/remove-member', async ({ request }) => {
+    const { memberIdOrEmail } = await body<{ memberIdOrEmail: string }>(request)
 
     return world((state) => {
       const { company } = signedIn(state)
@@ -247,10 +224,12 @@ export const authMocks = [
       return { member }
     })
   }),
-  getCreateOrganizationInvitationMockHandler(async ({ request }) => {
-    const { email, role, resend } = await body<
-      CreateOrganizationInvitationBody & { role: Invitation['role'] }
-    >(request)
+  post('/organization/invite-member', async ({ request }) => {
+    const { email, role, resend } = await body<{
+      email: string
+      role: Invitation['role']
+      resend?: boolean
+    }>(request)
 
     return world((state) => {
       const { company, me } = signedIn(state)
@@ -266,7 +245,7 @@ export const authMocks = [
       const expiresAt = ago(-7 * DAY)
       const pending = company.invitations.find((item) => item.email === email && live(item))
       if (pending && !resend) fail(400, 'USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION')
-      if (pending) return { ...Object.assign(pending, { expiresAt }), role: pending.role ?? role }
+      if (pending) return Object.assign(pending, { expiresAt })
 
       const invitation: Invitation = {
         id: String(state.nextInvitation++),
@@ -280,11 +259,11 @@ export const authMocks = [
       }
       company.invitations.push(invitation)
 
-      return { ...invitation, role }
+      return invitation
     })
   }),
-  getPostOrganizationCancelInvitationMockHandler(async ({ request }) => {
-    const { invitationId } = await body<PostOrganizationCancelInvitationBody>(request)
+  post('/organization/cancel-invitation', async ({ request }) => {
+    const { invitationId } = await body<{ invitationId: string }>(request)
 
     return world((state) => {
       const { company } = signedIn(state)
@@ -296,7 +275,7 @@ export const authMocks = [
       return invitation
     })
   }),
-  getPostOrganizationDeleteMockHandler(() =>
+  post('/organization/delete', () =>
     world((state) => {
       const { company } = signedIn(state)
       ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION')
@@ -306,7 +285,7 @@ export const authMocks = [
       return organization
     })
   ),
-  getPostOrganizationLeaveMockHandler(() =>
+  post('/organization/leave', () =>
     world((state) => {
       const { company, me } = signedIn(state)
       const target = company.members.find(({ userId }) => userId === me.id)
@@ -318,8 +297,8 @@ export const authMocks = [
       return member
     })
   ),
-  getGetOrganizationListUserInvitationsMockHandler(() => world((state) => offers(signedIn(state)))),
-  getGetOrganizationGetInvitationMockHandler(({ request }) => {
+  get('/organization/list-user-invitations', () => world((state) => offers(signedIn(state)))),
+  get('/organization/get-invitation', ({ request }) => {
     const id = new URL(request.url).searchParams.get('id')
 
     return world((state) => {
@@ -332,11 +311,11 @@ export const authMocks = [
       if (company.invitations.some((item) => item.id === id && live(item))) {
         fail(403, 'YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION')
       }
-      throw HttpResponse.json({ message: 'Invitation not found!' }, { status: 400 })
+      fail(400, 'BAD_REQUEST', 'Invitation not found!')
     })
   }),
-  getPostOrganizationAcceptInvitationMockHandler(async ({ request }) => {
-    const { invitationId } = await body<PostOrganizationAcceptInvitationBody>(request)
+  post('/organization/accept-invitation', async ({ request }) => {
+    const { invitationId } = await body<{ invitationId: string }>(request)
 
     return world((state) => {
       const invitation = offers(signedIn(state)).find((item) => item.id === invitationId)
@@ -344,11 +323,11 @@ export const authMocks = [
       if (state.company.members.length > 1) fail(403, 'WORKSPACE_NOT_RELEASABLE')
 
       state.offered = false
-      state.company = officinaFerri(state.me, invitation.role as MemberRole)
+      state.company = officinaFerri(state.me, invitation.role)
 
       return {
         invitation: { ...invitation, status: 'accepted' },
-        member: { ...state.company.members.at(-1) },
+        member: state.company.members.at(-1),
       }
     })
   }),

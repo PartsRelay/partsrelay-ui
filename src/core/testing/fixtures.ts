@@ -1,6 +1,10 @@
 import { AxiosError, AxiosHeaders } from 'axios'
-import type { FullOrganization } from '@/core/api/auth/models'
-import type { Invitation, Member, Workspace } from '@/modules/workspaces/core/workspace'
+import type {
+  FullOrganization,
+  Invitation,
+  Member,
+  Workspace,
+} from '@/modules/workspaces/core/workspace'
 import { findMe, toWorkspace } from '@/modules/workspaces/core/workspace'
 
 export function member(id: string, role: Member['role'], name: string): Member {
@@ -32,13 +36,15 @@ const people = [
   { id: '2', role: 'admin', name: 'Giulia Bianchi' },
 ] as const
 
-// The organization as the core sends it
+const joined = new Date('2026-01-12T09:00:00Z')
+
+// The organization as the Better Auth client returns it
 export function organizationFixture(): FullOrganization {
   return {
     id: '1',
     name: 'Ricambi Rossi S.r.l.',
     slug: 'ricambi-rossi',
-    createdAt: '2026-01-12T09:00:00Z',
+    createdAt: joined,
     locale: 'it',
     metadata: JSON.stringify({ setup: 'done' }),
     members: people.map(({ id, role, name }) => {
@@ -49,8 +55,8 @@ export function organizationFixture(): FullOrganization {
         organizationId: '1',
         userId,
         role,
-        createdAt: '2026-01-12T09:00:00Z',
-        user: { id: userId, name, email, image: null },
+        createdAt: joined,
+        user: { id: userId, name, email },
       }
     }),
     invitations: [
@@ -62,8 +68,6 @@ export function organizationFixture(): FullOrganization {
       inviterId: '101',
       role: item.role === 'owner' ? 'admin' : item.role,
       status: 'pending' as const,
-      expiresAt: item.expiresAt.toISOString(),
-      createdAt: item.createdAt.toISOString(),
     })),
   }
 }
@@ -79,6 +83,11 @@ export function meIn(workspace: Workspace, userId: string) {
   return me
 }
 
+// The error body of the core: { error: { code, status, message } }
+export function coreError(status: number, code: string) {
+  return { error: { code, status, message: code } }
+}
+
 export function axiosError(status?: number, data?: unknown) {
   const config = { headers: new AxiosHeaders() }
   const response =
@@ -89,7 +98,7 @@ export function axiosError(status?: number, data?: unknown) {
   return new AxiosError('failed', 'ERR', config, null, response)
 }
 
-// Better Auth sends its code at the top of the body
-export function authError(status: number, code?: string) {
-  return axiosError(status, code ? { code, message: code } : { message: 'failed' })
+// What the Better Auth client throws for an error of the core
+export function authError(status: number, code: string) {
+  return { status, statusText: '', error: coreError(status, code) }
 }

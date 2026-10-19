@@ -1,12 +1,17 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query'
 import { failureNotice } from '@/modules/auth/core/session.query'
-import { errorStatus } from '@/core/errors'
+import { errorStatus, toAppError } from '@/core/errors'
 import { resolveNotice } from '@/core/notice'
 import { notify } from '@/ui/components/notify'
 
+// Only development shows the message of the core
+function detail(error: Error) {
+  return import.meta.env.DEV ? (toAppError(error).message ?? undefined) : undefined
+}
+
 function report(error: Error, silent?: boolean) {
   const notice = failureNotice(queryClient, error, silent)
-  if (notice) notify('error', notice, { id: notice.key })
+  if (notice) notify('error', notice, { id: notice.key, description: detail(error) })
 }
 
 export const queryClient = new QueryClient({

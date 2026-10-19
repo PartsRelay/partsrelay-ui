@@ -1,14 +1,12 @@
 import type { MutationOptions } from '@tanstack/query-core'
-import { signOut } from '@/core/api/auth/endpoints/default/default'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { message } from '@/core/message'
-import { cancelOneTap } from '@/modules/auth/core/one-tap'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 
 export const signOutMutation = {
   mutationKey: ['sign-out'],
-  mutationFn: () => signOut({}),
+  mutationFn: () => authClient.signOut(),
   onSuccess: (_data, _variables, _result, { client }) => {
-    cancelOneTap({ signedOut: true })
     client.clear()
     client.setQueryData(sessionQuery.queryKey, null)
   },

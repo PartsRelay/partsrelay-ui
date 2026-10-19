@@ -1,11 +1,13 @@
 import { z } from 'zod'
-import type { FullOrganization } from '@/core/api/auth/models'
+import type { authClient } from '@/modules/auth/core/auth.client'
 import { firstName, initials, toDate } from '@/core/format'
 import { type Locale, toLocale } from '@/modules/workspaces/core/locale'
 import { type Permissions, permissionsFor } from '@/modules/workspaces/core/permissions'
 import { type Role, toRole } from '@/modules/workspaces/core/role'
 
-export type { FullOrganization }
+export type FullOrganization = NonNullable<
+  Awaited<ReturnType<typeof authClient.organization.getFullOrganization>>
+>
 
 export type Member = {
   id: string
@@ -49,9 +51,9 @@ export type Me = {
 const metadataSchema = z.record(z.string(), z.unknown()).catch({})
 
 // The core stores metadata as JSON text
-function readMetadata(metadata: FullOrganization['metadata']): Metadata {
+function readMetadata(metadata: unknown): Metadata {
   try {
-    return metadataSchema.parse(metadata ? JSON.parse(metadata) : {})
+    return metadataSchema.parse(typeof metadata === 'string' ? JSON.parse(metadata) : metadata)
   } catch {
     return {}
   }

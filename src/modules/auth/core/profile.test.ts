@@ -1,7 +1,6 @@
 import { MutationObserver, QueryClient } from '@tanstack/query-core'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { updateUser } from '@/core/api/auth/endpoints/default/default'
-import { postOrganizationLeave } from '@/core/api/auth/endpoints/organization/organization'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { createUserNameForm, leaveCompanyConfirm, profileView } from '@/modules/auth/core/profile'
 import { leaveCompanyMutation, updateNameMutation } from '@/modules/auth/core/profile.mutation'
@@ -11,16 +10,9 @@ import { resolveNotice } from '@/core/notice'
 import { authError, companyFixture, meIn, organizationFixture } from '@/core/testing/fixtures'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 
-vi.mock('@/core/api/auth/endpoints/default/default', async (original) => ({
-  ...(await original()),
-  updateUser: vi.fn(),
-}))
-vi.mock('@/core/api/auth/endpoints/organization/organization', async (original) => ({
-  ...(await original()),
-  postOrganizationLeave: vi.fn(),
-}))
+vi.mock('@/modules/auth/core/auth.client', () => import('@/core/testing/auth-client'))
 
-const leave = vi.mocked(postOrganizationLeave)
+const leave = vi.mocked(authClient.organization.leave)
 
 beforeEach(() => vi.resetAllMocks())
 
@@ -70,11 +62,11 @@ describe('update name', () => {
     const client = new QueryClient()
     client.setQueryData(sessionQuery.queryKey, { user: { id: '103', name: '' } } as never)
     client.setQueryData(workspaceKey, organizationFixture())
-    vi.mocked(updateUser).mockResolvedValue({ status: true } as never)
+    vi.mocked(authClient.updateUser).mockResolvedValue({ status: true } as never)
 
     await new MutationObserver(client, updateNameMutation).mutate('Luca Ferri')
 
-    expect(updateUser).toHaveBeenCalledWith({ name: 'Luca Ferri' })
+    expect(authClient.updateUser).toHaveBeenCalledWith({ name: 'Luca Ferri' })
     expect(client.getQueryState(sessionQuery.queryKey)?.isInvalidated).toBe(true)
     expect(client.getQueryState(workspaceKey)?.isInvalidated).toBe(true)
   })

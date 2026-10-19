@@ -1,10 +1,5 @@
 import type { MutationFunctionContext, MutationOptions } from '@tanstack/query-core'
-import {
-  createOrganizationInvitation,
-  postOrganizationCancelInvitation,
-  postOrganizationRemoveMember,
-  updateOrganizationMemberRole,
-} from '@/core/api/auth/endpoints/organization/organization'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { message } from '@/core/message'
 import { optimistic, type Snapshot } from '@/core/optimistic'
 import { sessionQuery } from '@/modules/auth/core/session.query'
@@ -40,7 +35,8 @@ function refreshTeam({ client }: MutationFunctionContext) {
 export function changeRoleMutation(member: Member) {
   return {
     mutationKey: ['team', 'role', member.id],
-    mutationFn: (role: Role) => updateOrganizationMemberRole({ memberId: member.id, role }),
+    mutationFn: (role: Role) =>
+      authClient.organization.updateMemberRole({ memberId: member.id, role }),
     ...optimistic<FullOrganization, Role>(workspaceKey, (organization, role) =>
       withMembers(organization, (members) =>
         members.map((item) => (item.id === member.id ? { ...item, role } : item))
@@ -56,7 +52,7 @@ export function changeRoleMutation(member: Member) {
 export const transferOwnershipMutation = {
   mutationKey: ['team', 'transfer'],
   mutationFn: (member: Member) =>
-    updateOrganizationMemberRole({ memberId: member.id, role: 'owner' }),
+    authClient.organization.updateMemberRole({ memberId: member.id, role: 'owner' }),
   onSettled: (_data, _error, _member, _result, context) =>
     Promise.all([
       refreshTeam(context),
@@ -70,7 +66,7 @@ export const transferOwnershipMutation = {
 export function removeMemberMutation(member: Member) {
   return {
     mutationKey: ['team', 'remove', member.id],
-    mutationFn: () => postOrganizationRemoveMember({ memberIdOrEmail: member.id }),
+    mutationFn: () => authClient.organization.removeMember({ memberIdOrEmail: member.id }),
     ...optimistic<FullOrganization, void>(workspaceKey, (organization) =>
       withMembers(organization, (members) => members.filter((item) => item.id !== member.id))
     ),
@@ -81,7 +77,7 @@ export function removeMemberMutation(member: Member) {
 
 export const inviteMutation = {
   mutationKey: ['team', 'invite'],
-  mutationFn: ({ email, role }: Invitee) => createOrganizationInvitation({ email, role }),
+  mutationFn: ({ email, role }: Invitee) => authClient.organization.inviteMember({ email, role }),
   onSettled: (_data, _error, _variables, _result, { client }) =>
     client.invalidateQueries({ queryKey: workspaceKey }),
   meta: {
@@ -93,7 +89,7 @@ export function resendInvitationMutation(invitation: Invitation) {
   return {
     mutationKey: ['team', 'resend', invitation.id],
     mutationFn: () =>
-      createOrganizationInvitation({
+      authClient.organization.inviteMember({
         email: invitation.email,
         role: invitation.role,
         resend: true,
@@ -107,7 +103,7 @@ export function resendInvitationMutation(invitation: Invitation) {
 export function cancelInvitationMutation(invitation: Invitation) {
   return {
     mutationKey: ['team', 'cancel', invitation.id],
-    mutationFn: () => postOrganizationCancelInvitation({ invitationId: invitation.id }),
+    mutationFn: () => authClient.organization.cancelInvitation({ invitationId: invitation.id }),
     ...optimistic<FullOrganization, void>(workspaceKey, (organization) =>
       withoutInvitation(organization, invitation.id)
     ),
