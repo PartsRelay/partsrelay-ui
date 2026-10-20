@@ -1,7 +1,6 @@
 import { toDate } from 'date-fns'
 import { z } from 'zod'
 import type { authClient } from '@/modules/auth/core/auth.client'
-import { firstName, initials } from '@/core/format'
 import { type Locale, toLocale } from '@/modules/workspaces/core/locale'
 import { type Permissions, permissionsFor } from '@/modules/workspaces/core/permissions'
 import { type Role, toRole } from '@/modules/workspaces/core/role'
@@ -45,8 +44,6 @@ export type Me = {
   member: Member
   role: Role
   permissions: Permissions
-  firstName: string
-  initials: string
 }
 
 const metadataSchema = z.record(z.string(), z.unknown()).catch({})
@@ -97,8 +94,6 @@ export function findMe(workspace: Workspace, userId: string): Me | null {
     member,
     role: member.role,
     permissions: permissionsFor(member.role),
-    firstName: firstName(member.name),
-    initials: initials(member.name),
   }
 }
 
