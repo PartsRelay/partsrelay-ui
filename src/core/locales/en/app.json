@@ -20,9 +20,6 @@
     "cancel": "Cancel",
     "typeToConfirm": "Type {{text}} to confirm"
   },
-  "validation": {
-    "tooLong": "Use at most {{max}} characters."
-  },
   "notices": {
     "copyFailed": "Copy failed, select the text and copy it by hand."
   },

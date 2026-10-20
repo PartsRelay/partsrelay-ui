@@ -20,9 +20,6 @@
     "cancel": "Annulla",
     "typeToConfirm": "Scrivi {{text}} per confermare"
   },
-  "validation": {
-    "tooLong": "Usa al massimo {{max}} caratteri."
-  },
   "notices": {
     "copyFailed": "Copia non riuscita, seleziona il testo e copialo a mano."
   },

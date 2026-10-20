@@ -1,16 +1,11 @@
 import { createStore } from '@tanstack/store'
-import { type Message, message } from '@/core/message'
+import type { Message } from '@/core/message'
 
-export const NAME_MAX = 255
-
+// The core checks the length
 export function checkName(draft: string, required: Message) {
   const value = draft.trim()
-  if (value === '') return { value, error: required }
-  if (value.length > NAME_MAX) {
-    return { value, error: message('validation.tooLong', { max: NAME_MAX }) }
-  }
 
-  return { value, error: null }
+  return { value, error: value === '' ? required : null }
 }
 
 export type NameDraft = { draft: string; error: Message | null }
