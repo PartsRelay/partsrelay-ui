@@ -31,7 +31,7 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
 
-  envPrefix: ['VITE_', 'APP_ENV'],
+  envPrefix: ['APP_ENV', 'API_URL', 'GOOGLE_CLIENT_ID'],
 
   server: {
     host: true,

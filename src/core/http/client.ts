@@ -5,7 +5,7 @@ export type ErrorType<E> = AxiosError<E>
 export type BodyType<B> = B
 
 const instance = axios.create({
-  baseURL: env.VITE_API_URL,
+  baseURL: env.API_URL,
   headers: { accept: 'application/json' },
   withCredentials: true,
 })

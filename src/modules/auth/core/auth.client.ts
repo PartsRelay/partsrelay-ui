@@ -9,13 +9,13 @@ import { env } from '@/env'
 import { ac, roles } from '@/modules/workspaces/core/access'
 
 export const authClient = createAuthClient({
-  baseURL: env.VITE_API_URL || window.location.origin,
+  baseURL: env.API_URL || window.location.origin,
   fetchOptions: { throw: true },
   plugins: [
     magicLinkClient(),
     // One Tap only starts with a client id, see startOneTap
     oneTapClient({
-      clientId: env.VITE_GOOGLE_CLIENT_ID ?? '',
+      clientId: env.GOOGLE_CLIENT_ID ?? '',
       context: 'signin',
       promptOptions: { fedCM: true },
     }),
