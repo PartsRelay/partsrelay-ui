@@ -13,9 +13,9 @@ export function reportError(error: unknown, silent?: boolean) {
   const notice = failureNotice(queryClient, error, silent)
   if (!notice) return
 
-  const [code, values] = notice
+  const [key, values] = notice
   // The message exists only in development
-  notify('error', code, { id: code, values, description: toErrorBody(error).message })
+  notify('error', key, { id: key, values, description: toErrorBody(error).message })
 }
 
 function retryable(error: Error) {
