@@ -9,7 +9,6 @@ import { errorMessage } from '@/core/errors'
 import { Callout } from '@/ui/components/callout'
 import { TextField } from '@/ui/components/text-field'
 import { useAction } from '@/ui/hooks/use-action'
-import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
 import { Input } from '@/ui/components/ui/input'
@@ -17,7 +16,6 @@ import { Spinner } from '@/ui/components/ui/spinner'
 
 export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   const { t } = useTranslation()
-  const translate = useT()
   const [form] = useState(createMagicLinkForm)
   const { email, sent, sentAt, error } = useSelector(form)
   const { pending, run } = useAction()
@@ -69,7 +67,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
         >
           {t('login.magicLink.sent.description', { email: sent, minutes: MAGIC_LINK_MINUTES })}
         </Callout>
-        {error && <Callout tone="danger">{translate(error)}</Callout>}
+        {error && <Callout tone="danger">{t(...error)}</Callout>}
         <div className="grid gap-2">
           <Button
             variant="outline"
@@ -101,7 +99,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
       }}
     >
       <FieldGroup>
-        <TextField label={t('login.magicLink.email')} error={error && translate(error)}>
+        <TextField label={t('login.magicLink.email')} error={error && t(...error)}>
           <Input
             ref={input}
             type="email"

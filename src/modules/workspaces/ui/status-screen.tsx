@@ -10,7 +10,6 @@ import {
 import { type ReactNode, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessage } from '@/core/errors'
-import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import {
   Empty,
@@ -67,7 +66,6 @@ function HomeLink() {
 
 export function ErrorScreen({ error }: ErrorComponentProps) {
   const { t } = useTranslation()
-  const translate = useT()
   const router = useRouter()
   const queryErrorReset = useQueryErrorResetBoundary()
 
@@ -77,7 +75,7 @@ export function ErrorScreen({ error }: ErrorComponentProps) {
     <StatusScreen
       icon={CircleAlertIcon}
       title={t('app.error.title')}
-      description={translate(errorMessage(error))}
+      description={t(...errorMessage(error))}
     >
       <Button onClick={() => void router.invalidate()}>
         <RotateCwIcon data-icon="inline-start" />

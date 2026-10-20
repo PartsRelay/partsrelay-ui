@@ -9,7 +9,6 @@ import type { FullOrganization } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { TextField } from '@/ui/components/text-field'
 import { useAction } from '@/ui/hooks/use-action'
-import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
@@ -17,7 +16,6 @@ import { Input } from '@/ui/components/ui/input'
 
 export function CompanyName({ name }: { name: string }) {
   const { t } = useTranslation()
-  const translate = useT()
   const [form] = useState(() => createCompanyNameForm(name))
   const { draft, error } = useSelector(form)
   const { client, pending, run } = useAction()
@@ -57,7 +55,7 @@ export function CompanyName({ name }: { name: string }) {
           }}
         >
           <FieldGroup>
-            <TextField label={t('company.name.label')} required error={error && translate(error)}>
+            <TextField label={t('company.name.label')} required error={error && t(...error)}>
               <Input
                 ref={input}
                 autoComplete="organization"

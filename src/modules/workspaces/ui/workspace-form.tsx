@@ -14,7 +14,6 @@ import { InvitationHint } from '@/modules/workspaces/ui/invitation-hint'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
 import { TextField } from '@/ui/components/text-field'
 import { useAction } from '@/ui/hooks/use-action'
-import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
@@ -25,7 +24,6 @@ type WorkspaceFormProps = { workspace: Workspace; askName: boolean }
 
 export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
   const { t } = useTranslation()
-  const translate = useT()
   const navigate = useNavigate()
   const [form] = useState(() =>
     createSetupForm(workspace, { askName, browserLocale: preferredLocale(navigator.languages) })
@@ -80,7 +78,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
               label={t('setup.form.name')}
               required
               description={t('setup.form.nameHint')}
-              error={errors.name && translate(errors.name)}
+              error={errors.name && t(...errors.name)}
             >
               <Input
                 ref={nameInput}
@@ -100,7 +98,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
                 label={t('setup.form.userName')}
                 required
                 description={t('setup.form.userNameHint')}
-                error={errors.userName && translate(errors.userName)}
+                error={errors.userName && t(...errors.userName)}
               >
                 <Input
                   ref={userNameInput}

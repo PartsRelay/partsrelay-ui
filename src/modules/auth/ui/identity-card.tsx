@@ -10,7 +10,6 @@ import { Facts } from '@/ui/components/facts'
 import { PersonItem } from '@/ui/components/person-item'
 import { TextField } from '@/ui/components/text-field'
 import { useAction } from '@/ui/hooks/use-action'
-import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
@@ -20,7 +19,6 @@ type IdentityCardProps = { view: ProfileView; userName: string }
 
 export function IdentityCard({ view, userName }: IdentityCardProps) {
   const { t } = useTranslation()
-  const translate = useT()
   const [form] = useState(() => createUserNameForm(userName))
   const { draft, error } = useSelector(form)
   const { client, pending, run } = useAction()
@@ -40,7 +38,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
           className="text-sm"
           items={[
             { label: t('profile.identity.company'), value: view.company },
-            { label: t('profile.identity.role'), value: translate(view.roleLabel) },
+            { label: t('profile.identity.role'), value: t(...view.roleLabel) },
           ]}
         />
         <form
@@ -68,7 +66,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
               label={t('profile.identity.name')}
               required
               description={t('profile.identity.nameHint')}
-              error={error && translate(error)}
+              error={error && t(...error)}
             >
               <Input
                 ref={input}

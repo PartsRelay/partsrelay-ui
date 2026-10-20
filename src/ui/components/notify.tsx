@@ -1,11 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { type ExternalToast, toast } from 'sonner'
 import type { Message } from '@/core/message'
-import { useT } from '@/ui/hooks/use-t'
 
 function Translated({ text }: { text: Message }) {
-  const translate = useT()
+  const { t } = useTranslation()
 
-  return translate(text)
+  return t(...text)
 }
 
 // Translated on render, so toasts follow the language

@@ -9,7 +9,6 @@ import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
 import { Callout } from '@/ui/components/callout'
 import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { notify } from '@/ui/components/notify'
-import { useT } from '@/ui/hooks/use-t'
 
 const route = getRouteApi('/(auth)/login')
 
@@ -29,7 +28,6 @@ export async function redirectIfSignedIn({ context, search }: LoginGuard) {
 
 export function LoginPage() {
   const { t } = useTranslation()
-  const translateMessage = useT()
   const { next, error } = route.useSearch()
   const failure = loginError(error)
 
@@ -40,7 +38,7 @@ export function LoginPage() {
         <CardDescription>{t('login.description')}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
-        {failure && <Callout tone="danger">{translateMessage(failure)}</Callout>}
+        {failure && <Callout tone="danger">{t(...failure)}</Callout>}
         <SignInOptions flow={loginFlow(next)} />
       </CardContent>
     </Card>

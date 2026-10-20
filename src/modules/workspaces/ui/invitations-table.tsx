@@ -9,7 +9,6 @@ import { useMe } from '@/modules/workspaces/ui/use-me'
 import { CopyButton } from '@/ui/components/copy-button'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { useAction } from '@/ui/hooks/use-action'
-import { useT } from '@/ui/hooks/use-t'
 import { ActionButton } from '@/modules/workspaces/ui/action-button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Empty, EmptyHeader, EmptyTitle } from '@/ui/components/ui/empty'
@@ -26,7 +25,6 @@ const columns = ['invitation', 'role', 'sent', 'actions']
 
 export function InvitationsTable() {
   const { t, i18n } = useTranslation()
-  const translate = useT()
   const { workspace, me } = useMe()
   const rows = invitationRows(workspace, me, new Date(), window.location.origin, i18n.language)
   const heading = useRef<HTMLHeadingElement>(null)
@@ -64,7 +62,7 @@ export function InvitationsTable() {
               {rows.map((row) => (
                 <TableRow key={row.invitation.id}>
                   <TableCell className="font-medium">{row.invitation.email}</TableCell>
-                  <TableCell>{translate(row.roleLabel)}</TableCell>
+                  <TableCell>{t(...row.roleLabel)}</TableCell>
                   <TableCell>
                     <span className="inline-flex items-center gap-2">
                       {row.sent}

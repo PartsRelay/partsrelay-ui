@@ -8,7 +8,6 @@ import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
 import { useAction } from '@/ui/hooks/use-action'
-import { useT } from '@/ui/hooks/use-t'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -18,7 +17,6 @@ import { Spinner } from '@/ui/components/ui/spinner'
 
 export function InviteCard() {
   const { t } = useTranslation()
-  const translate = useT()
   const { workspace, me } = useMe()
   const [form] = useState(() => createInviteForm(me))
   const draft = useSelector(form)
@@ -55,7 +53,7 @@ export function InviteCard() {
           }}
         >
           <FieldGroup>
-            <TextField label={t('team.invite.email')} error={draft.error && translate(draft.error)}>
+            <TextField label={t('team.invite.email')} error={draft.error && t(...draft.error)}>
               <Input
                 ref={email}
                 type="email"
@@ -70,7 +68,7 @@ export function InviteCard() {
               roles={me.permissions.inviteRoles}
               value={draft.role}
               onValueChange={form.actions.setRole}
-              hint={translate(roleHint(draft.role, me))}
+              hint={t(...roleHint(draft.role, me))}
             />
             <Field orientation="horizontal">
               <Button type="submit" disabled={pending}>

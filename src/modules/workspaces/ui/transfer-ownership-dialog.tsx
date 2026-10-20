@@ -11,7 +11,6 @@ import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
 import { useAction } from '@/ui/hooks/use-action'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
-import { useT } from '@/ui/hooks/use-t'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -46,14 +45,13 @@ export function TransferOwnershipDialog({ open, onOpenChange }: TransferOwnershi
 
 function TransferForm({ onDone }: { onDone: () => void }) {
   const { t } = useTranslation()
-  const translate = useT()
   const { workspace, me } = useMe()
   const candidates = transferCandidates(workspace, me)
   const [candidateId, setCandidateId] = useState('')
   const candidate = candidates.find((member) => member.id === candidateId)
   const { client, pending, run } = useAction()
   const candidateLabel = (member: Member) =>
-    t('team.transfer.candidate', { name: member.name, role: translate(roleLabel(member.role)) })
+    t('team.transfer.candidate', { name: member.name, role: t(...roleLabel(member.role)) })
 
   return (
     <form
@@ -113,7 +111,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
           className="h-auto min-h-8 whitespace-normal wrap-anywhere"
           disabled={!candidate || pending}
         >
-          {translate(transferAction(candidate))}
+          {t(...transferAction(candidate))}
         </Button>
       </AlertDialogFooter>
     </form>

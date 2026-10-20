@@ -9,7 +9,6 @@ import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useAction } from '@/ui/hooks/use-action'
-import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent } from '@/ui/components/ui/card'
 import { Spinner } from '@/ui/components/ui/spinner'
@@ -23,7 +22,6 @@ type InvitationReadyProps = {
 
 export function InvitationReady({ details, confirm, email, invitationId }: InvitationReadyProps) {
   const { t } = useTranslation()
-  const translate = useT()
   const navigate = useNavigate()
   const { client, pending, error, run } = useAction()
   const [confirming, setConfirming] = useState(false)
@@ -59,7 +57,7 @@ export function InvitationReady({ details, confirm, email, invitationId }: Invit
             {t('invitation.setupPending', { workspace: details.workspace })}
           </Callout>
         )}
-        {failure && <Callout tone="danger">{translate(failure)}</Callout>}
+        {failure && <Callout tone="danger">{t(...failure)}</Callout>}
         <div className="grid gap-2">
           <Button
             disabled={pending}

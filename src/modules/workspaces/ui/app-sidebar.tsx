@@ -6,7 +6,6 @@ import { navigation, pageAt, type Section } from '@/modules/workspaces/core/navi
 import { roleLabel } from '@/modules/workspaces/core/role'
 import { NavUser } from '@/modules/workspaces/ui/nav-user'
 import { useMe } from '@/modules/workspaces/ui/use-me'
-import { useT } from '@/ui/hooks/use-t'
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +24,6 @@ const icons: Record<Section, LucideIcon> = { team: UsersIcon, company: Building2
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation()
-  const translate = useT()
   const { workspace, me } = useMe()
   const page = useLocation({ select: (location) => pageAt(location.pathname) })
   const items = navigation(me.permissions, page)
@@ -42,7 +40,7 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{workspace.name}</span>
-                  <span className="truncate text-xs">{translate(roleLabel(me.role))}</span>
+                  <span className="truncate text-xs">{t(...roleLabel(me.role))}</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -63,7 +61,7 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
                       <SidebarMenuButton asChild isActive={item.active}>
                         <Link to={item.path} aria-current={item.active ? 'page' : undefined}>
                           <Icon aria-hidden />
-                          <span>{translate(item.label)}</span>
+                          <span>{t(...item.label)}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

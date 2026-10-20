@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { canConfirm, type ConfirmSpec } from '@/core/confirm'
 import { Facts } from '@/ui/components/facts'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
-import { useT } from '@/ui/hooks/use-t'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,7 +27,6 @@ type ConfirmDialogProps = {
 
 export function ConfirmDialog({ spec, pending, onConfirm, onClose, returnTo }: ConfirmDialogProps) {
   const { t } = useTranslation()
-  const translate = useT()
   const [typed, setTyped] = useState('')
   const [acknowledged, setAcknowledged] = useState(false)
   const returnFocus = useReturnFocus(spec !== null, returnTo)
@@ -48,15 +46,15 @@ export function ConfirmDialog({ spec, pending, onConfirm, onClose, returnTo }: C
       {spec && (
         <AlertDialogContent onCloseAutoFocus={returnFocus}>
           <AlertDialogHeader>
-            <AlertDialogTitle className="wrap-anywhere">{translate(spec.title)}</AlertDialogTitle>
-            <AlertDialogDescription>{translate(spec.body)}</AlertDialogDescription>
+            <AlertDialogTitle className="wrap-anywhere">{t(...spec.title)}</AlertDialogTitle>
+            <AlertDialogDescription>{t(...spec.body)}</AlertDialogDescription>
           </AlertDialogHeader>
           {spec.facts && (
             <Facts
               className="text-sm"
               items={spec.facts.map(({ label, value }) => ({
-                label: translate(label),
-                value: typeof value === 'string' ? value : translate(value),
+                label: t(...label),
+                value: typeof value === 'string' ? value : t(...value),
               }))}
             />
           )}
@@ -80,7 +78,7 @@ export function ConfirmDialog({ spec, pending, onConfirm, onClose, returnTo }: C
                 checked={acknowledged}
                 onCheckedChange={(checked) => setAcknowledged(checked === true)}
               />
-              <FieldLabel htmlFor={acknowledgeId}>{translate(spec.acknowledge)}</FieldLabel>
+              <FieldLabel htmlFor={acknowledgeId}>{t(...spec.acknowledge)}</FieldLabel>
             </Field>
           )}
           <AlertDialogFooter>
@@ -93,7 +91,7 @@ export function ConfirmDialog({ spec, pending, onConfirm, onClose, returnTo }: C
                 onConfirm()
               }}
             >
-              {translate(spec.action)}
+              {t(...spec.action)}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

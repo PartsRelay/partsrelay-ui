@@ -2,7 +2,6 @@ import type { QueryClient } from '@tanstack/react-query'
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
-import { type Message, messageKeys } from '@/core/message'
 import { watchCompanyLocale } from '@/modules/workspaces/core/account'
 
 type Catalog = Record<string, Record<string, unknown>>
@@ -27,11 +26,9 @@ void i18n
       convertDetectedLanguage: (language) => language.split('-')[0],
     },
     interpolation: { escapeValue: false },
+    // Error codes without their own text get the generic one
+    parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.UNKNOWN') : key),
   })
-
-export function translate(text: Message) {
-  return i18n.t(messageKeys(text), text.values)
-}
 
 export function followCompanyLanguage(client: QueryClient) {
   // Without a company language the detector picks the browser one

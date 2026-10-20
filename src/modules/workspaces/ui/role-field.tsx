@@ -1,6 +1,6 @@
 import { useId } from 'react'
+import { useTranslation } from 'react-i18next'
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
-import { useT } from '@/ui/hooks/use-t'
 import { FieldDescription, FieldSet, FieldTitle } from '@/ui/components/ui/field'
 import { ToggleGroup, ToggleGroupItem } from '@/ui/components/ui/toggle-group'
 
@@ -14,7 +14,7 @@ type RoleFieldProps = {
 
 // The title names the choice once, the hint describes it
 export function RoleField({ label, hint, roles, value, onValueChange }: RoleFieldProps) {
-  const translate = useT()
+  const { t } = useTranslation()
   const labelId = useId()
   const hintId = useId()
 
@@ -33,7 +33,7 @@ export function RoleField({ label, hint, roles, value, onValueChange }: RoleFiel
       >
         {roles.map((role) => (
           <ToggleGroupItem key={role} value={role}>
-            {translate(roleLabel(role))}
+            {t(...roleLabel(role))}
           </ToggleGroupItem>
         ))}
       </ToggleGroup>

@@ -6,7 +6,6 @@ import { RemoveMemberDialog } from '@/modules/workspaces/ui/remove-member-dialog
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { PersonItem } from '@/ui/components/person-item'
 import { StatusBadge } from '@/ui/components/status-badge'
-import { useT } from '@/ui/hooks/use-t'
 import { MemberActions } from '@/modules/workspaces/ui/member-actions'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import {
@@ -22,7 +21,6 @@ const columns = ['member', 'role', 'actions']
 
 export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
   const { t } = useTranslation()
-  const translate = useT()
   const { workspace, me } = useMe()
   const heading = useRef<HTMLHeadingElement>(null)
   // Outlives the row, which leaves before the core answers
@@ -60,7 +58,7 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
                   />
                 </TableCell>
                 <TableCell>
-                  <StatusBadge tone="neutral">{translate(row.roleLabel)}</StatusBadge>
+                  <StatusBadge tone="neutral">{t(...row.roleLabel)}</StatusBadge>
                 </TableCell>
                 <TableCell>
                   <MemberActions

@@ -1,7 +1,7 @@
 import { useMatches } from '@tanstack/react-router'
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { breadcrumbs } from '@/modules/workspaces/core/navigation'
-import { useT } from '@/ui/hooks/use-t'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,7 +13,7 @@ import { Separator } from '@/ui/components/ui/separator'
 import { SidebarTrigger } from '@/ui/components/ui/sidebar'
 
 export function AppHeader() {
-  const translate = useT()
+  const { t } = useTranslation()
   const crumb = useMatches({
     select: (matches) => matches.findLast((match) => match.staticData.crumb)?.staticData.crumb,
   })
@@ -33,10 +33,10 @@ export function AppHeader() {
               const last = index === trail.length - 1
 
               return (
-                <Fragment key={label.key}>
+                <Fragment key={label[0]}>
                   {index > 0 && <BreadcrumbSeparator className="hidden md:block" />}
                   <BreadcrumbItem className={last ? undefined : 'hidden md:block'}>
-                    {last ? <BreadcrumbPage>{translate(label)}</BreadcrumbPage> : translate(label)}
+                    {last ? <BreadcrumbPage>{t(...label)}</BreadcrumbPage> : t(...label)}
                   </BreadcrumbItem>
                 </Fragment>
               )

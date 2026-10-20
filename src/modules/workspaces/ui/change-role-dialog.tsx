@@ -11,7 +11,6 @@ import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { useAction } from '@/ui/hooks/use-action'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
-import { useT } from '@/ui/hooks/use-t'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
 import { Button } from '@/ui/components/ui/button'
 import {
@@ -47,7 +46,6 @@ type ChangeRoleFormProps = { member: Member; roles: Role[]; onDone: () => void }
 
 function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
   const { t } = useTranslation()
-  const translate = useT()
   const { me } = useMe()
   const [role, setRole] = useState(member.role)
   const { client, pending, run } = useAction()
@@ -79,7 +77,7 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
         roles={roles}
         value={role}
         onValueChange={setRole}
-        hint={translate(roleHint(role, me))}
+        hint={t(...roleHint(role, me))}
       />
       <DialogFooter>
         <DialogClose asChild>
