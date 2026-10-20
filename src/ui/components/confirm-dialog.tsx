@@ -1,6 +1,6 @@
 import { type RefObject, useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { canConfirm, type ConfirmSpec } from '@/core/confirm'
+import { can, type ConfirmSpec } from '@/core/confirm'
 import { Facts } from '@/ui/components/facts'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import {
@@ -85,7 +85,7 @@ export function ConfirmDialog({ spec, pending, onConfirm, onClose, returnTo }: C
             <AlertDialogCancel>{t('confirm.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               variant={spec.tone === 'danger' ? 'destructive' : 'default'}
-              disabled={pending || !canConfirm(spec, typed, acknowledged)}
+              disabled={pending || !can(spec, typed, acknowledged)}
               onClick={(event) => {
                 event.preventDefault()
                 onConfirm()

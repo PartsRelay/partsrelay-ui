@@ -12,7 +12,7 @@ export type ConfirmSpec = {
   acknowledge?: Message
 }
 
-export function canConfirm(spec: ConfirmSpec, typed: string, acknowledged = false) {
+export function can(spec: ConfirmSpec, typed: string, acknowledged = false) {
   return (
     (spec.typeToConfirm === undefined || typed.trim() === spec.typeToConfirm.trim()) &&
     (spec.acknowledge === undefined || acknowledged)
