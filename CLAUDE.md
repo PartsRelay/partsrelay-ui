@@ -4,7 +4,7 @@
 
 - Repository root: `index.html`, `index.css` and the tool configs (`vite.config.ts`, `orval.config.ts`, `tsconfig.json`, `components.json`).
 - `src/`: the app configuration (`env.ts`, `router.ts`, `query-client.ts`, `i18n.ts`) and `main.tsx`.
-- `src/core/`: TypeScript shared across the whole frontend, including the REST client Orval generates in `src/core/api`. Better Auth is called only through its client in `src/modules/auth/core/auth.client.ts`.
+- `src/core/`: TypeScript shared across the whole frontend, including the core API client Orval generates in `src/core/api`. Better Auth is called only through its client in `src/modules/auth/core/auth.client.ts`.
 - `src/ui/`: `routeTree.gen.ts`.
 - `src/ui/components/`: shadcn components.
 - `src/ui/hooks/`: shared React hooks, the shadcn ones included.

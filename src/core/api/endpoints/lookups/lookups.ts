@@ -33,8 +33,8 @@ import type {
   PostApiV1LookupsBody
 } from '../../models';
 
-import { http } from '../../../../http/client';
-import type { ErrorType , BodyType } from '../../../../http/client';
+import { http } from '../../../http/client';
+import type { ErrorType , BodyType } from '../../../http/client';
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];

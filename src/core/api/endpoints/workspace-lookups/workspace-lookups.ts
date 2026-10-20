@@ -28,8 +28,8 @@ import type {
   GetApiV1WorkspaceLookupsMembers200
 } from '../../models';
 
-import { http } from '../../../../http/client';
-import type { ErrorType } from '../../../../http/client';
+import { http } from '../../../http/client';
+import type { ErrorType } from '../../../http/client';
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
