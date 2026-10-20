@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { leaveCompanyConfirm, type ProfileView } from '@/modules/auth/core/profile'
+import type { ProfileView } from '@/modules/auth/core/profile'
 import { endSession } from '@/modules/auth/core/session.query'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { Callout } from '@/ui/components/callout'
@@ -57,7 +57,10 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
         )}
       </CardContent>
       <ConfirmDialog
-        spec={confirming ? leaveCompanyConfirm(view) : null}
+        open={confirming}
+        title={t('profile.confirm.leave.title', { company: view.company })}
+        description={t('profile.confirm.leave.body')}
+        action={t('profile.confirm.leave.action')}
         pending={pending}
         onConfirm={() =>
           void run(

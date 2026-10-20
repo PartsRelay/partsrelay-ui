@@ -17,8 +17,7 @@
     "viewer": "Viewer"
   },
   "confirm": {
-    "cancel": "Cancel",
-    "type-to-confirm": "Type {{text}} to confirm"
+    "cancel": "Cancel"
   },
   "notices": {
     "copy-failed": "Copy failed, select the text and copy it by hand."

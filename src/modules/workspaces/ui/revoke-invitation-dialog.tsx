@@ -1,11 +1,8 @@
 import type { RefObject } from 'react'
+import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { optimistic } from '@/core/optimistic'
-import {
-  type InvitationRow,
-  revokeConfirm,
-  withoutInvitation,
-} from '@/modules/workspaces/core/team'
+import { type InvitationRow, withoutInvitation } from '@/modules/workspaces/core/team'
 import type { FullOrganization } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
@@ -24,12 +21,16 @@ export function RevokeInvitationDialog({
   onClose,
   returnTo,
 }: RevokeInvitationDialogProps) {
+  const { t } = useTranslation()
   const { client, pending, run } = useAction()
   const { id } = row.invitation
 
   return (
     <ConfirmDialog
-      spec={open ? revokeConfirm(row) : null}
+      open={open}
+      title={t('team.confirm.revoke.title', { email: row.invitation.email })}
+      description={t('team.confirm.revoke.body')}
+      action={t('team.confirm.revoke.action')}
       pending={pending}
       onConfirm={async () => {
         const result = await run(

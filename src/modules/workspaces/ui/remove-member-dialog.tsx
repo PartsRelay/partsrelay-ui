@@ -1,7 +1,8 @@
 import type { RefObject } from 'react'
+import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { optimistic } from '@/core/optimistic'
-import { removeMemberConfirm, withoutMember } from '@/modules/workspaces/core/team'
+import { withoutMember } from '@/modules/workspaces/core/team'
 import type { FullOrganization, Member } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
@@ -16,12 +17,16 @@ type RemoveMemberDialogProps = {
 }
 
 export function RemoveMemberDialog({ member, open, onClose, returnTo }: RemoveMemberDialogProps) {
+  const { t } = useTranslation()
   const { workspace } = useMe()
   const { client, pending, run } = useAction()
 
   return (
     <ConfirmDialog
-      spec={open ? removeMemberConfirm(member, workspace) : null}
+      open={open}
+      title={t('team.confirm.remove.title', { name: member.name })}
+      description={t('team.confirm.remove.body', { name: member.name, company: workspace.name })}
+      action={t('team.confirm.remove.action')}
       pending={pending}
       onConfirm={async () => {
         const result = await run(

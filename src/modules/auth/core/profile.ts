@@ -1,4 +1,3 @@
-import type { ConfirmSpec } from '@/core/confirm'
 import { message } from '@/core/message'
 import { createCleanForm } from '@/core/cleaner'
 import { roleLabel } from '@/modules/workspaces/core/role'
@@ -19,18 +18,4 @@ export function profileView(me: Me, workspace: Workspace) {
 
 export function createUserNameForm(current: string) {
   return createCleanForm(current, message('profile.errors.name-required'))
-}
-
-export function leaveCompanyConfirm(view: ProfileView): ConfirmSpec {
-  return {
-    title: message('profile.confirm.leave.title', { company: view.company }),
-    body: message('profile.confirm.leave.body'),
-    action: message('profile.confirm.leave.action'),
-    tone: 'danger',
-    facts: [
-      { label: message('profile.identity.email'), value: view.email },
-      { label: message('profile.identity.role'), value: view.roleLabel },
-    ],
-    acknowledge: message('profile.confirm.leave.acknowledge'),
-  }
 }

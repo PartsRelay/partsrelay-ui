@@ -1,5 +1,4 @@
 import { toDate } from 'date-fns'
-import type { ConfirmSpec } from '@/core/confirm'
 import { errorCode, errorKey, errorMessage, errorStatus } from '@/core/errors'
 import { type Message, message } from '@/core/message'
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
@@ -109,15 +108,6 @@ export function invitationView({
 
 export function invitationHeadline({ inviter, workspace }: InvitationDetails) {
   return message('invitation.headline', { inviter, workspace })
-}
-
-export function joinConfirm(workspace: string): ConfirmSpec {
-  return {
-    title: message('invitation.confirm.title', { workspace }),
-    body: message('invitation.confirm.body', { workspace }),
-    action: message('invitation.confirm.action'),
-    tone: 'danger',
-  }
 }
 
 export function acceptError(error: unknown) {

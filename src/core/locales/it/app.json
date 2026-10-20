@@ -17,8 +17,7 @@
     "viewer": "Visualizzatore"
   },
   "confirm": {
-    "cancel": "Annulla",
-    "type-to-confirm": "Scrivi {{text}} per confermare"
+    "cancel": "Annulla"
   },
   "notices": {
     "copy-failed": "Copia non riuscita, seleziona il testo e copialo a mano."

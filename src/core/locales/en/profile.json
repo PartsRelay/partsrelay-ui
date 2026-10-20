@@ -5,7 +5,6 @@
     "identity": {
       "title": "Your account",
       "description": "You sign in with this email, through Google or a sign-in link.",
-      "email": "Email",
       "company": "Company",
       "role": "Role",
       "name": "Name",
@@ -30,7 +29,6 @@
       "leave": {
         "title": "Leave {{company}}?",
         "body": "Your account is deleted for good, together with the invitations you sent, and you are signed out. Searches you ran stay with the company. Signing in again with this email starts a new company.",
-        "acknowledge": "I understand that my account is deleted for good.",
         "action": "Leave and delete my account"
       }
     },

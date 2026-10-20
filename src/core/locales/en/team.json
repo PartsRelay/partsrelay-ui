@@ -77,9 +77,6 @@
       }
     },
     "confirm": {
-      "email": "Email",
-      "role": "Role",
-      "sent": "Sent",
       "remove": {
         "title": "Remove {{name}}?",
         "body": "{{name}} loses access to {{company}} and their account is deleted, together with the invitations they sent. Searches they ran stay with the company.",

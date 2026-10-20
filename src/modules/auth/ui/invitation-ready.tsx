@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { acceptError, type InvitationDetails, joinConfirm } from '@/modules/auth/core/invitation'
+import { acceptError, type InvitationDetails } from '@/modules/auth/core/invitation'
 import { currentCompanyKey } from '@/modules/auth/core/invitation.query'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
 import { Callout } from '@/ui/components/callout'
@@ -72,7 +72,10 @@ export function InvitationReady({ details, confirm, email, invitationId }: Invit
         </div>
       </CardContent>
       <ConfirmDialog
-        spec={confirming ? joinConfirm(details.workspace) : null}
+        open={confirming}
+        title={t('invitation.confirm.title', { workspace: details.workspace })}
+        description={t('invitation.confirm.body', { workspace: details.workspace })}
+        action={t('invitation.confirm.action')}
         pending={pending}
         onClose={() => setConfirming(false)}
         onConfirm={() => void joinNow()}

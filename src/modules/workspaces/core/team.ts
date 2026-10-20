@@ -1,6 +1,5 @@
 import { compareDesc, intlFormat, isAfter } from 'date-fns'
 import { z } from 'zod'
-import type { ConfirmSpec } from '@/core/confirm'
 import { type Message, message } from '@/core/message'
 import { canManageRole } from '@/modules/workspaces/core/permissions'
 import { type Role, roleLabel } from '@/modules/workspaces/core/role'
@@ -116,32 +115,6 @@ export function invitationRows(
     canManage: canManageRole(me.role, invitation.role),
     link: invitationLink(invitation.id, origin),
   }))
-}
-
-export function removeMemberConfirm(member: Member, workspace: Workspace): ConfirmSpec {
-  return {
-    title: message('team.confirm.remove.title', { name: member.name }),
-    body: message('team.confirm.remove.body', { name: member.name, company: workspace.name }),
-    action: message('team.confirm.remove.action'),
-    tone: 'danger',
-    facts: [
-      { label: message('team.confirm.email'), value: member.email },
-      { label: message('team.confirm.role'), value: roleLabel(member.role) },
-    ],
-  }
-}
-
-export function revokeConfirm(row: InvitationRow): ConfirmSpec {
-  return {
-    title: message('team.confirm.revoke.title', { email: row.invitation.email }),
-    body: message('team.confirm.revoke.body'),
-    action: message('team.confirm.revoke.action'),
-    tone: 'danger',
-    facts: [
-      { label: message('team.confirm.role'), value: row.roleLabel },
-      { label: message('team.confirm.sent'), value: row.sent },
-    ],
-  }
 }
 
 // Cache updates shown before the core answers

@@ -5,7 +5,6 @@
     "identity": {
       "title": "Il tuo account",
       "description": "Accedi con questa email, tramite Google o un link di accesso.",
-      "email": "Email",
       "company": "Azienda",
       "role": "Ruolo",
       "name": "Nome",
@@ -30,7 +29,6 @@
       "leave": {
         "title": "Lasciare {{company}}?",
         "body": "Il tuo account viene eliminato per sempre, insieme agli inviti che hai inviato, e vieni disconnesso. Le ricerche che hai fatto restano all'azienda. Accedendo di nuovo con questa email crei una nuova azienda.",
-        "acknowledge": "Ho capito che il mio account viene eliminato per sempre.",
         "action": "Esci ed elimina il mio account"
       }
     },

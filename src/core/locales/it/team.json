@@ -77,9 +77,6 @@
       }
     },
     "confirm": {
-      "email": "Email",
-      "role": "Ruolo",
-      "sent": "Inviato il",
       "remove": {
         "title": "Rimuovere {{name}}?",
         "body": "{{name}} perde l'accesso a {{company}} e il suo account viene eliminato, insieme agli inviti che ha inviato. Le ricerche che ha fatto restano all'azienda.",

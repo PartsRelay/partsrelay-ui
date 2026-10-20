@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { endSession } from '@/modules/auth/core/session.query'
-import { deleteCompanyConfirm } from '@/modules/workspaces/core/company'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useAction } from '@/ui/hooks/use-action'
@@ -30,7 +29,10 @@ export function DeleteCompany({ workspace }: { workspace: Workspace }) {
         </Button>
       </CardContent>
       <ConfirmDialog
-        spec={confirming ? deleteCompanyConfirm(workspace) : null}
+        open={confirming}
+        title={t('company.confirm.delete.title', { company: workspace.name })}
+        description={t('company.confirm.delete.body', { company: workspace.name })}
+        action={t('company.confirm.delete.action')}
         pending={pending}
         onConfirm={() =>
           void run(
