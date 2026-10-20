@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { useSession } from '@/modules/auth/ui/use-session'
-import { Button } from '@/ui/components/button'
+import { Button } from '@/ui/components/ui/button'
 
 export function AccountActions() {
   const { t } = useTranslation()

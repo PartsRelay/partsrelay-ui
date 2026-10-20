@@ -8,9 +8,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/ui/components/breadcrumb'
-import { Separator } from '@/ui/components/separator'
-import { SidebarTrigger } from '@/ui/components/sidebar'
+} from '@/ui/components/ui/breadcrumb'
+import { Separator } from '@/ui/components/ui/separator'
+import { SidebarTrigger } from '@/ui/components/ui/sidebar'
 
 export function AppHeader() {
   const translate = useT()

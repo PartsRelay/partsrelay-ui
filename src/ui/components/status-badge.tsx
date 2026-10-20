@@ -1,7 +1,7 @@
 import { CircleAlertIcon, CircleCheckIcon } from 'lucide-react'
 import type { ComponentProps, ComponentType } from 'react'
-import { Badge } from '@/ui/components/badge'
-import { Spinner } from '@/ui/components/spinner'
+import { Badge } from '@/ui/components/ui/badge'
+import { Spinner } from '@/ui/components/ui/spinner'
 
 export type StatusTone = 'success' | 'warning' | 'danger' | 'neutral'
 

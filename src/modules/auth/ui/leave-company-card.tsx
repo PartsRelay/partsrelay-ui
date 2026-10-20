@@ -7,8 +7,8 @@ import { leaveCompanyMutation } from '@/modules/auth/core/profile.mutation'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
-import { Button } from '@/ui/components/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
+import { Button } from '@/ui/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
 type LeaveCompanyCardProps = { view: ProfileView; workspace: Workspace }
 

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { accessHint } from '@/modules/workspaces/core/shell'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { useT } from '@/ui/hooks/use-t'
-import { Button } from '@/ui/components/button'
+import { Button } from '@/ui/components/ui/button'
 import {
   Empty,
   EmptyContent,
@@ -12,7 +12,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '@/ui/components/empty'
+} from '@/ui/components/ui/empty'
 
 export function AccessDenied() {
   const { t } = useTranslation()

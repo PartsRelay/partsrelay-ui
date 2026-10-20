@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react'
 import { useCopyToClipboard } from 'usehooks-ts'
 import { type Message, message } from '@/core/message'
 import { notify } from '@/ui/components/notify'
-import { Button } from '@/ui/components/button'
+import { Button } from '@/ui/components/ui/button'
 
 type CopyButtonProps = ComponentProps<typeof Button> & { text: string; notice: Message }
 

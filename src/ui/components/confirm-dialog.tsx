@@ -13,10 +13,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/ui/components/alert-dialog'
-import { Checkbox } from '@/ui/components/checkbox'
-import { Field, FieldLabel } from '@/ui/components/field'
-import { Input } from '@/ui/components/input'
+} from '@/ui/components/ui/alert-dialog'
+import { Checkbox } from '@/ui/components/ui/checkbox'
+import { Field, FieldLabel } from '@/ui/components/ui/field'
+import { Input } from '@/ui/components/ui/input'
 
 type ConfirmDialogProps = {
   spec: ConfirmSpec | null

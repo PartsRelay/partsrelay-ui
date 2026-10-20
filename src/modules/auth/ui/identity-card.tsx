@@ -8,9 +8,9 @@ import { Facts } from '@/ui/components/facts'
 import { PersonAvatar } from '@/ui/components/person-avatar'
 import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
-import { Button } from '@/ui/components/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
-import { Input } from '@/ui/components/input'
+import { Button } from '@/ui/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { Input } from '@/ui/components/ui/input'
 
 type IdentityCardProps = { view: ProfileView; userName: string }
 

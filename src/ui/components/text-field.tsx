@@ -1,6 +1,6 @@
 import { Slot } from 'radix-ui'
 import { type ReactElement, type ReactNode, useId } from 'react'
-import { Field, FieldDescription, FieldError, FieldLabel } from '@/ui/components/field'
+import { Field, FieldDescription, FieldError, FieldLabel } from '@/ui/components/ui/field'
 
 type TextFieldProps = {
   id?: string

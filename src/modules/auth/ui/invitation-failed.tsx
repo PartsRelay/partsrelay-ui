@@ -6,9 +6,9 @@ import type { Message } from '@/core/message'
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { Callout } from '@/ui/components/callout'
 import { useT } from '@/ui/hooks/use-t'
-import { Button } from '@/ui/components/button'
-import { Card, CardContent, CardHeader } from '@/ui/components/card'
-import { Spinner } from '@/ui/components/spinner'
+import { Button } from '@/ui/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/ui/components/ui/card'
+import { Spinner } from '@/ui/components/ui/spinner'
 
 export function InvitationFailed({ reason }: { reason: Message }) {
   const { t } = useTranslation()

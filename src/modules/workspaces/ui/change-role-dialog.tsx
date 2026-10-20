@@ -9,7 +9,7 @@ import { useMe } from '@/modules/workspaces/ui/use-me'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import { useT } from '@/ui/hooks/use-t'
 import { RoleToggle } from '@/modules/workspaces/ui/role-toggle'
-import { Button } from '@/ui/components/button'
+import { Button } from '@/ui/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -18,7 +18,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/ui/components/dialog'
+} from '@/ui/components/ui/dialog'
 
 type ChangeRoleDialogProps = {
   member: Member

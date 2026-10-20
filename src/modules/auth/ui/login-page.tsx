@@ -7,7 +7,7 @@ import { loginError, loginFlow, type loginSearchSchema } from '@/modules/auth/co
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
 import { Callout } from '@/ui/components/callout'
-import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/card'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { notify } from '@/ui/components/notify'
 import { useT } from '@/ui/hooks/use-t'
 

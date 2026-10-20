@@ -1,5 +1,5 @@
 import { initials } from '@/core/format'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/components/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/ui/components/ui/avatar'
 
 export function PersonAvatar({ name, image }: { name: string; image?: string | null }) {
   return (

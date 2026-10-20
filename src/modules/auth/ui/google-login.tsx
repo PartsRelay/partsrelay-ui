@@ -1,7 +1,7 @@
 import { type UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/ui/components/button'
-import { Spinner } from '@/ui/components/spinner'
+import { Button } from '@/ui/components/ui/button'
+import { Spinner } from '@/ui/components/ui/spinner'
 
 type GoogleLoginProps = { signIn: UseMutationOptions<unknown, Error, void> }
 

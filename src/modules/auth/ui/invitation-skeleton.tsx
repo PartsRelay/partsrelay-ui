@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Card, CardContent, CardHeader } from '@/ui/components/card'
-import { Skeleton } from '@/ui/components/skeleton'
+import { Card, CardContent, CardHeader } from '@/ui/components/ui/card'
+import { Skeleton } from '@/ui/components/ui/skeleton'
 
 export function InvitationSkeleton() {
   const { t } = useTranslation()

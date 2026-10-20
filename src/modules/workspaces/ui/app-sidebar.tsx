@@ -19,7 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from '@/ui/components/sidebar'
+} from '@/ui/components/ui/sidebar'
 
 const icons: Record<Section, LucideIcon> = { team: UsersIcon, company: Building2Icon }
 

@@ -8,9 +8,9 @@ import { errorMessage } from '@/core/errors'
 import { Callout } from '@/ui/components/callout'
 import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
-import { Button } from '@/ui/components/button'
-import { Input } from '@/ui/components/input'
-import { Spinner } from '@/ui/components/spinner'
+import { Button } from '@/ui/components/ui/button'
+import { Input } from '@/ui/components/ui/input'
+import { Spinner } from '@/ui/components/ui/spinner'
 
 type MagicLinkFormProps = { send: UseMutationOptions<unknown, Error, string> }
 

@@ -3,7 +3,7 @@ import { type InvitationDetails, invitationHeadline } from '@/modules/auth/core/
 import { formatDate } from '@/core/format'
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { useT } from '@/ui/hooks/use-t'
-import { CardDescription, CardHeader } from '@/ui/components/card'
+import { CardDescription, CardHeader } from '@/ui/components/ui/card'
 
 export function InvitationHeader({ details }: { details: InvitationDetails | null }) {
   const { t, i18n } = useTranslation()

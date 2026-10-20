@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
 import type { SessionState } from '@/modules/auth/ui/use-session'
 import { Callout } from '@/ui/components/callout'
-import { Button } from '@/ui/components/button'
-import { Card, CardContent } from '@/ui/components/card'
-import { Spinner } from '@/ui/components/spinner'
+import { Button } from '@/ui/components/ui/button'
+import { Card, CardContent } from '@/ui/components/ui/card'
+import { Spinner } from '@/ui/components/ui/spinner'
 
 type OtherAccountProps = { session: SessionState }
 

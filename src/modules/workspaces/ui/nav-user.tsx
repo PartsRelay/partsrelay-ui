@@ -13,13 +13,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/ui/components/dropdown-menu'
+} from '@/ui/components/ui/dropdown-menu'
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/ui/components/sidebar'
+} from '@/ui/components/ui/sidebar'
 
 function Identity({ name, email, image }: { name: string; email: string; image: string | null }) {
   return (

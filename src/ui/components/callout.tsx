@@ -1,6 +1,6 @@
 import { CircleAlertIcon, InfoIcon, type LucideIcon, TriangleAlertIcon } from 'lucide-react'
 import type { ComponentProps, ReactNode } from 'react'
-import { Alert, AlertDescription, AlertTitle } from '@/ui/components/alert'
+import { Alert, AlertDescription, AlertTitle } from '@/ui/components/ui/alert'
 
 export type CalloutTone = 'info' | 'warning' | 'danger' | 'neutral'
 

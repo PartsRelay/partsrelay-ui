@@ -8,7 +8,7 @@ import { PersonAvatar } from '@/ui/components/person-avatar'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { useT } from '@/ui/hooks/use-t'
 import { MemberActions } from '@/modules/workspaces/ui/member-actions'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/ui/components/table'
+} from '@/ui/components/ui/table'
 
 const columns = ['member', 'role', 'actions']
 

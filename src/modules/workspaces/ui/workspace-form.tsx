@@ -13,10 +13,10 @@ import { InvitationHint } from '@/modules/workspaces/ui/invitation-hint'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
 import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
-import { Button } from '@/ui/components/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/ui/components/card'
-import { Input } from '@/ui/components/input'
-import { Spinner } from '@/ui/components/spinner'
+import { Button } from '@/ui/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/ui/components/ui/card'
+import { Input } from '@/ui/components/ui/input'
+import { Spinner } from '@/ui/components/ui/spinner'
 
 type WorkspaceFormProps = { workspace: Workspace; askName: boolean }
 

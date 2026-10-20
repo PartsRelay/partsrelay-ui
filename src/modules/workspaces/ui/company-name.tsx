@@ -6,9 +6,9 @@ import { createCompanyNameForm } from '@/modules/workspaces/core/company'
 import { renameCompanyMutation } from '@/modules/workspaces/core/company.mutation'
 import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
-import { Button } from '@/ui/components/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
-import { Input } from '@/ui/components/input'
+import { Button } from '@/ui/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { Input } from '@/ui/components/ui/input'
 
 export function CompanyName({ name }: { name: string }) {
   const { t } = useTranslation()

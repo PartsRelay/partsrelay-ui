@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/ui/components/select'
+} from '@/ui/components/ui/select'
 
 type LocaleSelectProps = {
   label: ReactNode

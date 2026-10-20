@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { changeLanguageMutation } from '@/modules/workspaces/core/company.mutation'
 import type { Locale } from '@/modules/workspaces/core/locale'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
 export function CompanyLanguage({ locale }: { locale: Locale }) {
   const { t } = useTranslation()

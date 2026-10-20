@@ -6,8 +6,8 @@ import { deleteCompanyConfirm } from '@/modules/workspaces/core/company'
 import { deleteCompanyMutation } from '@/modules/workspaces/core/company.mutation'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
-import { Button } from '@/ui/components/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
+import { Button } from '@/ui/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
 export function DeleteCompany({ workspace }: { workspace: Workspace }) {
   const { t } = useTranslation()

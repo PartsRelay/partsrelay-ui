@@ -17,15 +17,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/ui/components/alert-dialog'
-import { Button } from '@/ui/components/button'
+} from '@/ui/components/ui/alert-dialog'
+import { Button } from '@/ui/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/ui/components/select'
+} from '@/ui/components/ui/select'
 
 type TransferOwnershipDialogProps = { open: boolean; onOpenChange: (open: boolean) => void }
 

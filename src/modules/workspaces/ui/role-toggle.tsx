@@ -1,6 +1,6 @@
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
 import { useT } from '@/ui/hooks/use-t'
-import { ToggleGroup, ToggleGroupItem } from '@/ui/components/toggle-group'
+import { ToggleGroup, ToggleGroupItem } from '@/ui/components/ui/toggle-group'
 
 type RoleToggleProps = {
   roles: Role[]

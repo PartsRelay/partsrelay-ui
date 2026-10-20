@@ -8,11 +8,11 @@ import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
 import { RoleToggle } from '@/modules/workspaces/ui/role-toggle'
-import { Button } from '@/ui/components/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
-import { FieldDescription, FieldLegend, FieldSet } from '@/ui/components/field'
-import { Input } from '@/ui/components/input'
-import { Spinner } from '@/ui/components/spinner'
+import { Button } from '@/ui/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { FieldDescription, FieldLegend, FieldSet } from '@/ui/components/ui/field'
+import { Input } from '@/ui/components/ui/input'
+import { Spinner } from '@/ui/components/ui/spinner'
 
 export function InviteCard() {
   const { t } = useTranslation()
