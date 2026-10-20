@@ -1,17 +1,19 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query'
 import { failureNotice } from '@/modules/auth/core/session.query'
-import { errorStatus, toAppError } from '@/core/errors'
+import { errorStatus, NO_STATUS, toErrorBody } from '@/core/errors'
 import { resolveNotice } from '@/core/notice'
 import { notify } from '@/ui/components/notify'
 
-// Only development shows the message of the core
-function detail(error: Error) {
-  return import.meta.env.DEV ? (toAppError(error).message ?? undefined) : undefined
-}
-
 function report(error: Error, silent?: boolean) {
   const notice = failureNotice(queryClient, error, silent)
-  if (notice) notify('error', notice, { id: notice.key, description: detail(error) })
+  // The message exists only in development
+  if (notice) notify('error', notice, { id: notice.key, description: toErrorBody(error).message })
+}
+
+function retryable(error: Error) {
+  const status = errorStatus(error)
+
+  return status === NO_STATUS || status >= 500
 }
 
 export const queryClient = new QueryClient({
@@ -28,7 +30,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
-      retry: (failures, error) => (errorStatus(error) ?? 500) >= 500 && failures < 2,
+      retry: (failures, error) => retryable(error) && failures < 2,
     },
   },
 })

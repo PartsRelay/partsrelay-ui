@@ -50,7 +50,7 @@ function world<T>(change: (state: World) => T): T {
 
 // Errors in the shape the core sends
 function fail(status: number, code: string, message = code): never {
-  throw HttpResponse.json({ error: { code, status, message } }, { status })
+  throw HttpResponse.json({ code, status, message }, { status })
 }
 
 function signedIn(state: World) {

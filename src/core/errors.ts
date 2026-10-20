@@ -1,13 +1,18 @@
 import { isAxiosError } from 'axios'
 import { message } from '@/core/message'
 
-// The core sends { error: { code, status, message } }, message outside production
-type ErrorBody = { error?: { code?: string; message?: string } } | null | undefined
+// The same body the core sends, message only in development
+export type ErrorBody = {
+  code: string
+  status: number
+  message?: string
+}
 
 // What the Better Auth client throws
-type AuthClientError = { status: number; error: ErrorBody }
+type AuthClientError = { status: number; error: Partial<ErrorBody> | null }
 
-export type AppError = { code: string; status: number | null; message: string | null }
+// No HTTP response, like a network failure
+export const NO_STATUS = 0
 
 // Other coded 401s, like removing a member, keep the session
 const SESSION_CODES = ['UNAUTHORIZED', 'UNAUTHORIZED_ACCESS']
@@ -30,27 +35,27 @@ function isAuthClientError(error: unknown): error is AuthClientError {
   )
 }
 
-function fromCore(status: number, body: ErrorBody): AppError {
-  return { code: body?.error?.code ?? 'UNKNOWN', status, message: body?.error?.message ?? null }
+function errorBody(code: string, status: number, text?: string): ErrorBody {
+  return import.meta.env.DEV && text ? { code, status, message: text } : { code, status }
 }
 
-export function toAppError(error: unknown): AppError {
-  if (isAxiosError<ErrorBody>(error)) {
+function fromCore(status: number, body: Partial<ErrorBody> | null | undefined) {
+  return errorBody(body?.code ?? 'UNKNOWN', status, body?.message)
+}
+
+export function toErrorBody(error: unknown): ErrorBody {
+  if (isAxiosError<Partial<ErrorBody>>(error)) {
     if (error.response) return fromCore(error.response.status, error.response.data)
 
-    return { code: 'NETWORK_ERROR', status: null, message: error.message }
+    return errorBody('NETWORK_ERROR', NO_STATUS, error.message)
   }
 
   if (isAuthClientError(error)) return fromCore(error.status, error.error)
 
   // fetch rejects with a TypeError when offline
-  const local = error instanceof Error ? error.message : null
+  const code = error instanceof TypeError ? 'NETWORK_ERROR' : 'UNKNOWN'
 
-  return {
-    code: error instanceof TypeError ? 'NETWORK_ERROR' : 'UNKNOWN',
-    status: null,
-    message: local,
-  }
+  return errorBody(code, NO_STATUS, error instanceof Error ? error.message : undefined)
 }
 
 export function isGenericCode(code: string) {
@@ -58,11 +63,11 @@ export function isGenericCode(code: string) {
 }
 
 export function errorStatus(error: unknown) {
-  return toAppError(error).status ?? undefined
+  return toErrorBody(error).status
 }
 
 export function errorCode(error: unknown) {
-  return toAppError(error).code
+  return toErrorBody(error).code
 }
 
 export function errorMessage(error: unknown) {
@@ -70,7 +75,7 @@ export function errorMessage(error: unknown) {
 }
 
 export function sessionEnded(error: unknown) {
-  const { code, status } = toAppError(error)
+  const { code, status } = toErrorBody(error)
 
   return status === 401 && SESSION_CODES.includes(code)
 }
