@@ -1,10 +1,11 @@
+import { addSeconds, differenceInSeconds } from 'date-fns'
 import { createStore } from '@tanstack/store'
 import { z } from 'zod'
 import { type Message, message } from '@/core/message'
 
 export const MAGIC_LINK_MINUTES = 10
 
-export const RESEND_AFTER_MS = 30_000
+export const RESEND_AFTER_SECONDS = 30
 
 const email = z.email()
 
@@ -18,7 +19,9 @@ export type MagicLinkState = {
 export function resendWait(sentAt: number | null, now: number) {
   if (sentAt === null) return 0
 
-  return Math.max(0, Math.ceil((sentAt + RESEND_AFTER_MS - now) / 1000))
+  const until = addSeconds(sentAt, RESEND_AFTER_SECONDS)
+
+  return Math.max(0, differenceInSeconds(until, now, { roundingMethod: 'ceil' }))
 }
 
 export function createMagicLinkForm() {

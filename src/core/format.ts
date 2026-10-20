@@ -1,8 +1,9 @@
+import { format, type Locale } from 'date-fns'
+import { enGB, it } from 'date-fns/locale'
+
 export const EMPTY_VALUE = '—'
 
-export function toDate(value: Date | string | number) {
-  return value instanceof Date ? value : new Date(value)
-}
+const DATE_LOCALES: Record<string, Locale> = { en: enGB, it }
 
 export function firstName(name: string) {
   return name.trim().split(/\s+/)[0] ?? ''
@@ -15,14 +16,6 @@ export function initials(name: string) {
   return letters.map((word) => word!.charAt(0).toUpperCase()).join('')
 }
 
-export function dateFormat(locale: string | undefined, options: Intl.DateTimeFormatOptions) {
-  return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : locale, options)
-}
-
-export function formatDate(
-  value: Date | string,
-  locale?: string,
-  month: 'short' | 'long' = 'short'
-) {
-  return dateFormat(locale, { day: 'numeric', month, year: 'numeric' }).format(toDate(value))
+export function formatDate(value: Date | string, locale?: string) {
+  return format(value, 'PP', { locale: DATE_LOCALES[locale ?? ''] ?? enGB })
 }

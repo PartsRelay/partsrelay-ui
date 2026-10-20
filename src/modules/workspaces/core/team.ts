@@ -1,3 +1,4 @@
+import { compareDesc, isAfter } from 'date-fns'
 import { z } from 'zod'
 import type { ConfirmSpec } from '@/core/confirm'
 import { formatDate } from '@/core/format'
@@ -43,14 +44,14 @@ function pendingInvitations(workspace: Workspace) {
   for (const invitation of workspace.invitations) {
     const email = invitation.email.toLowerCase()
     const current = newest.get(email)
-    if (!current || invitation.createdAt > current.createdAt) newest.set(email, invitation)
+    if (!current || isAfter(invitation.createdAt, current.createdAt)) newest.set(email, invitation)
   }
 
   const members = new Set(workspace.members.map(({ email }) => email.toLowerCase()))
 
   return [...newest.values()]
     .filter(({ status, email }) => status === 'pending' && !members.has(email.toLowerCase()))
-    .sort((a, b) => b.expiresAt.getTime() - a.expiresAt.getTime())
+    .sort((a, b) => compareDesc(a.expiresAt, b.expiresAt))
 }
 
 export function memberRows(workspace: Workspace, me: Me): MemberRow[] {
@@ -83,7 +84,7 @@ export function transferAction(candidate?: Member) {
 }
 
 export function teamSummary(workspace: Workspace, now: Date) {
-  const waiting = pendingInvitations(workspace).filter(({ expiresAt }) => expiresAt > now)
+  const waiting = pendingInvitations(workspace).filter(({ expiresAt }) => isAfter(expiresAt, now))
 
   return [
     message('team.summary.members', { count: workspace.members.length }),
@@ -106,7 +107,7 @@ export function invitationRows(
     invitation,
     roleLabel: roleLabel(invitation.role),
     sent: formatDate(invitation.createdAt, locale),
-    expired: invitation.expiresAt <= now,
+    expired: !isAfter(invitation.expiresAt, now),
     canManage: canManageRole(me.role, invitation.role),
     link: invitationLink(invitation.id, origin),
   }))

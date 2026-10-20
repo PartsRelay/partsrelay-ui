@@ -1,3 +1,5 @@
+import { subDays } from 'date-fns'
+
 // Shapes of the Better Auth JSON the mocks send
 export type Role = 'owner' | 'admin' | 'viewer'
 
@@ -42,9 +44,8 @@ export type Company = {
   invitations: Invitation[]
 }
 
-export const DAY = 86_400_000
-
-export const ago = (ms: number) => new Date(Date.now() - ms).toISOString()
+// Days before now, negative for the future
+export const daysAgo = (days: number) => subDays(new Date(), days).toISOString()
 
 // localStorage switches: user owner|admin|viewer|new, setup pending, invitation 1
 export const setting = (name: 'user' | 'setup' | 'invitation') =>
@@ -55,8 +56,8 @@ const person = (id: string, name: string, email: string): Person => ({
   name,
   email,
   emailVerified: true,
-  createdAt: ago(400 * DAY),
-  updatedAt: ago(DAY),
+  createdAt: daysAgo(400),
+  updatedAt: daysAgo(1),
 })
 
 export const people = {
@@ -105,8 +106,8 @@ const invitation = (
   role,
   status,
   inviterId: people.marco.id,
-  createdAt: ago(sentDaysAgo * DAY),
-  expiresAt: ago((sentDaysAgo - 7) * DAY),
+  createdAt: daysAgo(sentDaysAgo),
+  expiresAt: daysAgo(sentDaysAgo - 7),
 })
 
 export const ricambiRossi = (): Company => ({
@@ -115,12 +116,12 @@ export const ricambiRossi = (): Company => ({
   slug: 'ricambi-rossi',
   metadata: '{"setup":"done"}',
   locale: 'en',
-  createdAt: ago(400 * DAY),
+  createdAt: daysAgo(400),
   members: [
-    member('1', '1', people.marco, 'owner', ago(400 * DAY)),
-    member('1', '2', people.giulia, 'admin', ago(388 * DAY)),
-    member('1', '3', people.luca, 'viewer', ago(122 * DAY)),
-    member('1', '4', people.sara, 'viewer', ago(31 * DAY)),
+    member('1', '1', people.marco, 'owner', daysAgo(400)),
+    member('1', '2', people.giulia, 'admin', daysAgo(388)),
+    member('1', '3', people.luca, 'viewer', daysAgo(122)),
+    member('1', '4', people.sara, 'viewer', daysAgo(31)),
   ],
   invitations: [
     invitation('7', 'f.romano@ricambirossi.it', 'viewer', 1),
@@ -154,9 +155,9 @@ export function officinaFerri(newMember: Person, role: Role): Company {
     slug: 'officina-ferri',
     metadata: '{"setup":"done"}',
     locale: 'it',
-    createdAt: ago(700 * DAY),
+    createdAt: daysAgo(700),
     members: [
-      member('3', '20', people.stefano, 'owner', ago(700 * DAY)),
+      member('3', '20', people.stefano, 'owner', daysAgo(700)),
       member('3', '21', newMember, role, new Date().toISOString()),
     ],
     invitations: [],

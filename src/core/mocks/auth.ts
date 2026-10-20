@@ -1,7 +1,7 @@
+import { isFuture } from 'date-fns'
 import { http, HttpResponse, type JsonBodyType } from 'msw'
 import {
-  ago,
-  DAY,
+  daysAgo,
   newCompany,
   officinaFerri,
   people,
@@ -73,7 +73,7 @@ function managed(state: World, role: string | undefined) {
 }
 
 const live = (invitation: Invitation) =>
-  invitation.status === 'pending' && new Date(invitation.expiresAt) > new Date()
+  invitation.status === 'pending' && isFuture(invitation.expiresAt)
 
 type Offer = Omit<Invitation, 'role'> & { role: Role; organizationName: string }
 
@@ -88,8 +88,8 @@ const offers = ({ offered, me }: World): Offer[] =>
           role: 'admin',
           status: 'pending',
           inviterId: people.stefano.id,
-          createdAt: ago(2 * DAY),
-          expiresAt: ago(-5 * DAY),
+          createdAt: daysAgo(2),
+          expiresAt: daysAgo(-5),
         },
       ]
     : []
@@ -122,9 +122,9 @@ export const authMocks = [
               token: 'mock',
               userId: me.id,
               activeOrganizationId: company.id,
-              expiresAt: ago(-7 * DAY),
-              createdAt: ago(0),
-              updatedAt: ago(0),
+              expiresAt: daysAgo(-7),
+              createdAt: daysAgo(0),
+              updatedAt: daysAgo(0),
             },
           }
         : null
@@ -242,7 +242,7 @@ export const authMocks = [
       }
 
       // Like the core, an expired invitation no longer counts
-      const expiresAt = ago(-7 * DAY)
+      const expiresAt = daysAgo(-7)
       const pending = company.invitations.find((item) => item.email === email && live(item))
       if (pending && !resend) fail(400, 'USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION')
       if (pending) return Object.assign(pending, { expiresAt })

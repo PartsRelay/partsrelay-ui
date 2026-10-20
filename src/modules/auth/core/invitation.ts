@@ -1,6 +1,6 @@
+import { toDate } from 'date-fns'
 import type { ConfirmSpec } from '@/core/confirm'
 import { errorCode, errorMessage, errorStatus } from '@/core/errors'
-import { toDate } from '@/core/format'
 import { type Message, message } from '@/core/message'
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
 import type { Workspace } from '@/modules/workspaces/core/workspace'

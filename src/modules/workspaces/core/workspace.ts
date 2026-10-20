@@ -1,6 +1,7 @@
+import { toDate } from 'date-fns'
 import { z } from 'zod'
 import type { authClient } from '@/modules/auth/core/auth.client'
-import { firstName, initials, toDate } from '@/core/format'
+import { firstName, initials } from '@/core/format'
 import { type Locale, toLocale } from '@/modules/workspaces/core/locale'
 import { type Permissions, permissionsFor } from '@/modules/workspaces/core/permissions'
 import { type Role, toRole } from '@/modules/workspaces/core/role'

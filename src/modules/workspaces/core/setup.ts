@@ -1,5 +1,5 @@
+import { isAfter } from 'date-fns'
 import { createStore } from '@tanstack/store'
-import { toDate } from '@/core/format'
 import { type Message, message } from '@/core/message'
 import { checkName } from '@/core/name'
 import type { Locale } from '@/modules/workspaces/core/locale'
@@ -26,7 +26,7 @@ type SetupOptions = { askName: boolean; browserLocale: Locale }
 export function pendingInvitation(invitations: UserInvitation[] | undefined, now: Date) {
   return (
     invitations?.find(
-      (invitation) => invitation.status === 'pending' && toDate(invitation.expiresAt) > now
+      (invitation) => invitation.status === 'pending' && isAfter(invitation.expiresAt, now)
     ) ?? null
   )
 }

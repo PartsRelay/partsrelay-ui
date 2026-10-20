@@ -1,3 +1,4 @@
+import { isAfter } from 'date-fns'
 import { createStore } from '@tanstack/store'
 import { z } from 'zod'
 import { type Message, message } from '@/core/message'
@@ -27,7 +28,7 @@ export function checkInvitee(draft: InviteDraft, workspace: Workspace, now: Date
   const invited = workspace.invitations.some(
     (invitation) =>
       invitation.status === 'pending' &&
-      invitation.expiresAt > now &&
+      isAfter(invitation.expiresAt, now) &&
       invitation.email.toLowerCase() === address
   )
 
