@@ -1,6 +1,6 @@
 import type { ConfirmSpec } from '@/core/confirm'
 import { message } from '@/core/message'
-import { createNameForm } from '@/core/name'
+import { createNameForm } from '@/core/cleaner'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
 export function createCompanyNameForm(current: string) {

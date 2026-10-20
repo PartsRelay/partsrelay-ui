@@ -1,6 +1,6 @@
 import type { ConfirmSpec } from '@/core/confirm'
 import { message } from '@/core/message'
-import { createNameForm } from '@/core/name'
+import { createNameForm } from '@/core/cleaner'
 import { roleLabel } from '@/modules/workspaces/core/role'
 import type { Me, Workspace } from '@/modules/workspaces/core/workspace'
 
