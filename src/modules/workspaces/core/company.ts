@@ -1,10 +1,10 @@
 import type { ConfirmSpec } from '@/core/confirm'
 import { message } from '@/core/message'
-import { createNameForm } from '@/core/cleaner'
+import { createCleanForm } from '@/core/cleaner'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
 export function createCompanyNameForm(current: string) {
-  return createNameForm(current, message('company.errors.name-required'))
+  return createCleanForm(current, message('company.errors.name-required'))
 }
 
 export function deleteCompanyConfirm(workspace: Workspace): ConfirmSpec {

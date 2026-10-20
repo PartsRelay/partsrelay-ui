@@ -1,6 +1,6 @@
 import type { ConfirmSpec } from '@/core/confirm'
 import { message } from '@/core/message'
-import { createNameForm } from '@/core/cleaner'
+import { createCleanForm } from '@/core/cleaner'
 import { roleLabel } from '@/modules/workspaces/core/role'
 import type { Me, Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -18,7 +18,7 @@ export function profileView(me: Me, workspace: Workspace) {
 }
 
 export function createUserNameForm(current: string) {
-  return createNameForm(current, message('profile.errors.name-required'))
+  return createCleanForm(current, message('profile.errors.name-required'))
 }
 
 export function leaveCompanyConfirm(view: ProfileView): ConfirmSpec {

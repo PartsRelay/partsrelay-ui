@@ -1,7 +1,7 @@
 import { createStore } from '@tanstack/store'
 import { isAfter } from 'date-fns'
 import { type Message, message } from '@/core/message'
-import { checkName } from '@/core/cleaner'
+import { isClean } from '@/core/cleaner'
 import type { Locale } from '@/modules/workspaces/core/locale'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -52,9 +52,9 @@ export function createSetupForm(
         setState((draft) => ({ ...draft, userName, errors: { ...draft.errors, userName: null } })),
       submit: () => {
         const { name, locale, userName } = get()
-        const company = checkName(name, message('setup.errors.name-required'))
+        const company = isClean(name, message('setup.errors.name-required'))
         const person = askName
-          ? checkName(userName, message('setup.errors.user-name-required'))
+          ? isClean(userName, message('setup.errors.user-name-required'))
           : null
         setState((draft) => ({
           ...draft,
