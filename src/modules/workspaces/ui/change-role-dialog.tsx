@@ -8,7 +8,7 @@ import type { Member } from '@/modules/workspaces/core/workspace'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import { useT } from '@/ui/hooks/use-t'
-import { RoleToggle } from '@/modules/workspaces/ui/role-toggle'
+import { RoleField } from '@/modules/workspaces/ui/role-toggle'
 import { Button } from '@/ui/components/ui/button'
 import {
   Dialog,
@@ -60,13 +60,13 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
         <DialogTitle>{t('team.changeRole.title', { name: member.name })}</DialogTitle>
         <DialogDescription>{t('team.changeRole.description')}</DialogDescription>
       </DialogHeader>
-      <RoleToggle
+      <RoleField
         label={t('team.members.columns.role')}
         roles={roles}
         value={role}
         onValueChange={setRole}
+        hint={translate(roleHint(role, me))}
       />
-      <p className="text-sm text-muted-foreground">{translate(roleHint(role, me))}</p>
       <DialogFooter>
         <DialogClose asChild>
           <Button variant="outline">{t('confirm.cancel')}</Button>

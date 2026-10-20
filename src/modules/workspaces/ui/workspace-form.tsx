@@ -15,6 +15,7 @@ import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/ui/components/ui/card'
+import { Field, FieldGroup } from '@/ui/components/ui/field'
 import { Input } from '@/ui/components/ui/input'
 import { Spinner } from '@/ui/components/ui/spinner'
 
@@ -41,7 +42,6 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
       <CardContent>
         <form
           noValidate
-          className="grid gap-6"
           onSubmit={(event) => {
             event.preventDefault()
             const values = form.actions.submit()
@@ -55,45 +55,49 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
             invalid.current?.focus()
           }}
         >
-          <InvitationHint />
-          <TextField
-            label={t('setup.form.name')}
-            required
-            description={t('setup.form.nameHint')}
-            error={errors.name && translate(errors.name)}
-          >
-            <Input
-              ref={nameInput}
-              autoComplete="organization"
-              value={name}
-              onChange={(event) => form.actions.setName(event.target.value)}
-            />
-          </TextField>
-          <LocaleSelect
-            label={t('setup.form.language')}
-            description={t('setup.form.languageHint')}
-            value={locale}
-            onValueChange={form.actions.setLocale}
-          />
-          {askName && (
+          <FieldGroup>
+            <InvitationHint />
             <TextField
-              label={t('setup.form.userName')}
+              label={t('setup.form.name')}
               required
-              description={t('setup.form.userNameHint')}
-              error={errors.userName && translate(errors.userName)}
+              description={t('setup.form.nameHint')}
+              error={errors.name && translate(errors.name)}
             >
               <Input
-                ref={userNameInput}
-                autoComplete="name"
-                value={userName}
-                onChange={(event) => form.actions.setUserName(event.target.value)}
+                ref={nameInput}
+                autoComplete="organization"
+                value={name}
+                onChange={(event) => form.actions.setName(event.target.value)}
               />
             </TextField>
-          )}
-          <Button type="submit" className="w-full" disabled={save.isPending}>
-            {save.isPending && <Spinner data-icon="inline-start" />}
-            {t('setup.form.submit')}
-          </Button>
+            <LocaleSelect
+              label={t('setup.form.language')}
+              description={t('setup.form.languageHint')}
+              value={locale}
+              onValueChange={form.actions.setLocale}
+            />
+            {askName && (
+              <TextField
+                label={t('setup.form.userName')}
+                required
+                description={t('setup.form.userNameHint')}
+                error={errors.userName && translate(errors.userName)}
+              >
+                <Input
+                  ref={userNameInput}
+                  autoComplete="name"
+                  value={userName}
+                  onChange={(event) => form.actions.setUserName(event.target.value)}
+                />
+              </TextField>
+            )}
+            <Field>
+              <Button type="submit" disabled={save.isPending}>
+                {save.isPending && <Spinner data-icon="inline-start" />}
+                {t('setup.form.submit')}
+              </Button>
+            </Field>
+          </FieldGroup>
         </form>
       </CardContent>
       <CardFooter className="justify-center">

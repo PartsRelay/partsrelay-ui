@@ -9,6 +9,7 @@ import { Callout } from '@/ui/components/callout'
 import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
+import { Field, FieldGroup } from '@/ui/components/ui/field'
 import { Input } from '@/ui/components/ui/input'
 import { Spinner } from '@/ui/components/ui/spinner'
 
@@ -90,7 +91,6 @@ export function MagicLinkForm({ send }: MagicLinkFormProps) {
   return (
     <form
       noValidate
-      className="grid gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         const address = form.actions.submit()
@@ -98,20 +98,24 @@ export function MagicLinkForm({ send }: MagicLinkFormProps) {
         else input.current?.focus()
       }}
     >
-      <TextField label={t('login.magicLink.email')} error={error && translate(error)}>
-        <Input
-          ref={input}
-          type="email"
-          autoComplete="email"
-          placeholder={t('login.magicLink.placeholder')}
-          value={email}
-          onChange={(event) => form.actions.setEmail(event.target.value)}
-        />
-      </TextField>
-      <Button type="submit" variant="outline" className="w-full" disabled={mutation.isPending}>
-        {mutation.isPending && <Spinner data-icon="inline-start" />}
-        {t('login.magicLink.send')}
-      </Button>
+      <FieldGroup>
+        <TextField label={t('login.magicLink.email')} error={error && translate(error)}>
+          <Input
+            ref={input}
+            type="email"
+            autoComplete="email"
+            placeholder={t('login.magicLink.placeholder')}
+            value={email}
+            onChange={(event) => form.actions.setEmail(event.target.value)}
+          />
+        </TextField>
+        <Field>
+          <Button type="submit" variant="outline" disabled={mutation.isPending}>
+            {mutation.isPending && <Spinner data-icon="inline-start" />}
+            {t('login.magicLink.send')}
+          </Button>
+        </Field>
+      </FieldGroup>
     </form>
   )
 }

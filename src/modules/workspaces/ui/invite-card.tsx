@@ -7,10 +7,10 @@ import { inviteMutation } from '@/modules/workspaces/core/team.mutation'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
-import { RoleToggle } from '@/modules/workspaces/ui/role-toggle'
+import { RoleField } from '@/modules/workspaces/ui/role-toggle'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
-import { FieldDescription, FieldLegend, FieldSet } from '@/ui/components/ui/field'
+import { Field, FieldGroup } from '@/ui/components/ui/field'
 import { Input } from '@/ui/components/ui/input'
 import { Spinner } from '@/ui/components/ui/spinner'
 
@@ -34,7 +34,6 @@ export function InviteCard() {
       <CardContent>
         <form
           noValidate
-          className="grid gap-6"
           onSubmit={(event) => {
             event.preventDefault()
             const invitee = form.actions.submit(workspace)
@@ -42,30 +41,31 @@ export function InviteCard() {
             else email.current?.focus()
           }}
         >
-          <TextField label={t('team.invite.email')} error={draft.error && translate(draft.error)}>
-            <Input
-              ref={email}
-              type="email"
-              autoComplete="off"
-              placeholder={t('team.invite.emailPlaceholder')}
-              value={draft.email}
-              onChange={(event) => form.actions.setEmail(event.target.value)}
-            />
-          </TextField>
-          <FieldSet className="gap-2">
-            <FieldLegend variant="label">{t('team.invite.role')}</FieldLegend>
-            <RoleToggle
+          <FieldGroup>
+            <TextField label={t('team.invite.email')} error={draft.error && translate(draft.error)}>
+              <Input
+                ref={email}
+                type="email"
+                autoComplete="off"
+                placeholder={t('team.invite.emailPlaceholder')}
+                value={draft.email}
+                onChange={(event) => form.actions.setEmail(event.target.value)}
+              />
+            </TextField>
+            <RoleField
               label={t('team.invite.role')}
               roles={me.permissions.inviteRoles}
               value={draft.role}
               onValueChange={form.actions.setRole}
+              hint={translate(roleHint(draft.role, me))}
             />
-            <FieldDescription>{translate(roleHint(draft.role, me))}</FieldDescription>
-          </FieldSet>
-          <Button type="submit" className="justify-self-start" disabled={invite.isPending}>
-            {invite.isPending && <Spinner data-icon="inline-start" />}
-            {t('team.invite.send')}
-          </Button>
+            <Field orientation="horizontal">
+              <Button type="submit" disabled={invite.isPending}>
+                {invite.isPending && <Spinner data-icon="inline-start" />}
+                {t('team.invite.send')}
+              </Button>
+            </Field>
+          </FieldGroup>
         </form>
       </CardContent>
     </Card>

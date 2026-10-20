@@ -4,7 +4,7 @@ import { memberRows } from '@/modules/workspaces/core/team'
 import type { Member } from '@/modules/workspaces/core/workspace'
 import { RemoveMemberDialog } from '@/modules/workspaces/ui/remove-member-dialog'
 import { useMe } from '@/modules/workspaces/ui/use-me'
-import { PersonAvatar } from '@/ui/components/person-avatar'
+import { PersonItem } from '@/ui/components/person-item'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { useT } from '@/ui/hooks/use-t'
 import { MemberActions } from '@/modules/workspaces/ui/member-actions'
@@ -52,17 +52,12 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
             {memberRows(workspace, me).map((row) => (
               <TableRow key={row.member.id}>
                 <TableCell>
-                  <div className="flex items-center gap-3">
-                    <PersonAvatar name={row.member.name} image={row.member.image} />
-                    <div className="grid">
-                      <span className="font-medium">
-                        {row.isMe
-                          ? t('team.members.you', { name: row.member.name })
-                          : row.member.name}
-                      </span>
-                      <span className="text-muted-foreground">{row.member.email}</span>
-                    </div>
-                  </div>
+                  <PersonItem
+                    name={row.member.name}
+                    email={row.member.email}
+                    image={row.member.image}
+                    title={row.isMe ? t('team.members.you', { name: row.member.name }) : undefined}
+                  />
                 </TableCell>
                 <TableCell>
                   <StatusBadge tone="neutral">{translate(row.roleLabel)}</StatusBadge>

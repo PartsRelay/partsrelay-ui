@@ -8,6 +8,7 @@ import { TextField } from '@/ui/components/text-field'
 import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { Field, FieldGroup } from '@/ui/components/ui/field'
 import { Input } from '@/ui/components/ui/input'
 
 export function CompanyName({ name }: { name: string }) {
@@ -29,7 +30,6 @@ export function CompanyName({ name }: { name: string }) {
       <CardContent>
         <form
           noValidate
-          className="grid gap-4"
           onSubmit={(event) => {
             event.preventDefault()
             const value = form.actions.submit(name)
@@ -37,17 +37,21 @@ export function CompanyName({ name }: { name: string }) {
             else if (form.state.error) input.current?.focus()
           }}
         >
-          <TextField label={t('company.name.label')} required error={error && translate(error)}>
-            <Input
-              ref={input}
-              autoComplete="organization"
-              value={draft}
-              onChange={(event) => form.actions.change(event.target.value)}
-            />
-          </TextField>
-          <Button type="submit" className="justify-self-start" disabled={rename.isPending}>
-            {t('company.name.save')}
-          </Button>
+          <FieldGroup>
+            <TextField label={t('company.name.label')} required error={error && translate(error)}>
+              <Input
+                ref={input}
+                autoComplete="organization"
+                value={draft}
+                onChange={(event) => form.actions.change(event.target.value)}
+              />
+            </TextField>
+            <Field orientation="horizontal">
+              <Button type="submit" disabled={rename.isPending}>
+                {t('company.name.save')}
+              </Button>
+            </Field>
+          </FieldGroup>
         </form>
       </CardContent>
     </Card>
