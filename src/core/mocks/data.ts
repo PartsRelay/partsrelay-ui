@@ -61,22 +61,22 @@ const person = (id: string, name: string, email: string): Person => ({
 })
 
 export const people = {
-  marco: person('1', 'Marco Rossi', 'marco.rossi@ricambirossi.it'),
-  giulia: person('2', 'Giulia Bianchi', 'giulia.bianchi@ricambirossi.it'),
-  luca: person('3', 'Luca Ferri', 'luca.ferri@gmail.com'),
-  sara: person('4', 'Sara Conti', 'sara.conti@ricambirossi.it'),
-  stefano: person('9', 'Stefano Ferri', 's.ferri@officinaferri.it'),
-  newcomer: person('12', '', 'officina.neri@gmail.com'),
+  mark: person('1', 'Mark Reed', 'mark.reed@redwoodparts.com'),
+  julia: person('2', 'Julia Bennett', 'julia.bennett@redwoodparts.com'),
+  luke: person('3', 'Luke Foster', 'luke.foster@gmail.com'),
+  sarah: person('4', 'Sarah Collins', 'sarah.collins@redwoodparts.com'),
+  steven: person('9', 'Steven Hale', 's.hale@ironworksgarage.com'),
+  newcomer: person('12', '', 'north.garage@gmail.com'),
 }
 
 const users = {
-  owner: people.marco,
-  admin: people.giulia,
-  viewer: people.sara,
+  owner: people.mark,
+  admin: people.julia,
+  viewer: people.sarah,
   new: people.newcomer,
 }
 
-export const signedInAs = () => users[setting('user') as keyof typeof users] ?? people.marco
+export const signedInAs = () => users[setting('user') as keyof typeof users] ?? people.mark
 
 export const member = (
   organizationId: string,
@@ -105,31 +105,31 @@ const invitation = (
   email,
   role,
   status,
-  inviterId: people.marco.id,
+  inviterId: people.mark.id,
   createdAt: daysAgo(sentDaysAgo),
   expiresAt: daysAgo(sentDaysAgo - 7),
 })
 
-export const ricambiRossi = (): Company => ({
+export const redwoodParts = (): Company => ({
   id: '1',
-  name: 'Ricambi Rossi S.r.l.',
-  slug: 'ricambi-rossi',
+  name: 'Redwood Parts Ltd',
+  slug: 'redwood-parts',
   metadata: '{"setup":"done"}',
   locale: 'en',
   createdAt: daysAgo(400),
   members: [
-    member('1', '1', people.marco, 'owner', daysAgo(400)),
-    member('1', '2', people.giulia, 'admin', daysAgo(388)),
-    member('1', '3', people.luca, 'viewer', daysAgo(122)),
-    member('1', '4', people.sara, 'viewer', daysAgo(31)),
+    member('1', '1', people.mark, 'owner', daysAgo(400)),
+    member('1', '2', people.julia, 'admin', daysAgo(388)),
+    member('1', '3', people.luke, 'viewer', daysAgo(122)),
+    member('1', '4', people.sarah, 'viewer', daysAgo(31)),
   ],
   invitations: [
-    invitation('7', 'f.romano@ricambirossi.it', 'viewer', 1),
-    invitation('6', 'a.esposito@ricambirossi.it', 'admin', 3),
-    invitation('5', 'officina.neri@gmail.com', 'viewer', 9),
-    invitation('4', 'luca.ferri@gmail.com', 'viewer', 125, 'accepted'),
-    invitation('3', 'p.galli@ricambirossi.it', 'viewer', 40, 'canceled'),
-    invitation('2', 'm.bassi@gmail.com', 'admin', 60, 'rejected'),
+    invitation('7', 'f.roberts@redwoodparts.com', 'viewer', 1),
+    invitation('6', 'a.evans@redwoodparts.com', 'admin', 3),
+    invitation('5', 'north.garage@gmail.com', 'viewer', 9),
+    invitation('4', 'luke.foster@gmail.com', 'viewer', 125, 'accepted'),
+    invitation('3', 'p.green@redwoodparts.com', 'viewer', 40, 'canceled'),
+    invitation('2', 'm.baker@gmail.com', 'admin', 60, 'rejected'),
   ],
 })
 
@@ -148,16 +148,16 @@ export function newCompany(owner: Person): Company {
   }
 }
 
-export function officinaFerri(newMember: Person, role: Role): Company {
+export function ironworksGarage(newMember: Person, role: Role): Company {
   return {
     id: '3',
-    name: 'Officina Ferri S.r.l.',
-    slug: 'officina-ferri',
+    name: 'Ironworks Garage Ltd',
+    slug: 'ironworks-garage',
     metadata: '{"setup":"done"}',
-    locale: 'it',
+    locale: 'en',
     createdAt: daysAgo(700),
     members: [
-      member('3', '20', people.stefano, 'owner', daysAgo(700)),
+      member('3', '20', people.steven, 'owner', daysAgo(700)),
       member('3', '21', newMember, role, new Date().toISOString()),
     ],
     invitations: [],

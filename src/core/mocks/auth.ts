@@ -3,9 +3,9 @@ import { http, HttpResponse, type JsonBodyType } from 'msw'
 import {
   daysAgo,
   newCompany,
-  officinaFerri,
+  ironworksGarage,
   people,
-  ricambiRossi,
+  redwoodParts,
   setting,
   signedInAs,
   type Company,
@@ -32,7 +32,7 @@ function freshWorld(): World {
   return {
     signedIn: true,
     me,
-    company: pending ? newCompany(me) : ricambiRossi(),
+    company: pending ? newCompany(me) : redwoodParts(),
     offered: setting('invitation') === '1',
     nextInvitation: 100,
   }
@@ -83,11 +83,11 @@ const offers = ({ offered, me }: World): Offer[] =>
         {
           id: '31',
           organizationId: '3',
-          organizationName: 'Officina Ferri S.r.l.',
+          organizationName: 'Ironworks Garage Ltd',
           email: me.email,
           role: 'admin',
           status: 'pending',
-          inviterId: people.stefano.id,
+          inviterId: people.steven.id,
           createdAt: daysAgo(2),
           expiresAt: daysAgo(-5),
         },
@@ -305,7 +305,7 @@ export const authMocks = [
       const { company } = signedIn(state)
       const offer = offers(state).find((item) => item.id === id)
       if (offer) {
-        return { ...offer, organizationSlug: 'officina-ferri', inviterEmail: people.stefano.email }
+        return { ...offer, organizationSlug: 'ironworks-garage', inviterEmail: people.steven.email }
       }
 
       if (company.invitations.some((item) => item.id === id && live(item))) {
@@ -323,7 +323,7 @@ export const authMocks = [
       if (state.company.members.length > 1) fail(403, 'WORKSPACE_NOT_RELEASABLE')
 
       state.offered = false
-      state.company = officinaFerri(state.me, invitation.role)
+      state.company = ironworksGarage(state.me, invitation.role)
 
       return {
         invitation: { ...invitation, status: 'accepted' },
