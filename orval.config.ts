@@ -2,16 +2,16 @@ import { defineConfig, type OutputOptions } from 'orval'
 
 const LOCAL_CORE = 'http://localhost:3333'
 
-// The local core first, then staging
+// The local core first, then the one at VITE_API_URL
 async function coreUrl() {
   const local = await fetch(`${LOCAL_CORE}/openapi.json`, {
     signal: AbortSignal.timeout(2000),
   }).catch(() => null)
 
   if (local?.ok) return LOCAL_CORE
-  if (process.env.CORE_STAGING_URL) return process.env.CORE_STAGING_URL.replace(/\/$/, '')
+  if (process.env.VITE_API_URL) return process.env.VITE_API_URL.replace(/\/$/, '')
 
-  throw new Error('Start the core locally or set CORE_STAGING_URL')
+  throw new Error('Start the core locally or set VITE_API_URL')
 }
 
 const core = await coreUrl()

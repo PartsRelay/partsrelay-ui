@@ -31,6 +31,8 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
 
+  envPrefix: ['VITE_', 'APP_ENV'],
+
   server: {
     host: true,
     port: 5173,
