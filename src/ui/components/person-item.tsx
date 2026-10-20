@@ -11,11 +11,11 @@ type PersonItemProps = {
 
 export function PersonItem({ name, email, image, title = name }: PersonItemProps) {
   return (
-    <Item size="xs" className="flex-nowrap gap-3 p-0">
+    <Item size="sm" className="flex-nowrap gap-3 p-0">
       <ItemMedia>
         <PersonAvatar name={name} image={image} />
       </ItemMedia>
-      <ItemContent>
+      <ItemContent className="gap-0">
         <ItemTitle>{title}</ItemTitle>
         <ItemDescription>{email}</ItemDescription>
       </ItemContent>

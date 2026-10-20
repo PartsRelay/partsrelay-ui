@@ -8,7 +8,7 @@ import type { Member } from '@/modules/workspaces/core/workspace'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import { useT } from '@/ui/hooks/use-t'
-import { RoleField } from '@/modules/workspaces/ui/role-toggle'
+import { RoleField } from '@/modules/workspaces/ui/role-field'
 import { Button } from '@/ui/components/ui/button'
 import {
   Dialog,
