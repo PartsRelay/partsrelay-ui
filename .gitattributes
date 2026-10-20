@@ -1,1 +1,2 @@
-* text=auto eol=lf
+* text=auto eol=lfsrc/core/api/** linguist-generated=true
+src/ui/routeTree.gen.ts linguist-generated=true
