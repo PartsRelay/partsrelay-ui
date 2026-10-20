@@ -10,7 +10,7 @@ import {
 import { type ReactNode, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessage } from '@/core/errors'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/button'
 import {
   Empty,

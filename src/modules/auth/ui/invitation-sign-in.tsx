@@ -3,7 +3,7 @@ import type { Message } from '@/core/message'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
 import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
 import { Callout } from '@/ui/components/callout'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { Card, CardContent } from '@/ui/components/card'
 
 type InvitationSignInProps = { next: string; error: Message | null }

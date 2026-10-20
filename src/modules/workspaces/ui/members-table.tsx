@@ -6,7 +6,7 @@ import { RemoveMemberDialog } from '@/modules/workspaces/ui/remove-member-dialog
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { PersonAvatar } from '@/ui/components/person-avatar'
 import { StatusBadge } from '@/ui/components/status-badge'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { MemberActions } from '@/modules/workspaces/ui/member-actions'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
 import {

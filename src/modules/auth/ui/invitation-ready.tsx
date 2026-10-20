@@ -6,7 +6,7 @@ import { acceptError, type InvitationDetails, joinConfirm } from '@/modules/auth
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/button'
 import { Card, CardContent } from '@/ui/components/card'
 import { Spinner } from '@/ui/components/spinner'

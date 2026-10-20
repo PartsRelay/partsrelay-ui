@@ -6,7 +6,7 @@ import { navigation, pageAt, type Section } from '@/modules/workspaces/core/navi
 import { roleLabel } from '@/modules/workspaces/core/role'
 import { NavUser } from '@/modules/workspaces/ui/nav-user'
 import { useMe } from '@/modules/workspaces/ui/use-me'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import {
   Sidebar,
   SidebarContent,

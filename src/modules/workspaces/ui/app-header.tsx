@@ -1,7 +1,7 @@
 import { useMatches } from '@tanstack/react-router'
 import { Fragment } from 'react'
 import { breadcrumbs } from '@/modules/workspaces/core/navigation'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import {
   Breadcrumb,
   BreadcrumbItem,

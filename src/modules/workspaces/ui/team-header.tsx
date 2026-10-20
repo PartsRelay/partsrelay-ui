@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { teamSummary } from '@/modules/workspaces/core/team'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { PageHeader } from '@/ui/components/page-header'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { Badge } from '@/ui/components/badge'
 
 export function TeamHeader() {

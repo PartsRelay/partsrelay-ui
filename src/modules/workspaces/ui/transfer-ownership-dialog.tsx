@@ -7,8 +7,8 @@ import { roleLabel } from '@/modules/workspaces/core/role'
 import type { Member } from '@/modules/workspaces/core/workspace'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
-import { useReturnFocus } from '@/ui/components/use-return-focus'
-import { useT } from '@/ui/components/use-t'
+import { useReturnFocus } from '@/ui/hooks/use-return-focus'
+import { useT } from '@/ui/hooks/use-t'
 import {
   AlertDialog,
   AlertDialogCancel,

@@ -6,7 +6,7 @@ import { createInviteForm, roleHint } from '@/modules/workspaces/core/invite-for
 import { inviteMutation } from '@/modules/workspaces/core/team.mutation'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { RoleToggle } from '@/modules/workspaces/ui/role-toggle'
 import { Button } from '@/ui/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'

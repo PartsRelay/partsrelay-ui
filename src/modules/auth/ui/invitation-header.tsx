@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { type InvitationDetails, invitationHeadline } from '@/modules/auth/core/invitation'
 import { formatDate } from '@/core/format'
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { CardDescription, CardHeader } from '@/ui/components/card'
 
 export function InvitationHeader({ details }: { details: InvitationDetails | null }) {

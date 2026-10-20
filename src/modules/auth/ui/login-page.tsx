@@ -9,7 +9,7 @@ import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
 import { Callout } from '@/ui/components/callout'
 import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/card'
 import { notify } from '@/ui/components/notify'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 
 const route = getRouteApi('/(auth)/login')
 

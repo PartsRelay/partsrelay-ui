@@ -2,8 +2,8 @@ import { type RefObject, useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { canConfirm, type ConfirmSpec } from '@/core/confirm'
 import { Facts } from '@/ui/components/facts'
-import { useReturnFocus } from '@/ui/components/use-return-focus'
-import { useT } from '@/ui/components/use-t'
+import { useReturnFocus } from '@/ui/hooks/use-return-focus'
+import { useT } from '@/ui/hooks/use-t'
 import {
   AlertDialog,
   AlertDialogAction,

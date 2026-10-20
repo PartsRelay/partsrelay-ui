@@ -8,7 +8,7 @@ import { RevokeInvitationDialog } from '@/modules/workspaces/ui/revoke-invitatio
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { CopyButton } from '@/ui/components/copy-button'
 import { StatusBadge } from '@/ui/components/status-badge'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { ActionButton } from '@/modules/workspaces/ui/action-button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/card'
 import { Empty, EmptyHeader, EmptyTitle } from '@/ui/components/empty'

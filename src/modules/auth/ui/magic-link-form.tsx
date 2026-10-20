@@ -7,7 +7,7 @@ import { createMagicLinkForm, MAGIC_LINK_MINUTES, resendWait } from '@/modules/a
 import { errorMessage } from '@/core/errors'
 import { Callout } from '@/ui/components/callout'
 import { TextField } from '@/ui/components/text-field'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/button'
 import { Input } from '@/ui/components/input'
 import { Spinner } from '@/ui/components/spinner'

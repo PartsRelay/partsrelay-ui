@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { Message } from '@/core/message'
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { Callout } from '@/ui/components/callout'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/button'
 import { Card, CardContent, CardHeader } from '@/ui/components/card'
 

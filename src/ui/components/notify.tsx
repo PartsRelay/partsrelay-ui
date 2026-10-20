@@ -1,6 +1,6 @@
 import { type ExternalToast, toast } from 'sonner'
 import type { Message } from '@/core/message'
-import { useT } from '@/ui/components/use-t'
+import { useT } from '@/ui/hooks/use-t'
 
 function Translated({ text }: { text: Message }) {
   const translate = useT()
