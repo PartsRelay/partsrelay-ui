@@ -1,6 +1,5 @@
-import type { MutationOptions, Query, QueryFilters } from '@tanstack/query-core'
+import type { Query, QueryFilters } from '@tanstack/query-core'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { message } from '@/core/message'
 import { workspaceKey, workspaceQuery } from '@/modules/workspaces/core/workspace.query'
 
 export const failedQueries = {
@@ -23,16 +22,4 @@ export const currentCompanyQuery = {
   ...workspaceQuery,
   queryKey: currentCompanyKey,
   meta: { silent: true },
-}
-
-export function acceptInvitationMutation(id: string, workspace: string) {
-  return {
-    mutationKey: ['invitation', 'accept', id],
-    mutationFn: () => authClient.organization.acceptInvitation({ invitationId: id }),
-    onSuccess: (_data, _variables, _result, { client }) =>
-      client.removeQueries({ type: 'inactive' }),
-    onError: (_error, _variables, _result, { client }) =>
-      client.invalidateQueries({ queryKey: currentCompanyKey }),
-    meta: { notice: message('invitation.notices.joined', { workspace }), silent: true },
-  } satisfies MutationOptions<unknown, Error, void>
 }

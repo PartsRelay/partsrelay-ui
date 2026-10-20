@@ -1,12 +1,14 @@
-import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { leaveCompanyConfirm, type ProfileView } from '@/modules/auth/core/profile'
-import { leaveCompanyMutation } from '@/modules/auth/core/profile.mutation'
+import { endSession } from '@/modules/auth/core/session.query'
+import { message } from '@/core/message'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
+import { useAction } from '@/ui/hooks/use-action'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
@@ -16,7 +18,7 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [confirming, setConfirming] = useState(false)
-  const leave = useMutation(leaveCompanyMutation(workspace))
+  const { client, pending, run } = useAction()
 
   return (
     <Card>
@@ -57,9 +59,17 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
       </CardContent>
       <ConfirmDialog
         spec={confirming ? leaveCompanyConfirm(view) : null}
-        pending={leave.isPending}
+        pending={pending}
         onConfirm={() =>
-          leave.mutate(undefined, { onSuccess: () => void navigate({ to: '/login' }) })
+          void run(
+            async () => {
+              await authClient.organization.leave({ organizationId: workspace.id })
+              // The core deletes the account, so this ends the session
+              endSession(client)
+              await navigate({ to: '/login' })
+            },
+            { notice: message('profile.notices.left', { company: workspace.name }) }
+          )
         }
         onClose={() => setConfirming(false)}
       />

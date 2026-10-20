@@ -37,3 +37,9 @@ export function failureNotice(client: QueryClient, error: unknown, silent = fals
 
   return silent ? null : errorNotice(error, signedIn)
 }
+
+// The session is over: nothing cached belongs to anyone now
+export function endSession(client: QueryClient) {
+  client.clear()
+  client.setQueryData(sessionQuery.queryKey, null)
+}

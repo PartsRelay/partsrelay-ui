@@ -1,4 +1,3 @@
-import type { UseMutationOptions } from '@tanstack/react-query'
 import type { InvitationView } from '@/modules/auth/core/invitation'
 import type { Message } from '@/core/message'
 import { InvitationFailed } from '@/modules/auth/ui/invitation-failed'
@@ -14,7 +13,7 @@ type InvitationScreenProps = {
   session: SessionState
   next: string
   signInError: Message | null
-  accept: (workspace: string) => UseMutationOptions<unknown, Error, void>
+  invitationId: string
 }
 
 export function InvitationScreen({
@@ -22,7 +21,7 @@ export function InvitationScreen({
   session,
   next,
   signInError,
-  accept,
+  invitationId,
 }: InvitationScreenProps) {
   switch (view.state) {
     case 'loading':
@@ -41,7 +40,7 @@ export function InvitationScreen({
           details={view.details}
           confirm={view.confirm}
           email={session.email}
-          accept={accept(view.details.workspace)}
+          invitationId={invitationId}
         />
       )
   }

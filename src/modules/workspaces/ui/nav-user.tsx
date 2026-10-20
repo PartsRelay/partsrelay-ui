@@ -1,8 +1,7 @@
-import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { ChevronsUpDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { signOutMutation } from '@/modules/auth/core/sign-out.mutation'
+import { useSignOut } from '@/modules/auth/ui/use-sign-out'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { PersonAvatar } from '@/ui/components/person-avatar'
 import {
@@ -38,7 +37,7 @@ export function NavUser() {
   const { isMobile } = useSidebar()
   const { me } = useMe()
   const navigate = useNavigate()
-  const signOut = useMutation(signOutMutation)
+  const { pending, signOut } = useSignOut()
   const { name, email, image } = me.member
 
   return (
@@ -76,10 +75,10 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              disabled={signOut.isPending}
-              onSelect={() =>
-                signOut.mutate(undefined, { onSuccess: () => void navigate({ to: '/login' }) })
-              }
+              disabled={pending}
+              onSelect={async () => {
+                if ((await signOut()).ok) await navigate({ to: '/login' })
+              }}
             >
               <LogOutIcon aria-hidden />
               {t('shell.user.signOut')}

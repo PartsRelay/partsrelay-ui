@@ -7,15 +7,15 @@ import { FieldSeparator } from '@/ui/components/ui/field'
 
 export function SignInOptions({ flow }: { flow: SignInFlow }) {
   const { t } = useTranslation()
-  useOneTap(flow.afterSignIn)
+  useOneTap(flow.back)
 
   return (
     <div className="grid gap-6">
-      <GoogleLogin signIn={flow.google} />
+      <GoogleLogin flow={flow} />
       <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
         {t('login.or')}
       </FieldSeparator>
-      <MagicLinkForm send={flow.magicLink} />
+      <MagicLinkForm flow={flow} />
     </div>
   )
 }

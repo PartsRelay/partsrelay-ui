@@ -1,17 +1,19 @@
-import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useSelector } from '@tanstack/react-store'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { sessionQuery } from '@/modules/auth/core/session.query'
 import { createSetupForm } from '@/modules/workspaces/core/setup'
-import { completeSetupMutation } from '@/modules/workspaces/core/setup.mutation'
 import { preferredLocale } from '@/modules/workspaces/core/locale'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { AccountActions } from '@/modules/workspaces/ui/account-actions'
 import { InvitationHint } from '@/modules/workspaces/ui/invitation-hint'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
 import { TextField } from '@/ui/components/text-field'
+import { useAction } from '@/ui/hooks/use-action'
 import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/ui/components/ui/card'
@@ -29,7 +31,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
     createSetupForm(workspace, { askName, browserLocale: preferredLocale(navigator.languages) })
   )
   const { name, locale, userName, errors } = useSelector(form)
-  const save = useMutation(completeSetupMutation(workspace))
+  const { client, pending, run } = useAction()
   const nameInput = useRef<HTMLInputElement>(null)
   const userNameInput = useRef<HTMLInputElement>(null)
 
@@ -46,7 +48,24 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
             event.preventDefault()
             const values = form.actions.submit()
             if (values) {
-              save.mutate(values, { onSuccess: () => void navigate({ to: '/' }) })
+              const { name, locale, userName } = values
+              const metadata = { ...workspace.metadata, setup: 'done' }
+
+              void run(async () => {
+                if (userName) await authClient.updateUser({ name: userName })
+                // Setup flag last, so a failure keeps the setup open
+                await authClient.organization.update({ data: { name, locale, metadata } })
+                client.setQueryData(
+                  workspaceKey,
+                  (current) =>
+                    current && { ...current, name, locale, metadata: JSON.stringify(metadata) }
+                )
+                await Promise.all([
+                  client.invalidateQueries({ queryKey: workspaceKey }),
+                  client.invalidateQueries({ queryKey: sessionQuery.queryKey }),
+                ])
+                await navigate({ to: '/' })
+              })
 
               return
             }
@@ -92,8 +111,8 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
               </TextField>
             )}
             <Field>
-              <Button type="submit" disabled={save.isPending}>
-                {save.isPending && <Spinner data-icon="inline-start" />}
+              <Button type="submit" disabled={pending}>
+                {pending && <Spinner data-icon="inline-start" />}
                 {t('setup.form.submit')}
               </Button>
             </Field>

@@ -1,11 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { getRouteApi, useLocation } from '@tanstack/react-router'
 import { invitationView } from '@/modules/auth/core/invitation'
-import {
-  acceptInvitationMutation,
-  currentCompanyQuery,
-  invitationQuery,
-} from '@/modules/auth/core/invitation.query'
+import { currentCompanyQuery, invitationQuery } from '@/modules/auth/core/invitation.query'
 import { loginError } from '@/modules/auth/core/sign-in'
 import { InvitationScreen } from '@/modules/auth/ui/invitation-screen'
 import { useSession } from '@/modules/auth/ui/use-session'
@@ -34,7 +30,7 @@ export function InvitationPage() {
       session={session}
       next={next}
       signInError={loginError(signInError)}
-      accept={(workspace) => acceptInvitationMutation(invitationId, workspace)}
+      invitationId={invitationId}
     />
   )
 }

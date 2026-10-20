@@ -1,10 +1,13 @@
-import { useMutation } from '@tanstack/react-query'
 import type { RefObject } from 'react'
-import { removeMemberConfirm } from '@/modules/workspaces/core/team'
-import { removeMemberMutation } from '@/modules/workspaces/core/team.mutation'
-import type { Member } from '@/modules/workspaces/core/workspace'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { message } from '@/core/message'
+import { optimistic } from '@/core/optimistic'
+import { removeMemberConfirm, withoutMember } from '@/modules/workspaces/core/team'
+import type { FullOrganization, Member } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
+import { useAction } from '@/ui/hooks/use-action'
 
 type RemoveMemberDialogProps = {
   member: Member
@@ -15,13 +18,25 @@ type RemoveMemberDialogProps = {
 
 export function RemoveMemberDialog({ member, open, onClose, returnTo }: RemoveMemberDialogProps) {
   const { workspace } = useMe()
-  const remove = useMutation(removeMemberMutation(member))
+  const { client, pending, run } = useAction()
 
   return (
     <ConfirmDialog
       spec={open ? removeMemberConfirm(member, workspace) : null}
-      pending={remove.isPending}
-      onConfirm={() => remove.mutate(undefined, { onSuccess: onClose })}
+      pending={pending}
+      onConfirm={async () => {
+        const result = await run(
+          () =>
+            optimistic<FullOrganization>(
+              client,
+              workspaceKey,
+              (organization) => withoutMember(organization, member.id),
+              () => authClient.organization.removeMember({ memberIdOrEmail: member.id })
+            ),
+          { notice: message('team.notices.memberRemoved', { name: member.name }) }
+        )
+        if (result.ok) onClose()
+      }}
       onClose={onClose}
       returnTo={returnTo}
     />

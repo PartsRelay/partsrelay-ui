@@ -1,10 +1,14 @@
-import { useMutation } from '@tanstack/react-query'
 import { useSelector } from '@tanstack/react-store'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { message } from '@/core/message'
+import { optimistic } from '@/core/optimistic'
 import { createCompanyNameForm } from '@/modules/workspaces/core/company'
-import { renameCompanyMutation } from '@/modules/workspaces/core/company.mutation'
+import type { FullOrganization } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { TextField } from '@/ui/components/text-field'
+import { useAction } from '@/ui/hooks/use-action'
 import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -16,7 +20,7 @@ export function CompanyName({ name }: { name: string }) {
   const translate = useT()
   const [form] = useState(() => createCompanyNameForm(name))
   const { draft, error } = useSelector(form)
-  const rename = useMutation(renameCompanyMutation)
+  const { client, pending, run } = useAction()
   const input = useRef<HTMLInputElement>(null)
 
   return (
@@ -33,8 +37,23 @@ export function CompanyName({ name }: { name: string }) {
           onSubmit={(event) => {
             event.preventDefault()
             const value = form.actions.submit(name)
-            if (value) rename.mutate(value, { onSuccess: () => form.actions.reset(value) })
-            else if (form.state.error) input.current?.focus()
+            if (!value) {
+              if (form.state.error) input.current?.focus()
+              return
+            }
+
+            void run(
+              async () => {
+                await optimistic<FullOrganization>(
+                  client,
+                  workspaceKey,
+                  (organization) => ({ ...organization, name: value }),
+                  () => authClient.organization.update({ data: { name: value } })
+                )
+                form.actions.reset(value)
+              },
+              { notice: message('company.notices.renamed') }
+            )
           }}
         >
           <FieldGroup>
@@ -47,7 +66,7 @@ export function CompanyName({ name }: { name: string }) {
               />
             </TextField>
             <Field orientation="horizontal">
-              <Button type="submit" disabled={rename.isPending}>
+              <Button type="submit" disabled={pending}>
                 {t('company.name.save')}
               </Button>
             </Field>

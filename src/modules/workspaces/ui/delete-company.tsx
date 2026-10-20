@@ -1,11 +1,13 @@
-import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { endSession } from '@/modules/auth/core/session.query'
+import { message } from '@/core/message'
 import { deleteCompanyConfirm } from '@/modules/workspaces/core/company'
-import { deleteCompanyMutation } from '@/modules/workspaces/core/company.mutation'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
+import { useAction } from '@/ui/hooks/use-action'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
@@ -13,7 +15,7 @@ export function DeleteCompany({ workspace }: { workspace: Workspace }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [confirming, setConfirming] = useState(false)
-  const remove = useMutation(deleteCompanyMutation(workspace))
+  const { client, pending, run } = useAction()
 
   return (
     <Card>
@@ -30,9 +32,17 @@ export function DeleteCompany({ workspace }: { workspace: Workspace }) {
       </CardContent>
       <ConfirmDialog
         spec={confirming ? deleteCompanyConfirm(workspace) : null}
-        pending={remove.isPending}
+        pending={pending}
         onConfirm={() =>
-          remove.mutate(undefined, { onSuccess: () => void navigate({ to: '/login' }) })
+          void run(
+            async () => {
+              await authClient.organization.delete({ organizationId: workspace.id })
+              // The core deletes every account too
+              endSession(client)
+              await navigate({ to: '/login' })
+            },
+            { notice: message('company.notices.deleted') }
+          )
         }
         onClose={() => setConfirming(false)}
       />

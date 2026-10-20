@@ -1,4 +1,3 @@
-import type { MutationOptions } from '@tanstack/query-core'
 import { z } from 'zod'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { redirectPath } from '@/modules/auth/core/redirect-path'
@@ -13,11 +12,8 @@ export const loginSearchSchema = signInErrorSearchSchema.extend({
   signedIn: z.boolean().optional().catch(undefined),
 })
 
-export type SignInFlow = {
-  google: MutationOptions<unknown, Error, void>
-  magicLink: MutationOptions<unknown, Error, string>
-  afterSignIn: string
-}
+// Where the browser lands after signing in or failing
+export type SignInFlow = { back: string; failed: string; selectAccount: boolean }
 
 const LOGIN_ERRORS = new Map([
   ['access_denied', 'login.errors.cancelled'],
@@ -38,18 +34,13 @@ function loginPath(next: string, signedIn = false) {
   return search.size ? `/login?${search}` : '/login'
 }
 
-export function signInMutation(back: string, failed: string, selectAccount = false) {
+export function googleSignIn({ back, failed, selectAccount }: SignInFlow) {
   return {
-    mutationKey: ['sign-in', 'google'],
-    // The client follows the Google redirect
-    mutationFn: () =>
-      authClient.signIn.social({
-        provider: 'google',
-        callbackURL: absolute(back),
-        errorCallbackURL: absolute(failed),
-        additionalParams: selectAccount ? { prompt: 'select_account' } : undefined,
-      }),
-  } satisfies MutationOptions<unknown, Error, void>
+    provider: 'google',
+    callbackURL: absolute(back),
+    errorCallbackURL: absolute(failed),
+    additionalParams: selectAccount ? { prompt: 'select_account' } : undefined,
+  } satisfies Parameters<typeof authClient.signIn.social>[0]
 }
 
 // The core decodes magic link URLs once more
@@ -57,29 +48,18 @@ function encodedAgain(path: string) {
   return absolute(path).replaceAll('%', '%25')
 }
 
-export function magicLinkMutation(back: string, failed: string) {
+export function magicLinkSignIn({ back, failed }: SignInFlow, email: string) {
   return {
-    mutationKey: ['sign-in', 'magic-link'],
-    mutationFn: (email: string) =>
-      authClient.signIn.magicLink({
-        email,
-        callbackURL: encodedAgain(back),
-        errorCallbackURL: encodedAgain(failed),
-      }),
-    meta: { silent: true },
-  } satisfies MutationOptions<unknown, Error, string>
+    email,
+    callbackURL: encodedAgain(back),
+    errorCallbackURL: encodedAgain(failed),
+  } satisfies Parameters<typeof authClient.signIn.magicLink>[0]
 }
 
 export function loginFlow(next?: unknown): SignInFlow {
   const target = redirectPath(next)
-  const back = loginPath(target, true)
-  const failed = loginPath(target)
 
-  return {
-    google: signInMutation(back, failed),
-    magicLink: magicLinkMutation(back, failed),
-    afterSignIn: back,
-  }
+  return { back: loginPath(target, true), failed: loginPath(target), selectAccount: false }
 }
 
 function withoutSignInError(href: string) {
@@ -93,11 +73,7 @@ function withoutSignInError(href: string) {
 export function invitationFlow(href: string): SignInFlow {
   const back = withoutSignInError(href)
 
-  return {
-    google: signInMutation(back, back, true),
-    magicLink: magicLinkMutation(back, back),
-    afterSignIn: back,
-  }
+  return { back, failed: back, selectAccount: true }
 }
 
 export function loginError(error: string | undefined) {

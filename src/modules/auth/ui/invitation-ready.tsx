@@ -1,11 +1,14 @@
-import { type UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { acceptError, type InvitationDetails, joinConfirm } from '@/modules/auth/core/invitation'
+import { currentCompanyKey } from '@/modules/auth/core/invitation.query'
+import { message } from '@/core/message'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
+import { useAction } from '@/ui/hooks/use-action'
 import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent } from '@/ui/components/ui/card'
@@ -15,21 +18,30 @@ type InvitationReadyProps = {
   details: InvitationDetails
   confirm: boolean
   email: string | null
-  accept: UseMutationOptions<unknown, Error, void>
+  invitationId: string
 }
 
-export function InvitationReady({ details, confirm, email, accept }: InvitationReadyProps) {
+export function InvitationReady({ details, confirm, email, invitationId }: InvitationReadyProps) {
   const { t } = useTranslation()
   const translate = useT()
   const navigate = useNavigate()
-  const join = useMutation(accept)
+  const { client, pending, error, run } = useAction()
   const [confirming, setConfirming] = useState(false)
-  const failure = join.error && acceptError(join.error)
-  const joinNow = () =>
-    join.mutate(undefined, {
-      onSuccess: () => navigate({ to: '/' }),
-      onError: () => setConfirming(false),
+  const failure = error ? acceptError(error) : null
+  // Errors show on the card, not as a toast
+  const joinNow = async () => {
+    const result = await run(() => authClient.organization.acceptInvitation({ invitationId }), {
+      notice: message('invitation.notices.joined', { workspace: details.workspace }),
+      silent: true,
     })
+    if (!result.ok) {
+      setConfirming(false)
+      return client.invalidateQueries({ queryKey: currentCompanyKey })
+    }
+
+    client.removeQueries({ type: 'inactive' })
+    await navigate({ to: '/' })
+  }
 
   return (
     <Card>
@@ -50,10 +62,10 @@ export function InvitationReady({ details, confirm, email, accept }: InvitationR
         {failure && <Callout tone="danger">{translate(failure)}</Callout>}
         <div className="grid gap-2">
           <Button
-            disabled={join.isPending}
-            onClick={() => (confirm ? setConfirming(true) : joinNow())}
+            disabled={pending}
+            onClick={() => (confirm ? setConfirming(true) : void joinNow())}
           >
-            {join.isPending && !confirm && <Spinner data-icon="inline-start" />}
+            {pending && !confirm && <Spinner data-icon="inline-start" />}
             {t('invitation.accept')}
           </Button>
           <Button variant="ghost" asChild>
@@ -63,9 +75,9 @@ export function InvitationReady({ details, confirm, email, accept }: InvitationR
       </CardContent>
       <ConfirmDialog
         spec={confirming ? joinConfirm(details.workspace) : null}
-        pending={join.isPending}
+        pending={pending}
         onClose={() => setConfirming(false)}
-        onConfirm={joinNow}
+        onConfirm={() => void joinNow()}
       />
     </Card>
   )

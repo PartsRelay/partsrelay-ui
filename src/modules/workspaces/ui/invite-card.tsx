@@ -1,11 +1,13 @@
-import { useMutation } from '@tanstack/react-query'
 import { useSelector } from '@tanstack/react-store'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { message } from '@/core/message'
 import { createInviteForm, roleHint } from '@/modules/workspaces/core/invite-form'
-import { inviteMutation } from '@/modules/workspaces/core/team.mutation'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
+import { useAction } from '@/ui/hooks/use-action'
 import { useT } from '@/ui/hooks/use-t'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
 import { Button } from '@/ui/components/ui/button'
@@ -20,7 +22,7 @@ export function InviteCard() {
   const { workspace, me } = useMe()
   const [form] = useState(() => createInviteForm(me))
   const draft = useSelector(form)
-  const invite = useMutation(inviteMutation)
+  const { client, pending, run } = useAction()
   const email = useRef<HTMLInputElement>(null)
 
   return (
@@ -37,8 +39,19 @@ export function InviteCard() {
           onSubmit={(event) => {
             event.preventDefault()
             const invitee = form.actions.submit(workspace)
-            if (invitee) invite.mutate(invitee, { onSuccess: form.actions.reset })
-            else email.current?.focus()
+            if (!invitee) return email.current?.focus()
+
+            void run(
+              async () => {
+                try {
+                  await authClient.organization.inviteMember(invitee)
+                  form.actions.reset()
+                } finally {
+                  await client.invalidateQueries({ queryKey: workspaceKey })
+                }
+              },
+              { notice: message('team.notices.invitationSent', { email: invitee.email }) }
+            )
           }}
         >
           <FieldGroup>
@@ -60,8 +73,8 @@ export function InviteCard() {
               hint={translate(roleHint(draft.role, me))}
             />
             <Field orientation="horizontal">
-              <Button type="submit" disabled={invite.isPending}>
-                {invite.isPending && <Spinner data-icon="inline-start" />}
+              <Button type="submit" disabled={pending}>
+                {pending && <Spinner data-icon="inline-start" />}
                 {t('team.invite.send')}
               </Button>
             </Field>

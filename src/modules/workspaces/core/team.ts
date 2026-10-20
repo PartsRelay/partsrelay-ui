@@ -5,7 +5,13 @@ import { formatDate } from '@/core/format'
 import { type Message, message } from '@/core/message'
 import { canManageRole } from '@/modules/workspaces/core/permissions'
 import { type Role, roleLabel } from '@/modules/workspaces/core/role'
-import type { Invitation, Me, Member, Workspace } from '@/modules/workspaces/core/workspace'
+import type {
+  FullOrganization,
+  Invitation,
+  Me,
+  Member,
+  Workspace,
+} from '@/modules/workspaces/core/workspace'
 
 const ROLE_ORDER: Record<Role, number> = { owner: 0, admin: 1, viewer: 2 }
 
@@ -136,5 +142,27 @@ export function revokeConfirm(row: InvitationRow): ConfirmSpec {
       { label: message('team.confirm.role'), value: row.roleLabel },
       { label: message('team.confirm.sent'), value: row.sent },
     ],
+  }
+}
+
+// Cache updates shown before the core answers
+export function withRole(organization: FullOrganization, memberId: string, role: Role) {
+  return {
+    ...organization,
+    members: organization.members.map((item) => (item.id === memberId ? { ...item, role } : item)),
+  }
+}
+
+export function withoutMember(organization: FullOrganization, memberId: string) {
+  return {
+    ...organization,
+    members: organization.members.filter((item) => item.id !== memberId),
+  }
+}
+
+export function withoutInvitation(organization: FullOrganization, invitationId: string) {
+  return {
+    ...organization,
+    invitations: organization.invitations.filter((item) => item.id !== invitationId),
   }
 }

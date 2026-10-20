@@ -1,12 +1,15 @@
-import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { sessionQuery } from '@/modules/auth/core/session.query'
+import { message } from '@/core/message'
 import { transferAction, transferCandidates } from '@/modules/workspaces/core/team'
-import { transferOwnershipMutation } from '@/modules/workspaces/core/team.mutation'
 import { roleLabel } from '@/modules/workspaces/core/role'
 import type { Member } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
+import { useAction } from '@/ui/hooks/use-action'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import { useT } from '@/ui/hooks/use-t'
 import {
@@ -48,16 +51,35 @@ function TransferForm({ onDone }: { onDone: () => void }) {
   const candidates = transferCandidates(workspace, me)
   const [candidateId, setCandidateId] = useState('')
   const candidate = candidates.find((member) => member.id === candidateId)
-  const transfer = useMutation(transferOwnershipMutation)
+  const { client, pending, run } = useAction()
   const candidateLabel = (member: Member) =>
     t('team.transfer.candidate', { name: member.name, role: translate(roleLabel(member.role)) })
 
   return (
     <form
       className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4"
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault()
-        if (candidate) transfer.mutate(candidate, { onSuccess: onDone })
+        if (!candidate) return
+
+        const result = await run(
+          async () => {
+            try {
+              await authClient.organization.updateMemberRole({
+                memberId: candidate.id,
+                role: 'owner',
+              })
+            } finally {
+              // The core hands the old owner admin rights
+              await Promise.all([
+                client.invalidateQueries({ queryKey: workspaceKey }),
+                client.invalidateQueries({ queryKey: sessionQuery.queryKey }),
+              ])
+            }
+          },
+          { notice: message('team.notices.ownershipTransferred', { name: candidate.name }) }
+        )
+        if (result.ok) onDone()
       }}
     >
       <AlertDialogHeader>
@@ -89,7 +111,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
         <Button
           type="submit"
           className="h-auto min-h-8 whitespace-normal wrap-anywhere"
-          disabled={!candidate || transfer.isPending}
+          disabled={!candidate || pending}
         >
           {translate(transferAction(candidate))}
         </Button>

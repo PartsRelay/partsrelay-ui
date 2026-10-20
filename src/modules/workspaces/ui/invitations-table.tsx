@@ -1,13 +1,14 @@
-import { useMutation } from '@tanstack/react-query'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { message } from '@/core/message'
 import { type InvitationRow, invitationRows } from '@/modules/workspaces/core/team'
-import { resendInvitationMutation } from '@/modules/workspaces/core/team.mutation'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { RevokeInvitationDialog } from '@/modules/workspaces/ui/revoke-invitation-dialog'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { CopyButton } from '@/ui/components/copy-button'
 import { StatusBadge } from '@/ui/components/status-badge'
+import { useAction } from '@/ui/hooks/use-action'
 import { useT } from '@/ui/hooks/use-t'
 import { ActionButton } from '@/modules/workspaces/ui/action-button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -102,8 +103,8 @@ export function InvitationsTable() {
 
 function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: () => void }) {
   const { t } = useTranslation()
-  const resend = useMutation(resendInvitationMutation(row.invitation))
-  const { email } = row.invitation
+  const { client, pending, run } = useAction()
+  const { email, role } = row.invitation
 
   if (!row.canManage) {
     return <span className="text-muted-foreground">{t('team.invitations.ownerOnly')}</span>
@@ -124,8 +125,19 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
       )}
       <ActionButton
         aria-label={t('team.actions.resendTo', { email })}
-        disabled={resend.isPending}
-        onClick={() => resend.mutate()}
+        disabled={pending}
+        onClick={() =>
+          void run(
+            async () => {
+              try {
+                await authClient.organization.inviteMember({ email, role, resend: true })
+              } finally {
+                await client.invalidateQueries({ queryKey: workspaceKey })
+              }
+            },
+            { notice: message('team.notices.invitationResent', { email }) }
+          )
+        }
       >
         {t('team.actions.resend')}
       </ActionButton>

@@ -1,13 +1,17 @@
-import { useMutation } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { changeLanguageMutation } from '@/modules/workspaces/core/company.mutation'
-import type { Locale } from '@/modules/workspaces/core/locale'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { message } from '@/core/message'
+import { optimistic } from '@/core/optimistic'
+import { type Locale, localeNames } from '@/modules/workspaces/core/locale'
+import type { FullOrganization } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
+import { useAction } from '@/ui/hooks/use-action'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
 export function CompanyLanguage({ locale }: { locale: Locale }) {
   const { t } = useTranslation()
-  const change = useMutation(changeLanguageMutation)
+  const { client, pending, run } = useAction()
 
   return (
     <Card>
@@ -21,9 +25,20 @@ export function CompanyLanguage({ locale }: { locale: Locale }) {
         <LocaleSelect
           label={t('company.language.label')}
           value={locale}
-          disabled={change.isPending}
+          disabled={pending}
           onValueChange={(next) => {
-            if (next !== locale) change.mutate(next)
+            if (next === locale) return
+
+            void run(
+              () =>
+                optimistic<FullOrganization>(
+                  client,
+                  workspaceKey,
+                  (organization) => ({ ...organization, locale: next }),
+                  () => authClient.organization.update({ data: { locale: next } })
+                ),
+              { notice: message('company.notices.language', { language: localeNames[next] }) }
+            )
           }}
         />
       </CardContent>

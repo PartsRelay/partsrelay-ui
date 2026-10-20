@@ -1,12 +1,15 @@
-import { useMutation } from '@tanstack/react-query'
 import { useSelector } from '@tanstack/react-store'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
 import { createUserNameForm, type ProfileView } from '@/modules/auth/core/profile'
-import { updateNameMutation } from '@/modules/auth/core/profile.mutation'
+import { sessionQuery } from '@/modules/auth/core/session.query'
+import { message } from '@/core/message'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { Facts } from '@/ui/components/facts'
 import { PersonItem } from '@/ui/components/person-item'
 import { TextField } from '@/ui/components/text-field'
+import { useAction } from '@/ui/hooks/use-action'
 import { useT } from '@/ui/hooks/use-t'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -20,7 +23,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
   const translate = useT()
   const [form] = useState(() => createUserNameForm(userName))
   const { draft, error } = useSelector(form)
-  const rename = useMutation(updateNameMutation)
+  const { client, pending, run } = useAction()
   const input = useRef<HTMLInputElement>(null)
 
   return (
@@ -45,8 +48,19 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
           onSubmit={(event) => {
             event.preventDefault()
             const value = form.actions.submit(userName)
-            if (value) rename.mutate(value, { onSuccess: () => form.actions.reset(value) })
-            else if (form.state.error) input.current?.focus()
+            if (value) {
+              void run(
+                async () => {
+                  await authClient.updateUser({ name: value })
+                  form.actions.reset(value)
+                  await Promise.all([
+                    client.invalidateQueries({ queryKey: sessionQuery.queryKey }),
+                    client.invalidateQueries({ queryKey: workspaceKey }),
+                  ])
+                },
+                { notice: message('profile.notices.nameSaved') }
+              )
+            } else if (form.state.error) input.current?.focus()
           }}
         >
           <FieldGroup>
@@ -64,7 +78,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
               />
             </TextField>
             <Field orientation="horizontal">
-              <Button type="submit" disabled={rename.isPending}>
+              <Button type="submit" disabled={pending}>
                 {t('profile.identity.save')}
               </Button>
             </Field>

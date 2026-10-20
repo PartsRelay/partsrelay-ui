@@ -1,8 +1,16 @@
-import { useMutation } from '@tanstack/react-query'
 import type { RefObject } from 'react'
-import { type InvitationRow, revokeConfirm } from '@/modules/workspaces/core/team'
-import { cancelInvitationMutation } from '@/modules/workspaces/core/team.mutation'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { message } from '@/core/message'
+import { optimistic } from '@/core/optimistic'
+import {
+  type InvitationRow,
+  revokeConfirm,
+  withoutInvitation,
+} from '@/modules/workspaces/core/team'
+import type { FullOrganization } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
+import { useAction } from '@/ui/hooks/use-action'
 
 type RevokeInvitationDialogProps = {
   row: InvitationRow
@@ -17,13 +25,26 @@ export function RevokeInvitationDialog({
   onClose,
   returnTo,
 }: RevokeInvitationDialogProps) {
-  const revoke = useMutation(cancelInvitationMutation(row.invitation))
+  const { client, pending, run } = useAction()
+  const { id } = row.invitation
 
   return (
     <ConfirmDialog
       spec={open ? revokeConfirm(row) : null}
-      pending={revoke.isPending}
-      onConfirm={() => revoke.mutate(undefined, { onSuccess: onClose })}
+      pending={pending}
+      onConfirm={async () => {
+        const result = await run(
+          () =>
+            optimistic<FullOrganization>(
+              client,
+              workspaceKey,
+              (organization) => withoutInvitation(organization, id),
+              () => authClient.organization.cancelInvitation({ invitationId: id })
+            ),
+          { notice: message('team.notices.invitationRevoked') }
+        )
+        if (result.ok) onClose()
+      }}
       onClose={onClose}
       returnTo={returnTo}
     />

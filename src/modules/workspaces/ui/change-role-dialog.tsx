@@ -1,11 +1,15 @@
-import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { authClient } from '@/modules/auth/core/auth.client'
+import { message } from '@/core/message'
+import { optimistic } from '@/core/optimistic'
 import { roleHint } from '@/modules/workspaces/core/invite-form'
-import { changeRoleMutation } from '@/modules/workspaces/core/team.mutation'
 import type { Role } from '@/modules/workspaces/core/role'
-import type { Member } from '@/modules/workspaces/core/workspace'
+import { withRole } from '@/modules/workspaces/core/team'
+import type { FullOrganization, Member } from '@/modules/workspaces/core/workspace'
+import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useAction } from '@/ui/hooks/use-action'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import { useT } from '@/ui/hooks/use-t'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
@@ -46,14 +50,24 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
   const translate = useT()
   const { me } = useMe()
   const [role, setRole] = useState(member.role)
-  const changeRole = useMutation(changeRoleMutation(member))
+  const { client, pending, run } = useAction()
 
   return (
     <form
       className="grid gap-4"
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault()
-        changeRole.mutate(role, { onSuccess: onDone })
+        const result = await run(
+          () =>
+            optimistic<FullOrganization>(
+              client,
+              workspaceKey,
+              (organization) => withRole(organization, member.id, role),
+              () => authClient.organization.updateMemberRole({ memberId: member.id, role })
+            ),
+          { notice: message(`team.notices.roleChanged.${role}`, { name: member.name }) }
+        )
+        if (result.ok) onDone()
       }}
     >
       <DialogHeader>
@@ -71,7 +85,7 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
         <DialogClose asChild>
           <Button variant="outline">{t('confirm.cancel')}</Button>
         </DialogClose>
-        <Button type="submit" disabled={role === member.role || changeRole.isPending}>
+        <Button type="submit" disabled={role === member.role || pending}>
           {t('team.changeRole.save')}
         </Button>
       </DialogFooter>
