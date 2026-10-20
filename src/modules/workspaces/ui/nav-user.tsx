@@ -3,7 +3,8 @@ import { ChevronsUpDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSignOut } from '@/modules/auth/ui/use-sign-out'
 import { useMe } from '@/modules/workspaces/ui/use-me'
-import { PersonAvatar } from '@/ui/components/person-avatar'
+import { initials } from '@/core/format'
+import { Avatar, AvatarFallback, AvatarImage } from '@/ui/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +24,10 @@ import {
 function Identity({ name, email, image }: { name: string; email: string; image: string | null }) {
   return (
     <>
-      <PersonAvatar name={name} image={image} />
+      <Avatar>
+        {image && <AvatarImage src={image} alt={name} />}
+        <AvatarFallback>{initials(name)}</AvatarFallback>
+      </Avatar>
       <div className="grid flex-1 text-left text-sm leading-tight">
         <span className="truncate font-medium">{name}</span>
         <span className="truncate text-xs text-muted-foreground">{email}</span>
