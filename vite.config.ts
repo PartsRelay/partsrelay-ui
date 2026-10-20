@@ -3,7 +3,9 @@ import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
+import { loadEnv } from 'vite'
 import { defineConfig } from 'vite-plus'
+import { readEnv } from './src/env'
 
 const generated = [
   '**/dist/**',
@@ -31,7 +33,12 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
 
-  envPrefix: ['APP_ENV', 'API_URL', 'GOOGLE_CLIENT_ID'],
+  // Every variable of the environment, without prefixes
+  define: {
+    __ENV__: JSON.stringify(
+      readEnv(loadEnv(process.env.APP_ENV ?? 'development', process.cwd(), ''))
+    ),
+  },
 
   server: {
     host: true,
