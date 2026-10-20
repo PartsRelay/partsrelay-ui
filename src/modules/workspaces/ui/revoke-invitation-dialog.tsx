@@ -40,7 +40,7 @@ export function RevokeInvitationDialog({
               (organization) => withoutInvitation(organization, id),
               () => authClient.organization.cancelInvitation({ invitationId: id })
             ),
-          { notice: 'team.notices.invitationRevoked' }
+          { notice: 'team.notices.invitation-revoked' }
         )
         if (result.ok) onClose()
       }}

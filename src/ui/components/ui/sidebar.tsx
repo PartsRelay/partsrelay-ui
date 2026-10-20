@@ -192,7 +192,7 @@ function Sidebar({
         >
           <SheetHeader className="sr-only">
             <SheetTitle>{t('nav.menu')}</SheetTitle>
-            <SheetDescription>{t('nav.menuDescription')}</SheetDescription>
+            <SheetDescription>{t('nav.menu-description')}</SheetDescription>
           </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>

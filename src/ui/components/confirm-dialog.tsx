@@ -61,7 +61,7 @@ export function ConfirmDialog({ spec, pending, onConfirm, onClose, returnTo }: C
           {spec.typeToConfirm !== undefined && (
             <Field>
               <FieldLabel htmlFor={typedId}>
-                {t('confirm.typeToConfirm', { text: spec.typeToConfirm })}
+                {t('confirm.type-to-confirm', { text: spec.typeToConfirm })}
               </FieldLabel>
               <Input
                 id={typedId}

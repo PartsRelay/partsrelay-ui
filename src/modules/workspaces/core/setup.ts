@@ -52,9 +52,9 @@ export function createSetupForm(
         setState((draft) => ({ ...draft, userName, errors: { ...draft.errors, userName: null } })),
       submit: () => {
         const { name, locale, userName } = get()
-        const company = checkName(name, message('setup.errors.nameRequired'))
+        const company = checkName(name, message('setup.errors.name-required'))
         const person = askName
-          ? checkName(userName, message('setup.errors.userNameRequired'))
+          ? checkName(userName, message('setup.errors.user-name-required'))
           : null
         setState((draft) => ({
           ...draft,

@@ -24,7 +24,7 @@ export function AccessDenied() {
           <LockIcon aria-hidden />
         </EmptyMedia>
         <EmptyTitle>
-          <h1>{t('shell.accessDenied.title')}</h1>
+          <h1>{t('shell.access-denied.title')}</h1>
         </EmptyTitle>
         <EmptyDescription>{t(...accessHint(workspace))}</EmptyDescription>
       </EmptyHeader>
@@ -32,7 +32,7 @@ export function AccessDenied() {
         <Button asChild>
           <Link to="/">
             <HouseIcon data-icon="inline-start" />
-            {t('shell.accessDenied.back')}
+            {t('shell.access-denied.back')}
           </Link>
         </Button>
       </EmptyContent>

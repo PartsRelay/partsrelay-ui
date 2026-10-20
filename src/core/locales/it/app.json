@@ -1,12 +1,12 @@
 {
   "app": {
     "name": "Parts Relay",
-    "goHome": "Torna alla home",
+    "go-home": "Torna alla home",
     "error": {
       "title": "Impossibile caricare la pagina",
       "retry": "Riprova"
     },
-    "notFound": {
+    "not-found": {
       "title": "Pagina non trovata",
       "description": "L'indirizzo potrebbe essere sbagliato, oppure la pagina non esiste più."
     }
@@ -18,48 +18,48 @@
   },
   "confirm": {
     "cancel": "Annulla",
-    "typeToConfirm": "Scrivi {{text}} per confermare"
+    "type-to-confirm": "Scrivi {{text}} per confermare"
   },
   "notices": {
-    "copyFailed": "Copia non riuscita, seleziona il testo e copialo a mano."
+    "copy-failed": "Copia non riuscita, seleziona il testo e copialo a mano."
   },
   "errors": {
-    "UNAUTHORIZED_ACCESS": "La sessione è scaduta, accedi di nuovo.",
-    "AUTHORIZATION_FAILURE": "Non hai i permessi per farlo.",
-    "VALIDATION_ERROR": "Alcuni campi non sono validi.",
-    "ROW_NOT_FOUND": "L'elemento richiesto non esiste.",
-    "ROUTE_NOT_FOUND": "La risorsa richiesta non esiste.",
-    "INTERNAL_SERVER_ERROR": "Qualcosa è andato storto, riprova più tardi.",
-    "NETWORK_ERROR": "Impossibile raggiungere il server, controlla la connessione.",
-    "TOO_MANY_REQUESTS": "Troppi tentativi. Aspetta un minuto e riprova.",
-    "UNKNOWN": "Qualcosa è andato storto.",
-    "AUTH_GOOGLE_FAILED": "Accesso con Google non riuscito.",
-    "EMAIL_NOT_VERIFIED": "La tua email Google non è verificata, quindi non si può usare per accedere.",
-    "INVALID_TOKEN": "Questo link di accesso è scaduto o è già stato usato. Chiedine uno nuovo.",
-    "failed_to_create_session": "Non siamo riusciti ad aprire la sessione. Riprova tra un momento.",
-    "INVALID_EMAIL": "Inserisci un indirizzo email valido.",
-    "INVITATION_NOT_FOUND": "Questo invito è scaduto o è già stato usato. Chiedine uno nuovo.",
-    "YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION": "Questo invito è per un altro indirizzo email.",
-    "INVITER_IS_NO_LONGER_A_MEMBER_OF_THE_ORGANIZATION": "La persona che ti ha invitato non fa più parte dell'azienda. Chiedi un nuovo invito.",
-    "WORKSPACE_NOT_RELEASABLE": "Fai parte di un'azienda con altri membri, quindi non puoi entrare in un'altra.",
-    "WORKSPACE_ROLE_NOT_MANAGED": "Non puoi gestire questo ruolo.",
-    "WORKSPACE_OWNER": "Il proprietario non può eliminare l'account: cedi l'azienda o eliminala.",
-    "LOCALE_NOT_SUPPORTED": "Questa lingua non è disponibile.",
-    "ORGANIZATION_NOT_FOUND": "Questa azienda non esiste più.",
-    "YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER": "Come proprietario non puoi uscire: cedi l'azienda o eliminala.",
-    "YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION": "Solo il proprietario può modificare l'azienda.",
-    "YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION": "Solo il proprietario può eliminare l'azienda.",
-    "YOU_ARE_NOT_A_MEMBER_OF_THIS_ORGANIZATION": "Non fai più parte di questa azienda.",
-    "USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION": "Questa persona fa già parte del team.",
-    "USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION": "Questa persona ha già un invito in sospeso.",
-    "MEMBER_NOT_FOUND": "Questa persona non fa più parte del team.",
-    "YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER": "Non puoi cambiare il ruolo di questo membro.",
-    "YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER": "Non puoi rimuovere questo membro.",
-    "YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION": "Non puoi invitare persone in questa azienda.",
-    "YOU_ARE_NOT_ALLOWED_TO_INVITE_USER_WITH_THIS_ROLE": "Non puoi invitare persone con questo ruolo.",
-    "YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_INVITATION": "Non puoi revocare questo invito.",
-    "INVITATION_LIMIT_REACHED": "Troppi inviti in sospeso. Revocane qualcuno prima di invitare altre persone.",
-    "ORGANIZATION_MEMBERSHIP_LIMIT_REACHED": "L'azienda ha raggiunto il limite di membri."
+    "unauthorized-access": "La sessione è scaduta, accedi di nuovo.",
+    "authorization-failure": "Non hai i permessi per farlo.",
+    "validation-error": "Alcuni campi non sono validi.",
+    "row-not-found": "L'elemento richiesto non esiste.",
+    "route-not-found": "La risorsa richiesta non esiste.",
+    "internal-server-error": "Qualcosa è andato storto, riprova più tardi.",
+    "network-error": "Impossibile raggiungere il server, controlla la connessione.",
+    "too-many-requests": "Troppi tentativi. Aspetta un minuto e riprova.",
+    "unknown": "Qualcosa è andato storto.",
+    "auth-google-failed": "Accesso con Google non riuscito.",
+    "email-not-verified": "La tua email Google non è verificata, quindi non si può usare per accedere.",
+    "invalid-token": "Questo link di accesso è scaduto o è già stato usato. Chiedine uno nuovo.",
+    "failed-to-create-session": "Non siamo riusciti ad aprire la sessione. Riprova tra un momento.",
+    "invalid-email": "Inserisci un indirizzo email valido.",
+    "invitation-not-found": "Questo invito è scaduto o è già stato usato. Chiedine uno nuovo.",
+    "you-are-not-the-recipient-of-the-invitation": "Questo invito è per un altro indirizzo email.",
+    "inviter-is-no-longer-a-member-of-the-organization": "La persona che ti ha invitato non fa più parte dell'azienda. Chiedi un nuovo invito.",
+    "workspace-not-releasable": "Fai parte di un'azienda con altri membri, quindi non puoi entrare in un'altra.",
+    "workspace-role-not-managed": "Non puoi gestire questo ruolo.",
+    "workspace-owner": "Il proprietario non può eliminare l'account: cedi l'azienda o eliminala.",
+    "locale-not-supported": "Questa lingua non è disponibile.",
+    "organization-not-found": "Questa azienda non esiste più.",
+    "you-cannot-leave-the-organization-as-the-only-owner": "Come proprietario non puoi uscire: cedi l'azienda o eliminala.",
+    "you-are-not-allowed-to-update-this-organization": "Solo il proprietario può modificare l'azienda.",
+    "you-are-not-allowed-to-delete-this-organization": "Solo il proprietario può eliminare l'azienda.",
+    "you-are-not-a-member-of-this-organization": "Non fai più parte di questa azienda.",
+    "user-is-already-a-member-of-this-organization": "Questa persona fa già parte del team.",
+    "user-is-already-invited-to-this-organization": "Questa persona ha già un invito in sospeso.",
+    "member-not-found": "Questa persona non fa più parte del team.",
+    "you-are-not-allowed-to-update-this-member": "Non puoi cambiare il ruolo di questo membro.",
+    "you-are-not-allowed-to-delete-this-member": "Non puoi rimuovere questo membro.",
+    "you-are-not-allowed-to-invite-users-to-this-organization": "Non puoi invitare persone in questa azienda.",
+    "you-are-not-allowed-to-invite-user-with-this-role": "Non puoi invitare persone con questo ruolo.",
+    "you-are-not-allowed-to-cancel-this-invitation": "Non puoi revocare questo invito.",
+    "invitation-limit-reached": "Troppi inviti in sospeso. Revocane qualcuno prima di invitare altre persone.",
+    "organization-membership-limit-reached": "L'azienda ha raggiunto il limite di membri."
   },
   "common": {
     "close": "Chiudi",

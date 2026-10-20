@@ -58,7 +58,7 @@ function HomeLink() {
     <Button variant="outline" asChild>
       <Link to="/">
         <HouseIcon data-icon="inline-start" />
-        {t('app.goHome')}
+        {t('app.go-home')}
       </Link>
     </Button>
   )
@@ -92,8 +92,8 @@ export function NotFoundScreen() {
   return (
     <StatusScreen
       icon={MapPinOffIcon}
-      title={t('app.notFound.title')}
-      description={t('app.notFound.description')}
+      title={t('app.not-found.title')}
+      description={t('app.not-found.description')}
     >
       <HomeLink />
     </StatusScreen>

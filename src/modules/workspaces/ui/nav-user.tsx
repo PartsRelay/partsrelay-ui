@@ -86,7 +86,7 @@ export function NavUser() {
               }}
             >
               <LogOutIcon aria-hidden />
-              {t('shell.user.signOut')}
+              {t('shell.user.sign-out')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

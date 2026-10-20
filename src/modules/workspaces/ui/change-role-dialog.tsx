@@ -62,14 +62,14 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
               (organization) => withRole(organization, member.id, role),
               () => authClient.organization.updateMemberRole({ memberId: member.id, role })
             ),
-          { notice: `team.notices.roleChanged.${role}`, values: { name: member.name } }
+          { notice: `team.notices.role-changed.${role}`, values: { name: member.name } }
         )
         if (result.ok) onDone()
       }}
     >
       <DialogHeader>
-        <DialogTitle>{t('team.changeRole.title', { name: member.name })}</DialogTitle>
-        <DialogDescription>{t('team.changeRole.description')}</DialogDescription>
+        <DialogTitle>{t('team.change-role.title', { name: member.name })}</DialogTitle>
+        <DialogDescription>{t('team.change-role.description')}</DialogDescription>
       </DialogHeader>
       <RoleField
         label={t('team.members.columns.role')}
@@ -83,7 +83,7 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
           <Button variant="outline">{t('confirm.cancel')}</Button>
         </DialogClose>
         <Button type="submit" disabled={role === member.role || pending}>
-          {t('team.changeRole.save')}
+          {t('team.change-role.save')}
         </Button>
       </DialogFooter>
     </form>

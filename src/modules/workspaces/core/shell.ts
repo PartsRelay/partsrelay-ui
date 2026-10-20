@@ -6,6 +6,6 @@ export function accessHint(workspace: Workspace) {
   const owner = ownerOf(workspace)
 
   return owner
-    ? message('shell.accessDenied.askOwner', { owner: owner.name })
-    : message('shell.accessDenied.askAnyOwner')
+    ? message('shell.access-denied.ask-owner', { owner: owner.name })
+    : message('shell.access-denied.ask-any-owner')
 }

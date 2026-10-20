@@ -19,7 +19,7 @@
       "action": "Delete company"
     },
     "errors": {
-      "nameRequired": "Enter the company name."
+      "name-required": "Enter the company name."
     },
     "confirm": {
       "delete": {

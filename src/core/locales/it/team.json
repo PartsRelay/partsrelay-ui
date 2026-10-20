@@ -20,18 +20,18 @@
     },
     "actions": {
       "transfer": "Cedi la proprietà",
-      "changeRole": "Cambia ruolo",
-      "changeRoleOf": "Cambia il ruolo di {{name}}",
+      "change-role": "Cambia ruolo",
+      "change-role-of": "Cambia il ruolo di {{name}}",
       "remove": "Rimuovi",
-      "removeMember": "Rimuovi {{name}}",
-      "copyLink": "Copia link",
-      "copyLinkFor": "Copia il link d'invito per {{email}}",
+      "remove-member": "Rimuovi {{name}}",
+      "copy-link": "Copia link",
+      "copy-link-for": "Copia il link d'invito per {{email}}",
       "resend": "Invia di nuovo",
-      "resendTo": "Invia di nuovo l'invito a {{email}}",
+      "resend-to": "Invia di nuovo l'invito a {{email}}",
       "revoke": "Revoca",
-      "revokeFor": "Revoca l'invito per {{email}}"
+      "revoke-for": "Revoca l'invito per {{email}}"
     },
-    "changeRole": {
+    "change-role": {
       "title": "Cambia il ruolo di {{name}}",
       "description": "Scegli l'accesso che serve a questa persona.",
       "save": "Salva il ruolo"
@@ -40,7 +40,7 @@
       "title": "Cedi la proprietà",
       "description": "Il nuovo proprietario gestisce l'azienda, la sua lingua e il team, e può eliminare l'azienda. Tu diventi Amministratore e solo il nuovo proprietario potrà annullare l'operazione.",
       "nobody": "Nel team non c'è ancora nessun altro. Invita prima una persona, poi cedile la proprietà.",
-      "newOwner": "Nuovo proprietario",
+      "new-owner": "Nuovo proprietario",
       "choose": "Scegli un membro",
       "candidate": "{{name}} · {{role}}",
       "action": "Cedi la proprietà a {{name}}"
@@ -55,14 +55,14 @@
         "actions": "Azioni"
       },
       "expired": "Scaduto",
-      "ownerOnly": "Solo il proprietario",
+      "owner-only": "Solo il proprietario",
       "empty": "Nessun invito in sospeso."
     },
     "invite": {
       "title": "Invita una persona",
       "description": "Riceve un'email con un link e accede con Google o con un link inviato allo stesso indirizzo.",
       "email": "Email",
-      "emailPlaceholder": "nome@azienda.it",
+      "email-placeholder": "nome@azienda.it",
       "role": "Ruolo",
       "send": "Invia invito",
       "errors": {
@@ -73,7 +73,7 @@
       "hints": {
         "admin": "Gli amministratori gestiscono i contatti e possono invitare o rimuovere i visualizzatori.",
         "viewer": "I visualizzatori fanno ricerche e vedono i contatti, senza gestirli.",
-        "adminInvitesViewers": "Come amministratore puoi invitare visualizzatori."
+        "admin-invites-viewers": "Come amministratore puoi invitare visualizzatori."
       }
     },
     "confirm": {
@@ -92,17 +92,17 @@
       }
     },
     "notices": {
-      "roleChanged": {
+      "role-changed": {
         "owner": "{{name}} ora è Proprietario.",
         "admin": "{{name}} ora è Amministratore.",
         "viewer": "{{name}} ora è Visualizzatore."
       },
-      "ownershipTransferred": "Proprietà ceduta a {{name}}. Ora sei Amministratore.",
-      "memberRemoved": "{{name}} è stato rimosso e il suo account eliminato.",
-      "invitationSent": "Invito inviato a {{email}}.",
-      "invitationResent": "Invito inviato di nuovo a {{email}}.",
-      "invitationRevoked": "Invito revocato. Il link non funziona più.",
-      "linkCopied": "Link d'invito copiato."
+      "ownership-transferred": "Proprietà ceduta a {{name}}. Ora sei Amministratore.",
+      "member-removed": "{{name}} è stato rimosso e il suo account eliminato.",
+      "invitation-sent": "Invito inviato a {{email}}.",
+      "invitation-resent": "Invito inviato di nuovo a {{email}}.",
+      "invitation-revoked": "Invito revocato. Il link non funziona più.",
+      "link-copied": "Link d'invito copiato."
     }
   }
 }

@@ -4,7 +4,7 @@
     "company": "Company",
     "sections": "Workspace",
     "menu": "Menu",
-    "menuDescription": "Pages of Parts Relay.",
+    "menu-description": "Pages of Parts Relay.",
     "toggle": "Show or hide the menu",
     "breadcrumb": "Breadcrumb"
   },
@@ -18,12 +18,12 @@
   "shell": {
     "user": {
       "profile": "Profile",
-      "signOut": "Sign out"
+      "sign-out": "Sign out"
     },
-    "accessDenied": {
+    "access-denied": {
       "title": "You don't have access to this page.",
-      "askOwner": "Ask {{owner}}, your company owner, for help.",
-      "askAnyOwner": "Ask your company owner for help.",
+      "ask-owner": "Ask {{owner}}, your company owner, for help.",
+      "ask-any-owner": "Ask your company owner for help.",
       "back": "Back to home"
     }
   }

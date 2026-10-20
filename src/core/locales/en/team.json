@@ -20,18 +20,18 @@
     },
     "actions": {
       "transfer": "Transfer ownership",
-      "changeRole": "Change role",
-      "changeRoleOf": "Change role of {{name}}",
+      "change-role": "Change role",
+      "change-role-of": "Change role of {{name}}",
       "remove": "Remove",
-      "removeMember": "Remove {{name}}",
-      "copyLink": "Copy link",
-      "copyLinkFor": "Copy the invitation link for {{email}}",
+      "remove-member": "Remove {{name}}",
+      "copy-link": "Copy link",
+      "copy-link-for": "Copy the invitation link for {{email}}",
       "resend": "Resend",
-      "resendTo": "Resend the invitation to {{email}}",
+      "resend-to": "Resend the invitation to {{email}}",
       "revoke": "Revoke",
-      "revokeFor": "Revoke the invitation for {{email}}"
+      "revoke-for": "Revoke the invitation for {{email}}"
     },
-    "changeRole": {
+    "change-role": {
       "title": "Change role of {{name}}",
       "description": "Choose the access this person needs.",
       "save": "Save role"
@@ -40,7 +40,7 @@
       "title": "Transfer ownership",
       "description": "The new owner manages the company, its language and the team, and can delete the company. You become an Admin, and only the new owner can undo this.",
       "nobody": "Nobody else is in the team yet. Invite someone first, then transfer ownership to them.",
-      "newOwner": "New owner",
+      "new-owner": "New owner",
       "choose": "Choose a member",
       "candidate": "{{name}} · {{role}}",
       "action": "Transfer ownership to {{name}}"
@@ -55,14 +55,14 @@
         "actions": "Actions"
       },
       "expired": "Expired",
-      "ownerOnly": "Owner only",
+      "owner-only": "Owner only",
       "empty": "No pending invitations."
     },
     "invite": {
       "title": "Invite someone",
       "description": "They get an email with a link and sign in with Google or a link sent to the same address.",
       "email": "Email",
-      "emailPlaceholder": "name@company.com",
+      "email-placeholder": "name@company.com",
       "role": "Role",
       "send": "Send invitation",
       "errors": {
@@ -73,7 +73,7 @@
       "hints": {
         "admin": "Admins manage contacts and can invite or remove viewers.",
         "viewer": "Viewers run searches and see contacts, without managing them.",
-        "adminInvitesViewers": "As an admin you can invite viewers."
+        "admin-invites-viewers": "As an admin you can invite viewers."
       }
     },
     "confirm": {
@@ -92,17 +92,17 @@
       }
     },
     "notices": {
-      "roleChanged": {
+      "role-changed": {
         "owner": "{{name}} is now Owner.",
         "admin": "{{name}} is now Admin.",
         "viewer": "{{name}} is now Viewer."
       },
-      "ownershipTransferred": "Ownership transferred to {{name}}. You're now an Admin.",
-      "memberRemoved": "{{name}} was removed and their account deleted.",
-      "invitationSent": "Invitation sent to {{email}}.",
-      "invitationResent": "Invitation sent again to {{email}}.",
-      "invitationRevoked": "Invitation revoked. The link no longer works.",
-      "linkCopied": "Invitation link copied."
+      "ownership-transferred": "Ownership transferred to {{name}}. You're now an Admin.",
+      "member-removed": "{{name}} was removed and their account deleted.",
+      "invitation-sent": "Invitation sent to {{email}}.",
+      "invitation-resent": "Invitation sent again to {{email}}.",
+      "invitation-revoked": "Invitation revoked. The link no longer works.",
+      "link-copied": "Invitation link copied."
     }
   }
 }

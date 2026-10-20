@@ -22,7 +22,7 @@ export function InvitationUnavailable({ reason }: InvitationUnavailableProps) {
           {t(...reason)}
         </Callout>
         <Button asChild>
-          <Link to="/">{t('invitation.actions.openApp')}</Link>
+          <Link to="/">{t('invitation.actions.open-app')}</Link>
         </Button>
       </CardContent>
     </Card>

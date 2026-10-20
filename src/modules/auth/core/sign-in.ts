@@ -17,9 +17,9 @@ export type SignInFlow = { back: string; failed: string; selectAccount: boolean 
 
 const LOGIN_ERRORS = new Map([
   ['access_denied', 'login.errors.cancelled'],
-  ['INVALID_TOKEN', 'errors.INVALID_TOKEN'],
-  ['failed_to_create_session', 'errors.failed_to_create_session'],
-  ['email_not_verified', 'errors.EMAIL_NOT_VERIFIED'],
+  ['INVALID_TOKEN', 'errors.invalid-token'],
+  ['failed_to_create_session', 'errors.failed-to-create-session'],
+  ['email_not_verified', 'errors.email-not-verified'],
 ])
 
 function absolute(path: string) {

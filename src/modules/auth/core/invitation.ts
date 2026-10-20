@@ -1,6 +1,6 @@
 import { toDate } from 'date-fns'
 import type { ConfirmSpec } from '@/core/confirm'
-import { errorCode, errorMessage, errorStatus } from '@/core/errors'
+import { errorCode, errorKey, errorMessage, errorStatus } from '@/core/errors'
 import { type Message, message } from '@/core/message'
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
@@ -72,14 +72,14 @@ function joinable(
   if (company.data.id === invitation.organizationId) {
     return {
       state: 'unavailable',
-      reason: message('invitation.unavailable.alreadyMember', {
+      reason: message('invitation.unavailable.already-member', {
         workspace: invitation.organizationName,
       }),
     }
   }
 
   if (company.data.members.length > 1) {
-    return { state: 'unavailable', reason: message('invitation.unavailable.companyNotEmpty') }
+    return { state: 'unavailable', reason: message('invitation.unavailable.company-not-empty') }
   }
 
   // A company never set up has nothing to lose
@@ -124,6 +124,6 @@ export function acceptError(error: unknown) {
   const code = errorCode(error)
 
   return code === 'WORKSPACE_NOT_RELEASABLE'
-    ? message('invitation.unavailable.companyNotEmpty')
-    : message(`errors.${code}`)
+    ? message('invitation.unavailable.company-not-empty')
+    : message(errorKey(code))
 }

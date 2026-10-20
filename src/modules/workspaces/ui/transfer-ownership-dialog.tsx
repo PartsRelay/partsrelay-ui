@@ -74,7 +74,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
               ])
             }
           },
-          { notice: 'team.notices.ownershipTransferred', values: { name: candidate.name } }
+          { notice: 'team.notices.ownership-transferred', values: { name: candidate.name } }
         )
         if (result.ok) onDone()
       }}
@@ -87,7 +87,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
       </AlertDialogHeader>
       {candidates.length > 0 && (
         <Select value={candidateId} onValueChange={setCandidateId}>
-          <TextField label={t('team.transfer.newOwner')}>
+          <TextField label={t('team.transfer.new-owner')}>
             <SelectTrigger className="w-full min-w-0 *:data-[slot=select-value]:min-w-0">
               <SelectValue placeholder={t('team.transfer.choose')}>
                 {candidate && <span className="truncate">{candidateLabel(candidate)}</span>}

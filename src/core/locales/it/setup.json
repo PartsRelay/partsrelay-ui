@@ -4,16 +4,16 @@
     "description": "Dai un nome alla tua azienda e scegli la sua lingua. Il proprietario può cambiarli in seguito.",
     "form": {
       "name": "Nome dell'azienda",
-      "nameHint": "È il nome che vedrà il tuo team.",
+      "name-hint": "È il nome che vedrà il tuo team.",
       "language": "Lingua dell'azienda",
-      "languageHint": "Parts Relay la usa nell'app, nelle email e nelle risposte WhatsApp.",
-      "userName": "Il tuo nome",
-      "userNameHint": "Il tuo team lo vede accanto alla tua email.",
+      "language-hint": "Parts Relay la usa nell'app, nelle email e nelle risposte WhatsApp.",
+      "user-name": "Il tuo nome",
+      "user-name-hint": "Il tuo team lo vede accanto alla tua email.",
       "submit": "Continua"
     },
     "errors": {
-      "nameRequired": "Inserisci il nome dell'azienda.",
-      "userNameRequired": "Inserisci il tuo nome."
+      "name-required": "Inserisci il nome dell'azienda.",
+      "user-name-required": "Inserisci il tuo nome."
     },
     "invitation": {
       "title": "Hai un invito per entrare in {{company}}",
@@ -21,8 +21,8 @@
       "open": "Apri l'invito"
     },
     "account": {
-      "signedInAs": "Accesso effettuato come {{email}}",
-      "signOut": "Esci"
+      "signed-in-as": "Accesso effettuato come {{email}}",
+      "sign-out": "Esci"
     }
   }
 }

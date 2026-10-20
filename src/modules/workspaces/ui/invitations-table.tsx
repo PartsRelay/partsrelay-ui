@@ -104,7 +104,7 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
   const { email, role } = row.invitation
 
   if (!row.canManage) {
-    return <span className="text-muted-foreground">{t('team.invitations.ownerOnly')}</span>
+    return <span className="text-muted-foreground">{t('team.invitations.owner-only')}</span>
   }
 
   return (
@@ -114,14 +114,14 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
           variant="link"
           className="h-auto p-0"
           text={row.link}
-          notice="team.notices.linkCopied"
-          aria-label={t('team.actions.copyLinkFor', { email })}
+          notice="team.notices.link-copied"
+          aria-label={t('team.actions.copy-link-for', { email })}
         >
-          {t('team.actions.copyLink')}
+          {t('team.actions.copy-link')}
         </CopyButton>
       )}
       <ActionButton
-        aria-label={t('team.actions.resendTo', { email })}
+        aria-label={t('team.actions.resend-to', { email })}
         disabled={pending}
         onClick={() =>
           void run(
@@ -132,13 +132,13 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
                 await client.invalidateQueries({ queryKey: workspaceKey })
               }
             },
-            { notice: 'team.notices.invitationResent', values: { email } }
+            { notice: 'team.notices.invitation-resent', values: { email } }
           )
         }
       >
         {t('team.actions.resend')}
       </ActionButton>
-      <ActionButton aria-label={t('team.actions.revokeFor', { email })} onClick={onRevoke}>
+      <ActionButton aria-label={t('team.actions.revoke-for', { email })} onClick={onRevoke}>
         {t('team.actions.revoke')}
       </ActionButton>
     </div>

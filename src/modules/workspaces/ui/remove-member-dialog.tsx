@@ -32,7 +32,7 @@ export function RemoveMemberDialog({ member, open, onClose, returnTo }: RemoveMe
               (organization) => withoutMember(organization, member.id),
               () => authClient.organization.removeMember({ memberIdOrEmail: member.id })
             ),
-          { notice: 'team.notices.memberRemoved', values: { name: member.name } }
+          { notice: 'team.notices.member-removed', values: { name: member.name } }
         )
         if (result.ok) onClose()
       }}

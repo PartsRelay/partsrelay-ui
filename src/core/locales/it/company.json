@@ -19,7 +19,7 @@
       "action": "Elimina l'azienda"
     },
     "errors": {
-      "nameRequired": "Inserisci il nome dell'azienda."
+      "name-required": "Inserisci il nome dell'azienda."
     },
     "confirm": {
       "delete": {

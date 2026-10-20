@@ -21,14 +21,14 @@ export function OtherAccount({ session }: OtherAccountProps) {
         <Callout
           tone="danger"
           icon={UserRoundXIcon}
-          title={t('invitation.unavailable.otherEmail')}
+          title={t('invitation.unavailable.other-email')}
           className="wrap-anywhere"
         >
-          {t('invitation.otherAccount.switch', { email: session.email })}
+          {t('invitation.other-account.switch', { email: session.email })}
         </Callout>
         <Button variant="outline" disabled={pending} onClick={() => void signOut()}>
           {pending ? <Spinner data-icon="inline-start" /> : <LogOutIcon data-icon="inline-start" />}
-          {t('invitation.actions.signOut')}
+          {t('invitation.actions.sign-out')}
         </Button>
       </CardContent>
     </Card>

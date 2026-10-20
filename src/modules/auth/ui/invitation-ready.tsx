@@ -47,14 +47,14 @@ export function InvitationReady({ details, confirm, email, invitationId }: Invit
       <CardContent className="grid gap-6">
         {email && (
           <p className="text-sm text-muted-foreground wrap-anywhere">
-            {t('invitation.signedInAs', { email })}
+            {t('invitation.signed-in-as', { email })}
           </p>
         )}
         {confirm ? (
           <Callout tone="warning">{t('invitation.warning')}</Callout>
         ) : (
           <Callout tone="neutral">
-            {t('invitation.setupPending', { workspace: details.workspace })}
+            {t('invitation.setup-pending', { workspace: details.workspace })}
           </Callout>
         )}
         {failure && <Callout tone="danger">{t(...failure)}</Callout>}
@@ -67,7 +67,7 @@ export function InvitationReady({ details, confirm, email, invitationId }: Invit
             {t('invitation.accept')}
           </Button>
           <Button variant="ghost" asChild>
-            <Link to="/">{t('invitation.actions.notNow')}</Link>
+            <Link to="/">{t('invitation.actions.not-now')}</Link>
           </Button>
         </div>
       </CardContent>

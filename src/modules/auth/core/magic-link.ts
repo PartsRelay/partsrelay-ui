@@ -34,7 +34,7 @@ export function createMagicLinkForm() {
         const valid = email.safeParse(address).success
         setState((state) => ({
           ...state,
-          error: valid ? null : message('login.magicLink.errors.email'),
+          error: valid ? null : message('login.magic-link.errors.email'),
         }))
 
         return valid ? address : null

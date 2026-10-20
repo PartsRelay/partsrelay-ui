@@ -18,7 +18,7 @@ export function profileView(me: Me, workspace: Workspace) {
 }
 
 export function createUserNameForm(current: string) {
-  return createNameForm(current, message('profile.errors.nameRequired'))
+  return createNameForm(current, message('profile.errors.name-required'))
 }
 
 export function leaveCompanyConfirm(view: ProfileView): ConfirmSpec {

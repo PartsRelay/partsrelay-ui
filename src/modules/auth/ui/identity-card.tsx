@@ -55,7 +55,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
                     client.invalidateQueries({ queryKey: workspaceKey }),
                   ])
                 },
-                { notice: 'profile.notices.nameSaved' }
+                { notice: 'profile.notices.name-saved' }
               )
             } else if (form.state.error) input.current?.focus()
           }}
@@ -64,7 +64,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
             <TextField
               label={t('profile.identity.name')}
               required
-              description={t('profile.identity.nameHint')}
+              description={t('profile.identity.name-hint')}
               error={error && t(...error)}
             >
               <Input

@@ -77,7 +77,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
             <TextField
               label={t('setup.form.name')}
               required
-              description={t('setup.form.nameHint')}
+              description={t('setup.form.name-hint')}
               error={errors.name && t(...errors.name)}
             >
               <Input
@@ -89,15 +89,15 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
             </TextField>
             <LocaleSelect
               label={t('setup.form.language')}
-              description={t('setup.form.languageHint')}
+              description={t('setup.form.language-hint')}
               value={locale}
               onValueChange={form.actions.setLocale}
             />
             {askName && (
               <TextField
-                label={t('setup.form.userName')}
+                label={t('setup.form.user-name')}
                 required
-                description={t('setup.form.userNameHint')}
+                description={t('setup.form.user-name-hint')}
                 error={errors.userName && t(...errors.userName)}
               >
                 <Input

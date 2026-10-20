@@ -11,7 +11,7 @@ export function useSignOut() {
         await authClient.signOut()
         endSession(client)
       },
-      { notice: 'auth.notices.signedOut' }
+      { notice: 'auth.notices.signed-out' }
     )
 
   return { pending, signOut }

@@ -29,5 +29,5 @@ export function oneTapError(error: unknown) {
   // A Google script that fails to load stays quiet
   if (status === NO_STATUS && code !== 'NETWORK_ERROR') return null
 
-  return isGenericCode(code) ? message('errors.AUTH_GOOGLE_FAILED') : errorMessage(error)
+  return isGenericCode(code) ? message('errors.auth-google-failed') : errorMessage(error)
 }

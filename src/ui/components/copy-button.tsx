@@ -15,7 +15,7 @@ export function CopyButton({ text, notice, children, ...props }: CopyButtonProps
       {...props}
       onClick={async () => {
         if (await copy(text)) notify('success', notice)
-        else notify('error', 'notices.copyFailed')
+        else notify('error', 'notices.copy-failed')
       }}
     >
       <CopyIcon />

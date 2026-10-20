@@ -27,7 +27,7 @@ void i18n
     },
     interpolation: { escapeValue: false },
     // Error codes without their own text get the generic one
-    parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.UNKNOWN') : key),
+    parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.unknown') : key),
   })
 
 export function followCompanyLanguage(client: QueryClient) {

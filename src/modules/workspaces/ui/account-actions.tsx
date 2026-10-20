@@ -12,7 +12,7 @@ export function AccountActions() {
 
   return (
     <p className="flex flex-wrap items-center justify-center gap-x-1 text-sm text-muted-foreground">
-      <span className="wrap-anywhere">{t('setup.account.signedInAs', { email })}</span>
+      <span className="wrap-anywhere">{t('setup.account.signed-in-as', { email })}</span>
       <Button
         variant="link"
         size="sm"
@@ -21,7 +21,7 @@ export function AccountActions() {
           if ((await signOut()).ok) await navigate({ to: '/login' })
         }}
       >
-        {t('setup.account.signOut')}
+        {t('setup.account.sign-out')}
       </Button>
     </p>
   )

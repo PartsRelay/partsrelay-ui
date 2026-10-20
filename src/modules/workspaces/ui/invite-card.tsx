@@ -47,7 +47,7 @@ export function InviteCard() {
                   await client.invalidateQueries({ queryKey: workspaceKey })
                 }
               },
-              { notice: 'team.notices.invitationSent', values: { email: invitee.email } }
+              { notice: 'team.notices.invitation-sent', values: { email: invitee.email } }
             )
           }}
         >
@@ -57,7 +57,7 @@ export function InviteCard() {
                 ref={email}
                 type="email"
                 autoComplete="off"
-                placeholder={t('team.invite.emailPlaceholder')}
+                placeholder={t('team.invite.email-placeholder')}
                 value={draft.email}
                 onChange={(event) => form.actions.setEmail(event.target.value)}
               />

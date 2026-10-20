@@ -63,9 +63,9 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
           tabIndex={-1}
           className="outline-none"
           icon={MailCheckIcon}
-          title={t('login.magicLink.sent.title')}
+          title={t('login.magic-link.sent.title')}
         >
-          {t('login.magicLink.sent.description', { email: sent, minutes: MAGIC_LINK_MINUTES })}
+          {t('login.magic-link.sent.description', { email: sent, minutes: MAGIC_LINK_MINUTES })}
         </Callout>
         {error && <Callout tone="danger">{t(...error)}</Callout>}
         <div className="grid gap-2">
@@ -77,11 +77,11 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
           >
             {pending && <Spinner data-icon="inline-start" />}
             {wait > 0
-              ? t('login.magicLink.sent.resendIn', { seconds: wait })
-              : t('login.magicLink.sent.resend')}
+              ? t('login.magic-link.sent.resend-in', { seconds: wait })
+              : t('login.magic-link.sent.resend')}
           </Button>
           <Button variant="ghost" onClick={form.actions.edit}>
-            {t('login.magicLink.sent.edit')}
+            {t('login.magic-link.sent.edit')}
           </Button>
         </div>
       </div>
@@ -99,12 +99,12 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
       }}
     >
       <FieldGroup>
-        <TextField label={t('login.magicLink.email')} error={error && t(...error)}>
+        <TextField label={t('login.magic-link.email')} error={error && t(...error)}>
           <Input
             ref={input}
             type="email"
             autoComplete="email"
-            placeholder={t('login.magicLink.placeholder')}
+            placeholder={t('login.magic-link.placeholder')}
             value={email}
             onChange={(event) => form.actions.setEmail(event.target.value)}
           />
@@ -112,7 +112,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
         <Field>
           <Button type="submit" variant="outline" disabled={pending}>
             {pending && <Spinner data-icon="inline-start" />}
-            {t('login.magicLink.send')}
+            {t('login.magic-link.send')}
           </Button>
         </Field>
       </FieldGroup>

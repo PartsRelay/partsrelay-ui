@@ -11,7 +11,7 @@ export function InvitationHeader({ details }: { details: InvitationDetails | nul
     return (
       <CardHeader>
         <AuthTitle>{t('invitation.title')}</AuthTitle>
-        <CardDescription>{t('invitation.signIn.account')}</CardDescription>
+        <CardDescription>{t('invitation.sign-in.account')}</CardDescription>
       </CardHeader>
     )
   }
@@ -20,7 +20,7 @@ export function InvitationHeader({ details }: { details: InvitationDetails | nul
     <CardHeader>
       <AuthTitle>{t(...invitationHeadline(details))}</AuthTitle>
       <CardDescription className="grid gap-1">
-        <span>{t(`invitation.joinAs.${details.role}`, { role: t(...details.roleLabel) })}</span>
+        <span>{t(`invitation.join-as.${details.role}`, { role: t(...details.roleLabel) })}</span>
         <span>
           {t('invitation.expires', {
             date: intlFormat(details.expiresAt, { dateStyle: 'medium' }, { locale: i18n.language }),

@@ -27,7 +27,7 @@ export async function redirectSignedIn(
 
   return {
     href: redirectPath(next),
-    notice: signedIn ? message('auth.notices.signedIn', { email: session.user.email }) : null,
+    notice: signedIn ? message('auth.notices.signed-in', { email: session.user.email }) : null,
   }
 }
 

@@ -21,10 +21,10 @@ export function MemberActions({ row, onTransfer, onRemove }: MemberActionsProps)
       {roleOptions && (
         <>
           <ActionButton
-            aria-label={t('team.actions.changeRoleOf', { name: member.name })}
+            aria-label={t('team.actions.change-role-of', { name: member.name })}
             onClick={() => setChangingRole(true)}
           >
-            {t('team.actions.changeRole')}
+            {t('team.actions.change-role')}
           </ActionButton>
           <ChangeRoleDialog
             member={member}
@@ -36,7 +36,7 @@ export function MemberActions({ row, onTransfer, onRemove }: MemberActionsProps)
       )}
       {row.canRemove && (
         <ActionButton
-          aria-label={t('team.actions.removeMember', { name: member.name })}
+          aria-label={t('team.actions.remove-member', { name: member.name })}
           onClick={onRemove}
         >
           {t('team.actions.remove')}

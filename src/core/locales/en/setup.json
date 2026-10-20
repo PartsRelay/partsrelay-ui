@@ -4,16 +4,16 @@
     "description": "Name your company and choose its language. The owner can change both later.",
     "form": {
       "name": "Company name",
-      "nameHint": "Your team sees this name.",
+      "name-hint": "Your team sees this name.",
       "language": "Company language",
-      "languageHint": "Parts Relay uses it in the app, in emails and in WhatsApp replies.",
-      "userName": "Your name",
-      "userNameHint": "Your team sees it next to your email.",
+      "language-hint": "Parts Relay uses it in the app, in emails and in WhatsApp replies.",
+      "user-name": "Your name",
+      "user-name-hint": "Your team sees it next to your email.",
       "submit": "Continue"
     },
     "errors": {
-      "nameRequired": "Enter your company name.",
-      "userNameRequired": "Enter your name."
+      "name-required": "Enter your company name.",
+      "user-name-required": "Enter your name."
     },
     "invitation": {
       "title": "You're invited to join {{company}}",
@@ -21,8 +21,8 @@
       "open": "Open the invitation"
     },
     "account": {
-      "signedInAs": "Signed in as {{email}}",
-      "signOut": "Sign out"
+      "signed-in-as": "Signed in as {{email}}",
+      "sign-out": "Sign out"
     }
   }
 }

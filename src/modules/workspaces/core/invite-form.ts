@@ -12,7 +12,7 @@ export type Invitee = { email: string; role: Role }
 const email = z.email()
 
 export function roleHint(role: Role, me: Me) {
-  if (me.role !== 'owner') return message('team.invite.hints.adminInvitesViewers')
+  if (me.role !== 'owner') return message('team.invite.hints.admin-invites-viewers')
 
   return message(`team.invite.hints.${role}`)
 }

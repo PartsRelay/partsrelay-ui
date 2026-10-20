@@ -70,8 +70,13 @@ export function errorCode(error: unknown) {
   return toErrorBody(error).code
 }
 
+// Locale keys are kebab case, error codes are not
+export function errorKey(code: string) {
+  return `errors.${code.toLowerCase().replaceAll('_', '-')}`
+}
+
 export function errorMessage(error: unknown) {
-  return message(`errors.${errorCode(error)}`)
+  return message(errorKey(errorCode(error)))
 }
 
 export function sessionEnded(error: unknown) {
@@ -83,5 +88,5 @@ export function sessionEnded(error: unknown) {
 export function errorNotice(error: unknown, signedIn: boolean) {
   if (!sessionEnded(error)) return errorMessage(error)
 
-  return signedIn ? message('errors.UNAUTHORIZED_ACCESS') : null
+  return signedIn ? message('errors.unauthorized-access') : null
 }

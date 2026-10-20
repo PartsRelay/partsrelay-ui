@@ -9,7 +9,7 @@
       "company": "Company",
       "role": "Role",
       "name": "Name",
-      "nameHint": "Your team sees it next to your email.",
+      "name-hint": "Your team sees it next to your email.",
       "save": "Save name"
     },
     "leave": {
@@ -24,7 +24,7 @@
       }
     },
     "errors": {
-      "nameRequired": "Enter your name."
+      "name-required": "Enter your name."
     },
     "confirm": {
       "leave": {
@@ -35,7 +35,7 @@
       }
     },
     "notices": {
-      "nameSaved": "Name saved.",
+      "name-saved": "Name saved.",
       "left": "You left {{company}} and your account was deleted."
     }
   }

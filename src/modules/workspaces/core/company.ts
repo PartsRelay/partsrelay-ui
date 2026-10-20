@@ -4,7 +4,7 @@ import { createNameForm } from '@/core/name'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
 export function createCompanyNameForm(current: string) {
-  return createNameForm(current, message('company.errors.nameRequired'))
+  return createNameForm(current, message('company.errors.name-required'))
 }
 
 export function deleteCompanyConfirm(workspace: Workspace): ConfirmSpec {
