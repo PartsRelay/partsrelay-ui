@@ -1,5 +1,4 @@
 import type { RefObject } from 'react'
-import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { optimistic } from '@/core/optimistic'
 import {
@@ -25,7 +24,6 @@ export function RevokeInvitationDialog({
   onClose,
   returnTo,
 }: RevokeInvitationDialogProps) {
-  const { t } = useTranslation()
   const { client, pending, run } = useAction()
   const { id } = row.invitation
 
@@ -42,7 +40,7 @@ export function RevokeInvitationDialog({
               (organization) => withoutInvitation(organization, id),
               () => authClient.organization.cancelInvitation({ invitationId: id })
             ),
-          { notice: t('team.notices.invitationRevoked') }
+          { notice: 'team.notices.invitationRevoked' }
         )
         if (result.ok) onClose()
       }}

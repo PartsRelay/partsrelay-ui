@@ -36,7 +36,7 @@ export function CompanyLanguage({ locale }: { locale: Locale }) {
                   (organization) => ({ ...organization, locale: next }),
                   () => authClient.organization.update({ data: { locale: next } })
                 ),
-              { notice: t('company.notices.language', { language: localeNames[next] }) }
+              { notice: 'company.notices.language', values: { language: localeNames[next] } }
             )
           }}
         />

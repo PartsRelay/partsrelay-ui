@@ -114,7 +114,7 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
           variant="link"
           className="h-auto p-0"
           text={row.link}
-          notice={t('team.notices.linkCopied')}
+          notice="team.notices.linkCopied"
           aria-label={t('team.actions.copyLinkFor', { email })}
         >
           {t('team.actions.copyLink')}
@@ -132,7 +132,7 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
                 await client.invalidateQueries({ queryKey: workspaceKey })
               }
             },
-            { notice: t('team.notices.invitationResent', { email }) }
+            { notice: 'team.notices.invitationResent', values: { email } }
           )
         }
       >

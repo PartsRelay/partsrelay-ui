@@ -55,7 +55,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
                     client.invalidateQueries({ queryKey: workspaceKey }),
                   ])
                 },
-                { notice: t('profile.notices.nameSaved') }
+                { notice: 'profile.notices.nameSaved' }
               )
             } else if (form.state.error) input.current?.focus()
           }}

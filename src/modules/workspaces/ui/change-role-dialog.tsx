@@ -62,7 +62,7 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
               (organization) => withRole(organization, member.id, role),
               () => authClient.organization.updateMemberRole({ memberId: member.id, role })
             ),
-          { notice: t(`team.notices.roleChanged.${role}`, { name: member.name }) }
+          { notice: `team.notices.roleChanged.${role}`, values: { name: member.name } }
         )
         if (result.ok) onDone()
       }}

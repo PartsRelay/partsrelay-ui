@@ -49,7 +49,7 @@ export function CompanyName({ name }: { name: string }) {
                 )
                 form.actions.reset(value)
               },
-              { notice: t('company.notices.renamed') }
+              { notice: 'company.notices.renamed' }
             )
           }}
         >

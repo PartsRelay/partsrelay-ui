@@ -47,7 +47,7 @@ export function InviteCard() {
                   await client.invalidateQueries({ queryKey: workspaceKey })
                 }
               },
-              { notice: t('team.notices.invitationSent', { email: invitee.email }) }
+              { notice: 'team.notices.invitationSent', values: { email: invitee.email } }
             )
           }}
         >

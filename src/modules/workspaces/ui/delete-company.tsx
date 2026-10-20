@@ -40,7 +40,7 @@ export function DeleteCompany({ workspace }: { workspace: Workspace }) {
               endSession(client)
               await navigate({ to: '/login' })
             },
-            { notice: t('company.notices.deleted') }
+            { notice: 'company.notices.deleted' }
           )
         }
         onClose={() => setConfirming(false)}

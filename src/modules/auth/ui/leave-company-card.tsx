@@ -67,7 +67,7 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
               endSession(client)
               await navigate({ to: '/login' })
             },
-            { notice: t('profile.notices.left', { company: workspace.name }) }
+            { notice: 'profile.notices.left', values: { company: workspace.name } }
           )
         }
         onClose={() => setConfirming(false)}

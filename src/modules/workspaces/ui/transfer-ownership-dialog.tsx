@@ -74,7 +74,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
               ])
             }
           },
-          { notice: t('team.notices.ownershipTransferred', { name: candidate.name }) }
+          { notice: 'team.notices.ownershipTransferred', values: { name: candidate.name } }
         )
         if (result.ok) onDone()
       }}

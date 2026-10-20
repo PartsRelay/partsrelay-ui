@@ -28,7 +28,8 @@ export function InvitationReady({ details, confirm, email, invitationId }: Invit
   // Errors show on the card, not as a toast
   const joinNow = async () => {
     const result = await run(() => authClient.organization.acceptInvitation({ invitationId }), {
-      notice: t('invitation.notices.joined', { workspace: details.workspace }),
+      notice: 'invitation.notices.joined',
+      values: { workspace: details.workspace },
       silent: true,
     })
     if (!result.ok) {

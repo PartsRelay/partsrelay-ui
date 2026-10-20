@@ -11,8 +11,11 @@ declare module '@tanstack/query-core' {
 
 export function reportError(error: unknown, silent?: boolean) {
   const notice = failureNotice(queryClient, error, silent)
+  if (!notice) return
+
+  const [code, values] = notice
   // The message exists only in development
-  if (notice) notify('error', notice, { id: notice[0], description: toErrorBody(error).message })
+  notify('error', code, { id: code, values, description: toErrorBody(error).message })
 }
 
 function retryable(error: Error) {

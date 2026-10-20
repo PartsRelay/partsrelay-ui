@@ -1,9 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useState, useTransition } from 'react'
+import type { MessageValues } from '@/core/message'
 import { reportError } from '@/query-client'
 import { notify } from '@/ui/components/notify'
 
-type ActionOptions = { notice?: string; silent?: boolean }
+type ActionOptions = { notice?: string; values?: MessageValues; silent?: boolean }
 
 export type ActionResult = { ok: true } | { ok: false; error: unknown }
 
@@ -13,13 +14,13 @@ export function useAction() {
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<unknown>(null)
 
-  function run(action: () => Promise<unknown>, { notice, silent }: ActionOptions = {}) {
+  function run(action: () => Promise<unknown>, { notice, values, silent }: ActionOptions = {}) {
     return new Promise<ActionResult>((resolve) => {
       startTransition(async () => {
         setError(null)
         try {
           await action()
-          if (notice) notify('success', notice)
+          if (notice) notify('success', notice, { values })
           resolve({ ok: true })
         } catch (failure) {
           setError(failure)

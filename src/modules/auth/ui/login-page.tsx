@@ -22,7 +22,7 @@ export async function redirectIfSignedIn({ context, search }: LoginGuard) {
   if (!signedIn) return
 
   const { notice, href } = signedIn
-  if (notice) notify('success', notice, { id: 'signed-in' })
+  if (notice) notify('success', notice[0], { id: 'signed-in', values: notice[1] })
   throw redirect({ href })
 }
 

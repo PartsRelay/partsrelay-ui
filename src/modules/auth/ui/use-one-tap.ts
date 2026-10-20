@@ -17,7 +17,7 @@ export function useOneTap(afterSignIn: string) {
       },
       onError: (error) => {
         const problem = oneTapError(error)
-        if (problem) notify('error', problem)
+        if (problem) notify('error', problem[0], { values: problem[1] })
       },
     })
 
