@@ -1,6 +1,6 @@
+import { intlFormat } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { type InvitationDetails, invitationHeadline } from '@/modules/auth/core/invitation'
-import { formatDate } from '@/core/format'
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { CardDescription, CardHeader } from '@/ui/components/ui/card'
 
@@ -22,7 +22,9 @@ export function InvitationHeader({ details }: { details: InvitationDetails | nul
       <CardDescription className="grid gap-1">
         <span>{t(`invitation.joinAs.${details.role}`, { role: t(...details.roleLabel) })}</span>
         <span>
-          {t('invitation.expires', { date: formatDate(details.expiresAt, i18n.language) })}
+          {t('invitation.expires', {
+            date: intlFormat(details.expiresAt, { dateStyle: 'medium' }, { locale: i18n.language }),
+          })}
         </span>
       </CardDescription>
     </CardHeader>

@@ -1,7 +1,6 @@
-import { compareDesc, isAfter } from 'date-fns'
+import { compareDesc, intlFormat, isAfter } from 'date-fns'
 import { z } from 'zod'
 import type { ConfirmSpec } from '@/core/confirm'
-import { formatDate } from '@/core/format'
 import { type Message, message } from '@/core/message'
 import { canManageRole } from '@/modules/workspaces/core/permissions'
 import { type Role, roleLabel } from '@/modules/workspaces/core/role'
@@ -107,12 +106,12 @@ export function invitationRows(
   me: Me,
   now: Date,
   origin: string,
-  locale?: string
+  locale: string
 ): InvitationRow[] {
   return pendingInvitations(workspace).map((invitation) => ({
     invitation,
     roleLabel: roleLabel(invitation.role),
-    sent: formatDate(invitation.createdAt, locale),
+    sent: intlFormat(invitation.createdAt, { dateStyle: 'medium' }, { locale }),
     expired: !isAfter(invitation.expiresAt, now),
     canManage: canManageRole(me.role, invitation.role),
     link: invitationLink(invitation.id, origin),
