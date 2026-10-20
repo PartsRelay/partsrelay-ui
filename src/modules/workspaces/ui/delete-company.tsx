@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { endSession } from '@/modules/auth/core/session.query'
-import { message } from '@/core/message'
 import { deleteCompanyConfirm } from '@/modules/workspaces/core/company'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
@@ -41,7 +40,7 @@ export function DeleteCompany({ workspace }: { workspace: Workspace }) {
               endSession(client)
               await navigate({ to: '/login' })
             },
-            { notice: message('company.notices.deleted') }
+            { notice: t('company.notices.deleted') }
           )
         }
         onClose={() => setConfirming(false)}

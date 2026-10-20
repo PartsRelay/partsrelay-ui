@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { acceptError, type InvitationDetails, joinConfirm } from '@/modules/auth/core/invitation'
 import { currentCompanyKey } from '@/modules/auth/core/invitation.query'
-import { message } from '@/core/message'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
@@ -29,7 +28,7 @@ export function InvitationReady({ details, confirm, email, invitationId }: Invit
   // Errors show on the card, not as a toast
   const joinNow = async () => {
     const result = await run(() => authClient.organization.acceptInvitation({ invitationId }), {
-      notice: message('invitation.notices.joined', { workspace: details.workspace }),
+      notice: t('invitation.notices.joined', { workspace: details.workspace }),
       silent: true,
     })
     if (!result.ok) {

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { leaveCompanyConfirm, type ProfileView } from '@/modules/auth/core/profile'
 import { endSession } from '@/modules/auth/core/session.query'
-import { message } from '@/core/message'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
@@ -68,7 +67,7 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
               endSession(client)
               await navigate({ to: '/login' })
             },
-            { notice: message('profile.notices.left', { company: workspace.name }) }
+            { notice: t('profile.notices.left', { company: workspace.name }) }
           )
         }
         onClose={() => setConfirming(false)}

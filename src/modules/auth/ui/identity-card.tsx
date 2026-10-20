@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { createUserNameForm, type ProfileView } from '@/modules/auth/core/profile'
 import { sessionQuery } from '@/modules/auth/core/session.query'
-import { message } from '@/core/message'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { Facts } from '@/ui/components/facts'
 import { PersonItem } from '@/ui/components/person-item'
@@ -56,7 +55,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
                     client.invalidateQueries({ queryKey: workspaceKey }),
                   ])
                 },
-                { notice: message('profile.notices.nameSaved') }
+                { notice: t('profile.notices.nameSaved') }
               )
             } else if (form.state.error) input.current?.focus()
           }}

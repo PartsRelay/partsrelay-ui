@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
-import { message } from '@/core/message'
 import { transferAction, transferCandidates } from '@/modules/workspaces/core/team'
 import { roleLabel } from '@/modules/workspaces/core/role'
 import type { Member } from '@/modules/workspaces/core/workspace'
@@ -75,7 +74,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
               ])
             }
           },
-          { notice: message('team.notices.ownershipTransferred', { name: candidate.name }) }
+          { notice: t('team.notices.ownershipTransferred', { name: candidate.name }) }
         )
         if (result.ok) onDone()
       }}

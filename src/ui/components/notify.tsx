@@ -8,7 +8,7 @@ function Translated({ text }: { text: Message }) {
   return t(...text)
 }
 
-// Translated on render, so toasts follow the language
-export function notify(tone: 'success' | 'error', text: Message, options?: ExternalToast) {
-  return toast[tone](<Translated text={text} />, options)
+// Core messages translate on render, so they follow the language
+export function notify(tone: 'success' | 'error', text: Message | string, options?: ExternalToast) {
+  return toast[tone](typeof text === 'string' ? text : <Translated text={text} />, options)
 }

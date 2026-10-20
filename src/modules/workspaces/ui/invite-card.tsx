@@ -2,7 +2,6 @@ import { useSelector } from '@tanstack/react-store'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { message } from '@/core/message'
 import { createInviteForm, roleHint } from '@/modules/workspaces/core/invite-form'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
@@ -48,7 +47,7 @@ export function InviteCard() {
                   await client.invalidateQueries({ queryKey: workspaceKey })
                 }
               },
-              { notice: message('team.notices.invitationSent', { email: invitee.email }) }
+              { notice: t('team.notices.invitationSent', { email: invitee.email }) }
             )
           }}
         >

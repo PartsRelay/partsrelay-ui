@@ -1,10 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useState, useTransition } from 'react'
-import type { Message } from '@/core/message'
 import { reportError } from '@/query-client'
 import { notify } from '@/ui/components/notify'
 
-type ActionOptions = { notice?: Message; silent?: boolean }
+type ActionOptions = { notice?: string; silent?: boolean }
 
 export type ActionResult = { ok: true } | { ok: false; error: unknown }
 

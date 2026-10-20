@@ -1,6 +1,6 @@
 import type { RefObject } from 'react'
+import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { message } from '@/core/message'
 import { optimistic } from '@/core/optimistic'
 import { removeMemberConfirm, withoutMember } from '@/modules/workspaces/core/team'
 import type { FullOrganization, Member } from '@/modules/workspaces/core/workspace'
@@ -17,6 +17,7 @@ type RemoveMemberDialogProps = {
 }
 
 export function RemoveMemberDialog({ member, open, onClose, returnTo }: RemoveMemberDialogProps) {
+  const { t } = useTranslation()
   const { workspace } = useMe()
   const { client, pending, run } = useAction()
 
@@ -33,7 +34,7 @@ export function RemoveMemberDialog({ member, open, onClose, returnTo }: RemoveMe
               (organization) => withoutMember(organization, member.id),
               () => authClient.organization.removeMember({ memberIdOrEmail: member.id })
             ),
-          { notice: message('team.notices.memberRemoved', { name: member.name }) }
+          { notice: t('team.notices.memberRemoved', { name: member.name }) }
         )
         if (result.ok) onClose()
       }}

@@ -2,7 +2,6 @@ import { useSelector } from '@tanstack/react-store'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { message } from '@/core/message'
 import { optimistic } from '@/core/optimistic'
 import { createCompanyNameForm } from '@/modules/workspaces/core/company'
 import type { FullOrganization } from '@/modules/workspaces/core/workspace'
@@ -50,7 +49,7 @@ export function CompanyName({ name }: { name: string }) {
                 )
                 form.actions.reset(value)
               },
-              { notice: message('company.notices.renamed') }
+              { notice: t('company.notices.renamed') }
             )
           }}
         >

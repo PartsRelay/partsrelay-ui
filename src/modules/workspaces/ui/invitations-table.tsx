@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { message } from '@/core/message'
 import { type InvitationRow, invitationRows } from '@/modules/workspaces/core/team'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { RevokeInvitationDialog } from '@/modules/workspaces/ui/revoke-invitation-dialog'
@@ -115,7 +114,7 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
           variant="link"
           className="h-auto p-0"
           text={row.link}
-          notice={message('team.notices.linkCopied')}
+          notice={t('team.notices.linkCopied')}
           aria-label={t('team.actions.copyLinkFor', { email })}
         >
           {t('team.actions.copyLink')}
@@ -133,7 +132,7 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
                 await client.invalidateQueries({ queryKey: workspaceKey })
               }
             },
-            { notice: message('team.notices.invitationResent', { email }) }
+            { notice: t('team.notices.invitationResent', { email }) }
           )
         }
       >

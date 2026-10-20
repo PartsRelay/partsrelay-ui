@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { message } from '@/core/message'
 import { optimistic } from '@/core/optimistic'
 import { type Locale, localeNames } from '@/modules/workspaces/core/locale'
 import type { FullOrganization } from '@/modules/workspaces/core/workspace'
@@ -37,7 +36,7 @@ export function CompanyLanguage({ locale }: { locale: Locale }) {
                   (organization) => ({ ...organization, locale: next }),
                   () => authClient.organization.update({ data: { locale: next } })
                 ),
-              { notice: message('company.notices.language', { language: localeNames[next] }) }
+              { notice: t('company.notices.language', { language: localeNames[next] }) }
             )
           }}
         />

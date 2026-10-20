@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { message } from '@/core/message'
 import { optimistic } from '@/core/optimistic'
 import { roleHint } from '@/modules/workspaces/core/invite-form'
 import type { Role } from '@/modules/workspaces/core/role'
@@ -63,7 +62,7 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
               (organization) => withRole(organization, member.id, role),
               () => authClient.organization.updateMemberRole({ memberId: member.id, role })
             ),
-          { notice: message(`team.notices.roleChanged.${role}`, { name: member.name }) }
+          { notice: t(`team.notices.roleChanged.${role}`, { name: member.name }) }
         )
         if (result.ok) onDone()
       }}
