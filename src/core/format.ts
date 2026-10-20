@@ -1,9 +1,6 @@
-import { format, type Locale } from 'date-fns'
-import { enGB, it } from 'date-fns/locale'
+import { intlFormat } from 'date-fns'
 
 export const EMPTY_VALUE = '—'
-
-const DATE_LOCALES: Record<string, Locale> = { en: enGB, it }
 
 export function firstName(name: string) {
   return name.trim().split(/\s+/)[0] ?? ''
@@ -16,6 +13,11 @@ export function initials(name: string) {
   return letters.map((word) => word!.charAt(0).toUpperCase()).join('')
 }
 
+// English dates in the British order, day first
 export function formatDate(value: Date | string, locale?: string) {
-  return format(value, 'PP', { locale: DATE_LOCALES[locale ?? ''] ?? enGB })
+  return intlFormat(
+    value,
+    { day: 'numeric', month: 'short', year: 'numeric' },
+    { locale: locale === 'it' ? 'it' : 'en-GB' }
+  )
 }
