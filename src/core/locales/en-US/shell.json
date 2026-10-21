@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "contacts": "Contacts",
+    "workspace": "Workspace",
+    "company": "Company",
+    "breadcrumb": "Breadcrumb"
+  },
+  "crumbs": {
+    "contacts": "Contacts",
+    "workspace": "Workspace",
+    "account": "Account",
+    "company": "Company",
+    "profile": "Profile"
+  },
+  "shell": {
+    "user": {
+      "profile": "Profile",
+      "sign-out": "Sign out"
+    },
+    "access-denied": {
+      "title": "You don't have access to this page.",
+      "ask-owner": "Ask {{owner}}, your company owner, for help.",
+      "ask-any-owner": "Ask your company owner for help.",
+      "back": "Back to home"
+    }
+  }
+}

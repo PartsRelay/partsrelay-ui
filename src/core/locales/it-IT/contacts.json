@@ -1,0 +1,92 @@
+{
+  "contacts": {
+    "title": "Contatti",
+    "description": "Le officine cercano ricambi inviando un messaggio WhatsApp da questi numeri. Gli altri numeri ricevono una risposta che li invita a contattarti.",
+    "view-only": "Sola lettura",
+    "whatsapp-name": "WhatsApp: {{name}}",
+    "never": "Mai",
+    "list": {
+      "title": "Numeri WhatsApp",
+      "description": "I numeri che possono cercare ricambi su WhatsApp.",
+      "stale": "I contatti mostrati potrebbero non essere aggiornati.",
+      "count_one": "{{count}} contatto",
+      "count_other": "{{count}} contatti"
+    },
+    "tabs": {
+      "label": "Contatti da mostrare",
+      "all": "Tutti",
+      "active": "Attivi",
+      "blocked": "Bloccati"
+    },
+    "empty": {
+      "all": "Ancora nessun contatto",
+      "active": "Nessun contatto attivo",
+      "blocked": "Nessun contatto bloccato",
+      "manager": "Aggiungi il numero WhatsApp di un'officina perché possa cercare ricambi via messaggio.",
+      "viewer": "I numeri WhatsApp delle officine li aggiungono il proprietario e gli amministratori."
+    },
+    "columns": {
+      "contact": "Contatto",
+      "phone": "Numero WhatsApp",
+      "status": "Stato",
+      "searches": "Ricerche",
+      "month": "Questo mese",
+      "last-search": "Ultima ricerca",
+      "actions": "Azioni"
+    },
+    "status": {
+      "active": "Attivo",
+      "blocked": "Bloccato"
+    },
+    "actions": {
+      "rename": "Rinomina",
+      "rename-contact": "Rinomina {{name}}",
+      "block": "Blocca",
+      "block-contact": "Blocca {{name}}",
+      "unblock": "Sblocca",
+      "unblock-contact": "Sblocca {{name}}",
+      "remove": "Elimina",
+      "remove-contact": "Elimina {{name}}"
+    },
+    "rename": {
+      "label": "Nome di {{name}}",
+      "save": "Salva",
+      "hint": "Lascialo vuoto per mostrare il nome WhatsApp o il numero."
+    },
+    "add": {
+      "open": "Aggiungi contatto",
+      "title": "Aggiungi un contatto",
+      "description": "Il numero può cercare ricambi su WhatsApp da subito. Un numero può appartenere a una sola azienda.",
+      "phone": "Numero WhatsApp",
+      "phone-hint": "Con il prefisso internazionale, ad esempio +39.",
+      "phone-placeholder": "+39 333 123 4567",
+      "name": "Nome",
+      "name-hint": "Facoltativo. Viene mostrato al posto del nome WhatsApp.",
+      "submit": "Aggiungi contatto",
+      "errors": {
+        "phone-required": "Inserisci il numero WhatsApp.",
+        "phone": "Controlla il numero: serve il prefisso internazionale e potrebbe già appartenere a un'azienda."
+      }
+    },
+    "confirm": {
+      "block": {
+        "title": "Bloccare {{name}}?",
+        "body": "I messaggi da {{phone}} vengono ignorati finché non lo sblocchi, quindi non può cercare ricambi. Le ricerche passate restano nello storico.",
+        "action": "Blocca contatto"
+      },
+      "remove": {
+        "title": "Eliminare {{name}}?",
+        "body": "Il contatto e il suo nome vengono eliminati e {{phone}} non può più cercare ricambi. Le ricerche passate restano nello storico senza il contatto. Puoi aggiungere di nuovo il numero in seguito.",
+        "action": "Elimina contatto"
+      }
+    },
+    "notices": {
+      "added": "{{name}} aggiunto. Il numero può già cercare ricambi.",
+      "renamed": "Contatto rinominato in {{name}}.",
+      "name-cleared": "Nome rimosso, viene mostrato il nome WhatsApp o il numero.",
+      "blocked": "{{name}} è bloccato.",
+      "unblocked": "{{name}} è sbloccato e può cercare di nuovo.",
+      "removed": "{{name}} è stato eliminato."
+    }
+  }
+}

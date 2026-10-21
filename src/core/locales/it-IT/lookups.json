@@ -1,0 +1,40 @@
+{
+  "lookups": {
+    "status": {
+      "running": "In corso",
+      "done": "Completata",
+      "vehicle-not-found": "Veicolo non trovato",
+      "not-matched": "Nessuna categoria",
+      "failed": "Non riuscita"
+    },
+    "source": {
+      "web": "Web",
+      "whatsapp": "WhatsApp"
+    },
+    "searcher": {
+      "gone": "Non più in azienda",
+      "unnamed-contact": "Contatto senza nome",
+      "member": "Membro del team"
+    },
+    "outcome": {
+      "running": {
+        "title": "Ricerca nel catalogo in corso"
+      },
+      "results": {
+        "title": "Ricambi trovati"
+      },
+      "unavailable": {
+        "title": "Dettagli non disponibili"
+      },
+      "vehicle-not-found": {
+        "title": "Veicolo non trovato"
+      },
+      "not-matched": {
+        "title": "Nessuna categoria corrispondente"
+      },
+      "failed": {
+        "title": "Ricerca non riuscita"
+      }
+    }
+  }
+}
