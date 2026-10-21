@@ -177,7 +177,7 @@ export const authMocks = [
     return world((state) => {
       const { company } = signedIn(state)
       ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION')
-      if (data.locale != null && data.locale !== 'en' && data.locale !== 'it') {
+      if (data.locale != null && data.locale !== 'en-US' && data.locale !== 'it-IT') {
         fail(400, 'LOCALE_NOT_SUPPORTED')
       }
 

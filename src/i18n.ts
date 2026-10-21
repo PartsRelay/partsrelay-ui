@@ -4,8 +4,14 @@ import { initReactI18next } from 'react-i18next'
 
 type Catalog = Record<string, Record<string, unknown>>
 
-const en: Catalog = import.meta.glob('@/core/locales/en/*.json', { eager: true, import: 'default' })
-const it: Catalog = import.meta.glob('@/core/locales/it/*.json', { eager: true, import: 'default' })
+const enUS: Catalog = import.meta.glob('@/core/locales/en-US/*.json', {
+  eager: true,
+  import: 'default',
+})
+const itIT: Catalog = import.meta.glob('@/core/locales/it-IT/*.json', {
+  eager: true,
+  import: 'default',
+})
 
 const translation = (catalog: Catalog) => Object.assign({}, ...Object.values(catalog))
 
@@ -15,12 +21,14 @@ void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: { en: { translation: translation(en) }, it: { translation: translation(it) } },
-    supportedLngs: ['en', 'it'],
-    // it-IT counts as it and loads the it texts
-    nonExplicitSupportedLngs: true,
-    load: 'languageOnly',
-    fallbackLng: 'en',
+    resources: {
+      'en-US': { translation: translation(enUS) },
+      'it-IT': { translation: translation(itIT) },
+    },
+    // Browser languages like it or it-CH resolve to it-IT
+    supportedLngs: ['en-US', 'it-IT'],
+    load: 'currentOnly',
+    fallbackLng: 'en-US',
     detection: { order: ['navigator'], caches: [] },
     interpolation: { escapeValue: false },
     // Error codes without their own text get the generic one
