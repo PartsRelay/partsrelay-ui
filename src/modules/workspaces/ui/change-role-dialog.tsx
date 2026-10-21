@@ -8,7 +8,7 @@ import { withRole } from '@/modules/workspaces/core/team'
 import type { FullOrganization, Member } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
 import { Button } from '@/ui/components/ui/button'
@@ -47,7 +47,7 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
   const { t } = useTranslation()
   const { me } = useMe()
   const [role, setRole] = useState(member.role)
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
 
   return (
     <form

@@ -7,7 +7,7 @@ import { createInviteForm, roleHint } from '@/modules/workspaces/core/invite-for
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -20,7 +20,7 @@ export function InviteCard() {
   const { workspace, me } = useMe()
   const [form] = useState(() => createInviteForm(me))
   const draft = useSelector(form)
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
   const email = useRef<HTMLInputElement>(null)
 
   return (

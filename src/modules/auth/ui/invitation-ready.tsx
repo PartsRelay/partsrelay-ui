@@ -7,7 +7,7 @@ import { currentCompanyKey } from '@/modules/auth/core/invitation.query'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent } from '@/ui/components/ui/card'
 import { Spinner } from '@/ui/components/ui/spinner'
@@ -22,7 +22,7 @@ type InvitationReadyProps = {
 export function InvitationReady({ details, confirm, email, invitationId }: InvitationReadyProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { client, pending, error, run } = useAction()
+  const { client, pending, error, run } = useBetterAuthAction()
   const [confirming, setConfirming] = useState(false)
   const failure = error ? acceptError(error) : null
   // Errors show on the card, not as a toast

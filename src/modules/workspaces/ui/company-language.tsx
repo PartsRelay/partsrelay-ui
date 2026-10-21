@@ -5,12 +5,12 @@ import { type Locale, localeNames } from '@/modules/workspaces/core/locale'
 import type { FullOrganization } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
 export function CompanyLanguage({ locale }: { locale: Locale }) {
   const { t } = useTranslation()
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
 
   return (
     <Card>

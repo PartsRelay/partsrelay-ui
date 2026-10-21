@@ -9,7 +9,7 @@ type ActionOptions = { notice?: string; values?: MessageValues; silent?: boolean
 export type ActionResult = { ok: true } | { ok: false; error: unknown }
 
 // Runs a Better Auth call as a transition, then notifies
-export function useAction() {
+export function useBetterAuthAction() {
   const client = useQueryClient()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<unknown>(null)

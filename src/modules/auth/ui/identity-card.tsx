@@ -8,7 +8,7 @@ import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { Facts } from '@/ui/components/facts'
 import { PersonItem } from '@/ui/components/person-item'
 import { TextField } from '@/ui/components/text-field'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
@@ -20,7 +20,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
   const { t } = useTranslation()
   const [form] = useState(() => createUserNameForm(userName))
   const { draft, error } = useSelector(form)
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
   const input = useRef<HTMLInputElement>(null)
 
   return (

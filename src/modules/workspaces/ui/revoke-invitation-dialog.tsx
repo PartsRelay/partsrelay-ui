@@ -6,7 +6,7 @@ import { type InvitationRow, withoutInvitation } from '@/modules/workspaces/core
 import type { FullOrganization } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 
 type RevokeInvitationDialogProps = {
   row: InvitationRow
@@ -22,7 +22,7 @@ export function RevokeInvitationDialog({
   returnTo,
 }: RevokeInvitationDialogProps) {
   const { t } = useTranslation()
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
   const { id } = row.invitation
 
   return (

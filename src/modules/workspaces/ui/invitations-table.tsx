@@ -8,7 +8,7 @@ import { RevokeInvitationDialog } from '@/modules/workspaces/ui/revoke-invitatio
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { CopyButton } from '@/ui/components/copy-button'
 import { StatusBadge } from '@/ui/components/status-badge'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { ActionButton } from '@/modules/workspaces/ui/action-button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Empty, EmptyHeader, EmptyTitle } from '@/ui/components/ui/empty'
@@ -101,7 +101,7 @@ export function InvitationsTable() {
 
 function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: () => void }) {
   const { t } = useTranslation()
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
   const { email, role } = row.invitation
 
   if (!row.canManage) {

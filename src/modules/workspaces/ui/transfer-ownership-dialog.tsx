@@ -8,7 +8,7 @@ import type { Member } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import {
   AlertDialog,
@@ -48,7 +48,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
   const candidates = transferCandidates(workspace, me)
   const [candidateId, setCandidateId] = useState('')
   const candidate = candidates.find((member) => member.id === candidateId)
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
   const candidateLabel = (member: Member) =>
     t('team.transfer.candidate', { name: member.name, role: t(...roleLabel(member.role)) })
 

@@ -1,9 +1,9 @@
 import { authClient } from '@/modules/auth/core/auth.client'
 import { endSession } from '@/modules/auth/core/session.query'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 
 export function useSignOut() {
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
 
   const signOut = () =>
     run(

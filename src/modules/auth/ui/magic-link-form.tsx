@@ -9,7 +9,7 @@ import { errorMessage } from '@/core/errors'
 import { localeHeaders } from '@/i18n'
 import { Callout } from '@/ui/components/callout'
 import { TextField } from '@/ui/components/text-field'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
 import { Input } from '@/ui/components/ui/input'
@@ -19,7 +19,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   const { t } = useTranslation()
   const [form] = useState(createMagicLinkForm)
   const { email, sent, sentAt, error } = useSelector(form)
-  const { pending, run } = useAction()
+  const { pending, run } = useBetterAuthAction()
   const [now, setNow] = useState(Date.now)
   const wait = resendWait(sentAt, now)
   const input = useRef<HTMLInputElement>(null)

@@ -7,7 +7,7 @@ import type { FullOrganization, Member } from '@/modules/workspaces/core/workspa
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 
 type RemoveMemberDialogProps = {
   member: Member
@@ -19,7 +19,7 @@ type RemoveMemberDialogProps = {
 export function RemoveMemberDialog({ member, open, onClose, returnTo }: RemoveMemberDialogProps) {
   const { t } = useTranslation()
   const { workspace } = useMe()
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
 
   return (
     <ConfirmDialog

@@ -7,7 +7,7 @@ import { endSession } from '@/modules/auth/core/session.query'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
@@ -17,7 +17,7 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [confirming, setConfirming] = useState(false)
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
 
   return (
     <Card>

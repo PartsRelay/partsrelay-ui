@@ -13,7 +13,7 @@ import { AccountActions } from '@/modules/workspaces/ui/account-actions'
 import { InvitationHint } from '@/modules/workspaces/ui/invitation-hint'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
 import { TextField } from '@/ui/components/text-field'
-import { useAction } from '@/ui/hooks/use-action'
+import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
@@ -29,7 +29,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
     createSetupForm(workspace, { askName, browserLocale: preferredLocale(navigator.languages) })
   )
   const { name, locale, userName, errors } = useSelector(form)
-  const { client, pending, run } = useAction()
+  const { client, pending, run } = useBetterAuthAction()
   const nameInput = useRef<HTMLInputElement>(null)
   const userNameInput = useRef<HTMLInputElement>(null)
 
