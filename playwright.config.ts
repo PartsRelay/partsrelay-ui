@@ -3,8 +3,6 @@ import { defineConfig, devices } from '@playwright/test'
 const port = 5180
 const baseURL = `http://localhost:${port}`
 const ci = Boolean(process.env.CI)
-// Local runs may use a Chromium of another Playwright version
-const executablePath = ci ? undefined : process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined
 
 // E2E tests only, on the dev server with MSW mocks
 export default defineConfig({
@@ -22,14 +20,11 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
+  // Headless only, Chromium on its headless shell
   projects: [
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        launchOptions: { executablePath },
-      },
-    },
+    { name: 'chromium', use: devices['Desktop Chrome'] },
+    { name: 'firefox', use: devices['Desktop Firefox'] },
+    { name: 'webkit', use: devices['Desktop Safari'] },
   ],
 
   webServer: {

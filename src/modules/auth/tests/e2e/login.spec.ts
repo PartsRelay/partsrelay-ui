@@ -6,6 +6,8 @@ async function signOut(page: Page) {
   await page.getByRole('button', { name: /Mark Reed/ }).click()
   await page.getByRole('menuitem', { name: 'Sign out' }).click()
   await expect(page).toHaveURL('/login')
+  // Leaving before the lazy login page loads reloads it
+  await expect(page.getByRole('heading', { level: 1, name: /^Sign in to / })).toBeVisible()
 }
 
 const notices = (page: Page) => page.getByRole('region', { name: /Notifications/ })
