@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { type Locale, localeNames, locales, toLocale } from '@/modules/workspaces/core/locale'
+import { useTranslation } from 'react-i18next'
+import { type Locale, locales, toLocale } from '@/modules/workspaces/core/locale'
 import { TextField } from '@/ui/components/text-field'
 import {
   Select,
@@ -24,6 +25,8 @@ export function LocaleSelect({
   disabled,
   onValueChange,
 }: LocaleSelectProps) {
+  const { t } = useTranslation()
+
   return (
     <Select
       value={value}
@@ -37,8 +40,8 @@ export function LocaleSelect({
       </TextField>
       <SelectContent>
         {locales.map((locale) => (
-          <SelectItem key={locale} value={locale} lang={locale}>
-            {localeNames[locale]}
+          <SelectItem key={locale} value={locale}>
+            {t(`languages.${locale}`)}
           </SelectItem>
         ))}
       </SelectContent>

@@ -65,5 +65,9 @@
     "close": "Close",
     "loading": "Loading",
     "more": "More"
+  },
+  "languages": {
+    "en": "English",
+    "it": "Italian"
   }
 }

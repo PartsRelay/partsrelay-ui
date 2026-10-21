@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { optimistic } from '@/core/optimistic'
-import { type Locale, localeNames } from '@/modules/workspaces/core/locale'
+import type { Locale } from '@/modules/workspaces/core/locale'
 import type { FullOrganization } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
@@ -36,7 +36,7 @@ export function CompanyLanguage({ locale }: { locale: Locale }) {
                   (organization) => ({ ...organization, locale: next }),
                   () => authClient.organization.update({ data: { locale: next } })
                 ),
-              { notice: 'company.notices.language', values: { language: localeNames[next] } }
+              { notice: 'company.notices.language', values: { language: t(`languages.${next}`) } }
             )
           }}
         />

@@ -65,5 +65,9 @@
     "close": "Chiudi",
     "loading": "Caricamento",
     "more": "Altro"
+  },
+  "languages": {
+    "en": "Inglese",
+    "it": "Italiano"
   }
 }
