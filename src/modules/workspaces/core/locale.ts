@@ -13,7 +13,3 @@ export function isLocale(value: unknown): value is Locale {
 export function toLocale(value: unknown): Locale {
   return isLocale(value) ? value : FALLBACK_LOCALE
 }
-
-export function preferredLocale(languages: readonly string[]) {
-  return toLocale(languages.map((tag) => tag.split('-')[0]).find(isLocale))
-}

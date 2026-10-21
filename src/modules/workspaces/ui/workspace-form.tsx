@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { setupDefaults } from '@/modules/workspaces/core/setup'
-import { preferredLocale } from '@/modules/workspaces/core/locale'
+import { toLocale } from '@/modules/workspaces/core/locale'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
@@ -18,11 +18,11 @@ import { Field, FieldGroup } from '@/ui/components/ui/field'
 type WorkspaceFormProps = { workspace: Workspace; askName: boolean }
 
 export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { client, run } = useBetterAuthAction()
   const form = useAppForm({
-    defaultValues: setupDefaults(workspace, preferredLocale(navigator.languages)),
+    defaultValues: setupDefaults(workspace, toLocale(i18n.resolvedLanguage)),
     onSubmit: async ({ value }) => {
       const name = value.name.trim()
       const { locale } = value
