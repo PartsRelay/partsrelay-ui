@@ -16,7 +16,7 @@ export function InviteCard() {
   const form = useAppForm({
     defaultValues: inviteDefaults(me),
     onSubmit: async ({ value, formApi }) => {
-      const invitee = { ...value, email: value.email.trim() }
+      const invitee = { ...value, email: value.email.trim().toLowerCase() }
       const result = await run(
         async () => {
           try {

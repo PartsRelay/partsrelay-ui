@@ -1,13 +1,10 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useFieldContext } from '@/form'
+import { useFieldContext } from '@/form-context'
 import { TextField } from '@/ui/components/text-field'
 import { Input } from '@/ui/components/ui/input'
 
-type InputFieldProps = Omit<
-  ComponentProps<typeof Input>,
-  'name' | 'value' | 'onChange' | 'onBlur'
-> & {
+type InputFieldProps = Omit<ComponentProps<typeof Input>, 'name' | 'value' | 'onChange'> & {
   label: ReactNode
   description?: ReactNode
 }
@@ -16,7 +13,7 @@ type InputFieldProps = Omit<
 export function InputField({ label, description, required, ...props }: InputFieldProps) {
   const { t } = useTranslation()
   const field = useFieldContext<string>()
-  const [error] = field.state.meta.errors
+  const error = field.state.meta.errors.find((item): item is string => typeof item === 'string')
 
   return (
     <TextField
@@ -30,7 +27,6 @@ export function InputField({ label, description, required, ...props }: InputFiel
         name={field.name}
         value={field.state.value}
         onChange={(event) => field.handleChange(event.target.value)}
-        onBlur={field.handleBlur}
       />
     </TextField>
   )

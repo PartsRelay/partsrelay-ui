@@ -1,6 +1,5 @@
-import type { AnyFieldMeta } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
-import { useFormContext } from '@/form'
+import { useFormContext } from '@/form-context'
 
 // Submits the form state, then focuses the first invalid field
 export function Form(props: Omit<ComponentProps<'form'>, 'noValidate' | 'onSubmit'>) {
@@ -16,8 +15,7 @@ export function Form(props: Omit<ComponentProps<'form'>, 'noValidate' | 'onSubmi
 
         const element = event.currentTarget
         await form.handleSubmit()
-        const fields: Partial<Record<string, AnyFieldMeta>> = form.state.fieldMeta
-        const [name] = Object.entries(fields).find(([, meta]) => meta?.errors.length) ?? []
+        const [name] = Object.keys(form.getAllErrors().fields)
         const control = name ? element.elements.namedItem(name) : null
         if (control instanceof HTMLElement) control.focus()
       }}

@@ -57,7 +57,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   const form = useAppForm({
     defaultValues: { email: '' },
     onSubmit: async ({ value, formApi }) => {
-      const error = await send(value.email.trim())
+      const error = await send(value.email.trim().toLowerCase())
       if (error) formApi.setErrorMap({ onSubmit: { fields: { email: error } } })
     },
   })

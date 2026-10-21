@@ -3,7 +3,7 @@
 ## Structure
 
 - Repository root: `index.html`, `index.css` and the tool configs (`vite.config.ts`, `orval.config.ts`, `tsconfig.json`, `components.json`).
-- `src/`: the app configuration (`env.ts`, `router.ts`, `query-client.ts`, `i18n.ts`, `form.ts`) and `main.tsx`. Every form uses `useAppForm` from `form.ts`, which registers the shared field and form components and holds the shared validators.
+- `src/`: the app configuration (`env.ts`, `router.ts`, `query-client.ts`, `i18n.ts`, `form.ts`, `form-context.ts`) and `main.tsx`. Every form uses `useAppForm` from `form.ts`, which registers the shared field and form components and holds the shared validators. The shared components read the form and field contexts from `form-context.ts`.
 - `src/core/`: TypeScript shared across the whole frontend, including the core API client Orval generates in `src/core/api`. Better Auth is called only through its client in `src/modules/auth/core/auth.client.ts`.
 - `src/ui/`: `routeTree.gen.ts`.
 - `src/ui/components/`: shared components of the app, always built on the shadcn ones.
