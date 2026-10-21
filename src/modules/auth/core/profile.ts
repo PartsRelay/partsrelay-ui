@@ -1,5 +1,3 @@
-import { message } from '@/core/message'
-import { createCleanForm } from '@/core/cleaner'
 import { roleLabel } from '@/modules/workspaces/core/role'
 import type { Me, Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -14,8 +12,4 @@ export function profileView(me: Me, workspace: Workspace) {
     roleLabel: roleLabel(me.role),
     canLeave: me.permissions.leaveCompany,
   }
-}
-
-export function createUserNameForm(current: string) {
-  return createCleanForm(current, message('profile.errors.name-required'))
 }

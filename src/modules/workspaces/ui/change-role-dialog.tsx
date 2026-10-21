@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useSelector } from '@tanstack/react-form'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { optimistic } from '@/core/optimistic'
@@ -7,6 +7,7 @@ import type { Role } from '@/modules/workspaces/core/role'
 import { type FullOrganization, type Member, withRole } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useAppForm } from '@/form'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
@@ -45,46 +46,52 @@ type ChangeRoleFormProps = { member: Member; roles: Role[]; onDone: () => void }
 function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
   const { t } = useTranslation()
   const { me } = useMe()
-  const [role, setRole] = useState(member.role)
-  const { client, pending, run } = useBetterAuthAction()
+  const { client, run } = useBetterAuthAction()
+  const form = useAppForm({
+    defaultValues: { role: member.role },
+    onSubmit: async ({ value: { role } }) => {
+      const result = await run(
+        () =>
+          optimistic<FullOrganization>(
+            client,
+            workspaceKey,
+            (organization) => withRole(organization, member.id, role),
+            () => authClient.organization.updateMemberRole({ memberId: member.id, role })
+          ),
+        { notice: `team.notices.role-changed.${role}`, values: { name: member.name } }
+      )
+      if (result.ok) onDone()
+    },
+  })
+  const role = useSelector(form.store, (state) => state.values.role)
 
   return (
-    <form
-      className="grid gap-4"
-      onSubmit={async (event) => {
-        event.preventDefault()
-        const result = await run(
-          () =>
-            optimistic<FullOrganization>(
-              client,
-              workspaceKey,
-              (organization) => withRole(organization, member.id, role),
-              () => authClient.organization.updateMemberRole({ memberId: member.id, role })
-            ),
-          { notice: `team.notices.role-changed.${role}`, values: { name: member.name } }
-        )
-        if (result.ok) onDone()
-      }}
-    >
-      <DialogHeader>
-        <DialogTitle>{t('team.change-role.title', { name: member.name })}</DialogTitle>
-        <DialogDescription>{t('team.change-role.description')}</DialogDescription>
-      </DialogHeader>
-      <RoleField
-        label={t('team.members.columns.role')}
-        roles={roles}
-        value={role}
-        onValueChange={setRole}
-        hint={t(...roleHint(role, me))}
-      />
-      <DialogFooter>
-        <DialogClose asChild>
-          <Button variant="outline">{t('confirm.cancel')}</Button>
-        </DialogClose>
-        <Button type="submit" disabled={role === member.role || pending}>
-          {t('team.change-role.save')}
-        </Button>
-      </DialogFooter>
-    </form>
+    <form.AppForm>
+      <form.Form className="grid gap-4">
+        <DialogHeader>
+          <DialogTitle>{t('team.change-role.title', { name: member.name })}</DialogTitle>
+          <DialogDescription>{t('team.change-role.description')}</DialogDescription>
+        </DialogHeader>
+        <form.Field name="role">
+          {(field) => (
+            <RoleField
+              label={t('team.members.columns.role')}
+              roles={roles}
+              value={field.state.value}
+              onValueChange={field.handleChange}
+              hint={t(...roleHint(field.state.value, me))}
+            />
+          )}
+        </form.Field>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">{t('confirm.cancel')}</Button>
+          </DialogClose>
+          <form.SubmitButton disabled={role === member.role}>
+            {t('team.change-role.save')}
+          </form.SubmitButton>
+        </DialogFooter>
+      </form.Form>
+    </form.AppForm>
   )
 }

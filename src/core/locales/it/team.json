@@ -65,11 +65,6 @@
       "email-placeholder": "nome@azienda.it",
       "role": "Ruolo",
       "send": "Invia invito",
-      "errors": {
-        "email": "Inserisci un indirizzo email valido.",
-        "member": "Questa persona fa già parte del team.",
-        "invited": "Questa persona ha già un invito in sospeso."
-      },
       "hints": {
         "admin": "Gli amministratori gestiscono i contatti e possono invitare o rimuovere i visualizzatori.",
         "viewer": "I visualizzatori fanno ricerche e vedono i contatti, senza gestirli.",

@@ -1,5 +1,6 @@
 import { isFuture } from 'date-fns'
 import { http, HttpResponse, type JsonBodyType } from 'msw'
+import { z } from 'zod'
 import {
   daysAgo,
   newCompany,
@@ -225,25 +226,34 @@ export const authMocks = [
     })
   }),
   post('/organization/invite-member', async ({ request }) => {
-    const { email, role, resend } = await body<{
+    const {
+      email: typed,
+      role,
+      resend,
+    } = await body<{
       email: string
       role: Invitation['role']
       resend?: boolean
     }>(request)
+    // Like Better Auth: lowercased, then checked
+    const email = typed.toLowerCase()
 
     return world((state) => {
       const { company, me } = signedIn(state)
+      if (!z.email().safeParse(email).success) fail(400, 'INVALID_EMAIL')
       if (myRole(state) === 'viewer') {
         fail(403, 'YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION')
       }
       managed(state, role)
-      if (company.members.some(({ user }) => user.email === email)) {
+      if (company.members.some(({ user }) => user.email.toLowerCase() === email)) {
         fail(400, 'USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION')
       }
 
       // Like the core, an expired invitation no longer counts
       const expiresAt = daysAgo(-7)
-      const pending = company.invitations.find((item) => item.email === email && live(item))
+      const pending = company.invitations.find(
+        (item) => item.email.toLowerCase() === email && live(item)
+      )
       if (pending && !resend) fail(400, 'USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION')
       if (pending) return Object.assign(pending, { expiresAt })
 

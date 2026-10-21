@@ -65,11 +65,6 @@
       "email-placeholder": "name@company.com",
       "role": "Role",
       "send": "Send invitation",
-      "errors": {
-        "email": "Enter a valid email address.",
-        "member": "This person is already in the team.",
-        "invited": "This person already has a pending invitation."
-      },
       "hints": {
         "admin": "Admins manage contacts and can invite or remove viewers.",
         "viewer": "Viewers run searches and see contacts, without managing them.",

@@ -4,7 +4,12 @@ import type { MessageValues } from '@/core/message'
 import { reportError } from '@/query-client'
 import { notify } from '@/ui/components/notify'
 
-type ActionOptions = { notice?: string; values?: MessageValues; silent?: boolean }
+type ActionOptions = {
+  notice?: string
+  values?: MessageValues
+  // A function picks the errors the caller shows itself
+  silent?: boolean | ((error: unknown) => boolean)
+}
 
 export type ActionResult = { ok: true } | { ok: false; error: unknown }
 
@@ -24,7 +29,7 @@ export function useBetterAuthAction() {
           resolve({ ok: true })
         } catch (failure) {
           setError(failure)
-          reportError(failure, silent)
+          reportError(failure, typeof silent === 'function' ? silent(failure) : silent)
           resolve({ ok: false, error: failure })
         }
       })

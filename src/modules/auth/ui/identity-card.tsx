@@ -1,27 +1,40 @@
-import { useSelector } from '@tanstack/react-store'
-import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { createUserNameForm, type ProfileView } from '@/modules/auth/core/profile'
+import type { ProfileView } from '@/modules/auth/core/profile'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
+import { requiredText, useAppForm } from '@/form'
 import { Facts } from '@/ui/components/facts'
 import { PersonItem } from '@/ui/components/person-item'
-import { TextField } from '@/ui/components/text-field'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
-import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
-import { Input } from '@/ui/components/ui/input'
 
 type IdentityCardProps = { view: ProfileView; userName: string }
 
 export function IdentityCard({ view, userName }: IdentityCardProps) {
   const { t } = useTranslation()
-  const [form] = useState(() => createUserNameForm(userName))
-  const { draft, error } = useSelector(form)
-  const { client, pending, run } = useBetterAuthAction()
-  const input = useRef<HTMLInputElement>(null)
+  const { client, run } = useBetterAuthAction()
+  const form = useAppForm({
+    defaultValues: { name: userName },
+    onSubmit: async ({ value, formApi }) => {
+      const name = value.name.trim()
+      if (name === userName.trim()) return
+
+      const result = await run(
+        async () => {
+          await authClient.updateUser({ name })
+          await Promise.all([
+            client.invalidateQueries({ queryKey: sessionQuery.queryKey }),
+            client.invalidateQueries({ queryKey: workspaceKey }),
+          ])
+        },
+        { notice: 'profile.notices.name-saved' }
+      )
+      // The prop stays the default and catches up later
+      if (result.ok) formApi.reset({ name }, { keepDefaultValues: true })
+    },
+  })
 
   return (
     <Card>
@@ -40,47 +53,28 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
             { label: t('profile.identity.role'), value: t(...view.roleLabel) },
           ]}
         />
-        <form
-          noValidate
-          onSubmit={(event) => {
-            event.preventDefault()
-            const value = form.actions.submit(userName)
-            if (value) {
-              void run(
-                async () => {
-                  await authClient.updateUser({ name: value })
-                  form.actions.reset(value)
-                  await Promise.all([
-                    client.invalidateQueries({ queryKey: sessionQuery.queryKey }),
-                    client.invalidateQueries({ queryKey: workspaceKey }),
-                  ])
-                },
-                { notice: 'profile.notices.name-saved' }
-              )
-            } else if (form.state.error) input.current?.focus()
-          }}
-        >
-          <FieldGroup>
-            <TextField
-              label={t('profile.identity.name')}
-              required
-              description={t('profile.identity.name-hint')}
-              error={error && t(...error)}
-            >
-              <Input
-                ref={input}
-                autoComplete="name"
-                value={draft}
-                onChange={(event) => form.actions.change(event.target.value)}
-              />
-            </TextField>
-            <Field orientation="horizontal">
-              <Button type="submit" disabled={pending}>
-                {t('profile.identity.save')}
-              </Button>
-            </Field>
-          </FieldGroup>
-        </form>
+        <form.AppForm>
+          <form.Form>
+            <FieldGroup>
+              <form.AppField
+                name="name"
+                validators={{ onSubmit: requiredText('profile.errors.name-required') }}
+              >
+                {(field) => (
+                  <field.InputField
+                    label={t('profile.identity.name')}
+                    required
+                    description={t('profile.identity.name-hint')}
+                    autoComplete="name"
+                  />
+                )}
+              </form.AppField>
+              <Field orientation="horizontal">
+                <form.SubmitButton>{t('profile.identity.save')}</form.SubmitButton>
+              </Field>
+            </FieldGroup>
+          </form.Form>
+        </form.AppForm>
       </CardContent>
     </Card>
   )

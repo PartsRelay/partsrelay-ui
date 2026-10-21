@@ -1,23 +1,22 @@
-import { useSelector } from '@tanstack/react-store'
 import { MailCheckIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { createMagicLinkForm, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
+import { emailError, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
 import { magicLinkSignIn, type SignInFlow } from '@/modules/auth/core/sign-in'
-import { errorMessage } from '@/core/errors'
+import { errorCode, errorKey } from '@/core/errors'
+import { useAppForm } from '@/form'
 import { Callout } from '@/ui/components/callout'
-import { TextField } from '@/ui/components/text-field'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
-import { Input } from '@/ui/components/ui/input'
 import { Spinner } from '@/ui/components/ui/spinner'
 
 export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   const { t } = useTranslation()
-  const [form] = useState(createMagicLinkForm)
-  const { email, sent, sentAt, error } = useSelector(form)
+  const [sent, setSent] = useState<string | null>(null)
+  const [sentAt, setSentAt] = useState<number | null>(null)
+  const [failure, setFailure] = useState<string | null>(null)
   const { pending, run } = useBetterAuthAction()
   const [now, setNow] = useState(Date.now)
   const wait = resendWait(sentAt, now)
@@ -41,16 +40,27 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   }, [wait, now])
 
   // Errors show in the form, not as a toast
-  const deliver = async (address: string) => {
+  const send = async (address: string) => {
     const result = await run(() => authClient.signIn.magicLink(magicLinkSignIn(flow, address)), {
       silent: true,
     })
-    if (!result.ok) return form.actions.failed(errorMessage(result.error))
+    if (!result.ok) return errorKey(errorCode(result.error))
 
     const at = Date.now()
     setNow(at)
-    form.actions.sent(address, at)
+    setSent(address)
+    setSentAt(at)
+
+    return null
   }
+
+  const form = useAppForm({
+    defaultValues: { email: '' },
+    onSubmit: async ({ value, formApi }) => {
+      const error = await send(value.email.trim())
+      if (error) formApi.setErrorMap({ onSubmit: { fields: { email: error } } })
+    },
+  })
 
   if (sent) {
     const waiting = wait > 0 || pending
@@ -67,20 +77,29 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
         >
           {t('login.magic-link.sent.description', { email: sent, minutes: MAGIC_LINK_MINUTES })}
         </Callout>
-        {error && <Callout tone="danger">{t(...error)}</Callout>}
+        {failure && <Callout tone="danger">{t(failure)}</Callout>}
         <div className="grid gap-2">
           <Button
             variant="outline"
             aria-disabled={waiting}
             className="aria-disabled:opacity-50"
-            onClick={() => !waiting && void deliver(sent)}
+            onClick={async () => {
+              if (!waiting) setFailure(await send(sent))
+            }}
           >
             {pending && <Spinner data-icon="inline-start" />}
             {wait > 0
               ? t('login.magic-link.sent.resend-in', { seconds: wait })
               : t('login.magic-link.sent.resend')}
           </Button>
-          <Button variant="ghost" onClick={form.actions.edit}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setSent(null)
+              setSentAt(null)
+              setFailure(null)
+            }}
+          >
             {t('login.magic-link.sent.edit')}
           </Button>
         </div>
@@ -89,33 +108,25 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   }
 
   return (
-    <form
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const address = form.actions.submit()
-        if (address) void deliver(address)
-        else input.current?.focus()
-      }}
-    >
-      <FieldGroup>
-        <TextField label={t('login.magic-link.email')} error={error && t(...error)}>
-          <Input
-            ref={input}
-            type="email"
-            autoComplete="email"
-            placeholder={t('login.magic-link.placeholder')}
-            value={email}
-            onChange={(event) => form.actions.setEmail(event.target.value)}
-          />
-        </TextField>
-        <Field>
-          <Button type="submit" variant="outline" disabled={pending}>
-            {pending && <Spinner data-icon="inline-start" />}
-            {t('login.magic-link.send')}
-          </Button>
-        </Field>
-      </FieldGroup>
-    </form>
+    <form.AppForm>
+      <form.Form>
+        <FieldGroup>
+          <form.AppField name="email" validators={{ onSubmit: ({ value }) => emailError(value) }}>
+            {(field) => (
+              <field.InputField
+                ref={input}
+                label={t('login.magic-link.email')}
+                type="email"
+                autoComplete="email"
+                placeholder={t('login.magic-link.placeholder')}
+              />
+            )}
+          </form.AppField>
+          <Field>
+            <form.SubmitButton variant="outline">{t('login.magic-link.send')}</form.SubmitButton>
+          </Field>
+        </FieldGroup>
+      </form.Form>
+    </form.AppForm>
   )
 }
