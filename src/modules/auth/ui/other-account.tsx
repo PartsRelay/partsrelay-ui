@@ -16,7 +16,7 @@ export function OtherAccount({ session }: OtherAccountProps) {
 
   return (
     <Card>
-      <InvitationHeader details={null} />
+      <InvitationHeader />
       <CardContent className="grid gap-6">
         <Callout
           tone="danger"

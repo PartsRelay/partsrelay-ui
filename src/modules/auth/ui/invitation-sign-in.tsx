@@ -13,7 +13,7 @@ export function InvitationSignIn({ next, error }: InvitationSignInProps) {
 
   return (
     <Card>
-      <InvitationHeader details={null} />
+      <InvitationHeader />
       <CardContent className="grid gap-6">
         {error && <Callout tone="danger">{t(...error)}</Callout>}
         <SignInOptions flow={invitationFlow(next)} />

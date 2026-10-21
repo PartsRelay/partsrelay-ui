@@ -4,7 +4,7 @@ import { type InvitationDetails, invitationHeadline } from '@/modules/auth/core/
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { CardDescription, CardHeader } from '@/ui/components/ui/card'
 
-export function InvitationHeader({ details }: { details: InvitationDetails | null }) {
+export function InvitationHeader({ details }: { details?: InvitationDetails }) {
   const { t, i18n } = useTranslation()
 
   if (!details) {
