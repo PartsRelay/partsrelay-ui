@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { navigation, pageAt, type Section } from '@/modules/workspaces/core/navigation'
 import { roleLabel } from '@/modules/workspaces/core/role'
 import { NavUser } from '@/modules/workspaces/ui/nav-user'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import {
   Sidebar,
   SidebarContent,

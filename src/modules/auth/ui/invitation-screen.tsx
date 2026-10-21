@@ -6,7 +6,7 @@ import { InvitationSignIn } from '@/modules/auth/ui/invitation-sign-in'
 import { InvitationSkeleton } from '@/modules/auth/ui/invitation-skeleton'
 import { InvitationUnavailable } from '@/modules/auth/ui/invitation-unavailable'
 import { OtherAccount } from '@/modules/auth/ui/other-account'
-import type { SessionState } from '@/modules/auth/ui/use-session'
+import type { SessionState } from '@/modules/auth/ui/hooks/use-session'
 
 type InvitationScreenProps = {
   view: InvitationView

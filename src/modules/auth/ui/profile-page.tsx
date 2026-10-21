@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { profileView } from '@/modules/auth/core/profile'
 import { IdentityCard } from '@/modules/auth/ui/identity-card'
 import { LeaveCompanyCard } from '@/modules/auth/ui/leave-company-card'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { PageHeader } from '@/ui/components/page-header'
 
 export function ProfilePage() {

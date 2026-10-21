@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { HouseIcon, LockIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { accessHint } from '@/modules/workspaces/core/shell'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { Button } from '@/ui/components/ui/button'
 import {
   Empty,

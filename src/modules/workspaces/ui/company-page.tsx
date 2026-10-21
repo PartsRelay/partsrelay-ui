@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { CompanyLanguage } from '@/modules/workspaces/ui/company-language'
 import { CompanyName } from '@/modules/workspaces/ui/company-name'
 import { DeleteCompany } from '@/modules/workspaces/ui/delete-company'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { PageHeader } from '@/ui/components/page-header'
 
 export function CompanyPage() {

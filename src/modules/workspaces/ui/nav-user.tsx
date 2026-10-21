@@ -1,8 +1,8 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { ChevronsUpDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useSignOut } from '@/modules/auth/ui/use-sign-out'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useSignOut } from '@/modules/auth/ui/hooks/use-sign-out'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { Avatar, AvatarFallback, AvatarImage } from '@/ui/components/ui/avatar'
 import {
   DropdownMenu,

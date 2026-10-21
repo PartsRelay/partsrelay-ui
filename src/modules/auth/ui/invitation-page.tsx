@@ -4,7 +4,7 @@ import { invitationView } from '@/modules/auth/core/invitation'
 import { currentCompanyQuery, invitationQuery } from '@/modules/auth/core/invitation.query'
 import { loginError } from '@/modules/auth/core/sign-in'
 import { InvitationScreen } from '@/modules/auth/ui/invitation-screen'
-import { useSession } from '@/modules/auth/ui/use-session'
+import { useSession } from '@/modules/auth/ui/hooks/use-session'
 
 const route = getRouteApi('/(auth)/invitations/$invitationId')
 

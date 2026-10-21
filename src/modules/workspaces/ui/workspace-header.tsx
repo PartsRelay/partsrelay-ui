@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { workspaceSummary } from '@/modules/workspaces/core/workspace'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { PageHeader } from '@/ui/components/page-header'
 import { Badge } from '@/ui/components/ui/badge'
 

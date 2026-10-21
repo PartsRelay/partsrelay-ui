@@ -12,3 +12,4 @@
 - `src/ui/routes/`: TanStack Router file based routes, always grouped by module, for example `(auth)` and `(workspaces)`. They mirror the structure of the app and hold no business logic: a route only wires guards, loaders and a component from a module.
 - `src/modules/<module>/core/`: TypeScript business logic of that module.
 - `src/modules/<module>/ui/`: smart components of that module.
+- `src/modules/<module>/ui/hooks/`: React hooks of that module.

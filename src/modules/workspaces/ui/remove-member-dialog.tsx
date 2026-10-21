@@ -8,7 +8,7 @@ import {
   withoutMember,
 } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 

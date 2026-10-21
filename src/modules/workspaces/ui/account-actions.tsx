@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { useSession } from '@/modules/auth/ui/use-session'
-import { useSignOut } from '@/modules/auth/ui/use-sign-out'
+import { useSession } from '@/modules/auth/ui/hooks/use-session'
+import { useSignOut } from '@/modules/auth/ui/hooks/use-sign-out'
 import { Button } from '@/ui/components/ui/button'
 
 export function AccountActions() {

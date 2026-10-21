@@ -9,7 +9,7 @@ import {
 } from '@/modules/workspaces/core/workspace'
 import { roleLabel } from '@/modules/workspaces/core/role'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { useAppForm } from '@/form'
 import { TextField } from '@/ui/components/text-field'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'

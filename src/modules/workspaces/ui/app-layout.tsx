@@ -10,7 +10,7 @@ import { workspaceQuery } from '@/modules/workspaces/core/workspace.query'
 import { AccessDenied } from '@/modules/workspaces/ui/access-denied'
 import { AppHeader } from '@/modules/workspaces/ui/app-header'
 import { AppSidebar } from '@/modules/workspaces/ui/app-sidebar'
-import { AccountContext, useMe } from '@/modules/workspaces/ui/use-me'
+import { AccountContext, useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { SidebarInset, SidebarProvider } from '@/ui/components/ui/sidebar'
 
 type AppGuard = { context: { queryClient: QueryClient }; location: { href: string } }

@@ -4,7 +4,7 @@ import { InviteCard } from '@/modules/workspaces/ui/invite-card'
 import { MembersTable } from '@/modules/workspaces/ui/members-table'
 import { WorkspaceHeader } from '@/modules/workspaces/ui/workspace-header'
 import { TransferOwnershipDialog } from '@/modules/workspaces/ui/transfer-ownership-dialog'
-import { useMe } from '@/modules/workspaces/ui/use-me'
+import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 
 const route = getRouteApi('/_app/(workspaces)/workspace')
 
