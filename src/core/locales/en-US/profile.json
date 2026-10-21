@@ -1,0 +1,40 @@
+{
+  "profile": {
+    "title": "Profile",
+    "description": "Your name, your account and your place in the company.",
+    "identity": {
+      "title": "Your account",
+      "description": "You sign in with this email, through Google or a sign-in link.",
+      "company": "Company",
+      "role": "Role",
+      "name": "Name",
+      "name-hint": "Your team sees it next to your email.",
+      "save": "Save name"
+    },
+    "leave": {
+      "title": "Leave the company",
+      "description": "Leaving {{company}} deletes your account. Searches you ran stay with the company.",
+      "action": "Leave company",
+      "owner": {
+        "title": "The owner cannot leave",
+        "description": "Hand over the company to another member first, or delete the company together with every account.",
+        "transfer": "Transfer ownership",
+        "delete": "Delete company"
+      }
+    },
+    "errors": {
+      "name-required": "Enter your name."
+    },
+    "confirm": {
+      "leave": {
+        "title": "Leave {{company}}?",
+        "body": "Your account is deleted for good, together with the invitations you sent, and you are signed out. Searches you ran stay with the company. Signing in again with this email starts a new company.",
+        "action": "Leave and delete my account"
+      }
+    },
+    "notices": {
+      "name-saved": "Name saved.",
+      "left": "You left {{company}} and your account was deleted."
+    }
+  }
+}

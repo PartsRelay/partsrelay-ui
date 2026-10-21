@@ -1,22 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
-import { GoogleLogin } from '@/modules/ui/auth/google-login'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { loginSearchSchema } from '@/modules/auth/core/sign-in'
+import { LoginPage, redirectIfSignedIn } from '@/modules/auth/ui/login-page'
 
-export const Route = createFileRoute('/(auth)/login')({ component: LoginPage })
-
-function LoginPage() {
-  const { t } = useTranslation()
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t('login.title')}</CardTitle>
-        <CardDescription>{t('login.description')}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <GoogleLogin />
-      </CardContent>
-    </Card>
-  )
-}
+export const Route = createFileRoute('/(auth)/login')({
+  validateSearch: loginSearchSchema,
+  beforeLoad: redirectIfSignedIn,
+  component: LoginPage,
+})
