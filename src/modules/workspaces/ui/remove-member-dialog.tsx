@@ -27,9 +27,12 @@ export function RemoveMemberDialog({ member, open, onClose, returnTo }: RemoveMe
   return (
     <ConfirmDialog
       open={open}
-      title={t('team.confirm.remove.title', { name: member.name })}
-      description={t('team.confirm.remove.body', { name: member.name, company: workspace.name })}
-      action={t('team.confirm.remove.action')}
+      title={t('workspace.confirm.remove.title', { name: member.name })}
+      description={t('workspace.confirm.remove.body', {
+        name: member.name,
+        company: workspace.name,
+      })}
+      action={t('workspace.confirm.remove.action')}
       pending={pending}
       onConfirm={async () => {
         const result = await run(
@@ -40,7 +43,7 @@ export function RemoveMemberDialog({ member, open, onClose, returnTo }: RemoveMe
               (organization) => withoutMember(organization, member.id),
               () => authClient.organization.removeMember({ memberIdOrEmail: member.id })
             ),
-          { notice: 'team.notices.member-removed', values: { name: member.name } }
+          { notice: 'workspace.notices.member-removed', values: { name: member.name } }
         )
         if (result.ok) onClose()
       }}

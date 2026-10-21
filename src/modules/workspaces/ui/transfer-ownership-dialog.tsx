@@ -71,7 +71,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
             ])
           }
         },
-        { notice: 'team.notices.ownership-transferred', values: { name: candidate.name } }
+        { notice: 'workspace.notices.ownership-transferred', values: { name: candidate.name } }
       )
       if (result.ok) onDone()
     },
@@ -79,24 +79,26 @@ function TransferForm({ onDone }: { onDone: () => void }) {
   const candidateId = useSelector(form.store, (state) => state.values.candidateId)
   const candidate = candidates.find((member) => member.id === candidateId)
   const candidateLabel = (member: Member) =>
-    t('team.transfer.candidate', { name: member.name, role: t(...roleLabel(member.role)) })
+    t('workspace.transfer.candidate', { name: member.name, role: t(...roleLabel(member.role)) })
 
   return (
     <form.AppForm>
       <form.Form className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
         <AlertDialogHeader>
-          <AlertDialogTitle>{t('team.transfer.title')}</AlertDialogTitle>
+          <AlertDialogTitle>{t('workspace.transfer.title')}</AlertDialogTitle>
           <AlertDialogDescription>
-            {t(candidates.length > 0 ? 'team.transfer.description' : 'team.transfer.nobody')}
+            {t(
+              candidates.length > 0 ? 'workspace.transfer.description' : 'workspace.transfer.nobody'
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         {candidates.length > 0 && (
           <form.Field name="candidateId">
             {(field) => (
               <Select value={field.state.value} onValueChange={field.handleChange}>
-                <TextField label={t('team.transfer.new-owner')}>
+                <TextField label={t('workspace.transfer.new-owner')}>
                   <SelectTrigger className="w-full min-w-0 *:data-[slot=select-value]:min-w-0">
-                    <SelectValue placeholder={t('team.transfer.choose')}>
+                    <SelectValue placeholder={t('workspace.transfer.choose')}>
                       {candidate && <span className="truncate">{candidateLabel(candidate)}</span>}
                     </SelectValue>
                   </SelectTrigger>

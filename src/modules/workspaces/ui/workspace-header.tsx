@@ -10,8 +10,8 @@ export function WorkspaceHeader() {
 
   return (
     <PageHeader
-      title={t('team.title')}
-      description={t('team.description')}
+      title={t('workspace.title')}
+      description={t('workspace.description')}
       badge={
         <Badge variant="secondary">
           {workspaceSummary(workspace, new Date())

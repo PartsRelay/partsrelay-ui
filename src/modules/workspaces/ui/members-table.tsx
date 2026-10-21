@@ -31,17 +31,17 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
       <CardHeader>
         <CardTitle>
           <h2 ref={heading} tabIndex={-1} className="outline-none">
-            {t('team.members.title')}
+            {t('workspace.members.title')}
           </h2>
         </CardTitle>
-        <CardDescription>{t('team.members.description')}</CardDescription>
+        <CardDescription>{t('workspace.members.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
-                <TableHead key={column}>{t(`team.members.columns.${column}`)}</TableHead>
+                <TableHead key={column}>{t(`workspace.members.columns.${column}`)}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -53,7 +53,9 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
                     name={row.member.name}
                     email={row.member.email}
                     image={row.member.image}
-                    title={row.isMe ? t('team.members.you', { name: row.member.name }) : undefined}
+                    title={
+                      row.isMe ? t('workspace.members.you', { name: row.member.name }) : undefined
+                    }
                   />
                 </TableCell>
                 <TableCell>

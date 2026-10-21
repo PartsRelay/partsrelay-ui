@@ -1,14 +1,12 @@
 {
   "nav": {
-    "team": "Team",
+    "workspace": "Area di lavoro",
     "company": "Azienda",
-    "sections": "Area di lavoro",
     "breadcrumb": "Percorso"
   },
   "crumbs": {
     "workspace": "Area di lavoro",
     "account": "Account",
-    "team": "Team",
     "company": "Azienda",
     "profile": "Profilo"
   },

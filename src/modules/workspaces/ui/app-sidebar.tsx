@@ -12,7 +12,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -20,7 +19,7 @@ import {
   SidebarRail,
 } from '@/ui/components/ui/sidebar'
 
-const icons: Record<Section, LucideIcon> = { team: UsersIcon, company: Building2Icon }
+const icons: Record<Section, LucideIcon> = { workspace: UsersIcon, company: Building2Icon }
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation()
@@ -50,7 +49,6 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         {items.length > 0 && (
           <SidebarGroup>
-            <SidebarGroupLabel>{t('nav.sections')}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => {

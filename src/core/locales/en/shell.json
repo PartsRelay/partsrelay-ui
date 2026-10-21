@@ -1,14 +1,12 @@
 {
   "nav": {
-    "team": "Team",
+    "workspace": "Workspace",
     "company": "Company",
-    "sections": "Workspace",
     "breadcrumb": "Breadcrumb"
   },
   "crumbs": {
     "workspace": "Workspace",
     "account": "Account",
-    "team": "Team",
     "company": "Company",
     "profile": "Profile"
   },

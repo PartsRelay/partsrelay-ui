@@ -178,16 +178,16 @@ export function transferCandidates(workspace: Workspace, me: Me) {
 
 export function transferAction(candidate?: Member) {
   return candidate
-    ? message('team.transfer.action', { name: candidate.name })
-    : message('team.transfer.title')
+    ? message('workspace.transfer.action', { name: candidate.name })
+    : message('workspace.transfer.title')
 }
 
 export function workspaceSummary(workspace: Workspace, now: Date) {
   const waiting = pendingInvitations(workspace).filter(({ expiresAt }) => isAfter(expiresAt, now))
 
   return [
-    message('team.summary.members', { count: workspace.members.length }),
-    message('team.summary.invitations', { count: waiting.length }),
+    message('workspace.summary.members', { count: workspace.members.length }),
+    message('workspace.summary.invitations', { count: waiting.length }),
   ]
 }
 

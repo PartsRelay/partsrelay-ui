@@ -58,7 +58,7 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
             (organization) => withRole(organization, member.id, role),
             () => authClient.organization.updateMemberRole({ memberId: member.id, role })
           ),
-        { notice: `team.notices.role-changed.${role}`, values: { name: member.name } }
+        { notice: `workspace.notices.role-changed.${role}`, values: { name: member.name } }
       )
       if (result.ok) onDone()
     },
@@ -69,13 +69,13 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
     <form.AppForm>
       <form.Form className="grid gap-4">
         <DialogHeader>
-          <DialogTitle>{t('team.change-role.title', { name: member.name })}</DialogTitle>
-          <DialogDescription>{t('team.change-role.description')}</DialogDescription>
+          <DialogTitle>{t('workspace.change-role.title', { name: member.name })}</DialogTitle>
+          <DialogDescription>{t('workspace.change-role.description')}</DialogDescription>
         </DialogHeader>
         <form.Field name="role">
           {(field) => (
             <RoleField
-              label={t('team.members.columns.role')}
+              label={t('workspace.members.columns.role')}
               roles={roles}
               value={field.state.value}
               onValueChange={field.handleChange}
@@ -88,7 +88,7 @@ function ChangeRoleForm({ member, roles, onDone }: ChangeRoleFormProps) {
             <Button variant="outline">{t('confirm.cancel')}</Button>
           </DialogClose>
           <form.SubmitButton disabled={role === member.role}>
-            {t('team.change-role.save')}
+            {t('workspace.change-role.save')}
           </form.SubmitButton>
         </DialogFooter>
       </form.Form>

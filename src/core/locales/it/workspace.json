@@ -1,6 +1,6 @@
 {
-  "team": {
-    "title": "Team",
+  "workspace": {
+    "title": "Area di lavoro",
     "description": "Invita persone, scegli il loro ruolo e cedi la proprietà.",
     "summary": {
       "members_one": "{{count}} membro",

@@ -1,6 +1,6 @@
 {
-  "team": {
-    "title": "Team",
+  "workspace": {
+    "title": "Workspace",
     "description": "Invite people, choose their role and hand over ownership.",
     "summary": {
       "members_one": "{{count}} member",

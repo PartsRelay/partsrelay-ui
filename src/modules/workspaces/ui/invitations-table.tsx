@@ -36,16 +36,16 @@ export function InvitationsTable() {
       <CardHeader>
         <CardTitle>
           <h2 ref={heading} tabIndex={-1} className="outline-none">
-            {t('team.invitations.title')}
+            {t('workspace.invitations.title')}
           </h2>
         </CardTitle>
-        <CardDescription>{t('team.invitations.description')}</CardDescription>
+        <CardDescription>{t('workspace.invitations.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         {rows.length === 0 ? (
           <Empty className="border">
             <EmptyHeader>
-              <EmptyTitle>{t('team.invitations.empty')}</EmptyTitle>
+              <EmptyTitle>{t('workspace.invitations.empty')}</EmptyTitle>
             </EmptyHeader>
           </Empty>
         ) : (
@@ -53,7 +53,7 @@ export function InvitationsTable() {
             <TableHeader>
               <TableRow>
                 {columns.map((column) => (
-                  <TableHead key={column}>{t(`team.invitations.columns.${column}`)}</TableHead>
+                  <TableHead key={column}>{t(`workspace.invitations.columns.${column}`)}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -66,7 +66,9 @@ export function InvitationsTable() {
                     <span className="inline-flex items-center gap-2">
                       {row.sent}
                       {row.expired && (
-                        <StatusBadge tone="danger">{t('team.invitations.expired')}</StatusBadge>
+                        <StatusBadge tone="danger">
+                          {t('workspace.invitations.expired')}
+                        </StatusBadge>
                       )}
                     </span>
                   </TableCell>
@@ -104,7 +106,7 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
   const { email, role } = row.invitation
 
   if (!row.canManage) {
-    return <span className="text-muted-foreground">{t('team.invitations.owner-only')}</span>
+    return <span className="text-muted-foreground">{t('workspace.invitations.owner-only')}</span>
   }
 
   return (
@@ -115,13 +117,13 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
           className="h-auto p-0"
           text={row.link}
           notice="team.notices.link-copied"
-          aria-label={t('team.actions.copy-link-for', { email })}
+          aria-label={t('workspace.actions.copy-link-for', { email })}
         >
-          {t('team.actions.copy-link')}
+          {t('workspace.actions.copy-link')}
         </CopyButton>
       )}
       <ActionButton
-        aria-label={t('team.actions.resend-to', { email })}
+        aria-label={t('workspace.actions.resend-to', { email })}
         disabled={pending}
         onClick={() =>
           void run(
@@ -132,14 +134,14 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
                 await client.invalidateQueries({ queryKey: workspaceKey })
               }
             },
-            { notice: 'team.notices.invitation-resent', values: { email } }
+            { notice: 'workspace.notices.invitation-resent', values: { email } }
           )
         }
       >
-        {t('team.actions.resend')}
+        {t('workspace.actions.resend')}
       </ActionButton>
-      <ActionButton aria-label={t('team.actions.revoke-for', { email })} onClick={onRevoke}>
-        {t('team.actions.revoke')}
+      <ActionButton aria-label={t('workspace.actions.revoke-for', { email })} onClick={onRevoke}>
+        {t('workspace.actions.revoke')}
       </ActionButton>
     </div>
   )

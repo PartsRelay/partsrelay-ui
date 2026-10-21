@@ -16,15 +16,15 @@ export function MemberActions({ row, onTransfer, onRemove }: MemberActionsProps)
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
       {row.canTransfer && (
-        <ActionButton onClick={onTransfer}>{t('team.actions.transfer')}</ActionButton>
+        <ActionButton onClick={onTransfer}>{t('workspace.actions.transfer')}</ActionButton>
       )}
       {roleOptions && (
         <>
           <ActionButton
-            aria-label={t('team.actions.change-role-of', { name: member.name })}
+            aria-label={t('workspace.actions.change-role-of', { name: member.name })}
             onClick={() => setChangingRole(true)}
           >
-            {t('team.actions.change-role')}
+            {t('workspace.actions.change-role')}
           </ActionButton>
           <ChangeRoleDialog
             member={member}
@@ -36,10 +36,10 @@ export function MemberActions({ row, onTransfer, onRemove }: MemberActionsProps)
       )}
       {row.canRemove && (
         <ActionButton
-          aria-label={t('team.actions.remove-member', { name: member.name })}
+          aria-label={t('workspace.actions.remove-member', { name: member.name })}
           onClick={onRemove}
         >
-          {t('team.actions.remove')}
+          {t('workspace.actions.remove')}
         </ActionButton>
       )}
     </div>
