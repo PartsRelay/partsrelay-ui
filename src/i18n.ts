@@ -17,12 +17,11 @@ void i18n
   .init({
     resources: { en: { translation: translation(en) }, it: { translation: translation(it) } },
     supportedLngs: ['en', 'it'],
+    // it-IT counts as it and loads the it texts
+    nonExplicitSupportedLngs: true,
+    load: 'languageOnly',
     fallbackLng: 'en',
-    detection: {
-      order: ['navigator'],
-      caches: [],
-      convertDetectedLanguage: (language) => language.split('-')[0],
-    },
+    detection: { order: ['navigator'], caches: [] },
     interpolation: { escapeValue: false },
     // Error codes without their own text get the generic one
     parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.unknown') : key),
