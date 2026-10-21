@@ -197,11 +197,11 @@ export const authMocks = [
       ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER')
       const target = company.members.find((item) => item.id === memberId)
       if (!target) fail(400, 'MEMBER_NOT_FOUND')
+      // The core allows only the ownership transfer
+      if (role !== 'owner') fail(403, 'ROLE_CHANGE_NOT_ALLOWED')
 
       // The core hands the old owner admin rights
-      if (role === 'owner') {
-        for (const item of company.members) if (item.role === 'owner') item.role = 'admin'
-      }
+      for (const item of company.members) if (item.role === 'owner') item.role = 'admin'
       target.role = role
       const { user: _user, ...member } = target
 

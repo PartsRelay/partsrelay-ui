@@ -20,8 +20,6 @@
     },
     "actions": {
       "transfer": "Cedi la proprietà",
-      "change-role": "Cambia ruolo",
-      "change-role-of": "Cambia il ruolo di {{name}}",
       "remove": "Rimuovi",
       "remove-member": "Rimuovi {{name}}",
       "copy-link": "Copia link",
@@ -30,11 +28,6 @@
       "resend-to": "Invia di nuovo l'invito a {{email}}",
       "revoke": "Revoca",
       "revoke-for": "Revoca l'invito per {{email}}"
-    },
-    "change-role": {
-      "title": "Cambia il ruolo di {{name}}",
-      "description": "Scegli l'accesso che serve a questa persona.",
-      "save": "Salva il ruolo"
     },
     "transfer": {
       "title": "Cedi la proprietà",
@@ -84,11 +77,6 @@
       }
     },
     "notices": {
-      "role-changed": {
-        "owner": "{{name}} ora è Proprietario.",
-        "admin": "{{name}} ora è Amministratore.",
-        "viewer": "{{name}} ora è Visualizzatore."
-      },
       "ownership-transferred": "Proprietà ceduta a {{name}}. Ora sei Amministratore.",
       "member-removed": "{{name}} è stato rimosso e il suo account eliminato.",
       "invitation-sent": "Invito inviato a {{email}}.",

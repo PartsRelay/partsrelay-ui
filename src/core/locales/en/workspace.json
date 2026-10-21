@@ -20,8 +20,6 @@
     },
     "actions": {
       "transfer": "Transfer ownership",
-      "change-role": "Change role",
-      "change-role-of": "Change role of {{name}}",
       "remove": "Remove",
       "remove-member": "Remove {{name}}",
       "copy-link": "Copy link",
@@ -30,11 +28,6 @@
       "resend-to": "Resend the invitation to {{email}}",
       "revoke": "Revoke",
       "revoke-for": "Revoke the invitation for {{email}}"
-    },
-    "change-role": {
-      "title": "Change role of {{name}}",
-      "description": "Choose the access this person needs.",
-      "save": "Save role"
     },
     "transfer": {
       "title": "Transfer ownership",
@@ -84,11 +77,6 @@
       }
     },
     "notices": {
-      "role-changed": {
-        "owner": "{{name}} is now Owner.",
-        "admin": "{{name}} is now Admin.",
-        "viewer": "{{name}} is now Viewer."
-      },
       "ownership-transferred": "Ownership transferred to {{name}}. You're now an Admin.",
       "member-removed": "{{name}} was removed and their account deleted.",
       "invitation-sent": "Invitation sent to {{email}}.",

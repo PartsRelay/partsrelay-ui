@@ -116,7 +116,6 @@ export type MemberRow = {
   member: Member
   isMe: boolean
   roleLabel: Message
-  roleOptions: Role[] | null
   canTransfer: boolean
   canRemove: boolean
 }
@@ -162,8 +161,6 @@ export function memberRows(workspace: Workspace, me: Me): MemberRow[] {
       member,
       isMe,
       roleLabel: roleLabel(member.role),
-      roleOptions:
-        me.permissions.changeRoles && !isMe && !isOwner ? me.permissions.inviteRoles : null,
       canTransfer: isOwner && me.permissions.transferOwnership,
       canRemove: !isMe && canManageRole(me.role, member.role),
     }
@@ -213,13 +210,6 @@ export function invitationRows(
 }
 
 // Cache updates shown before the core answers
-export function withRole(organization: FullOrganization, memberId: string, role: Role) {
-  return {
-    ...organization,
-    members: organization.members.map((item) => (item.id === memberId ? { ...item, role } : item)),
-  }
-}
-
 export function withoutMember(organization: FullOrganization, memberId: string) {
   return {
     ...organization,

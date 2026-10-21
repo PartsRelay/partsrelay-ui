@@ -7,7 +7,6 @@ export type Permissions = {
   viewWorkspace: boolean
   viewCompany: boolean
   inviteRoles: Role[]
-  changeRoles: boolean
   transferOwnership: boolean
   updateCompany: boolean
   deleteCompany: boolean
@@ -30,7 +29,6 @@ export function permissionsFor(role: Role): Permissions {
     viewWorkspace: can(role, { invitation: ['create'] }),
     viewCompany: can(role, { organization: ['update'] }),
     inviteRoles: [...MANAGES[role]].reverse(),
-    changeRoles: can(role, { member: ['update'] }),
     transferOwnership: can(role, { member: ['update'] }),
     updateCompany: can(role, { organization: ['update'] }),
     deleteCompany: can(role, { organization: ['delete'] }),
