@@ -1,7 +1,6 @@
 import { useSelector } from '@tanstack/react-store'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { localeHeaders } from '@/i18n'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { createInviteForm, roleHint } from '@/modules/workspaces/core/invite-form'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
@@ -42,10 +41,7 @@ export function InviteCard() {
             void run(
               async () => {
                 try {
-                  await authClient.organization.inviteMember({
-                    ...invitee,
-                    fetchOptions: { headers: localeHeaders() },
-                  })
+                  await authClient.organization.inviteMember(invitee)
                   form.actions.reset()
                 } finally {
                   await client.invalidateQueries({ queryKey: workspaceKey })

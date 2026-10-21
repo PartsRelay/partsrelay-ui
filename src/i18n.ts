@@ -28,9 +28,4 @@ void i18n
     parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.unknown') : key),
   })
 
-// Emails the core sends follow the app language
-export function localeHeaders() {
-  return { 'Accept-Language': i18n.language }
-}
-
 export { i18n }
