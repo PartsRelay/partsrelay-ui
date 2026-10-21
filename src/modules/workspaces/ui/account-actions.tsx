@@ -1,14 +1,12 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { useSession } from '@/modules/auth/ui/hooks/use-session'
-import { useSignOut } from '@/modules/auth/ui/hooks/use-sign-out'
 import { Button } from '@/ui/components/ui/button'
 
 export function AccountActions() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { email } = useSession()
-  const { pending, signOut } = useSignOut()
+  const { email, signingOut, signOut } = useSession()
 
   return (
     <p className="flex flex-wrap items-center justify-center gap-x-1 text-sm text-muted-foreground">
@@ -16,7 +14,7 @@ export function AccountActions() {
       <Button
         variant="link"
         size="sm"
-        disabled={pending}
+        disabled={signingOut}
         onClick={async () => {
           if ((await signOut()).ok) await navigate({ to: '/login' })
         }}
