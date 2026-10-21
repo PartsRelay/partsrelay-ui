@@ -2,9 +2,12 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
-import { transferAction, transferCandidates } from '@/modules/workspaces/core/team'
+import {
+  type Member,
+  transferAction,
+  transferCandidates,
+} from '@/modules/workspaces/core/workspace'
 import { roleLabel } from '@/modules/workspaces/core/role'
-import type { Member } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { TextField } from '@/ui/components/text-field'

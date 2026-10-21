@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { memberRows } from '@/modules/workspaces/core/team'
-import type { Member } from '@/modules/workspaces/core/workspace'
+import { type Member, memberRows } from '@/modules/workspaces/core/workspace'
 import { RemoveMemberDialog } from '@/modules/workspaces/ui/remove-member-dialog'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { PersonItem } from '@/ui/components/person-item'

@@ -17,7 +17,7 @@ import { Route as authInvitationsInvitationIdRouteImport } from './routes/(auth)
 import { Route as AppauthProfileRouteImport } from './routes/_app/(auth)/profile'
 import { Route as AppworkspacesIndexRouteImport } from './routes/_app/(workspaces)/index'
 import { Route as AppworkspacesCompanyRouteImport } from './routes/_app/(workspaces)/company'
-import { Route as AppworkspacesTeamRouteImport } from './routes/_app/(workspaces)/team'
+import { Route as AppworkspacesWorkspaceRouteImport } from './routes/_app/(workspaces)/workspace'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -58,9 +58,9 @@ const AppworkspacesCompanyRoute = AppworkspacesCompanyRouteImport.update({
   path: '/company',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AppworkspacesTeamRoute = AppworkspacesTeamRouteImport.update({
-  id: '/(workspaces)/team',
-  path: '/team',
+const AppworkspacesWorkspaceRoute = AppworkspacesWorkspaceRouteImport.update({
+  id: '/(workspaces)/workspace',
+  path: '/workspace',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -71,7 +71,7 @@ export interface FileRoutesByFullPath {
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/profile': typeof AppauthProfileRoute
   '/company': typeof AppworkspacesCompanyRoute
-  '/team': typeof AppworkspacesTeamRoute
+  '/workspace': typeof AppworkspacesWorkspaceRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
@@ -79,7 +79,7 @@ export interface FileRoutesByTo {
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/profile': typeof AppauthProfileRoute
   '/company': typeof AppworkspacesCompanyRoute
-  '/team': typeof AppworkspacesTeamRoute
+  '/workspace': typeof AppworkspacesWorkspaceRoute
   '/': typeof AppworkspacesIndexRoute
 }
 export interface FileRoutesById {
@@ -91,7 +91,7 @@ export interface FileRoutesById {
   '/(auth)/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/_app/(auth)/profile': typeof AppauthProfileRoute
   '/_app/(workspaces)/company': typeof AppworkspacesCompanyRoute
-  '/_app/(workspaces)/team': typeof AppworkspacesTeamRoute
+  '/_app/(workspaces)/workspace': typeof AppworkspacesWorkspaceRoute
   '/_app/(workspaces)/': typeof AppworkspacesIndexRoute
 }
 export interface FileRouteTypes {
@@ -103,7 +103,7 @@ export interface FileRouteTypes {
     | '/invitations/$invitationId'
     | '/profile'
     | '/company'
-    | '/team'
+    | '/workspace'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -111,7 +111,7 @@ export interface FileRouteTypes {
     | '/invitations/$invitationId'
     | '/profile'
     | '/company'
-    | '/team'
+    | '/workspace'
     | '/'
   id:
     | '__root__'
@@ -122,7 +122,7 @@ export interface FileRouteTypes {
     | '/(auth)/invitations/$invitationId'
     | '/_app/(auth)/profile'
     | '/_app/(workspaces)/company'
-    | '/_app/(workspaces)/team'
+    | '/_app/(workspaces)/workspace'
     | '/_app/(workspaces)/'
   fileRoutesById: FileRoutesById
 }
@@ -190,11 +190,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppworkspacesCompanyRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/_app/(workspaces)/team': {
-      id: '/_app/(workspaces)/team'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof AppworkspacesTeamRouteImport
+    '/_app/(workspaces)/workspace': {
+      id: '/_app/(workspaces)/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof AppworkspacesWorkspaceRouteImport
       parentRoute: typeof AppRouteRoute
     }
   }
@@ -217,14 +217,14 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 interface AppRouteRouteChildren {
   AppauthProfileRoute: typeof AppauthProfileRoute
   AppworkspacesCompanyRoute: typeof AppworkspacesCompanyRoute
-  AppworkspacesTeamRoute: typeof AppworkspacesTeamRoute
+  AppworkspacesWorkspaceRoute: typeof AppworkspacesWorkspaceRoute
   AppworkspacesIndexRoute: typeof AppworkspacesIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppauthProfileRoute: AppauthProfileRoute,
   AppworkspacesCompanyRoute: AppworkspacesCompanyRoute,
-  AppworkspacesTeamRoute: AppworkspacesTeamRoute,
+  AppworkspacesWorkspaceRoute: AppworkspacesWorkspaceRoute,
   AppworkspacesIndexRoute: AppworkspacesIndexRoute,
 }
 

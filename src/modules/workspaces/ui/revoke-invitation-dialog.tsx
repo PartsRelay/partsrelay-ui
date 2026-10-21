@@ -2,8 +2,11 @@ import type { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { optimistic } from '@/core/optimistic'
-import { type InvitationRow, withoutInvitation } from '@/modules/workspaces/core/team'
-import type { FullOrganization } from '@/modules/workspaces/core/workspace'
+import {
+  type FullOrganization,
+  type InvitationRow,
+  withoutInvitation,
+} from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'

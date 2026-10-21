@@ -2,8 +2,11 @@ import type { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { optimistic } from '@/core/optimistic'
-import { withoutMember } from '@/modules/workspaces/core/team'
-import type { FullOrganization, Member } from '@/modules/workspaces/core/workspace'
+import {
+  type FullOrganization,
+  type Member,
+  withoutMember,
+} from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/use-me'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'

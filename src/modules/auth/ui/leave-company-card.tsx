@@ -45,7 +45,7 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
             </Callout>
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" asChild>
-                <Link to="/team" search={{ transfer: true }}>
+                <Link to="/workspace" search={{ transfer: true }}>
                   {t('profile.leave.owner.transfer')}
                 </Link>
               </Button>

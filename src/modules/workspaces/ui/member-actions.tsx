@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { MemberRow } from '@/modules/workspaces/core/team'
+import type { MemberRow } from '@/modules/workspaces/core/workspace'
 import { ActionButton } from '@/modules/workspaces/ui/action-button'
 import { ChangeRoleDialog } from '@/modules/workspaces/ui/change-role-dialog'
 

@@ -11,7 +11,7 @@ export type Section = (typeof sections)[number]
 export type Page = (typeof pages)[number]
 
 export const pagePaths = {
-  team: '/team',
+  team: '/workspace',
   company: '/company',
   profile: '/profile',
 } as const satisfies Record<Page, string>
