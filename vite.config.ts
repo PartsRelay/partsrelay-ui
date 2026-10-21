@@ -14,6 +14,8 @@ const generated = [
   'public/mockServiceWorker.js',
 ]
 
+const env = readEnv(loadEnv(process.env.APP_ENV ?? 'development', process.cwd(), ''))
+
 const reactImports = ['react', 'react-dom', '@tanstack/react-*', '@/ui/*', '@/modules/*/ui/*']
 
 export default defineConfig({
@@ -27,6 +29,11 @@ export default defineConfig({
     }),
     react(),
     tailwindcss(),
+    // The page title is the app name too
+    {
+      name: 'app-name',
+      transformIndexHtml: (html) => html.replaceAll('%APP_NAME%', env.APP_NAME),
+    },
   ],
 
   resolve: {
@@ -35,9 +42,7 @@ export default defineConfig({
 
   // Every variable of the environment, without prefixes
   define: {
-    __ENV__: JSON.stringify(
-      readEnv(loadEnv(process.env.APP_ENV ?? 'development', process.cwd(), ''))
-    ),
+    __ENV__: JSON.stringify(env),
   },
 
   server: {

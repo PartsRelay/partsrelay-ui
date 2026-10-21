@@ -1,6 +1,5 @@
 {
   "app": {
-    "name": "Parts Relay",
     "go-home": "Torna alla home",
     "error": {
       "title": "Impossibile caricare la pagina",

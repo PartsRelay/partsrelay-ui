@@ -1,6 +1,5 @@
 {
   "app": {
-    "name": "Parts Relay",
     "go-home": "Back to home",
     "error": {
       "title": "Couldn't load the page",

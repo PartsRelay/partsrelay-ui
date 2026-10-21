@@ -6,7 +6,7 @@
       "name": "Company name",
       "name-hint": "Your team sees this name.",
       "language": "WhatsApp language",
-      "language-hint": "Parts Relay replies to your contacts on WhatsApp in this language.",
+      "language-hint": "{{app}} replies to your contacts on WhatsApp in this language.",
       "user-name": "Your name",
       "user-name-hint": "Your team sees it next to your email.",
       "submit": "Continue"

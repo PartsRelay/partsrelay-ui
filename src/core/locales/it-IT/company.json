@@ -10,7 +10,7 @@
     },
     "language": {
       "title": "Lingua di WhatsApp",
-      "description": "Parts Relay risponde ai tuoi contatti su WhatsApp in questa lingua.",
+      "description": "{{app}} risponde ai tuoi contatti su WhatsApp in questa lingua.",
       "label": "Lingua delle risposte"
     },
     "delete": {

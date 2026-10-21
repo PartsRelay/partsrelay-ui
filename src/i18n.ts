@@ -1,6 +1,7 @@
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
+import { env } from '@/env'
 
 type Catalog = Record<string, Record<string, unknown>>
 
@@ -30,7 +31,8 @@ void i18n
     load: 'currentOnly',
     fallbackLng: 'en-US',
     detection: { order: ['navigator'], caches: [] },
-    interpolation: { escapeValue: false },
+    // {{app}} is the app name from the environment
+    interpolation: { escapeValue: false, defaultVariables: { app: env.APP_NAME } },
     // Error codes without their own text get the generic one
     parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.unknown') : key),
   })
