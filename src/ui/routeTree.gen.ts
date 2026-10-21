@@ -9,70 +9,131 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
-import { Route as authCallbackRouteImport } from './routes/(auth)/callback'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as workspacesSetupRouteImport } from './routes/(workspaces)/setup'
+import { Route as authInvitationsInvitationIdRouteImport } from './routes/(auth)/invitations.$invitationId'
+import { Route as AppauthProfileRouteImport } from './routes/_app/(auth)/profile'
+import { Route as AppworkspacesIndexRouteImport } from './routes/_app/(workspaces)/index'
+import { Route as AppworkspacesCompanyRouteImport } from './routes/_app/(workspaces)/company'
+import { Route as AppworkspacesWorkspaceRouteImport } from './routes/_app/(workspaces)/workspace'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authCallbackRoute = authCallbackRouteImport.update({
-  id: '/callback',
-  path: '/callback',
-  getParentRoute: () => authRouteRoute,
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => authRouteRoute,
 } as any)
+const workspacesSetupRoute = workspacesSetupRouteImport.update({
+  id: '/(workspaces)/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authInvitationsInvitationIdRoute =
+  authInvitationsInvitationIdRouteImport.update({
+    id: '/invitations/$invitationId',
+    path: '/invitations/$invitationId',
+    getParentRoute: () => authRouteRoute,
+  } as any)
+const AppauthProfileRoute = AppauthProfileRouteImport.update({
+  id: '/(auth)/profile',
+  path: '/profile',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppworkspacesIndexRoute = AppworkspacesIndexRouteImport.update({
+  id: '/(workspaces)/',
+  path: '/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppworkspacesCompanyRoute = AppworkspacesCompanyRouteImport.update({
+  id: '/(workspaces)/company',
+  path: '/company',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppworkspacesWorkspaceRoute = AppworkspacesWorkspaceRouteImport.update({
+  id: '/(workspaces)/workspace',
+  path: '/workspace',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/callback': typeof authCallbackRoute
+  '/': typeof AppworkspacesIndexRoute
   '/login': typeof authLoginRoute
+  '/setup': typeof workspacesSetupRoute
+  '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
+  '/profile': typeof AppauthProfileRoute
+  '/company': typeof AppworkspacesCompanyRoute
+  '/workspace': typeof AppworkspacesWorkspaceRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/callback': typeof authCallbackRoute
   '/login': typeof authLoginRoute
+  '/setup': typeof workspacesSetupRoute
+  '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
+  '/profile': typeof AppauthProfileRoute
+  '/company': typeof AppworkspacesCompanyRoute
+  '/workspace': typeof AppworkspacesWorkspaceRoute
+  '/': typeof AppworkspacesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
-  '/(auth)/callback': typeof authCallbackRoute
+  '/_app': typeof AppRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
+  '/(workspaces)/setup': typeof workspacesSetupRoute
+  '/(auth)/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
+  '/_app/(auth)/profile': typeof AppauthProfileRoute
+  '/_app/(workspaces)/company': typeof AppworkspacesCompanyRoute
+  '/_app/(workspaces)/workspace': typeof AppworkspacesWorkspaceRoute
+  '/_app/(workspaces)/': typeof AppworkspacesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/callback' | '/login'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/setup'
+    | '/invitations/$invitationId'
+    | '/profile'
+    | '/company'
+    | '/workspace'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/callback' | '/login'
-  id: '__root__' | '/' | '/(auth)' | '/(auth)/callback' | '/(auth)/login'
+  to:
+    | '/login'
+    | '/setup'
+    | '/invitations/$invitationId'
+    | '/profile'
+    | '/company'
+    | '/workspace'
+    | '/'
+  id:
+    | '__root__'
+    | '/(auth)'
+    | '/_app'
+    | '/(auth)/login'
+    | '/(workspaces)/setup'
+    | '/(auth)/invitations/$invitationId'
+    | '/_app/(auth)/profile'
+    | '/_app/(workspaces)/company'
+    | '/_app/(workspaces)/workspace'
+    | '/_app/(workspaces)/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  workspacesSetupRoute: typeof workspacesSetupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(auth)': {
       id: '/(auth)'
       path: ''
@@ -80,12 +141,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(auth)/callback': {
-      id: '/(auth)/callback'
-      path: '/callback'
-      fullPath: '/callback'
-      preLoaderRoute: typeof authCallbackRouteImport
-      parentRoute: typeof authRouteRoute
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(auth)/login': {
       id: '/(auth)/login'
@@ -94,26 +155,87 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/(workspaces)/setup': {
+      id: '/(workspaces)/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof workspacesSetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/invitations/$invitationId': {
+      id: '/(auth)/invitations/$invitationId'
+      path: '/invitations/$invitationId'
+      fullPath: '/invitations/$invitationId'
+      preLoaderRoute: typeof authInvitationsInvitationIdRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/_app/(auth)/profile': {
+      id: '/_app/(auth)/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppauthProfileRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/(workspaces)/': {
+      id: '/_app/(workspaces)/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppworkspacesIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/(workspaces)/company': {
+      id: '/_app/(workspaces)/company'
+      path: '/company'
+      fullPath: '/company'
+      preLoaderRoute: typeof AppworkspacesCompanyRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/(workspaces)/workspace': {
+      id: '/_app/(workspaces)/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof AppworkspacesWorkspaceRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
 interface authRouteRouteChildren {
-  authCallbackRoute: typeof authCallbackRoute
   authLoginRoute: typeof authLoginRoute
+  authInvitationsInvitationIdRoute: typeof authInvitationsInvitationIdRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
-  authCallbackRoute: authCallbackRoute,
   authLoginRoute: authLoginRoute,
+  authInvitationsInvitationIdRoute: authInvitationsInvitationIdRoute,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
+interface AppRouteRouteChildren {
+  AppauthProfileRoute: typeof AppauthProfileRoute
+  AppworkspacesCompanyRoute: typeof AppworkspacesCompanyRoute
+  AppworkspacesWorkspaceRoute: typeof AppworkspacesWorkspaceRoute
+  AppworkspacesIndexRoute: typeof AppworkspacesIndexRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppauthProfileRoute: AppauthProfileRoute,
+  AppworkspacesCompanyRoute: AppworkspacesCompanyRoute,
+  AppworkspacesWorkspaceRoute: AppworkspacesWorkspaceRoute,
+  AppworkspacesIndexRoute: AppworkspacesIndexRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  workspacesSetupRoute: workspacesSetupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
