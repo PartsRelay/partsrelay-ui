@@ -1,12 +1,12 @@
 {
   "setup": {
     "title": "Configura la tua azienda",
-    "description": "Dai un nome alla tua azienda e scegli la sua lingua. Il proprietario può cambiarli in seguito.",
+    "description": "Dai un nome alla tua azienda e scegli la lingua delle sue risposte WhatsApp. Il proprietario può cambiarli in seguito.",
     "form": {
       "name": "Nome dell'azienda",
       "name-hint": "È il nome che vedrà il tuo team.",
-      "language": "Lingua dell'azienda",
-      "language-hint": "Parts Relay la usa nell'app, nelle email e nelle risposte WhatsApp.",
+      "language": "Lingua di WhatsApp",
+      "language-hint": "Parts Relay risponde ai tuoi contatti su WhatsApp in questa lingua.",
       "user-name": "Il tuo nome",
       "user-name-hint": "Il tuo team lo vede accanto alla tua email.",
       "submit": "Continua"

@@ -38,7 +38,7 @@
     },
     "transfer": {
       "title": "Cedi la proprietà",
-      "description": "Il nuovo proprietario gestisce l'azienda, la sua lingua e il team, e può eliminare l'azienda. Tu diventi Amministratore e solo il nuovo proprietario potrà annullare l'operazione.",
+      "description": "Il nuovo proprietario gestisce l'azienda, la sua lingua di WhatsApp e il team, e può eliminare l'azienda. Tu diventi Amministratore e solo il nuovo proprietario potrà annullare l'operazione.",
       "nobody": "Nel team non c'è ancora nessun altro. Invita prima una persona, poi cedile la proprietà.",
       "new-owner": "Nuovo proprietario",
       "choose": "Scegli un membro",

@@ -4,7 +4,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { env } from '@/env'
 import { watchAccount } from '@/modules/workspaces/core/account'
-import { followCompanyLanguage } from '@/i18n'
+import '@/i18n'
 import { queryClient } from '@/query-client'
 import { router } from '@/router'
 
@@ -15,7 +15,6 @@ if (import.meta.env.DEV && env.APP_ENV === 'development') {
 }
 
 watchAccount(queryClient, () => window.location.reload())
-followCompanyLanguage(queryClient)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

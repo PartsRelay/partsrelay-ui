@@ -1,8 +1,6 @@
-import type { QueryClient } from '@tanstack/react-query'
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
-import { watchCompanyLocale } from '@/modules/workspaces/core/account'
 
 type Catalog = Record<string, Record<string, unknown>>
 
@@ -30,9 +28,9 @@ void i18n
     parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.unknown') : key),
   })
 
-export function followCompanyLanguage(client: QueryClient) {
-  // Without a company language the detector picks the browser one
-  return watchCompanyLocale(client, (locale) => void i18n.changeLanguage(locale ?? undefined))
+// Emails the core sends follow the app language
+export function localeHeaders() {
+  return { 'Accept-Language': i18n.language }
 }
 
 export { i18n }

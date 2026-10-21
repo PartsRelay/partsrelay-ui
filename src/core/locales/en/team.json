@@ -38,7 +38,7 @@
     },
     "transfer": {
       "title": "Transfer ownership",
-      "description": "The new owner manages the company, its language and the team, and can delete the company. You become an Admin, and only the new owner can undo this.",
+      "description": "The new owner manages the company, its WhatsApp language and the team, and can delete the company. You become an Admin, and only the new owner can undo this.",
       "nobody": "Nobody else is in the team yet. Invite someone first, then transfer ownership to them.",
       "new-owner": "New owner",
       "choose": "Choose a member",

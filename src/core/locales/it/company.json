@@ -1,7 +1,7 @@
 {
   "company": {
     "title": "Azienda",
-    "description": "Nome, lingua ed eliminazione della tua azienda. Solo il proprietario vede questa pagina.",
+    "description": "Nome, lingua di WhatsApp ed eliminazione della tua azienda. Solo il proprietario vede questa pagina.",
     "name": {
       "title": "Nome dell'azienda",
       "description": "È il nome che vede il tuo team.",
@@ -9,9 +9,9 @@
       "save": "Salva il nome"
     },
     "language": {
-      "title": "Lingua dell'azienda",
-      "description": "Parts Relay la usa per tutta l'azienda: nell'app, nelle email e nelle risposte WhatsApp.",
-      "label": "Lingua"
+      "title": "Lingua di WhatsApp",
+      "description": "Parts Relay risponde ai tuoi contatti su WhatsApp in questa lingua.",
+      "label": "Lingua delle risposte"
     },
     "delete": {
       "title": "Elimina l'azienda",
@@ -30,7 +30,7 @@
     },
     "notices": {
       "renamed": "Nome dell'azienda salvato.",
-      "language": "Lingua dell'azienda impostata su {{language}}.",
+      "language": "Lingua di WhatsApp impostata su {{language}}.",
       "deleted": "L'azienda e tutti gli account sono stati eliminati. Accedendo di nuovo ne crei una nuova."
     }
   }

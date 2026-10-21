@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { localeHeaders } from '@/i18n'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { type InvitationRow, invitationRows } from '@/modules/workspaces/core/team'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
@@ -127,7 +128,12 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
           void run(
             async () => {
               try {
-                await authClient.organization.inviteMember({ email, role, resend: true })
+                await authClient.organization.inviteMember({
+                  email,
+                  role,
+                  resend: true,
+                  fetchOptions: { headers: localeHeaders() },
+                })
               } finally {
                 await client.invalidateQueries({ queryKey: workspaceKey })
               }

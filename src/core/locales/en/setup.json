@@ -1,12 +1,12 @@
 {
   "setup": {
     "title": "Set up your company",
-    "description": "Name your company and choose its language. The owner can change both later.",
+    "description": "Name your company and choose the language of its WhatsApp replies. The owner can change both later.",
     "form": {
       "name": "Company name",
       "name-hint": "Your team sees this name.",
-      "language": "Company language",
-      "language-hint": "Parts Relay uses it in the app, in emails and in WhatsApp replies.",
+      "language": "WhatsApp language",
+      "language-hint": "Parts Relay replies to your contacts on WhatsApp in this language.",
       "user-name": "Your name",
       "user-name-hint": "Your team sees it next to your email.",
       "submit": "Continue"

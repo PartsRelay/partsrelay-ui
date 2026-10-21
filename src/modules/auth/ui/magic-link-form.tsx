@@ -6,6 +6,7 @@ import { authClient } from '@/modules/auth/core/auth.client'
 import { createMagicLinkForm, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
 import { magicLinkSignIn, type SignInFlow } from '@/modules/auth/core/sign-in'
 import { errorMessage } from '@/core/errors'
+import { localeHeaders } from '@/i18n'
 import { Callout } from '@/ui/components/callout'
 import { TextField } from '@/ui/components/text-field'
 import { useAction } from '@/ui/hooks/use-action'
@@ -42,9 +43,14 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
 
   // Errors show in the form, not as a toast
   const deliver = async (address: string) => {
-    const result = await run(() => authClient.signIn.magicLink(magicLinkSignIn(flow, address)), {
-      silent: true,
-    })
+    const result = await run(
+      () =>
+        authClient.signIn.magicLink({
+          ...magicLinkSignIn(flow, address),
+          fetchOptions: { headers: localeHeaders() },
+        }),
+      { silent: true }
+    )
     if (!result.ok) return form.actions.failed(errorMessage(result.error))
 
     const at = Date.now()
