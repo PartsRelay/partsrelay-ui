@@ -8,7 +8,7 @@ import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
 import { Callout } from '@/ui/components/callout'
 import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
-import { notify } from '@/ui/components/notify'
+import { notify } from '@/core/notify'
 
 const route = getRouteApi('/(auth)/login')
 
@@ -22,7 +22,7 @@ export async function redirectIfSignedIn({ context, search }: LoginGuard) {
   if (!signedIn) return
 
   const { notice, href } = signedIn
-  if (notice) notify('success', notice[0], { id: 'signed-in', values: notice[1] })
+  if (notice) notify('success', ...notice)
   throw redirect({ href })
 }
 

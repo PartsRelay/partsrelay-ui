@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { cancelOneTap, oneTapError, startOneTap } from '@/modules/auth/core/one-tap'
 import { sessionQuery } from '@/modules/auth/core/session.query'
-import { notify } from '@/ui/components/notify'
+import { notify } from '@/core/notify'
 
 export function useOneTap(afterSignIn: string) {
   const client = useQueryClient()
@@ -17,7 +17,7 @@ export function useOneTap(afterSignIn: string) {
       },
       onError: (error) => {
         const problem = oneTapError(error)
-        if (problem) notify('error', problem[0], { values: problem[1] })
+        if (problem) notify('danger', ...problem)
       },
     })
 

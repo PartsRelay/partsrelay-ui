@@ -1,7 +1,7 @@
 import { QueryCache, QueryClient } from '@tanstack/react-query'
 import { failureNotice } from '@/modules/auth/core/session.query'
-import { errorStatus, NO_STATUS, toErrorBody } from '@/core/errors'
-import { notify } from '@/ui/components/notify'
+import { errorStatus, NO_STATUS } from '@/core/errors'
+import { notify } from '@/core/notify'
 
 declare module '@tanstack/query-core' {
   interface Register {
@@ -13,9 +13,7 @@ export function reportError(error: unknown, silent?: boolean) {
   const notice = failureNotice(queryClient, error, silent)
   if (!notice) return
 
-  const [key, values] = notice
-  // The message exists only in development
-  notify('error', key, { id: key, values, description: toErrorBody(error).message })
+  notify('danger', ...notice)
 }
 
 function retryable(error: Error) {

@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useState, useTransition } from 'react'
 import type { MessageValues } from '@/core/message'
 import { reportError } from '@/query-client'
-import { notify } from '@/ui/components/notify'
+import { notify } from '@/core/notify'
 
 type ActionOptions = {
   notice?: string
@@ -25,7 +25,7 @@ export function useBetterAuthAction() {
         setError(null)
         try {
           await action()
-          if (notice) notify('success', notice, { values })
+          if (notice) notify('success', notice, values)
           resolve({ ok: true })
         } catch (failure) {
           setError(failure)

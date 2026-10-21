@@ -1,7 +1,7 @@
 import { CopyIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { useCopyToClipboard } from 'usehooks-ts'
-import { notify } from '@/ui/components/notify'
+import { notify } from '@/core/notify'
 import { Button } from '@/ui/components/ui/button'
 
 type CopyButtonProps = ComponentProps<typeof Button> & { text: string; notice: string }
@@ -15,7 +15,7 @@ export function CopyButton({ text, notice, children, ...props }: CopyButtonProps
       {...props}
       onClick={async () => {
         if (await copy(text)) notify('success', notice)
-        else notify('error', 'notices.copy-failed')
+        else notify('danger', 'notices.copy-failed')
       }}
     >
       <CopyIcon />
