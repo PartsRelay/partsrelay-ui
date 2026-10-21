@@ -3,9 +3,6 @@
     "team": "Team",
     "company": "Azienda",
     "sections": "Area di lavoro",
-    "menu": "Menu",
-    "menu-description": "Pagine di Parts Relay.",
-    "toggle": "Mostra o nascondi il menu",
     "breadcrumb": "Percorso"
   },
   "crumbs": {

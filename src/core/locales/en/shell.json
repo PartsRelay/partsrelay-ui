@@ -3,9 +3,6 @@
     "team": "Team",
     "company": "Company",
     "sections": "Workspace",
-    "menu": "Menu",
-    "menu-description": "Pages of Parts Relay.",
-    "toggle": "Show or hide the menu",
     "breadcrumb": "Breadcrumb"
   },
   "crumbs": {
