@@ -1,8 +1,13 @@
 import { MailCheckIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useCountdown } from 'usehooks-ts'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { emailError, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
+import {
+  emailError,
+  MAGIC_LINK_MINUTES,
+  RESEND_AFTER_SECONDS,
+} from '@/modules/auth/core/magic-link'
 import { magicLinkSignIn, type SignInFlow } from '@/modules/auth/core/sign-in'
 import { errorCode, errorKey } from '@/core/errors'
 import { useAppForm } from '@/form'
@@ -15,11 +20,9 @@ import { Spinner } from '@/ui/components/ui/spinner'
 export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   const { t } = useTranslation()
   const [sent, setSent] = useState<string | null>(null)
-  const [sentAt, setSentAt] = useState<number | null>(null)
   const [failure, setFailure] = useState<string | null>(null)
   const { pending, run } = useBetterAuthAction()
-  const [now, setNow] = useState(Date.now)
-  const wait = resendWait(sentAt, now)
+  const [wait, countdown] = useCountdown({ countStart: RESEND_AFTER_SECONDS })
   const input = useRef<HTMLInputElement>(null)
   const status = useRef<HTMLDivElement>(null)
   const wasSent = useRef(false)
@@ -31,25 +34,15 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
     wasSent.current = sent !== null
   }, [sent])
 
-  useEffect(() => {
-    if (wait === 0) return
-
-    const tick = setTimeout(() => setNow(Date.now()), 1000)
-
-    return () => clearTimeout(tick)
-  }, [wait, now])
-
-  // Errors show in the form, not as a toast
   const send = async (address: string) => {
     const result = await run(() => authClient.signIn.magicLink(magicLinkSignIn(flow, address)), {
       silent: true,
     })
     if (!result.ok) return errorKey(errorCode(result.error))
 
-    const at = Date.now()
-    setNow(at)
+    countdown.resetCountdown()
+    countdown.startCountdown()
     setSent(address)
-    setSentAt(at)
 
     return null
   }
@@ -96,8 +89,8 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
             variant="ghost"
             onClick={() => {
               setSent(null)
-              setSentAt(null)
               setFailure(null)
+              countdown.resetCountdown()
             }}
           >
             {t('login.magic-link.sent.edit')}
