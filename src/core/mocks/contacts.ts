@@ -14,6 +14,7 @@ import {
 import { fail, signedInMember } from '@/core/mocks/auth'
 import { daysAgo } from '@/core/mocks/data'
 import { DEFAULT_PER_PAGE } from '@/core/pagination'
+import { MAX_STRING_LENGTH } from '@/core/strings'
 
 // Contacts of each company, by company slug
 type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
@@ -21,7 +22,6 @@ type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
 type Searches = [total: number, month: number, lastDaysAgo: number | null]
 
 const INTERNATIONAL = /^\+[1-9]\d{7,14}$/
-const NAME_MAX = 255
 const PER_PAGE_MAX = 100
 
 const contact = (
@@ -134,7 +134,7 @@ function checkedName(name: unknown) {
   if (typeof name !== 'string') return invalid()
 
   const trimmed = name.trim()
-  if (trimmed.length === 0 || trimmed.length > NAME_MAX) invalid()
+  if (trimmed.length === 0 || trimmed.length > MAX_STRING_LENGTH) invalid()
 
   return trimmed
 }
