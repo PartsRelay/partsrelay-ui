@@ -15,7 +15,7 @@ function RootLayout() {
   return (
     <TooltipProvider>
       <Outlet />
-      <Toaster />
+      <Toaster toastOptions={{ className: 'font-sans' }} />
       <Devtools />
     </TooltipProvider>
   )
