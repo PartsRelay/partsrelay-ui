@@ -75,7 +75,6 @@ jobs:
     needs: oxc
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
