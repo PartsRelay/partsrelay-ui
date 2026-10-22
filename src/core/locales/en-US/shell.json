@@ -1,11 +1,14 @@
 {
   "nav": {
+    "searches": "Searches",
     "contacts": "Contacts",
     "workspace": "Workspace",
     "company": "Company",
     "breadcrumb": "Breadcrumb"
   },
   "crumbs": {
+    "searches": "Searches",
+    "search": "Search result",
     "contacts": "Contacts",
     "workspace": "Workspace",
     "account": "Account",

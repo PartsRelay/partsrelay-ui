@@ -19,6 +19,8 @@ import { Route as AppcontactsContactsRouteImport } from './routes/_app/(contacts
 import { Route as AppworkspacesIndexRouteImport } from './routes/_app/(workspaces)/index'
 import { Route as AppworkspacesCompanyRouteImport } from './routes/_app/(workspaces)/company'
 import { Route as AppworkspacesWorkspaceRouteImport } from './routes/_app/(workspaces)/workspace'
+import { Route as ApplookupsSearchesIndexRouteImport } from './routes/_app/(lookups)/searches.index'
+import { Route as ApplookupsSearchesLookupIdRouteImport } from './routes/_app/(lookups)/searches.$lookupId'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -69,6 +71,17 @@ const AppworkspacesWorkspaceRoute = AppworkspacesWorkspaceRouteImport.update({
   path: '/workspace',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const ApplookupsSearchesIndexRoute = ApplookupsSearchesIndexRouteImport.update({
+  id: '/(lookups)/searches/',
+  path: '/searches/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const ApplookupsSearchesLookupIdRoute =
+  ApplookupsSearchesLookupIdRouteImport.update({
+    id: '/(lookups)/searches/$lookupId',
+    path: '/searches/$lookupId',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppworkspacesIndexRoute
@@ -79,6 +92,8 @@ export interface FileRoutesByFullPath {
   '/contacts': typeof AppcontactsContactsRoute
   '/company': typeof AppworkspacesCompanyRoute
   '/workspace': typeof AppworkspacesWorkspaceRoute
+  '/searches/$lookupId': typeof ApplookupsSearchesLookupIdRoute
+  '/searches/': typeof ApplookupsSearchesIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
@@ -89,6 +104,8 @@ export interface FileRoutesByTo {
   '/company': typeof AppworkspacesCompanyRoute
   '/workspace': typeof AppworkspacesWorkspaceRoute
   '/': typeof AppworkspacesIndexRoute
+  '/searches/$lookupId': typeof ApplookupsSearchesLookupIdRoute
+  '/searches': typeof ApplookupsSearchesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -102,6 +119,8 @@ export interface FileRoutesById {
   '/_app/(workspaces)/company': typeof AppworkspacesCompanyRoute
   '/_app/(workspaces)/workspace': typeof AppworkspacesWorkspaceRoute
   '/_app/(workspaces)/': typeof AppworkspacesIndexRoute
+  '/_app/(lookups)/searches/$lookupId': typeof ApplookupsSearchesLookupIdRoute
+  '/_app/(lookups)/searches/': typeof ApplookupsSearchesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -114,6 +133,8 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/company'
     | '/workspace'
+    | '/searches/$lookupId'
+    | '/searches/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -124,6 +145,8 @@ export interface FileRouteTypes {
     | '/company'
     | '/workspace'
     | '/'
+    | '/searches/$lookupId'
+    | '/searches'
   id:
     | '__root__'
     | '/(auth)'
@@ -136,6 +159,8 @@ export interface FileRouteTypes {
     | '/_app/(workspaces)/company'
     | '/_app/(workspaces)/workspace'
     | '/_app/(workspaces)/'
+    | '/_app/(lookups)/searches/$lookupId'
+    | '/_app/(lookups)/searches/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -216,6 +241,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppworkspacesWorkspaceRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/(lookups)/searches/': {
+      id: '/_app/(lookups)/searches/'
+      path: '/searches'
+      fullPath: '/searches/'
+      preLoaderRoute: typeof ApplookupsSearchesIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/(lookups)/searches/$lookupId': {
+      id: '/_app/(lookups)/searches/$lookupId'
+      path: '/searches/$lookupId'
+      fullPath: '/searches/$lookupId'
+      preLoaderRoute: typeof ApplookupsSearchesLookupIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
@@ -239,6 +278,8 @@ interface AppRouteRouteChildren {
   AppworkspacesCompanyRoute: typeof AppworkspacesCompanyRoute
   AppworkspacesWorkspaceRoute: typeof AppworkspacesWorkspaceRoute
   AppworkspacesIndexRoute: typeof AppworkspacesIndexRoute
+  ApplookupsSearchesLookupIdRoute: typeof ApplookupsSearchesLookupIdRoute
+  ApplookupsSearchesIndexRoute: typeof ApplookupsSearchesIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -247,6 +288,8 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppworkspacesCompanyRoute: AppworkspacesCompanyRoute,
   AppworkspacesWorkspaceRoute: AppworkspacesWorkspaceRoute,
   AppworkspacesIndexRoute: AppworkspacesIndexRoute,
+  ApplookupsSearchesLookupIdRoute: ApplookupsSearchesLookupIdRoute,
+  ApplookupsSearchesIndexRoute: ApplookupsSearchesIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

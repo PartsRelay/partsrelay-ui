@@ -1,11 +1,14 @@
 {
   "nav": {
+    "searches": "Ricerche",
     "contacts": "Contatti",
     "workspace": "Area di lavoro",
     "company": "Azienda",
     "breadcrumb": "Percorso"
   },
   "crumbs": {
+    "searches": "Ricerche",
+    "search": "Risultato",
     "contacts": "Contatti",
     "workspace": "Area di lavoro",
     "account": "Account",

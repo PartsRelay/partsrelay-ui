@@ -2,7 +2,7 @@ import { message } from '@/core/message'
 import type { Permissions } from '@/modules/workspaces/core/permissions'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
-export const sections = ['contacts', 'workspace', 'company'] as const
+export const sections = ['searches', 'contacts', 'workspace', 'company'] as const
 
 export const pages = [...sections, 'profile'] as const
 
@@ -11,16 +11,19 @@ export type Section = (typeof sections)[number]
 export type Page = (typeof pages)[number]
 
 export const pagePaths = {
+  searches: '/searches',
   contacts: '/contacts',
   workspace: '/workspace',
   company: '/company',
   profile: '/profile',
 } as const satisfies Record<Page, string>
 
-export type CrumbId = 'contacts' | 'workspace' | 'company' | 'profile'
+export type CrumbId = 'searches' | 'search' | 'contacts' | 'workspace' | 'company' | 'profile'
 
 // The contacts and workspace pages top their own trails
 const CRUMB_PARENTS = {
+  searches: null,
+  search: 'searches',
   contacts: null,
   workspace: null,
   company: 'workspace',
@@ -42,7 +45,6 @@ export function canOpen(page: Page | null, permissions: Permissions) {
   return true
 }
 
-// The first section the role can open, contacts for all
 export function homePath(permissions: Permissions) {
   const home = sections.find((page) => canOpen(page, permissions))
 
