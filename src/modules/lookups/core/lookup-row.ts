@@ -9,6 +9,7 @@ export type LookupRow = {
   lookup: LookupObject
   plate: string
   vehicle: string | null
+  parts: string[]
   statusLabel: Message
   tone: LookupTone
   sourceLabel: Message
@@ -46,6 +47,7 @@ export function lookupRow(lookup: LookupObject, workspace: Workspace, locale: st
     lookup,
     plate: lookup.plate,
     vehicle: lookup.vehicleDescription ?? null,
+    parts: (lookup.categories ?? []).map(({ id, name }) => name ?? id),
     statusLabel: message(`lookups.status.${textKey(lookup.status)}`),
     tone: TONES[lookup.status],
     sourceLabel: message(`lookups.source.${lookup.source}`),

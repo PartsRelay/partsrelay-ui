@@ -17,6 +17,7 @@ describe('lookup rows', () => {
       lookup,
       plate: 'AB12CDE',
       vehicle: 'Ford Fiesta 1.0',
+      parts: ['Oil filter'],
       statusLabel: message('lookups.status.done'),
       tone: 'success',
       sourceLabel: message('lookups.source.web'),
@@ -25,6 +26,16 @@ describe('lookup rows', () => {
     })
     expect(row({ vehicleDescription: undefined }).vehicle).toBeNull()
     expect(row({ vehicleDescription: null }).vehicle).toBeNull()
+  })
+
+  it('names the parts found, by id when the catalog has no name', () => {
+    const categories = [
+      { id: 'g1', name: 'Oil filter', units: [] },
+      { id: 'g9', name: null, units: [] },
+    ]
+
+    expect(row({ categories }).parts).toEqual(['Oil filter', 'g9'])
+    expect(row({ status: 'running', categories: undefined }).parts).toEqual([])
   })
 
   it('dates the lookup in the app language', () => {

@@ -1,5 +1,7 @@
 {
   "lookups": {
+    "title": "Ricerche",
+    "description": "Tutte le ricerche di ricambi dell'azienda, dal web o da WhatsApp, in un'unica coda.",
     "status": {
       "running": "In corso",
       "done": "Completata",
@@ -16,25 +18,106 @@
       "unnamed-contact": "Contatto senza nome",
       "member": "Membro del team"
     },
+    "list": {
+      "title": "Coda delle ricerche",
+      "description": "Le ricerche dal banco e da WhatsApp, dalla più recente.",
+      "stale": "Le ricerche mostrate potrebbero non essere aggiornate.",
+      "count_one": "{{count}} ricerca",
+      "count_other": "{{count}} ricerche",
+      "open": "Apri la ricerca di {{plate}}"
+    },
+    "columns": {
+      "plate": "Targa",
+      "parts": "Ricambio e veicolo",
+      "status": "Stato",
+      "channel": "Canale",
+      "requester": "Richiedente",
+      "requested": "Richiesta"
+    },
+    "filter": {
+      "label": "Richiedente",
+      "everyone": "Tutti",
+      "members": "Team",
+      "contacts": "Contatti WhatsApp",
+      "selected": "Richiedente selezionato"
+    },
+    "empty": {
+      "title": "Ancora nessuna ricerca",
+      "description": "Quando il tuo team o un contatto WhatsApp cerca un ricambio, qui compaiono il veicolo, i ricambi e il risultato.",
+      "filtered": "Nessuna ricerca di questo richiedente",
+      "filtered-description": "Togli il filtro per vedere tutte le ricerche dell'azienda.",
+      "clear": "Togli il filtro"
+    },
+    "new": {
+      "open": "Nuova ricerca",
+      "eyebrow": "Nuova richiesta · Web",
+      "title": "Trova il ricambio.",
+      "description": "Inserisci la targa e il ricambio che ti serve. Il risultato resta nella coda delle ricerche dell'azienda.",
+      "plate": "Targa",
+      "plate-hint": "Spazi, punti e trattini vanno bene.",
+      "plate-placeholder": "CA770NE",
+      "query": "Ricambio richiesto",
+      "query-hint": "Sii preciso: nome del ricambio e posizione, se la conosci.",
+      "query-placeholder": "Pastiglie freno anteriori",
+      "tips": {
+        "title": "Consigli per la ricerca",
+        "body": "Controlla la targa e indica la posizione del ricambio, per esempio anteriore o posteriore."
+      },
+      "requester": "Richiesta da {{name}} · Web",
+      "submit": "Avvia la ricerca",
+      "errors": {
+        "plate-required": "Inserisci la targa.",
+        "plate": "Controlla la targa: da 4 a 8 lettere e cifre.",
+        "query-required": "Inserisci il ricambio che ti serve, per esempio pastiglie freno anteriori.",
+        "query": "Descrivi il ricambio con 2-200 caratteri."
+      }
+    },
+    "fitment": "I risultati aiutano a identificare il ricambio. Verifica sempre la compatibilità con il veicolo e il prezzo aggiornato prima dell'acquisto.",
+    "detail": {
+      "title": "Risultato della ricerca",
+      "description": "Il veicolo, lo stato e i ricambi trovati, aggiornati mentre la ricerca procede.",
+      "back": "Torna alle ricerche",
+      "vin": "Telaio (VIN)",
+      "no-vehicle": "Veicolo non identificato",
+      "retry": "Nuova ricerca con questa targa",
+      "stale": "Questa ricerca potrebbe non essere aggiornata."
+    },
     "outcome": {
       "running": {
-        "title": "Ricerca nel catalogo in corso"
+        "title": "Ricerca nel catalogo in corso",
+        "description": "Il risultato compare qui appena è pronto, senza ricaricare. Puoi lasciare questa pagina, la ricerca continua."
       },
       "results": {
         "title": "Ricambi trovati"
       },
       "unavailable": {
-        "title": "Dettagli non disponibili"
+        "title": "Dettagli non disponibili",
+        "description": "La ricerca è conclusa, ma i suoi ricambi non sono più disponibili. Cerca di nuovo per vederli."
       },
       "vehicle-not-found": {
-        "title": "Veicolo non trovato"
+        "title": "Veicolo non trovato",
+        "description": "Il catalogo non conosce questa targa. Controllala e cerca di nuovo."
       },
       "not-matched": {
-        "title": "Nessuna categoria corrispondente"
+        "title": "Nessuna categoria corrispondente",
+        "description": "Il veicolo è stato identificato, ma nessuna categoria di ricambi corrisponde alla richiesta. Prova con un nome più preciso o con la posizione."
       },
       "failed": {
-        "title": "Ricerca non riuscita"
+        "title": "Ricerca non riuscita",
+        "description": "Il catalogo non ha potuto completare la ricerca. Riprova tra poco."
       }
+    },
+    "results": {
+      "original_one": "{{count}} ricambio originale",
+      "original_other": "{{count}} ricambi originali",
+      "aftermarket_one": "{{count}} equivalente aftermarket",
+      "aftermarket_other": "{{count}} equivalenti aftermarket",
+      "unit": "Gruppo {{code}}",
+      "image": "Esploso di {{name}}",
+      "no-parts": "Nessun ricambio elencato per questo gruppo.",
+      "original-code": "OE {{code}}",
+      "price": "Prezzo",
+      "no-aftermarket": "Nessun equivalente aftermarket."
     }
   }
 }
