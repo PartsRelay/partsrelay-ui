@@ -6,9 +6,6 @@ export type ContactValues = { phone: string; name: string }
 
 export const emptyContact: ContactValues = { phone: '', name: '' }
 
-// The longest name the core accepts
-export const CONTACT_NAME_MAX = 255
-
 // The core normalises the number, the name is optional
 export function newContact({ phone, name }: ContactValues): PostApiV1WorkspaceContactsBody {
   const trimmed = name.trim()

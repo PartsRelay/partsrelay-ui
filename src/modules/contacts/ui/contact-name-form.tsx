@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useAppForm } from '@/form'
-import { CONTACT_NAME_MAX, renameChange } from '@/modules/contacts/core/contact-form'
+import { renameChange } from '@/modules/contacts/core/contact-form'
 import type { ContactRow } from '@/modules/contacts/core/contact-row'
 import { useUpdateContact } from '@/modules/contacts/ui/hooks/use-update-contact'
 import { Button } from '@/ui/components/ui/button'
@@ -33,7 +33,6 @@ export function ContactNameForm({ row, onDone }: ContactNameFormProps) {
                 description={t('contacts.rename.hint')}
                 autoFocus
                 autoComplete="off"
-                maxLength={CONTACT_NAME_MAX}
                 placeholder={contact.profileName ?? row.phone}
                 onKeyDown={(event) => {
                   if (event.key === 'Escape') onDone()

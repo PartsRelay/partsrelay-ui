@@ -2,12 +2,7 @@ import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { requiredText, useAppForm } from '@/form'
-import {
-  CONTACT_NAME_MAX,
-  emptyContact,
-  newContact,
-  phoneError,
-} from '@/modules/contacts/core/contact-form'
+import { emptyContact, newContact, phoneError } from '@/modules/contacts/core/contact-form'
 import { useAddContact } from '@/modules/contacts/ui/hooks/use-add-contact'
 import { Button } from '@/ui/components/ui/button'
 import {
@@ -87,7 +82,6 @@ function AddContactForm({ onDone }: { onDone: () => void }) {
                 label={t('contacts.add.name')}
                 description={t('contacts.add.name-hint')}
                 autoComplete="off"
-                maxLength={CONTACT_NAME_MAX}
               />
             )}
           </form.AppField>
