@@ -116,7 +116,7 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
           variant="link"
           className="h-auto p-0"
           text={row.link}
-          notice="team.notices.link-copied"
+          notice="workspace.notices.link-copied"
           aria-label={t('workspace.actions.copy-link-for', { email })}
         >
           {t('workspace.actions.copy-link')}
