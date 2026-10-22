@@ -13,6 +13,7 @@ import {
 } from '@/core/api/models'
 import { fail, signedInMember } from '@/core/mocks/auth'
 import { daysAgo } from '@/core/mocks/data'
+import { DEFAULT_PER_PAGE } from '@/core/pagination'
 
 // Contacts of each company, by company slug
 type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
@@ -171,7 +172,7 @@ export const contactMocks = [
     // The core reads status[], like axios sends it
     const statuses = query.getAll('status[]')
     const currentPage = Number(query.get('page') ?? 1)
-    const perPage = Number(query.get('perPage') ?? 20)
+    const perPage = Number(query.get('perPage') ?? DEFAULT_PER_PAGE)
     if (query.has('status') || !statuses.every(isStatus)) invalid()
     if (!(currentPage >= 1 && perPage >= 1 && perPage <= PER_PAGE_MAX)) invalid()
 
