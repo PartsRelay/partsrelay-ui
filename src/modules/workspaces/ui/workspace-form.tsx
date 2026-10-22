@@ -1,18 +1,26 @@
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { setupDefaults } from '@/modules/workspaces/core/setup'
-import { toLocale } from '@/modules/workspaces/core/locale'
+import { serializeLocale, toLocale } from '@/modules/workspaces/core/locale'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
-import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { AccountActions } from '@/modules/workspaces/ui/account-actions'
 import { InvitationHint } from '@/modules/workspaces/ui/invitation-hint'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
 import { requiredText, useAppForm } from '@/form'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/ui/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/ui/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/ui/components/ui/avatar'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
 
 type WorkspaceFormProps = { workspace: Workspace; askName: boolean }
@@ -20,12 +28,13 @@ type WorkspaceFormProps = { workspace: Workspace; askName: boolean }
 export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const { data: session } = useSuspenseQuery(sessionQuery)
   const { client, run } = useBetterAuthAction()
   const form = useAppForm({
     defaultValues: setupDefaults(workspace, toLocale(i18n.resolvedLanguage)),
     onSubmit: async ({ value }) => {
       const name = value.name.trim()
-      const { locale } = value
+      const locale = serializeLocale(value.locale, workspace.storedLocale)
       const metadata = { ...workspace.metadata, setup: 'done' }
 
       await run(async () => {
@@ -46,9 +55,12 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
   })
 
   return (
-    <Card>
+    <Card className="setup-form-card">
       <CardHeader>
-        <AuthTitle>{t('setup.title')}</AuthTitle>
+        <span className="setup-section-label">01 / {t('design.setup.workspace')}</span>
+        <CardTitle>
+          <h2>{t('setup.title')}</h2>
+        </CardTitle>
         <CardDescription>{t('setup.description')}</CardDescription>
       </CardHeader>
       <CardContent>
@@ -69,6 +81,24 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
                   />
                 )}
               </form.AppField>
+              {session && (
+                <section className="setup-identity" aria-labelledby="setup-identity-title">
+                  <h3 id="setup-identity-title">{t('design.setup.identity')}</h3>
+                  <div className="setup-identity-person">
+                    <Avatar>
+                      {session.user.image && <AvatarImage src={session.user.image} alt="" />}
+                      <AvatarFallback>
+                        {(session.user.name || session.user.email).slice(0, 1).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <strong>{session.user.name}</strong>
+                      <span>{session.user.email}</span>
+                    </div>
+                  </div>
+                  <p>{t('design.setup.identity-note')}</p>
+                </section>
+              )}
               <form.Field name="locale">
                 {(field) => (
                   <LocaleSelect

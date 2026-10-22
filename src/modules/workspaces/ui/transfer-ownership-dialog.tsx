@@ -1,5 +1,6 @@
 import { useSelector } from '@tanstack/react-form'
 import { useTranslation } from 'react-i18next'
+import { errorMessage } from '@/core/errors'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import {
@@ -35,21 +36,33 @@ type TransferOwnershipDialogProps = { open: boolean; onOpenChange: (open: boolea
 
 export function TransferOwnershipDialog({ open, onOpenChange }: TransferOwnershipDialogProps) {
   const returnFocus = useReturnFocus(open)
+  const action = useBetterAuthAction()
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!action.pending) onOpenChange(next)
+      }}
+    >
       <AlertDialogContent onCloseAutoFocus={returnFocus}>
-        <TransferForm onDone={() => onOpenChange(false)} />
+        <TransferForm action={action} onDone={() => onOpenChange(false)} />
       </AlertDialogContent>
     </AlertDialog>
   )
 }
 
-function TransferForm({ onDone }: { onDone: () => void }) {
+function TransferForm({
+  onDone,
+  action,
+}: {
+  onDone: () => void
+  action: ReturnType<typeof useBetterAuthAction>
+}) {
   const { t } = useTranslation()
   const { workspace, me } = useMe()
   const candidates = transferCandidates(workspace, me)
-  const { client, run } = useBetterAuthAction()
+  const { client, pending, error, run } = action
   const form = useAppForm({
     defaultValues: { candidateId: '' },
     onSubmit: async ({ value }) => {
@@ -71,7 +84,11 @@ function TransferForm({ onDone }: { onDone: () => void }) {
             ])
           }
         },
-        { notice: 'workspace.notices.ownership-transferred', values: { name: candidate.name } }
+        {
+          notice: 'team.notices.ownership-transferred',
+          values: { name: candidate.name },
+          silent: true,
+        }
       )
       if (result.ok) onDone()
     },
@@ -79,26 +96,28 @@ function TransferForm({ onDone }: { onDone: () => void }) {
   const candidateId = useSelector(form.store, (state) => state.values.candidateId)
   const candidate = candidates.find((member) => member.id === candidateId)
   const candidateLabel = (member: Member) =>
-    t('workspace.transfer.candidate', { name: member.name, role: t(...roleLabel(member.role)) })
+    t('team.transfer.candidate', { name: member.name, role: t(...roleLabel(member.role)) })
 
   return (
     <form.AppForm>
       <form.Form className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
         <AlertDialogHeader>
-          <AlertDialogTitle>{t('workspace.transfer.title')}</AlertDialogTitle>
+          <AlertDialogTitle>{t('team.transfer.title')}</AlertDialogTitle>
           <AlertDialogDescription>
-            {t(
-              candidates.length > 0 ? 'workspace.transfer.description' : 'workspace.transfer.nobody'
-            )}
+            {t(candidates.length > 0 ? 'team.transfer.description' : 'team.transfer.nobody')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         {candidates.length > 0 && (
           <form.Field name="candidateId">
             {(field) => (
-              <Select value={field.state.value} onValueChange={field.handleChange}>
-                <TextField label={t('workspace.transfer.new-owner')}>
+              <Select
+                value={field.state.value}
+                onValueChange={field.handleChange}
+                disabled={pending}
+              >
+                <TextField label={t('team.transfer.new-owner')}>
                   <SelectTrigger className="w-full min-w-0 *:data-[slot=select-value]:min-w-0">
-                    <SelectValue placeholder={t('workspace.transfer.choose')}>
+                    <SelectValue placeholder={t('team.transfer.choose')}>
                       {candidate && <span className="truncate">{candidateLabel(candidate)}</span>}
                     </SelectValue>
                   </SelectTrigger>
@@ -114,8 +133,13 @@ function TransferForm({ onDone }: { onDone: () => void }) {
             )}
           </form.Field>
         )}
+        {error != null && (
+          <p className="workspace-form-error" role="alert">
+            {t(...errorMessage(error))}
+          </p>
+        )}
         <AlertDialogFooter>
-          <AlertDialogCancel>{t('confirm.cancel')}</AlertDialogCancel>
+          <AlertDialogCancel disabled={pending}>{t('confirm.cancel')}</AlertDialogCancel>
           <form.SubmitButton
             className="h-auto min-h-8 whitespace-normal wrap-anywhere"
             disabled={!candidate}

@@ -4,6 +4,6 @@ import { WorkspacePage } from '@/modules/workspaces/ui/workspace-page'
 
 export const Route = createFileRoute('/_app/(workspaces)/workspace')({
   validateSearch: workspaceSearchSchema,
-  staticData: { crumb: 'workspace' },
+  staticData: { crumb: 'team' },
   component: WorkspacePage,
 })

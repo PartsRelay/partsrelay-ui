@@ -1,22 +1,23 @@
 {
   "company": {
-    "title": "Azienda",
-    "description": "Nome, lingua di WhatsApp ed eliminazione della tua azienda. Solo il proprietario vede questa pagina.",
+    "title": "Dettagli e impostazioni aziendali.",
+    "description": "Gestisci il nome dell'azienda e la lingua delle risposte WhatsApp.",
     "name": {
       "title": "Nome dell'azienda",
       "description": "È il nome che vede il tuo team.",
-      "label": "Nome",
+      "label": "Nome dell'azienda",
       "save": "Salva il nome"
     },
     "language": {
       "title": "Lingua di WhatsApp",
       "description": "{{app}} risponde ai tuoi contatti su WhatsApp in questa lingua.",
-      "label": "Lingua delle risposte"
+      "label": "Lingua delle risposte",
+      "save": "Salva lingua"
     },
     "delete": {
-      "title": "Elimina l'azienda",
+      "title": "Zona pericolosa",
       "description": "Elimina l'azienda con l'account di ogni membro, compreso il tuo, e tutti i suoi contatti, ricerche e inviti.",
-      "action": "Elimina l'azienda"
+      "action": "Esamina eliminazione azienda"
     },
     "errors": {
       "name-required": "Inserisci il nome dell'azienda."
@@ -32,6 +33,8 @@
       "renamed": "Nome dell'azienda salvato.",
       "language": "Lingua di WhatsApp impostata su {{language}}.",
       "deleted": "L'azienda e tutti gli account sono stati eliminati. Accedendo di nuovo ne crei una nuova."
-    }
+    },
+    "eyebrow": "04 / IMPOSTAZIONI AZIENDA",
+    "owner-access": "Accesso riservato al titolare"
   }
 }

@@ -1,4 +1,6 @@
+import { env } from '@/env'
 import { authClient } from '@/modules/auth/core/auth.client'
+import { signOutOfLocalReview } from '@/modules/auth/core/local-review'
 import { endSession } from '@/modules/auth/core/session.query'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 
@@ -8,7 +10,8 @@ export function useSignOut() {
   const signOut = () =>
     run(
       async () => {
-        await authClient.signOut()
+        const localSessionEnded = env.LOCAL_REVIEW_AUTH && (await signOutOfLocalReview())
+        if (!localSessionEnded) await authClient.signOut()
         endSession(client)
       },
       { notice: 'auth.notices.signed-out' }

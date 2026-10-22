@@ -8,7 +8,7 @@ type OneTapHandlers = { onSuccess: () => Promise<void> | void; onError: (error: 
 type GoogleWindow = Window & { google?: { accounts: { id: { cancel: () => void } } } }
 
 export function startOneTap({ onSuccess, onError }: OneTapHandlers) {
-  if (!env.GOOGLE_CLIENT_ID) return
+  if (env.API_MOCKS || env.LOCAL_REVIEW_AUTH || !env.GOOGLE_CLIENT_ID) return
 
   authClient
     .oneTap({

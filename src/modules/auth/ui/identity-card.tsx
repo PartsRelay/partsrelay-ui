@@ -1,18 +1,16 @@
 import { useTranslation } from 'react-i18next'
+import { requiredText, useAppForm } from '@/form'
 import { authClient } from '@/modules/auth/core/auth.client'
 import type { ProfileView } from '@/modules/auth/core/profile'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
-import { requiredText, useAppForm } from '@/form'
-import { Facts } from '@/ui/components/facts'
-import { PersonItem } from '@/ui/components/person-item'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
+import { Avatar, AvatarFallback, AvatarImage } from '@/ui/components/ui/avatar'
+import { Badge } from '@/ui/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
 
-type IdentityCardProps = { view: ProfileView; userName: string }
-
-export function IdentityCard({ view, userName }: IdentityCardProps) {
+export function IdentityCard({ view, userName }: { view: ProfileView; userName: string }) {
   const { t } = useTranslation()
   const { client, run } = useBetterAuthAction()
   const form = useAppForm({
@@ -31,13 +29,19 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
         },
         { notice: 'profile.notices.name-saved' }
       )
-      // The prop stays the default and catches up later
       if (result.ok) formApi.reset({ name }, { keepDefaultValues: true })
     },
   })
+  const initials = view.name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase()
 
   return (
-    <Card>
+    <Card className="workspace-card identity-card">
       <CardHeader>
         <CardTitle>
           <h2>{t('profile.identity.title')}</h2>
@@ -45,14 +49,27 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
         <CardDescription>{t('profile.identity.description')}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
-        <PersonItem name={view.name} email={view.email} image={view.image} />
-        <Facts
-          className="text-sm"
-          items={[
-            { label: t('profile.identity.company'), value: view.company },
-            { label: t('profile.identity.role'), value: t(...view.roleLabel) },
-          ]}
-        />
+        <div className="profile-identity">
+          <Avatar className="profile-avatar">
+            {view.image && <AvatarImage src={view.image} alt="" />}
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+          <div className="profile-identity-text">
+            <h3>{view.name}</h3>
+            <p>{view.email}</p>
+            <Badge variant="secondary">{t('profile.identity.provider')}</Badge>
+          </div>
+        </div>
+        <dl className="profile-facts">
+          <div>
+            <dt>{t('profile.identity.company')}</dt>
+            <dd>{view.company}</dd>
+          </div>
+          <div>
+            <dt>{t('profile.identity.role')}</dt>
+            <dd>{t(...view.roleLabel)}</dd>
+          </div>
+        </dl>
         <form.AppForm>
           <form.Form>
             <FieldGroup>

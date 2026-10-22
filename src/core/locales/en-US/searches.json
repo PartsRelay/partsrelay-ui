@@ -1,0 +1,142 @@
+{
+  "searches": {
+    "eyebrow": "01 / Operations desk",
+    "greeting": "Welcome back, {{name}}.",
+    "description": "Keep your counter moving. Start a search or pick up the latest workshop requests.",
+    "new-button": "New search",
+    "metrics-label": "Search overview",
+    "metrics": {
+      "saved": "Saved searches",
+      "completed": "Completed",
+      "running": "In progress",
+      "attention": "Needs attention"
+    },
+    "current-filter": "All pages · selected requester",
+    "current-page": "On the current page",
+    "channels-title": "One desk. Two channels.",
+    "channels-body": "Bring your team's web searches and your workshops' WhatsApp requests together.",
+    "channel-note": "Every request stays in your company's shared search history.",
+    "desk-title": "Your workspace",
+    "desk-body": "A shared parts desk for the people behind the counter.",
+    "member-count_one": "{{count}} team member",
+    "member-count_other": "{{count}} team members",
+    "manage-team": "Manage your team",
+    "queue": "Search queue",
+    "queue-description": "Every request, from the counter or WhatsApp, in one place.",
+    "filter-page": "Filter this page by plate or vehicle",
+    "view": "Display searches",
+    "table": "Table",
+    "cards": "Cards",
+    "requesters": "Requests from",
+    "everyone": "Everyone",
+    "team": "Web team",
+    "workshops": "Workshops",
+    "person": "Person",
+    "status-on-page": "Status on this page",
+    "all-statuses": "All",
+    "refresh": "Refresh",
+    "refreshing": "Refreshing…",
+    "loading": "Loading searches",
+    "load-error": "We couldn't load these searches.",
+    "retry": "Try again",
+    "no-matches": "No matches on this page.",
+    "no-matches-body": "Clear the page filters or try another page.",
+    "empty-title": "Your parts desk is ready.",
+    "empty-body": "Start your first search with a registration plate and the part you need.",
+    "identifying": "Identifying vehicle…",
+    "vehicle-unknown": "Vehicle not identified",
+    "former-requester": "Former workspace member",
+    "showing": "Showing {{count}} of {{total}} searches",
+    "filtered-page": "Page filters applied",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}} of {{total}}",
+    "status": {
+      "running": "In progress",
+      "done": "Completed",
+      "vehicle_not_found": "Vehicle not found",
+      "not_matched": "No matching part",
+      "failed": "Failed"
+    },
+    "columns": {
+      "plate": "Plate",
+      "vehicle": "Vehicle",
+      "status": "Status",
+      "channel": "Channel",
+      "requester": "Requester",
+      "requested": "Requested"
+    },
+    "new": {
+      "eyebrow": "New request / Web",
+      "title": "Find the part.",
+      "description": "Enter a registration plate and the part you need. Your result will stay in the shared search queue.",
+      "vehicle-step": "01 / Identify the vehicle",
+      "plate": "Registration plate",
+      "plate-hint": "Enter a registration plate with 4–8 letters or numbers.",
+      "plate-error": "Enter a valid registration plate with 4–8 letters or numbers.",
+      "plate-placeholder": "For example, GH482KL",
+      "part-step": "02 / Describe the part",
+      "part": "Part needed",
+      "part-hint": "Be specific: part name and position, if known.",
+      "part-placeholder": "For example, front brake pads",
+      "query-error": "Describe the part using 2–200 characters.",
+      "tips": "Search tips",
+      "tips-body": "Check the registration plate and include the part's position, such as front or rear.",
+      "requester": "Requested by {{name}} · Web",
+      "submit": "Start search →",
+      "submitting": "Starting search…",
+      "acceptance-unknown": "We couldn't confirm whether this request was accepted. Check the shared search queue before trying again to avoid creating a duplicate request.",
+      "check-queue": "Check searches"
+    },
+    "fitment": "Results are identification guidance. Always confirm vehicle fitment before purchase.",
+    "result-eyebrow": "01 / Search result",
+    "result-title": "Search result",
+    "result-description": "Your request, vehicle identification and reference matches.",
+    "back": "Back to searches",
+    "original-title": "Original equipment reference",
+    "reference-count_one": "{{count}} original reference",
+    "reference-count_other": "{{count}} original references",
+    "awaiting-results": "References will appear when the search finishes.",
+    "no-references": "No original references are available for this request.",
+    "aftermarket-title": "Aftermarket matches",
+    "match-count_one": "{{count}} matching reference",
+    "match-count_other": "{{count}} matching references",
+    "no-aftermarket": "No aftermarket references were returned.",
+    "parts": {
+      "brand": "Brand",
+      "reference": "Reference",
+      "description": "Description",
+      "original": "Original reference"
+    },
+    "catalogue": "Catalogue section",
+    "diagram": "Vehicle parts diagram",
+    "request-record": "Request record",
+    "company-history": "History remains company-owned, across Web and WhatsApp.",
+    "outcome": {
+      "running": {
+        "title": "Your search is in progress.",
+        "body": "We're identifying the vehicle and looking for matching parts. This page updates automatically."
+      },
+      "results": {
+        "title": "Reference matches found.",
+        "body": "Check the original reference and vehicle fitment. Prices and supplier availability are not provided."
+      },
+      "vehicle_not_found": {
+        "title": "We couldn't identify this vehicle.",
+        "body": "Check the registration plate and start a new search. Coverage depends on the vehicle catalogue."
+      },
+      "not_matched": {
+        "title": "No matching part was found.",
+        "body": "Try a more specific description, including the part's position."
+      },
+      "failed": {
+        "title": "This search couldn't be completed.",
+        "body": "The catalogue service could not finish the request. You can start a new search."
+      },
+      "unavailable": {
+        "title": "These result details are no longer available.",
+        "body": "The request is saved in your history, but its catalogue details could not be retrieved. Start a new search to request current results."
+      }
+    }
+  }
+}

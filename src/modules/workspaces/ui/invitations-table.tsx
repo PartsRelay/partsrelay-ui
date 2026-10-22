@@ -32,20 +32,20 @@ export function InvitationsTable() {
   const [confirming, setConfirming] = useState(false)
 
   return (
-    <Card>
+    <Card className="workspace-card invitations-card">
       <CardHeader>
         <CardTitle>
           <h2 ref={heading} tabIndex={-1} className="outline-none">
-            {t('workspace.invitations.title')}
+            {t('team.invitations.title')}
           </h2>
         </CardTitle>
-        <CardDescription>{t('workspace.invitations.description')}</CardDescription>
+        <CardDescription>{t('team.invitations.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         {rows.length === 0 ? (
           <Empty className="border">
             <EmptyHeader>
-              <EmptyTitle>{t('workspace.invitations.empty')}</EmptyTitle>
+              <EmptyTitle>{t('team.invitations.empty')}</EmptyTitle>
             </EmptyHeader>
           </Empty>
         ) : (
@@ -53,26 +53,31 @@ export function InvitationsTable() {
             <TableHeader>
               <TableRow>
                 {columns.map((column) => (
-                  <TableHead key={column}>{t(`workspace.invitations.columns.${column}`)}</TableHead>
+                  <TableHead key={column}>{t(`team.invitations.columns.${column}`)}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((row) => (
                 <TableRow key={row.invitation.id}>
-                  <TableCell className="font-medium">{row.invitation.email}</TableCell>
-                  <TableCell>{t(...row.roleLabel)}</TableCell>
-                  <TableCell>
+                  <TableCell
+                    data-label={t('team.invitations.columns.invitation')}
+                    className="font-medium"
+                  >
+                    {row.invitation.email}
+                  </TableCell>
+                  <TableCell data-label={t('team.invitations.columns.role')}>
+                    {t(...row.roleLabel)}
+                  </TableCell>
+                  <TableCell data-label={t('team.invitations.columns.sent')}>
                     <span className="inline-flex items-center gap-2">
                       {row.sent}
                       {row.expired && (
-                        <StatusBadge tone="danger">
-                          {t('workspace.invitations.expired')}
-                        </StatusBadge>
+                        <StatusBadge tone="danger">{t('team.invitations.expired')}</StatusBadge>
                       )}
                     </span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell data-label={t('team.invitations.columns.actions')}>
                     <InvitationActions
                       row={row}
                       onRevoke={() => {
@@ -106,7 +111,7 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
   const { email, role } = row.invitation
 
   if (!row.canManage) {
-    return <span className="text-muted-foreground">{t('workspace.invitations.owner-only')}</span>
+    return <span className="text-muted-foreground">{t('team.invitations.owner-only')}</span>
   }
 
   return (
@@ -117,13 +122,13 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
           className="h-auto p-0"
           text={row.link}
           notice="team.notices.link-copied"
-          aria-label={t('workspace.actions.copy-link-for', { email })}
+          aria-label={t('team.actions.copy-link-for', { email })}
         >
-          {t('workspace.actions.copy-link')}
+          {t('team.actions.copy-link')}
         </CopyButton>
       )}
       <ActionButton
-        aria-label={t('workspace.actions.resend-to', { email })}
+        aria-label={t('team.actions.resend-to', { email })}
         disabled={pending}
         onClick={() =>
           void run(
@@ -134,14 +139,14 @@ function InvitationActions({ row, onRevoke }: { row: InvitationRow; onRevoke: ()
                 await client.invalidateQueries({ queryKey: workspaceKey })
               }
             },
-            { notice: 'workspace.notices.invitation-resent', values: { email } }
+            { notice: 'team.notices.invitation-resent', values: { email } }
           )
         }
       >
-        {t('workspace.actions.resend')}
+        {t('team.actions.resend')}
       </ActionButton>
-      <ActionButton aria-label={t('workspace.actions.revoke-for', { email })} onClick={onRevoke}>
-        {t('workspace.actions.revoke')}
+      <ActionButton aria-label={t('team.actions.revoke-for', { email })} onClick={onRevoke}>
+        {t('team.actions.revoke')}
       </ActionButton>
     </div>
   )

@@ -21,14 +21,14 @@ export async function requireSetupOwner({ context, location }: SetupGuard) {
 }
 
 export function SetupPage() {
-  const { session, workspace } = route.useRouteContext()
+  const { workspace } = route.useRouteContext()
   const { data: current } = useSuspenseQuery(sessionQuery)
 
   if (!current) return <Navigate to="/login" replace />
 
   return (
     <SetupLayout>
-      <WorkspaceForm workspace={workspace} askName={session.user.name === ''} />
+      <WorkspaceForm workspace={workspace} askName={current.user.name === ''} />
     </SetupLayout>
   )
 }

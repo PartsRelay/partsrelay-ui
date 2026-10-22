@@ -30,7 +30,17 @@ void i18n
     supportedLngs: ['en-US', 'it-IT'],
     load: 'currentOnly',
     fallbackLng: 'en-US',
-    detection: { order: ['navigator'], caches: [] },
+    detection: {
+      order: ['localStorage', 'navigator'],
+      lookupLocalStorage: 'partsrelay.language',
+      caches: ['localStorage'],
+      convertDetectedLanguage: (language) => {
+        const base = language.toLowerCase().split('-')[0]
+        if (base === 'it') return 'it-IT'
+        if (base === 'en') return 'en-US'
+        return language
+      },
+    },
     // {{app}} is the app name from the environment
     interpolation: { escapeValue: false, defaultVariables: { app: env.APP_NAME } },
     // Error codes without their own text get the generic one

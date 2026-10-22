@@ -11,7 +11,10 @@ import { AccessDenied } from '@/modules/workspaces/ui/access-denied'
 import { AppHeader } from '@/modules/workspaces/ui/app-header'
 import { AppSidebar } from '@/modules/workspaces/ui/app-sidebar'
 import { AccountContext, useMe } from '@/modules/workspaces/ui/hooks/use-me'
-import { SidebarInset, SidebarProvider } from '@/ui/components/ui/sidebar'
+import { useTranslation } from 'react-i18next'
+import { PreviewNotice } from '@/ui/components/preview-notice'
+import { useSearchStream } from '@/modules/searches/ui/hooks/use-search-stream'
+import { useSearchLanguage } from '@/modules/searches/ui/hooks/use-search-language'
 
 type AppGuard = { context: { queryClient: QueryClient }; location: { href: string } }
 
@@ -26,7 +29,7 @@ export async function requireAccount({ context, location }: AppGuard) {
 }
 
 export function redirectHome({ context }: { context: { me: Me } }) {
-  throw redirect({ to: homePath(context.me.permissions) })
+  throw redirect({ to: homePath(context.me.permissions), search: { page: 1, requester: 'all' } })
 }
 
 export function AppLayout() {
@@ -63,22 +66,36 @@ function SignedIn({ session }: { session: NonNullable<Session> }) {
 }
 
 function AppShell() {
-  const { me } = useMe()
+  const { me, workspace } = useMe()
+  const { t } = useTranslation()
+  useSearchStream(workspace.id)
+  useSearchLanguage(workspace.id)
   const allowed = useLocation({
     select: (location) => canOpen(pageAt(location.pathname), me.permissions),
   })
 
   return (
-    <SidebarProvider>
+    <div className="workspace-app">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-3 focus:text-foreground focus:outline focus:outline-2 focus:outline-primary"
+      >
+        {t('design.skip-to-content')}
+      </a>
       <AppSidebar />
-      <SidebarInset>
+      <div className="workspace-surface">
         <AppHeader />
-        <div className="flex flex-1 flex-col p-4 md:p-6">
-          <div className="mx-auto grid w-full max-w-5xl gap-6">
-            {allowed ? <Outlet /> : <AccessDenied />}
-          </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+        <main className="workspace-content" id="main-content" tabIndex={-1}>
+          <PreviewNotice />
+          <div>{allowed ? <Outlet /> : <AccessDenied />}</div>
+        </main>
+        <footer className="workspace-footer">
+          <span>
+            {workspace.name} · {t('design.shared-workspace')}
+          </span>
+          <span>{t('design.footer')}</span>
+        </footer>
+      </div>
+    </div>
   )
 }

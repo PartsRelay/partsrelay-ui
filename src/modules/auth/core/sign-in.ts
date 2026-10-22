@@ -23,7 +23,7 @@ const LOGIN_ERRORS = new Map([
 ])
 
 function absolute(path: string) {
-  return new URL(path, window.location.origin).href
+  return new URL(redirectPath(path), window.location.origin).href
 }
 
 function loginPath(next: string, signedIn = false) {
@@ -63,7 +63,7 @@ export function loginFlow(next?: unknown): SignInFlow {
 }
 
 function withoutSignInError(href: string) {
-  const url = new URL(href, window.location.origin)
+  const url = new URL(redirectPath(href), window.location.origin)
   url.searchParams.delete('error')
   url.searchParams.delete('error_description')
 

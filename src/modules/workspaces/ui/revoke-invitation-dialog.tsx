@@ -31,9 +31,9 @@ export function RevokeInvitationDialog({
   return (
     <ConfirmDialog
       open={open}
-      title={t('workspace.confirm.revoke.title', { email: row.invitation.email })}
-      description={t('workspace.confirm.revoke.body')}
-      action={t('workspace.confirm.revoke.action')}
+      title={t('team.confirm.revoke.title', { email: row.invitation.email })}
+      description={t('team.confirm.revoke.body')}
+      action={t('team.confirm.revoke.action')}
       pending={pending}
       onConfirm={async () => {
         const result = await run(
@@ -44,7 +44,7 @@ export function RevokeInvitationDialog({
               (organization) => withoutInvitation(organization, id),
               () => authClient.organization.cancelInvitation({ invitationId: id })
             ),
-          { notice: 'workspace.notices.invitation-revoked' }
+          { notice: 'team.notices.invitation-revoked' }
         )
         if (result.ok) onClose()
       }}

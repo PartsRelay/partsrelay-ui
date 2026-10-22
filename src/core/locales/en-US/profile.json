@@ -1,40 +1,56 @@
 {
   "profile": {
-    "title": "Profile",
-    "description": "Your name, your account and your place in the company.",
+    "title": "Your profile.",
+    "description": "Your Google identity stays yours. Your search history belongs to the company workspace.",
     "identity": {
-      "title": "Your account",
+      "title": "Google identity",
       "description": "You sign in with this email, through Google or a sign-in link.",
       "company": "Company",
       "role": "Role",
       "name": "Name",
       "name-hint": "Your team sees it next to your email.",
-      "save": "Save name"
+      "save": "Save name",
+      "provider": "Google account"
     },
     "leave": {
-      "title": "Leave the company",
-      "description": "Leaving {{company}} deletes your account. Searches you ran stay with the company.",
-      "action": "Leave company",
+      "title": "Delete your account",
+      "description": "This permanently deletes your account and the invitations you sent, and removes your access to {{company}}. Searches you ran stay with the company.",
+      "action": "Delete my account",
       "owner": {
-        "title": "The owner cannot leave",
-        "description": "Hand over the company to another member first, or delete the company together with every account.",
-        "transfer": "Transfer ownership",
-        "delete": "Delete company"
-      }
+        "title": "You are the company owner",
+        "description": "Transfer ownership to another team member before deleting your personal account.",
+        "transfer": "Go to Team to transfer ownership",
+        "delete": "Review company deletion"
+      },
+      "eyebrow": "PERSONAL ACCOUNT"
     },
     "errors": {
       "name-required": "Enter your name."
     },
     "confirm": {
       "leave": {
-        "title": "Leave {{company}}?",
+        "title": "Delete your account and leave {{company}}?",
         "body": "Your account is deleted for good, together with the invitations you sent, and you are signed out. Searches you ran stay with the company. Signing in again with this email starts a new company.",
-        "action": "Leave and delete my account"
+        "action": "Delete my account"
       }
     },
     "notices": {
       "name-saved": "Name saved.",
-      "left": "You left {{company}} and your account was deleted."
+      "left": "You left {{company}} and your account was deleted.",
+      "language-saved": "Your language preference was saved on this browser."
+    },
+    "eyebrow": "ACCOUNT / PERSONAL SETTINGS",
+    "preferences": {
+      "title": "Preferences",
+      "description": "Choose the language for PartsRelay on this browser. This does not change your company's WhatsApp reply language.",
+      "language": "Language",
+      "save": "Save preference",
+      "save-error": "Your browser could not save this preference. Please try again."
+    },
+    "session": {
+      "title": "Session",
+      "description": "Sign out of PartsRelay on this device.",
+      "action": "Sign out"
     }
   }
 }

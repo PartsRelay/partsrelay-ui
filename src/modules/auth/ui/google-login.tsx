@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
+import { env } from '@/env'
 import { authClient } from '@/modules/auth/core/auth.client'
+import { signInToLocalReview } from '@/modules/auth/core/local-review'
 import { googleSignIn, type SignInFlow } from '@/modules/auth/core/sign-in'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
@@ -13,11 +15,16 @@ export function GoogleLogin({ flow }: { flow: SignInFlow }) {
     <Button
       className="w-full"
       disabled={pending}
-      // The client follows the Google redirect
-      onClick={() => void run(() => authClient.signIn.social(googleSignIn(flow)))}
+      onClick={() =>
+        void run(() =>
+          env.LOCAL_REVIEW_AUTH
+            ? signInToLocalReview(flow.back)
+            : authClient.signIn.social(googleSignIn(flow))
+        )
+      }
     >
       {pending && <Spinner data-icon="inline-start" />}
-      {t('login.google')}
+      {t(env.LOCAL_REVIEW_AUTH ? 'login.local-review.action' : 'login.google')}
     </Button>
   )
 }

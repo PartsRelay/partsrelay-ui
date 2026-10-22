@@ -10,9 +10,10 @@ import { i18n } from '@/i18n'
 import { ac, roles } from '@/modules/workspaces/core/access'
 
 export const authClient = createAuthClient({
-  baseURL: env.API_URL || window.location.origin,
+  baseURL: env.API_URL || (typeof window === 'undefined' ? undefined : window.location.origin),
   fetchOptions: {
     throw: true,
+    credentials: 'include',
     // The core answers in the app language
     onRequest: (context) => {
       context.headers.set('Accept-Language', i18n.language)

@@ -2,13 +2,20 @@
   "nav": {
     "workspace": "Area di lavoro",
     "company": "Azienda",
-    "breadcrumb": "Percorso"
+    "breadcrumb": "Percorso",
+    "team": "Team",
+    "sections": "Area di lavoro",
+    "searches": "Ricerche",
+    "contacts": "Contatti"
   },
   "crumbs": {
     "workspace": "Area di lavoro",
     "account": "Account",
     "company": "Azienda",
-    "profile": "Profilo"
+    "profile": "Profilo",
+    "team": "Team",
+    "searches": "Ricerche",
+    "contacts": "Contatti"
   },
   "shell": {
     "user": {

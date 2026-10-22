@@ -13,11 +13,14 @@ import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as workspacesSetupRouteImport } from './routes/(workspaces)/setup'
+import { Route as AppContactsRouteImport } from './routes/_app/contacts'
 import { Route as authInvitationsInvitationIdRouteImport } from './routes/(auth)/invitations.$invitationId'
 import { Route as AppauthProfileRouteImport } from './routes/_app/(auth)/profile'
 import { Route as AppworkspacesIndexRouteImport } from './routes/_app/(workspaces)/index'
 import { Route as AppworkspacesCompanyRouteImport } from './routes/_app/(workspaces)/company'
 import { Route as AppworkspacesWorkspaceRouteImport } from './routes/_app/(workspaces)/workspace'
+import { Route as AppSearchesIndexRouteImport } from './routes/_app/searches/index'
+import { Route as AppSearchesSearchIdRouteImport } from './routes/_app/searches/$searchId'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -36,6 +39,11 @@ const workspacesSetupRoute = workspacesSetupRouteImport.update({
   id: '/(workspaces)/setup',
   path: '/setup',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppContactsRoute = AppContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const authInvitationsInvitationIdRoute =
   authInvitationsInvitationIdRouteImport.update({
@@ -63,24 +71,40 @@ const AppworkspacesWorkspaceRoute = AppworkspacesWorkspaceRouteImport.update({
   path: '/workspace',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppSearchesIndexRoute = AppSearchesIndexRouteImport.update({
+  id: '/searches/',
+  path: '/searches/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSearchesSearchIdRoute = AppSearchesSearchIdRouteImport.update({
+  id: '/searches/$searchId',
+  path: '/searches/$searchId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppworkspacesIndexRoute
   '/login': typeof authLoginRoute
   '/setup': typeof workspacesSetupRoute
+  '/contacts': typeof AppContactsRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/profile': typeof AppauthProfileRoute
   '/company': typeof AppworkspacesCompanyRoute
   '/workspace': typeof AppworkspacesWorkspaceRoute
+  '/searches/$searchId': typeof AppSearchesSearchIdRoute
+  '/searches/': typeof AppSearchesIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/setup': typeof workspacesSetupRoute
+  '/contacts': typeof AppContactsRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/profile': typeof AppauthProfileRoute
   '/company': typeof AppworkspacesCompanyRoute
   '/workspace': typeof AppworkspacesWorkspaceRoute
+  '/searches/$searchId': typeof AppSearchesSearchIdRoute
   '/': typeof AppworkspacesIndexRoute
+  '/searches': typeof AppSearchesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,11 +112,14 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(workspaces)/setup': typeof workspacesSetupRoute
+  '/_app/contacts': typeof AppContactsRoute
   '/(auth)/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/_app/(auth)/profile': typeof AppauthProfileRoute
   '/_app/(workspaces)/company': typeof AppworkspacesCompanyRoute
   '/_app/(workspaces)/workspace': typeof AppworkspacesWorkspaceRoute
+  '/_app/searches/$searchId': typeof AppSearchesSearchIdRoute
   '/_app/(workspaces)/': typeof AppworkspacesIndexRoute
+  '/_app/searches/': typeof AppSearchesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,30 +127,39 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/setup'
+    | '/contacts'
     | '/invitations/$invitationId'
     | '/profile'
     | '/company'
     | '/workspace'
+    | '/searches/$searchId'
+    | '/searches/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/setup'
+    | '/contacts'
     | '/invitations/$invitationId'
     | '/profile'
     | '/company'
     | '/workspace'
+    | '/searches/$searchId'
     | '/'
+    | '/searches'
   id:
     | '__root__'
     | '/(auth)'
     | '/_app'
     | '/(auth)/login'
     | '/(workspaces)/setup'
+    | '/_app/contacts'
     | '/(auth)/invitations/$invitationId'
     | '/_app/(auth)/profile'
     | '/_app/(workspaces)/company'
     | '/_app/(workspaces)/workspace'
+    | '/_app/searches/$searchId'
     | '/_app/(workspaces)/'
+    | '/_app/searches/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -162,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof workspacesSetupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/contacts': {
+      id: '/_app/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof AppContactsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/(auth)/invitations/$invitationId': {
       id: '/(auth)/invitations/$invitationId'
       path: '/invitations/$invitationId'
@@ -197,6 +240,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppworkspacesWorkspaceRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/searches/': {
+      id: '/_app/searches/'
+      path: '/searches'
+      fullPath: '/searches/'
+      preLoaderRoute: typeof AppSearchesIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/searches/$searchId': {
+      id: '/_app/searches/$searchId'
+      path: '/searches/$searchId'
+      fullPath: '/searches/$searchId'
+      preLoaderRoute: typeof AppSearchesSearchIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
@@ -215,17 +272,23 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 )
 
 interface AppRouteRouteChildren {
+  AppContactsRoute: typeof AppContactsRoute
   AppauthProfileRoute: typeof AppauthProfileRoute
   AppworkspacesCompanyRoute: typeof AppworkspacesCompanyRoute
   AppworkspacesWorkspaceRoute: typeof AppworkspacesWorkspaceRoute
+  AppSearchesSearchIdRoute: typeof AppSearchesSearchIdRoute
   AppworkspacesIndexRoute: typeof AppworkspacesIndexRoute
+  AppSearchesIndexRoute: typeof AppSearchesIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppContactsRoute: AppContactsRoute,
   AppauthProfileRoute: AppauthProfileRoute,
   AppworkspacesCompanyRoute: AppworkspacesCompanyRoute,
   AppworkspacesWorkspaceRoute: AppworkspacesWorkspaceRoute,
+  AppSearchesSearchIdRoute: AppSearchesSearchIdRoute,
   AppworkspacesIndexRoute: AppworkspacesIndexRoute,
+  AppSearchesIndexRoute: AppSearchesIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

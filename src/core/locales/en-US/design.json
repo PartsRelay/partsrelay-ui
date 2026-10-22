@@ -1,0 +1,50 @@
+{
+  "design": {
+    "skip-to-content": "Skip to main content",
+    "navigation": "Workspace navigation",
+    "workspace": "Workspace",
+    "shared-workspace": "Team workspace",
+    "shared-queue": "One shared queue",
+    "channels": "Web team + WhatsApp workshops. Company-owned search history.",
+    "my-profile": "My profile",
+    "footer": "Parts Relay / Workshop dispatch",
+    "preview-title": "Design preview · sample data",
+    "preview-description": "This preview uses local sample records. No requests are sent to the backend or external providers.",
+    "login": {
+      "eyebrow": "Identify. Match. Relay.",
+      "headline1": "The right part.",
+      "headline2": "A clearer path.",
+      "description": "One parts-search workspace for your counter team and the workshops you serve.",
+      "request": "01 / REQUEST",
+      "route": "WhatsApp → Shared workspace",
+      "part": "Front brake pads",
+      "match": "02 / MATCH",
+      "sample-vehicle": "Fiat Panda 1.2",
+      "sample-reference": "OE 77367141",
+      "sample-aftermarket": "Original and aftermarket references, together.",
+      "demo": "Illustrative result. Confirm vehicle fitment before purchase.",
+      "channel": "Your team signs in here. Your workshops use WhatsApp.",
+      "channel2": "No PartsRelay account needed for workshop clients.",
+      "audience": "Web team access",
+      "welcome1": "Welcome to",
+      "welcome2": "your parts desk.",
+      "instructions": "Sign in with your Google account to open your workspace or accept a team invitation.",
+      "new-title": "New to PartsRelay?",
+      "new-body": "Your first sign-in creates your workspace. Add your company name, then invite your team and connect your workshop contacts. Joining a team? Use your invited email.",
+      "secure": "Your Google account is used to identify you securely.",
+      "footer": "Need help signing in? Contact your workspace owner.",
+      "tagline": "PartsRelay · Built for the workshop rhythm"
+    },
+    "setup": {
+      "label": "Get your desk ready",
+      "headline": "Your workspace. Your workshop network.",
+      "description": "Start with a company name. Your team and WhatsApp contacts can be added once your workspace is ready.",
+      "step1": "Name your workspace",
+      "step2": "Find your first part",
+      "step3": "Invite your team",
+      "workspace": "Workspace setup",
+      "identity": "Signed-in account",
+      "identity-note": "Your account identifies you as the workspace owner."
+    }
+  }
+}

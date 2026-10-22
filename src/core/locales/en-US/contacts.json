@@ -1,0 +1,113 @@
+{
+  "contacts": {
+    "eyebrow": "02 / WORKSHOP NETWORK",
+    "title": "Connect the workshops you serve.",
+    "description": "Workshop contacts use WhatsApp. They never need a PartsRelay login or a Google account.",
+    "directory": {
+      "title": "Contact directory",
+      "description": "Manage the workshops connected to your company.",
+      "count_one": "{{count}} workshop contact",
+      "count_other": "{{count}} workshop contacts",
+      "filtered-count_one": "{{count}} matching contact",
+      "filtered-count_other": "{{count}} matching contacts",
+      "privacy": "Phone details stay hidden until you open them."
+    },
+    "filters": {
+      "label": "Filter contacts by status",
+      "all": "All contacts"
+    },
+    "status": {
+      "active": "Active",
+      "blocked": "Blocked"
+    },
+    "columns": {
+      "contact": "Contact",
+      "status": "Status",
+      "searches": "Searches",
+      "last-search": "Last search",
+      "actions": "Actions"
+    },
+    "whatsapp-contact": "WhatsApp contact",
+    "unnamed": "Contact ending {{digits}}",
+    "total": "Total",
+    "month": "This month",
+    "never": "No searches yet",
+    "loading": "Loading contacts…",
+    "actions": {
+      "add": "Add workshop",
+      "edit": "Edit",
+      "block": "Block",
+      "unblock": "Unblock",
+      "delete": "Delete",
+      "view": "View details",
+      "hide": "Hide details",
+      "cancel": "Cancel",
+      "save": "Save contact",
+      "retry": "Try again",
+      "view-for": "View details for {{name}}",
+      "hide-for": "Hide details for {{name}}",
+      "edit-for": "Edit {{name}}",
+      "block-for": "Block {{name}}",
+      "unblock-for": "Unblock {{name}}",
+      "delete-for": "Delete {{name}}"
+    },
+    "details": {
+      "phone": "Phone",
+      "channel": "Channel",
+      "joined": "Joined"
+    },
+    "form": {
+      "add-title": "Add a workshop contact",
+      "add-description": "Add the workshop's WhatsApp number. The contact will be active and able to send searches immediately.",
+      "edit-title": "Edit contact name",
+      "edit-description": "Choose the name your team sees. Leave it blank to use the WhatsApp profile name.",
+      "phone": "WhatsApp number",
+      "phone-hint": "Include the international country code, for example +39 or +1.",
+      "name": "Contact name (optional)",
+      "name-hint": "Use the workshop or contact name your team recognizes.",
+      "phone-error": "Enter a valid international phone number including the country code.",
+      "name-error": "Use 255 characters or fewer.",
+      "server-validation": "The contact could not be saved. Check the WhatsApp number and contact name, then try again."
+    },
+    "empty": {
+      "title": "Your workshop network starts here.",
+      "description": "Add a workshop's WhatsApp number to connect it with your company.",
+      "filtered-title": "No contacts with this status.",
+      "filtered-description": "Choose another status or view all workshop contacts."
+    },
+    "error": {
+      "title": "We couldn't load your contacts.",
+      "description": "Check your connection and try again. Your contacts have not been changed."
+    },
+    "pagination": {
+      "label": "Contact pages",
+      "page": "Page {{page}} of {{pages}}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "safety": {
+      "title": "Safe contact management",
+      "description": "Blocking stops new searches. Deleting a contact is permanent. Review the named confirmation before continuing.",
+      "viewer": "You can view contacts and search activity. Ask an owner or admin to add, edit, block, or delete a contact."
+    },
+    "confirm": {
+      "block": {
+        "title": "Block {{name}}?",
+        "description": "{{name}} will no longer be able to send new searches to your company through WhatsApp. You can unblock this contact later.",
+        "action": "Block contact"
+      },
+      "delete": {
+        "title": "Delete {{name}}?",
+        "description": "This permanently deletes {{name}} from your company's contacts. This action cannot be undone.",
+        "action": "Delete contact"
+      }
+    },
+    "notices": {
+      "added": "Workshop contact added.",
+      "updated": "Contact name saved.",
+      "blocked": "{{name}} is blocked.",
+      "unblocked": "{{name}} is active again.",
+      "deleted": "{{name}} was deleted."
+    }
+  }
+}

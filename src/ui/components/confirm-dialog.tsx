@@ -37,14 +37,14 @@ export function ConfirmDialog({
   const returnFocus = useReturnFocus(open, returnTo)
 
   return (
-    <AlertDialog open={open} onOpenChange={(next) => !next && onClose()}>
+    <AlertDialog open={open} onOpenChange={(next) => !next && !pending && onClose()}>
       <AlertDialogContent onCloseAutoFocus={returnFocus}>
         <AlertDialogHeader>
           <AlertDialogTitle className="wrap-anywhere">{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{t('confirm.cancel')}</AlertDialogCancel>
+          <AlertDialogCancel disabled={pending}>{t('confirm.cancel')}</AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             disabled={pending}

@@ -1,0 +1,50 @@
+{
+  "design": {
+    "skip-to-content": "Vai al contenuto principale",
+    "navigation": "Navigazione dell'area di lavoro",
+    "workspace": "Area di lavoro",
+    "shared-workspace": "Area di lavoro del team",
+    "shared-queue": "Un'unica coda condivisa",
+    "channels": "Team web e officine su WhatsApp. Lo storico delle ricerche appartiene all'azienda.",
+    "my-profile": "Il mio profilo",
+    "footer": "Parts Relay / Gestione richieste officine",
+    "preview-title": "Anteprima del design · dati di esempio",
+    "preview-description": "Questa anteprima usa dati di esempio locali. Non vengono inviate richieste al backend o ai fornitori esterni.",
+    "login": {
+      "eyebrow": "Identifica. Abbina. Condividi.",
+      "headline1": "Il ricambio giusto.",
+      "headline2": "Un percorso più chiaro.",
+      "description": "Un'unica area di ricerca ricambi per il tuo team al banco e le officine che servi.",
+      "request": "01 / RICHIESTA",
+      "route": "WhatsApp → Area di lavoro condivisa",
+      "part": "Pastiglie freno anteriori",
+      "match": "02 / ABBINAMENTO",
+      "sample-vehicle": "Fiat Panda 1.2",
+      "sample-reference": "OE 77367141",
+      "sample-aftermarket": "Riferimenti originali e aftermarket, insieme.",
+      "demo": "Risultato illustrativo. Verifica la compatibilità con il veicolo prima dell'acquisto.",
+      "channel": "Il tuo team accede qui. Le tue officine usano WhatsApp.",
+      "channel2": "Le officine clienti non hanno bisogno di un account PartsRelay.",
+      "audience": "Accesso web del team",
+      "welcome1": "Benvenuto al",
+      "welcome2": "tuo banco ricambi.",
+      "instructions": "Accedi con il tuo account Google per aprire l'area di lavoro o accettare un invito del team.",
+      "new-title": "È la prima volta su PartsRelay?",
+      "new-body": "Il primo accesso crea la tua area di lavoro. Aggiungi il nome dell'azienda, poi invita il team e collega i contatti delle officine. Vuoi unirti a un team? Usa l'indirizzo email che ha ricevuto l'invito.",
+      "secure": "Il tuo account Google viene usato per identificarti in modo sicuro.",
+      "footer": "Hai bisogno di aiuto per accedere? Contatta il proprietario dell'area di lavoro.",
+      "tagline": "PartsRelay · Al ritmo dell'officina"
+    },
+    "setup": {
+      "label": "Prepara il tuo banco",
+      "headline": "La tua area di lavoro. La tua rete di officine.",
+      "description": "Inizia dal nome dell'azienda. Potrai aggiungere il team e i contatti WhatsApp quando l'area di lavoro sarà pronta.",
+      "step1": "Dai un nome all'area di lavoro",
+      "step2": "Trova il primo ricambio",
+      "step3": "Invita il tuo team",
+      "workspace": "Configurazione dell'area di lavoro",
+      "identity": "Account connesso",
+      "identity-note": "Il tuo account ti identifica come proprietario dell'area di lavoro."
+    }
+  }
+}

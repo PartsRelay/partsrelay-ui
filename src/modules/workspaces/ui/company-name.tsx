@@ -33,7 +33,7 @@ export function CompanyName({ name }: { name: string }) {
   })
 
   return (
-    <Card>
+    <Card className="workspace-card">
       <CardHeader>
         <CardTitle>
           <h2>{t('company.name.title')}</h2>
@@ -43,7 +43,7 @@ export function CompanyName({ name }: { name: string }) {
       <CardContent>
         <form.AppForm>
           <form.Form>
-            <FieldGroup>
+            <FieldGroup className="workspace-inline-form">
               <form.AppField
                 name="name"
                 validators={{ onSubmit: requiredText('company.errors.name-required') }}

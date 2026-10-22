@@ -9,8 +9,8 @@ import {
 } from 'lucide-react'
 import { type ReactNode, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { env } from '@/env'
 import { errorMessage } from '@/core/errors'
+import { env } from '@/env'
 import { Button } from '@/ui/components/ui/button'
 import {
   Empty,

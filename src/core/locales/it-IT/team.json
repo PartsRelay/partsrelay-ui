@@ -1,0 +1,100 @@
+{
+  "team": {
+    "title": "Membri del team e inviti.",
+    "description": "I membri del team accedono con Google. I clienti WhatsApp si gestiscono separatamente in Contatti e non hanno bisogno di un account PartsRelay.",
+    "summary": {
+      "members_one": "{{count}} membro",
+      "members_other": "{{count}} membri",
+      "invitations_one": "{{count}} invito in sospeso",
+      "invitations_other": "{{count}} inviti in sospeso"
+    },
+    "members": {
+      "title": "Membri dello spazio di lavoro",
+      "description": "Il titolare gestisce azienda e team. Gli amministratori gestiscono contatti e visualizzatori. I visualizzatori possono effettuare ricerche e vedere i contatti.",
+      "columns": {
+        "member": "Membro / Email Google",
+        "role": "Ruolo",
+        "actions": "Azioni membro",
+        "access": "Accesso"
+      },
+      "you": "{{name}} (tu)",
+      "access": "Accesso con Google"
+    },
+    "actions": {
+      "transfer": "Cedi la proprietà",
+      "remove": "Rimuovi",
+      "remove-member": "Rimuovi {{name}}",
+      "copy-link": "Copia link",
+      "copy-link-for": "Copia il link d'invito per {{email}}",
+      "resend": "Invia di nuovo",
+      "resend-to": "Invia di nuovo l'invito a {{email}}",
+      "revoke": "Revoca",
+      "revoke-for": "Revoca l'invito per {{email}}"
+    },
+    "transfer": {
+      "title": "Cedi la proprietà",
+      "description": "Il nuovo proprietario gestisce l'azienda, la sua lingua di WhatsApp e il team, e può eliminare l'azienda. Tu diventi Amministratore e solo il nuovo proprietario potrà annullare l'operazione.",
+      "nobody": "Nel team non c'è ancora nessun altro. Invita prima una persona, poi cedile la proprietà.",
+      "new-owner": "Nuovo proprietario",
+      "choose": "Scegli un membro",
+      "candidate": "{{name}} · {{role}}",
+      "action": "Cedi la proprietà a {{name}}"
+    },
+    "invitations": {
+      "title": "Inviti in sospeso",
+      "description": "Ogni link funziona solo per l'indirizzo email invitato e scade dopo 7 giorni.",
+      "columns": {
+        "invitation": "Email",
+        "role": "Ruolo",
+        "sent": "Inviato il",
+        "actions": "Azioni"
+      },
+      "expired": "Scaduto",
+      "owner-only": "Solo il proprietario",
+      "empty": "Nessun invito in sospeso."
+    },
+    "invite": {
+      "title": "Invita un collega",
+      "description": "Invia l'invito all'indirizzo dell'account Google che il collega userà per accedere.",
+      "email": "Email dell'account Google",
+      "email-placeholder": "nome@azienda.it",
+      "role": "Ruolo",
+      "send": "Invia invito",
+      "errors": {
+        "email": "Inserisci un indirizzo email valido.",
+        "member": "Questa persona fa già parte del team.",
+        "invited": "Questa persona ha già un invito in sospeso."
+      },
+      "hints": {
+        "admin": "Gli amministratori gestiscono i contatti e possono invitare o rimuovere i visualizzatori.",
+        "viewer": "I visualizzatori fanno ricerche e vedono i contatti, senza gestirli.",
+        "admin-invites-viewers": "Come amministratore puoi invitare visualizzatori."
+      }
+    },
+    "confirm": {
+      "remove": {
+        "title": "Rimuovere {{name}}?",
+        "body": "{{name}} perde l'accesso a {{company}} e il suo account viene eliminato, insieme agli inviti che ha inviato. Le ricerche che ha fatto restano all'azienda.",
+        "action": "Rimuovi ed elimina l'account"
+      },
+      "revoke": {
+        "title": "Revocare l'invito per {{email}}?",
+        "body": "Il link d'invito smette subito di funzionare. Potrai invitare di nuovo questa persona più avanti.",
+        "action": "Revoca l'invito"
+      }
+    },
+    "notices": {
+      "ownership-transferred": "Proprietà ceduta a {{name}}. Ora sei Amministratore.",
+      "member-removed": "{{name}} è stato rimosso e il suo account eliminato.",
+      "invitation-sent": "Invito inviato a {{email}}.",
+      "invitation-resent": "Invito inviato di nuovo a {{email}}.",
+      "invitation-revoked": "Invito revocato. Il link non funziona più.",
+      "link-copied": "Link d'invito copiato."
+    },
+    "eyebrow": "03 / TEAM WEB",
+    "safeguards": {
+      "title": "Proprietà e accessi protetti",
+      "description": "Il trasferimento della proprietà e la rimozione di un collega richiedono conferma. Rimuovere un membro elimina il suo account; le sue ricerche restano all'azienda."
+    }
+  }
+}

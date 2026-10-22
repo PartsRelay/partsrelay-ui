@@ -18,5 +18,5 @@ instance.interceptors.request.use((config) => {
 })
 
 export function http<T>(request: AxiosRequestConfig, options?: AxiosRequestConfig): Promise<T> {
-  return instance<T>({ ...request, ...options }).then(({ data }) => data)
+  return instance<T>({ ...request, ...options, withCredentials: true }).then(({ data }) => data)
 }

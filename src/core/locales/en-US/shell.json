@@ -2,13 +2,20 @@
   "nav": {
     "workspace": "Workspace",
     "company": "Company",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "team": "Team",
+    "sections": "Workspace",
+    "searches": "Searches",
+    "contacts": "Contacts"
   },
   "crumbs": {
     "workspace": "Workspace",
     "account": "Account",
     "company": "Company",
-    "profile": "Profile"
+    "profile": "Profile",
+    "team": "Team",
+    "searches": "Searches",
+    "contacts": "Contacts"
   },
   "shell": {
     "user": {

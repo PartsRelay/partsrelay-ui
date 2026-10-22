@@ -4,7 +4,7 @@ import type { Role } from '@/modules/workspaces/core/role'
 const MANAGES: Record<Role, Role[]> = { owner: ['admin', 'viewer'], admin: ['viewer'], viewer: [] }
 
 export type Permissions = {
-  viewWorkspace: boolean
+  viewTeam: boolean
   viewCompany: boolean
   inviteRoles: Role[]
   transferOwnership: boolean
@@ -26,7 +26,7 @@ function can(role: Role, request: Request) {
 
 export function permissionsFor(role: Role): Permissions {
   return {
-    viewWorkspace: can(role, { invitation: ['create'] }),
+    viewTeam: can(role, { invitation: ['create'] }),
     viewCompany: can(role, { organization: ['update'] }),
     inviteRoles: [...MANAGES[role]].reverse(),
     transferOwnership: can(role, { member: ['update'] }),

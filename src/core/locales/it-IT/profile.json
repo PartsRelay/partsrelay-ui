@@ -1,40 +1,56 @@
 {
   "profile": {
-    "title": "Profilo",
-    "description": "Il tuo nome, il tuo account e il tuo posto nell'azienda.",
+    "title": "Il tuo profilo.",
+    "description": "La tua identità Google resta tua. La cronologia delle ricerche appartiene allo spazio di lavoro aziendale.",
     "identity": {
-      "title": "Il tuo account",
+      "title": "Identità Google",
       "description": "Accedi con questa email, tramite Google o un link di accesso.",
       "company": "Azienda",
       "role": "Ruolo",
       "name": "Nome",
       "name-hint": "Il tuo team lo vede accanto alla tua email.",
-      "save": "Salva il nome"
+      "save": "Salva il nome",
+      "provider": "Account Google"
     },
     "leave": {
-      "title": "Lascia l'azienda",
-      "description": "Lasciando {{company}} elimini il tuo account. Le ricerche che hai fatto restano all'azienda.",
-      "action": "Lascia l'azienda",
+      "title": "Elimina il tuo account",
+      "description": "Elimina definitivamente il tuo account e gli inviti che hai inviato, revocando il tuo accesso a {{company}}. Le tue ricerche restano all'azienda.",
+      "action": "Elimina il mio account",
       "owner": {
-        "title": "Il proprietario non può uscire",
-        "description": "Prima cedi l'azienda a un altro membro, oppure elimina l'azienda insieme a tutti gli account.",
-        "transfer": "Cedi la proprietà",
-        "delete": "Elimina l'azienda"
-      }
+        "title": "Sei il titolare dell'azienda",
+        "description": "Trasferisci la proprietà a un altro membro del team prima di eliminare il tuo account personale.",
+        "transfer": "Vai a Team per trasferire la proprietà",
+        "delete": "Esamina eliminazione azienda"
+      },
+      "eyebrow": "ACCOUNT PERSONALE"
     },
     "errors": {
       "name-required": "Inserisci il tuo nome."
     },
     "confirm": {
       "leave": {
-        "title": "Lasciare {{company}}?",
+        "title": "Eliminare il tuo account e lasciare {{company}}?",
         "body": "Il tuo account viene eliminato per sempre, insieme agli inviti che hai inviato, e vieni disconnesso. Le ricerche che hai fatto restano all'azienda. Accedendo di nuovo con questa email crei una nuova azienda.",
-        "action": "Esci ed elimina il mio account"
+        "action": "Elimina il mio account"
       }
     },
     "notices": {
       "name-saved": "Nome salvato.",
-      "left": "Hai lasciato {{company}} e il tuo account è stato eliminato."
+      "left": "Hai lasciato {{company}} e il tuo account è stato eliminato.",
+      "language-saved": "Preferenza della lingua salvata su questo browser."
+    },
+    "eyebrow": "ACCOUNT / IMPOSTAZIONI PERSONALI",
+    "preferences": {
+      "title": "Preferenze",
+      "description": "Scegli la lingua di PartsRelay su questo browser. Non cambia la lingua delle risposte WhatsApp dell'azienda.",
+      "language": "Lingua",
+      "save": "Salva preferenza",
+      "save-error": "Il browser non ha potuto salvare la preferenza. Riprova."
+    },
+    "session": {
+      "title": "Sessione",
+      "description": "Esci da PartsRelay su questo dispositivo.",
+      "action": "Esci"
     }
   }
 }

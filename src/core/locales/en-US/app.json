@@ -58,7 +58,8 @@
     "you-are-not-allowed-to-invite-user-with-this-role": "You cannot invite people with this role.",
     "you-are-not-allowed-to-cancel-this-invitation": "You cannot revoke this invitation.",
     "invitation-limit-reached": "Too many pending invitations. Revoke some before inviting more people.",
-    "organization-membership-limit-reached": "The company has reached its member limit."
+    "organization-membership-limit-reached": "The company has reached its member limit.",
+    "local-review-unavailable": "The local preview session is unavailable. Check that the local backend is running and refresh the test session if it has expired."
   },
   "common": {
     "close": "Close",

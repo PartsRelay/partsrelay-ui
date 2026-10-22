@@ -31,5 +31,6 @@ export const queryClient = new QueryClient({
       staleTime: 30_000,
       retry: (failures, error) => retryable(error) && failures < 2,
     },
+    mutations: { retry: false },
   },
 })

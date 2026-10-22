@@ -1,22 +1,23 @@
 {
   "company": {
-    "title": "Company",
-    "description": "Name, WhatsApp language and deletion of your company. Only the owner sees this page.",
+    "title": "Company details and settings.",
+    "description": "Manage your company name and the language used for WhatsApp replies.",
     "name": {
       "title": "Company name",
       "description": "Your team sees this name.",
-      "label": "Name",
+      "label": "Company name",
       "save": "Save name"
     },
     "language": {
       "title": "WhatsApp language",
       "description": "{{app}} replies to your contacts on WhatsApp in this language.",
-      "label": "Reply language"
+      "label": "Reply language",
+      "save": "Save language"
     },
     "delete": {
-      "title": "Delete company",
+      "title": "Danger zone",
       "description": "Deletes the company with the account of every member, yours included, and all its contacts, searches and invitations.",
-      "action": "Delete company"
+      "action": "Review company deletion"
     },
     "errors": {
       "name-required": "Enter the company name."
@@ -32,6 +33,8 @@
       "renamed": "Company name saved.",
       "language": "WhatsApp language set to {{language}}.",
       "deleted": "The company and every account were deleted. Signing in again starts a new company."
-    }
+    },
+    "eyebrow": "04 / COMPANY SETTINGS",
+    "owner-access": "Owner access only"
   }
 }

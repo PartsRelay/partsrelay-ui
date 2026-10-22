@@ -27,7 +27,7 @@ export function InviteCard() {
           }
         },
         {
-          notice: 'workspace.notices.invitation-sent',
+          notice: 'team.notices.invitation-sent',
           values: { email: invitee.email },
           silent: (error) => inviteeError(error) !== null,
         }
@@ -38,12 +38,12 @@ export function InviteCard() {
   })
 
   return (
-    <Card>
+    <Card className="workspace-card invite-card">
       <CardHeader>
         <CardTitle>
-          <h2>{t('workspace.invite.title')}</h2>
+          <h2>{t('team.invite.title')}</h2>
         </CardTitle>
-        <CardDescription>{t('workspace.invite.description')}</CardDescription>
+        <CardDescription>{t('team.invite.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <form.AppForm>
@@ -53,17 +53,17 @@ export function InviteCard() {
               <form.AppField name="email" validators={{ onSubmit: () => undefined }}>
                 {(field) => (
                   <field.InputField
-                    label={t('workspace.invite.email')}
+                    label={t('team.invite.email')}
                     type="email"
                     autoComplete="off"
-                    placeholder={t('workspace.invite.email-placeholder')}
+                    placeholder={t('team.invite.email-placeholder')}
                   />
                 )}
               </form.AppField>
               <form.Field name="role">
                 {(field) => (
                   <RoleField
-                    label={t('workspace.invite.role')}
+                    label={t('team.invite.role')}
                     roles={me.permissions.inviteRoles}
                     value={field.state.value}
                     onValueChange={field.handleChange}
@@ -72,7 +72,7 @@ export function InviteCard() {
                 )}
               </form.Field>
               <Field orientation="horizontal">
-                <form.SubmitButton>{t('workspace.invite.send')}</form.SubmitButton>
+                <form.SubmitButton className="w-full">{t('team.invite.send')}</form.SubmitButton>
               </Field>
             </FieldGroup>
           </form.Form>

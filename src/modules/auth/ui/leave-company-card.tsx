@@ -5,7 +5,6 @@ import { authClient } from '@/modules/auth/core/auth.client'
 import type { ProfileView } from '@/modules/auth/core/profile'
 import { endSession } from '@/modules/auth/core/session.query'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
-import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
@@ -20,8 +19,9 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
   const { client, pending, run } = useBetterAuthAction()
 
   return (
-    <Card>
+    <Card className="workspace-card profile-danger">
       <CardHeader>
+        <span className="personal-account-label">{t('profile.leave.eyebrow')}</span>
         <CardTitle>
           <h2>{t('profile.leave.title')}</h2>
         </CardTitle>
@@ -30,30 +30,33 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        {view.canLeave ? (
-          <Button
-            variant="destructive"
-            className="justify-self-start"
-            onClick={() => setConfirming(true)}
-          >
-            {t('profile.leave.action')}
-          </Button>
-        ) : (
-          <>
-            <Callout title={t('profile.leave.owner.title')}>
-              {t('profile.leave.owner.description')}
-            </Callout>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" asChild>
-                <Link to="/workspace" search={{ transfer: true }}>
-                  {t('profile.leave.owner.transfer')}
-                </Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link to="/company">{t('profile.leave.owner.delete')}</Link>
-              </Button>
+        {!view.canLeave && (
+          <div className="profile-owner-notice">
+            <img src="/images/owner-warning.svg" alt="" width="20" height="20" />
+            <div>
+              <strong>{t('profile.leave.owner.title')}</strong>
+              <p>{t('profile.leave.owner.description')}</p>
             </div>
-          </>
+          </div>
+        )}
+        <Button
+          variant="destructive"
+          disabled={!view.canLeave || pending}
+          onClick={() => setConfirming(true)}
+        >
+          {t('profile.leave.action')}
+        </Button>
+        {!view.canLeave && (
+          <div className="profile-owner-links">
+            <Button variant="link" asChild>
+              <Link to="/workspace" search={{ transfer: true }}>
+                {t('profile.leave.owner.transfer')}
+              </Link>
+            </Button>
+            <Button variant="link" asChild>
+              <Link to="/company">{t('profile.leave.owner.delete')}</Link>
+            </Button>
+          </div>
         )}
       </CardContent>
       <ConfirmDialog

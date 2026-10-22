@@ -13,9 +13,9 @@ const INVITEE_CODES = [
 ]
 
 export function roleHint(role: Role, me: Me) {
-  if (me.role !== 'owner') return message('workspace.invite.hints.admin-invites-viewers')
+  if (me.role !== 'owner') return message('team.invite.hints.admin-invites-viewers')
 
-  return message(`workspace.invite.hints.${role}`)
+  return message(`team.invite.hints.${role}`)
 }
 
 export function inviteDefaults(me: Me): Invitee {

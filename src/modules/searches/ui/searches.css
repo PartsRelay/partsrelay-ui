@@ -1,0 +1,466 @@
+.search-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.metric {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+}
+.metric > strong {
+  font-family: var(--font-heading);
+  font-size: 34px;
+  line-height: 1.2;
+}
+.metric > p:last-child {
+  color: #455a64;
+  font-size: 14px;
+}
+.search-overview {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 20px;
+}
+.search-overview .panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.channel-pills {
+  display: flex;
+  gap: 10px;
+}
+.channel-pills span {
+  padding: 6px 12px;
+  background: #dff3ef;
+  color: #087781;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.desk-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-block: 1px solid #e8edef;
+}
+.text-link {
+  color: #087781;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+.search-queue {
+  display: grid;
+  gap: 20px;
+}
+.queue-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+.queue-toolbar > input {
+  max-width: 300px;
+  background: #f5f7f8;
+  border-color: transparent;
+}
+.view-switch {
+  display: flex;
+  gap: 6px;
+}
+.view-switch [data-slot='button'] {
+  min-height: 32px;
+  padding: 4px 10px;
+}
+.queue-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.queue-filters label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #f5f7f8;
+  font-size: 13px;
+  padding: 8px 10px;
+  font-weight: 600;
+}
+.queue-filters select {
+  font: inherit;
+  max-width: 160px;
+  background: transparent;
+  color: #142b3a;
+  padding-right: 4px;
+}
+.search-table,
+.result-matches [data-slot='table-container'] {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.search-table [data-slot='table-head'] {
+  padding: 12px 16px;
+  font-size: 12px;
+}
+.search-table [data-slot='table-cell'] {
+  height: 72px;
+  font-size: 14px;
+}
+.search-table [data-slot='table-cell']:nth-child(2) {
+  min-width: 180px;
+  white-space: normal;
+}
+.plate-link {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: #cad6dc;
+  text-underline-offset: 5px;
+}
+.search-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  background: #fceeea;
+  color: #b42318;
+}
+.search-status.status-done {
+  background: #dff3ef;
+  color: #142b3a;
+}
+.search-status.status-running {
+  background: #fff4d6;
+  color: #855a00;
+}
+.search-status.status-running svg {
+  width: 14px;
+  height: 14px;
+}
+.queue-pagination {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-top: 4px;
+}
+.queue-pagination > div {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.queue-pagination > div > span {
+  background: #f5f7f8;
+  padding: 8px;
+  color: #455a64;
+}
+.empty-searches {
+  text-align: center;
+  padding: 48px 20px;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+.empty-searches h3 {
+  font-size: 22px;
+}
+.empty-searches p {
+  color: #455a64;
+  max-width: 440px;
+}
+.search-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.mobile-cards {
+  display: none;
+}
+.search-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  background: white;
+}
+.search-card > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.search-card small,
+.search-card time {
+  color: #455a64;
+  font-size: 14px;
+}
+.search-card:hover {
+  border-color: #087781;
+}
+.new-search-sheet[data-slot='sheet-content'] {
+  width: min(620px, 100vw);
+  max-width: none;
+  padding: 40px;
+  gap: 32px;
+  overflow-y: auto;
+}
+[data-slot='sheet-overlay'] {
+  background: #142b3a80;
+  backdrop-filter: none;
+}
+.new-search-heading {
+  padding: 0;
+  gap: 22px;
+}
+.new-search-heading [data-slot='sheet-title'] {
+  font-size: 32px;
+  font-weight: 600;
+}
+.new-search-heading [data-slot='sheet-description'] {
+  font-size: 16px;
+  line-height: 1.6;
+}
+.new-search-form {
+  display: grid;
+  gap: 32px;
+}
+.new-search-form section {
+  display: grid;
+  gap: 20px;
+}
+.new-search-form h3 {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+}
+.new-search-form [data-slot='input'] {
+  height: 56px;
+}
+.new-search-actions {
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+.new-search-actions button:last-child {
+  flex: 1;
+}
+.form-error {
+  background: #fff0eb;
+  color: #a72518;
+  border: 1px solid #f1c5bc;
+  padding: 14px;
+  border-radius: 6px;
+}
+.result-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(250px, 0.8fr);
+  gap: 24px;
+}
+.vehicle-card {
+  background: #142b3a;
+  border-radius: 12px;
+  color: white;
+  padding: 28px;
+  display: grid;
+  gap: 24px;
+  align-content: start;
+}
+.vehicle-plate {
+  font-family: var(--font-heading);
+  font-size: 32px;
+}
+.vehicle-card h2 {
+  font-size: 32px;
+}
+.vehicle-vin {
+  color: #dff3ef;
+  overflow-wrap: anywhere;
+}
+.vehicle-card dl {
+  display: grid;
+  grid-template-columns: 1fr 0.7fr 1.3fr;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid #1e3d50;
+}
+.vehicle-card dt {
+  font-size: 13px;
+  font-weight: 600;
+  color: #dff3ef;
+  text-transform: uppercase;
+}
+.vehicle-card dd {
+  font-size: 14px;
+  margin-top: 8px;
+}
+.original-summary {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+.part-reference {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  overflow-wrap: anywhere;
+}
+.result-matches {
+  display: grid;
+  gap: 20px;
+}
+.category-panel {
+  display: grid;
+  gap: 24px;
+}
+.catalog-unit {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.catalog-unit h3 {
+  font-size: 18px;
+}
+.catalog-diagram {
+  max-width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  margin-top: 16px;
+}
+.original-parts {
+  display: grid;
+  gap: 12px;
+}
+.original-part {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.original-part strong {
+  font-size: 20px;
+  display: block;
+}
+.request-record {
+  display: grid;
+  gap: 24px;
+}
+.request-record dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.request-record dt {
+  color: #455a64;
+  font-size: 14px;
+}
+.request-record dd {
+  font-weight: 600;
+  margin-top: 8px;
+}
+@media (max-width: 1280px) {
+  .metric {
+    padding: 18px;
+  }
+  .search-metrics {
+    gap: 12px;
+  }
+}
+@media (max-width: 800px) {
+  .search-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .search-overview {
+    grid-template-columns: 1fr;
+  }
+  .result-overview {
+    grid-template-columns: 1fr;
+  }
+  .catalog-unit {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .metric .eyebrow {
+    font-size: 12px;
+  }
+  .metric > strong {
+    font-size: 28px;
+  }
+  .metric > p:last-child {
+    font-size: 12px;
+  }
+  .search-overview {
+    display: none;
+  }
+  .search-table,
+  .view-switch {
+    display: none;
+  }
+  .search-cards,
+  .mobile-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .queue-toolbar > input {
+    max-width: none;
+  }
+  .queue-filters label {
+    max-width: 100%;
+  }
+  .queue-filters select {
+    max-width: 140px;
+  }
+  .queue-pagination {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .queue-pagination > div {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .new-search-sheet[data-slot='sheet-content'] {
+    width: 100%;
+    max-width: 100%;
+    padding: 28px 24px;
+  }
+  .new-search-heading [data-slot='sheet-title'] {
+    font-size: 30px;
+  }
+  .vehicle-card {
+    padding: 24px;
+    gap: 20px;
+  }
+  .vehicle-card h2 {
+    font-size: 26px;
+  }
+  .vehicle-plate {
+    font-size: 28px;
+  }
+  .vehicle-card dl {
+    grid-template-columns: 1fr;
+  }
+  .vehicle-card dd {
+    margin-top: 4px;
+  }
+  .request-record dl {
+    grid-template-columns: 1fr;
+  }
+  .result-matches [data-slot='table-cell'] {
+    white-space: normal;
+    min-width: 100px;
+  }
+}

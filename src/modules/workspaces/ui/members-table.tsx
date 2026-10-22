@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/ui/components/ui/table'
 
-const columns = ['member', 'role', 'actions']
+const columns = ['member', 'role', 'access', 'actions']
 
 export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
   const { t } = useTranslation()
@@ -27,41 +27,42 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
   const [confirming, setConfirming] = useState(false)
 
   return (
-    <Card>
+    <Card className="workspace-card members-card">
       <CardHeader>
         <CardTitle>
           <h2 ref={heading} tabIndex={-1} className="outline-none">
-            {t('workspace.members.title')}
+            {t('team.members.title')}
           </h2>
         </CardTitle>
-        <CardDescription>{t('workspace.members.description')}</CardDescription>
+        <CardDescription>{t('team.members.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
-                <TableHead key={column}>{t(`workspace.members.columns.${column}`)}</TableHead>
+                <TableHead key={column}>{t(`team.members.columns.${column}`)}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
             {memberRows(workspace, me).map((row) => (
               <TableRow key={row.member.id}>
-                <TableCell>
+                <TableCell data-label={t('team.members.columns.member')}>
                   <PersonItem
                     name={row.member.name}
                     email={row.member.email}
                     image={row.member.image}
-                    title={
-                      row.isMe ? t('workspace.members.you', { name: row.member.name }) : undefined
-                    }
+                    title={row.isMe ? t('team.members.you', { name: row.member.name }) : undefined}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell data-label={t('team.members.columns.role')}>
                   <StatusBadge tone="neutral">{t(...row.roleLabel)}</StatusBadge>
                 </TableCell>
-                <TableCell>
+                <TableCell data-label={t('team.members.columns.access')}>
+                  <span className="member-access">{t('team.members.access')}</span>
+                </TableCell>
+                <TableCell data-label={t('team.members.columns.actions')}>
                   <MemberActions
                     row={row}
                     onTransfer={onTransfer}

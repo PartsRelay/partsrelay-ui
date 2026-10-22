@@ -8,8 +8,8 @@ import '@/i18n'
 import { queryClient } from '@/query-client'
 import { router } from '@/router'
 
-// Development runs on mocks, staging and production on the core
-if (import.meta.env.DEV && env.APP_ENV === 'development') {
+// Live API is the default, including local development.
+if (import.meta.env.DEV && env.API_MOCKS) {
   const { worker } = await import('@/core/mocks/browser')
   await worker.start({ onUnhandledRequest: 'bypass' })
 }

@@ -9,16 +9,19 @@ export function WorkspaceHeader() {
   const { workspace } = useMe()
 
   return (
-    <PageHeader
-      title={t('workspace.title')}
-      description={t('workspace.description')}
-      badge={
-        <Badge variant="secondary">
-          {workspaceSummary(workspace, new Date())
-            .map((summary) => t(...summary))
-            .join(' · ')}
-        </Badge>
-      }
-    />
+    <div className="workspace-page-heading">
+      <p className="eyebrow">{t('team.eyebrow')}</p>
+      <PageHeader
+        title={t('team.title')}
+        description={t('team.description')}
+        badge={
+          <Badge variant="secondary">
+            {workspaceSummary(workspace, new Date())
+              .map((summary) => t(...summary))
+              .join(' · ')}
+          </Badge>
+        }
+      />
+    </div>
   )
 }

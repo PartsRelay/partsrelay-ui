@@ -1,0 +1,142 @@
+{
+  "searches": {
+    "eyebrow": "01 / Banco operativo",
+    "greeting": "Bentornato, {{name}}.",
+    "description": "Tieni il banco in movimento. Avvia una ricerca o riprendi le ultime richieste delle officine.",
+    "new-button": "Nuova ricerca",
+    "metrics-label": "Panoramica delle ricerche",
+    "metrics": {
+      "saved": "Ricerche salvate",
+      "completed": "Completate",
+      "running": "In corso",
+      "attention": "Da verificare"
+    },
+    "current-filter": "Tutte le pagine · richiedente selezionato",
+    "current-page": "Nella pagina corrente",
+    "channels-title": "Un banco. Due canali.",
+    "channels-body": "Riunisci le ricerche web del tuo team e le richieste WhatsApp delle officine.",
+    "channel-note": "Ogni richiesta rimane nello storico condiviso delle ricerche aziendali.",
+    "desk-title": "La tua area di lavoro",
+    "desk-body": "Un banco ricambi condiviso per chi lavora al banco.",
+    "member-count_one": "{{count}} membro del team",
+    "member-count_other": "{{count}} membri del team",
+    "manage-team": "Gestisci il tuo team",
+    "queue": "Coda delle ricerche",
+    "queue-description": "Ogni richiesta, dal banco o da WhatsApp, in un unico posto.",
+    "filter-page": "Filtra questa pagina per targa o veicolo",
+    "view": "Visualizzazione delle ricerche",
+    "table": "Tabella",
+    "cards": "Schede",
+    "requesters": "Richieste da",
+    "everyone": "Tutti",
+    "team": "Team web",
+    "workshops": "Officine",
+    "person": "Persona",
+    "status-on-page": "Stato in questa pagina",
+    "all-statuses": "Tutti",
+    "refresh": "Aggiorna",
+    "refreshing": "Aggiornamento…",
+    "loading": "Caricamento delle ricerche",
+    "load-error": "Non è stato possibile caricare queste ricerche.",
+    "retry": "Riprova",
+    "no-matches": "Nessun risultato in questa pagina.",
+    "no-matches-body": "Rimuovi i filtri della pagina o prova un'altra pagina.",
+    "empty-title": "Il tuo banco ricambi è pronto.",
+    "empty-body": "Avvia la prima ricerca con una targa e il ricambio che ti serve.",
+    "identifying": "Identificazione del veicolo…",
+    "vehicle-unknown": "Veicolo non identificato",
+    "former-requester": "Ex membro dell'area di lavoro",
+    "showing": "Visualizzate {{count}} ricerche su {{total}}",
+    "filtered-page": "Filtri della pagina applicati",
+    "previous": "Precedente",
+    "next": "Successiva",
+    "page": "Pagina {{page}} di {{total}}",
+    "status": {
+      "running": "In corso",
+      "done": "Completata",
+      "vehicle_not_found": "Veicolo non trovato",
+      "not_matched": "Nessun ricambio corrispondente",
+      "failed": "Non riuscita"
+    },
+    "columns": {
+      "plate": "Targa",
+      "vehicle": "Veicolo",
+      "status": "Stato",
+      "channel": "Canale",
+      "requester": "Richiedente",
+      "requested": "Data richiesta"
+    },
+    "new": {
+      "eyebrow": "Nuova richiesta / Web",
+      "title": "Trova il ricambio.",
+      "description": "Inserisci una targa e il ricambio che ti serve. Il risultato rimarrà nella coda delle ricerche condivisa.",
+      "vehicle-step": "01 / Identifica il veicolo",
+      "plate": "Targa",
+      "plate-hint": "Inserisci una targa di 4–8 lettere o numeri.",
+      "plate-error": "Inserisci una targa valida di 4–8 lettere o numeri.",
+      "plate-placeholder": "Ad esempio, GH482KL",
+      "part-step": "02 / Descrivi il ricambio",
+      "part": "Ricambio richiesto",
+      "part-hint": "Indica il nome del ricambio e, se nota, la sua posizione.",
+      "part-placeholder": "Ad esempio, pastiglie freno anteriori",
+      "query-error": "Descrivi il ricambio usando da 2 a 200 caratteri.",
+      "tips": "Consigli per la ricerca",
+      "tips-body": "Controlla la targa e indica la posizione del ricambio, ad esempio anteriore o posteriore.",
+      "requester": "Richiesta da {{name}} · Web",
+      "submit": "Avvia ricerca →",
+      "submitting": "Avvio della ricerca…",
+      "acceptance-unknown": "Non è stato possibile confermare se la richiesta è stata accettata. Controlla la coda delle ricerche condivisa prima di riprovare, per evitare una richiesta duplicata.",
+      "check-queue": "Controlla le ricerche"
+    },
+    "fitment": "I risultati aiutano a identificare il ricambio. Verifica sempre la compatibilità con il veicolo prima dell'acquisto.",
+    "result-eyebrow": "01 / Risultato della ricerca",
+    "result-title": "Risultato della ricerca",
+    "result-description": "La tua richiesta, l'identificazione del veicolo e i riferimenti trovati.",
+    "back": "Torna alle ricerche",
+    "original-title": "Riferimento del ricambio originale",
+    "reference-count_one": "{{count}} riferimento originale",
+    "reference-count_other": "{{count}} riferimenti originali",
+    "awaiting-results": "I riferimenti appariranno al termine della ricerca.",
+    "no-references": "Non sono disponibili riferimenti originali per questa richiesta.",
+    "aftermarket-title": "Corrispondenze aftermarket",
+    "match-count_one": "{{count}} riferimento corrispondente",
+    "match-count_other": "{{count}} riferimenti corrispondenti",
+    "no-aftermarket": "Non sono stati restituiti riferimenti aftermarket.",
+    "parts": {
+      "brand": "Marca",
+      "reference": "Riferimento",
+      "description": "Descrizione",
+      "original": "Riferimento originale"
+    },
+    "catalogue": "Sezione del catalogo",
+    "diagram": "Schema dei ricambi del veicolo",
+    "request-record": "Dettagli della richiesta",
+    "company-history": "Lo storico rimane di proprietà dell'azienda, sia per il Web sia per WhatsApp.",
+    "outcome": {
+      "running": {
+        "title": "La ricerca è in corso.",
+        "body": "Stiamo identificando il veicolo e cercando i ricambi corrispondenti. Questa pagina si aggiorna automaticamente."
+      },
+      "results": {
+        "title": "Riferimenti corrispondenti trovati.",
+        "body": "Controlla il riferimento originale e la compatibilità con il veicolo. Prezzi e disponibilità dei fornitori non sono inclusi."
+      },
+      "vehicle_not_found": {
+        "title": "Non è stato possibile identificare il veicolo.",
+        "body": "Controlla la targa e avvia una nuova ricerca. La copertura dipende dal catalogo dei veicoli."
+      },
+      "not_matched": {
+        "title": "Nessun ricambio corrispondente trovato.",
+        "body": "Prova una descrizione più precisa, indicando anche la posizione del ricambio."
+      },
+      "failed": {
+        "title": "Non è stato possibile completare la ricerca.",
+        "body": "Il servizio di catalogo non ha potuto completare la richiesta. Puoi avviare una nuova ricerca."
+      },
+      "unavailable": {
+        "title": "I dettagli di questo risultato non sono più disponibili.",
+        "body": "La richiesta è salvata nello storico, ma non è stato possibile recuperare i dettagli dal catalogo. Avvia una nuova ricerca per ottenere risultati aggiornati."
+      }
+    }
+  }
+}

@@ -39,6 +39,7 @@ export type Workspace = {
   id: string
   name: string
   locale: Locale
+  storedLocale: string | undefined
   setup: 'pending' | 'done'
   metadata: Metadata
   members: Member[]
@@ -69,6 +70,7 @@ export function toWorkspace(organization: FullOrganization): Workspace {
     id: organization.id,
     name: organization.name,
     locale: toLocale(organization.locale),
+    storedLocale: organization.locale,
     setup: metadata.setup === 'pending' ? 'pending' : 'done',
     metadata,
     members: organization.members.map((member) => ({
@@ -175,16 +177,16 @@ export function transferCandidates(workspace: Workspace, me: Me) {
 
 export function transferAction(candidate?: Member) {
   return candidate
-    ? message('workspace.transfer.action', { name: candidate.name })
-    : message('workspace.transfer.title')
+    ? message('team.transfer.action', { name: candidate.name })
+    : message('team.transfer.title')
 }
 
 export function workspaceSummary(workspace: Workspace, now: Date) {
   const waiting = pendingInvitations(workspace).filter(({ expiresAt }) => isAfter(expiresAt, now))
 
   return [
-    message('workspace.summary.members', { count: workspace.members.length }),
-    message('workspace.summary.invitations', { count: waiting.length }),
+    message('team.summary.members', { count: workspace.members.length }),
+    message('team.summary.invitations', { count: waiting.length }),
   ]
 }
 

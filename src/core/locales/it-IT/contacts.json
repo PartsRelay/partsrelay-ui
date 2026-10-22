@@ -1,0 +1,113 @@
+{
+  "contacts": {
+    "eyebrow": "02 / RETE OFFICINE",
+    "title": "Connetti le officine che servi.",
+    "description": "I contatti delle officine usano WhatsApp. Non hanno bisogno di un account PartsRelay o Google.",
+    "directory": {
+      "title": "Rubrica contatti",
+      "description": "Gestisci le officine collegate alla tua azienda.",
+      "count_one": "{{count}} contatto officina",
+      "count_other": "{{count}} contatti officina",
+      "filtered-count_one": "{{count}} contatto corrispondente",
+      "filtered-count_other": "{{count}} contatti corrispondenti",
+      "privacy": "I numeri restano nascosti finché non apri i dettagli."
+    },
+    "filters": {
+      "label": "Filtra contatti per stato",
+      "all": "Tutti i contatti"
+    },
+    "status": {
+      "active": "Attivo",
+      "blocked": "Bloccato"
+    },
+    "columns": {
+      "contact": "Contatto",
+      "status": "Stato",
+      "searches": "Ricerche",
+      "last-search": "Ultima ricerca",
+      "actions": "Azioni"
+    },
+    "whatsapp-contact": "Contatto WhatsApp",
+    "unnamed": "Contatto con finale {{digits}}",
+    "total": "Totale",
+    "month": "Questo mese",
+    "never": "Nessuna ricerca",
+    "loading": "Caricamento contatti…",
+    "actions": {
+      "add": "Aggiungi officina",
+      "edit": "Modifica",
+      "block": "Blocca",
+      "unblock": "Sblocca",
+      "delete": "Elimina",
+      "view": "Mostra dettagli",
+      "hide": "Nascondi dettagli",
+      "cancel": "Annulla",
+      "save": "Salva contatto",
+      "retry": "Riprova",
+      "view-for": "Mostra dettagli di {{name}}",
+      "hide-for": "Nascondi dettagli di {{name}}",
+      "edit-for": "Modifica {{name}}",
+      "block-for": "Blocca {{name}}",
+      "unblock-for": "Sblocca {{name}}",
+      "delete-for": "Elimina {{name}}"
+    },
+    "details": {
+      "phone": "Telefono",
+      "channel": "Canale",
+      "joined": "Data aggiunta"
+    },
+    "form": {
+      "add-title": "Aggiungi un contatto officina",
+      "add-description": "Aggiungi il numero WhatsApp dell'officina. Il contatto sarà attivo e potrà inviare ricerche immediatamente.",
+      "edit-title": "Modifica nome contatto",
+      "edit-description": "Scegli il nome visibile al team. Lascia vuoto per usare il nome del profilo WhatsApp.",
+      "phone": "Numero WhatsApp",
+      "phone-hint": "Includi il prefisso internazionale, ad esempio +39 o +1.",
+      "name": "Nome contatto (facoltativo)",
+      "name-hint": "Usa il nome dell'officina o del contatto riconosciuto dal team.",
+      "phone-error": "Inserisci un numero internazionale valido con il prefisso del Paese.",
+      "name-error": "Usa al massimo 255 caratteri.",
+      "server-validation": "Impossibile salvare il contatto. Controlla il numero WhatsApp e il nome del contatto, poi riprova."
+    },
+    "empty": {
+      "title": "La tua rete di officine inizia qui.",
+      "description": "Aggiungi il numero WhatsApp di un'officina per collegarla alla tua azienda.",
+      "filtered-title": "Nessun contatto con questo stato.",
+      "filtered-description": "Scegli un altro stato o visualizza tutti i contatti."
+    },
+    "error": {
+      "title": "Impossibile caricare i contatti.",
+      "description": "Controlla la connessione e riprova. I contatti non sono stati modificati."
+    },
+    "pagination": {
+      "label": "Pagine dei contatti",
+      "page": "Pagina {{page}} di {{pages}}",
+      "previous": "Precedente",
+      "next": "Successiva"
+    },
+    "safety": {
+      "title": "Gestione sicura dei contatti",
+      "description": "Il blocco impedisce nuove ricerche. L'eliminazione è permanente. Controlla il nome nella conferma prima di continuare.",
+      "viewer": "Puoi vedere contatti e attività di ricerca. Per aggiungere, modificare, bloccare o eliminare un contatto, chiedi al titolare o a un amministratore."
+    },
+    "confirm": {
+      "block": {
+        "title": "Bloccare {{name}}?",
+        "description": "{{name}} non potrà più inviare nuove ricerche alla tua azienda tramite WhatsApp. Potrai sbloccare il contatto in seguito.",
+        "action": "Blocca contatto"
+      },
+      "delete": {
+        "title": "Eliminare {{name}}?",
+        "description": "{{name}} verrà eliminato definitivamente dai contatti della tua azienda. L'azione non può essere annullata.",
+        "action": "Elimina contatto"
+      }
+    },
+    "notices": {
+      "added": "Contatto officina aggiunto.",
+      "updated": "Nome contatto salvato.",
+      "blocked": "{{name}} è bloccato.",
+      "unblocked": "{{name}} è di nuovo attivo.",
+      "deleted": "{{name}} è stato eliminato."
+    }
+  }
+}
