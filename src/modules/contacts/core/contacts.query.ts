@@ -4,10 +4,10 @@ import {
   getGetApiV1WorkspaceContactsQueryKey,
 } from '@/core/api/endpoints/contacts/contacts'
 import type { ContactStatus, GetApiV1WorkspaceContacts200 } from '@/core/api/models'
-import { DEFAULT_PER_PAGE } from '@/core/pagination'
+import { DEFAULT_PER_PAGE, type PaginationParams } from '@/core/pagination'
 import type { ContactsSearch } from '@/modules/contacts/core/contacts'
 
-export type ContactListParams = { status?: ContactStatus[]; page: number; perPage: number }
+export type ContactListParams = PaginationParams & { status?: ContactStatus[] }
 
 export type ContactsPage = GetApiV1WorkspaceContacts200
 
