@@ -11,7 +11,7 @@ export default defineConfig({
   },
 
   test: {
-    include: ['src/modules/*/tests/unit/**/*.test.ts'],
+    include: ['src/{core,modules/*}/tests/unit/**/*.test.ts'],
     environment: 'node',
     unstubGlobals: true,
   },

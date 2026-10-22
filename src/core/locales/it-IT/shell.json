@@ -1,10 +1,12 @@
 {
   "nav": {
+    "contacts": "Contatti",
     "workspace": "Area di lavoro",
     "company": "Azienda",
     "breadcrumb": "Percorso"
   },
   "crumbs": {
+    "contacts": "Contatti",
     "workspace": "Area di lavoro",
     "account": "Account",
     "company": "Azienda",

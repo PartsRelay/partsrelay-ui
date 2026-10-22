@@ -14,6 +14,7 @@ import {
   type Person,
   type Role,
 } from '@/core/mocks/data'
+import type { FieldError } from '@/core/errors'
 
 type World = {
   signedIn: boolean
@@ -50,8 +51,8 @@ function world<T>(change: (state: World) => T): T {
 }
 
 // Errors in the shape the core sends
-function fail(status: number, code: string, message = code): never {
-  throw HttpResponse.json({ code, status, message }, { status })
+export function fail(status: number, code: string, message = code, fields?: FieldError[]): never {
+  throw HttpResponse.json({ code, status, message, ...(fields && { fields }) }, { status })
 }
 
 function signedIn(state: World) {
@@ -62,6 +63,13 @@ function signedIn(state: World) {
 
 const myRole = ({ company, me }: World) =>
   company.members.find(({ userId }) => userId === me.id)?.role
+
+// The REST mocks act for the signed in member
+export function signedInMember() {
+  return world((state) =>
+    state.signedIn ? { company: state.company.slug, role: myRole(state) } : null
+  )
+}
 
 function ownerOnly(state: World, code: string) {
   if (myRole(state) !== 'owner') fail(403, code)

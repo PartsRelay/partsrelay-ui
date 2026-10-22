@@ -4,6 +4,7 @@ import type { Role } from '@/modules/workspaces/core/role'
 const MANAGES: Record<Role, Role[]> = { owner: ['admin', 'viewer'], admin: ['viewer'], viewer: [] }
 
 export type Permissions = {
+  manageContacts: boolean
   viewWorkspace: boolean
   viewCompany: boolean
   inviteRoles: Role[]
@@ -26,6 +27,8 @@ function can(role: Role, request: Request) {
 
 export function permissionsFor(role: Role): Permissions {
   return {
+    // Same rule as the contact policy of the core
+    manageContacts: role !== 'viewer',
     viewWorkspace: can(role, { invitation: ['create'] }),
     viewCompany: can(role, { organization: ['update'] }),
     inviteRoles: [...MANAGES[role]].reverse(),
