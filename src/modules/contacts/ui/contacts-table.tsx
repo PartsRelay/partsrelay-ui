@@ -44,7 +44,7 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
 
           return (
             <TableRow key={row.contact.id}>
-              <TableCell>
+              <TableCell className="w-56 whitespace-normal wrap-anywhere">
                 {editing ? (
                   <ContactNameForm row={row} onDone={() => setRenaming(null)} />
                 ) : row.whatsappName ? (
