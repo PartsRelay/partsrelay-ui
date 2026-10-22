@@ -3,6 +3,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { Navigate, Outlet, redirect, useLocation } from '@tanstack/react-router'
 import { useEffect, useMemo } from 'react'
 import { requireSession, type Session, sessionQuery } from '@/modules/auth/core/session.query'
+import { useLiveLookups } from '@/modules/lookups/ui/hooks/use-live-lookups'
 import { loadAccount } from '@/modules/workspaces/core/account'
 import { canOpen, homePath, pageAt } from '@/modules/workspaces/core/navigation'
 import { findMe, type Me, needsSetup } from '@/modules/workspaces/core/workspace'
@@ -64,6 +65,7 @@ function SignedIn({ session }: { session: NonNullable<Session> }) {
 
 function AppShell() {
   const { me } = useMe()
+  useLiveLookups()
   const allowed = useLocation({
     select: (location) => canOpen(pageAt(location.pathname), me.permissions),
   })

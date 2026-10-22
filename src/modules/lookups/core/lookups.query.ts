@@ -10,12 +10,9 @@ import {
 import type {
   GetApiV1LookupsLookupId200,
   GetApiV1WorkspaceLookups200,
-  LookupObject,
   SearcherType,
 } from '@/core/api/models'
 import { type PaginationParams, withPerPage } from '@/core/pagination'
-
-export const RUNNING_REFRESH = 15_000
 
 export type LookupListParams = PaginationParams & {
   searcherType?: SearcherType
@@ -42,13 +39,6 @@ export function lookupKey(id: number) {
   return getGetApiV1LookupsLookupIdQueryKey(String(id))
 }
 
-type Polled<T> = { state: { data?: T } }
-
-// Polling covers a lost live stream while something runs
-function refreshWhileRunning(lookups: LookupObject[]) {
-  return lookups.some(({ status }) => status === 'running') ? RUNNING_REFRESH : false
-}
-
 function sameSearcher(a: LookupListParams, b: LookupListParams) {
   return a.searcherType === b.searcherType && a.searcherId === b.searcherId
 }
@@ -69,8 +59,6 @@ export function lookupsQuery(params: LookupListParams) {
 
       return before && sameSearcher(before, params) ? previous : undefined
     },
-    refetchInterval: ({ state }: Polled<LookupsPage>) =>
-      refreshWhileRunning(state.data?.data ?? []),
   }
 }
 
@@ -83,7 +71,5 @@ export function lookupQuery(id: number) {
     select: lookupOf,
     // The page shows its own error
     meta: { silent: true },
-    refetchInterval: ({ state }: Polled<LookupResponse>) =>
-      refreshWhileRunning(state.data ? [state.data.data] : []),
   }
 }

@@ -4,12 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { http } from '@/core/http/client'
 import type { LookupObject } from '@/core/api/models'
 import { type PaginationParams, withPerPage } from '@/core/pagination'
-import {
-  RUNNING_REFRESH,
-  lookupQuery,
-  lookupsListKey,
-  lookupsQuery,
-} from '@/modules/lookups/core/lookups.query'
+import { lookupQuery, lookupsListKey, lookupsQuery } from '@/modules/lookups/core/lookups.query'
 import { lookupFixture, pageFixture } from '@/modules/lookups/tests/unit/fixtures'
 
 vi.mock('@/core/http/client', () => ({ http: vi.fn() }))
@@ -50,19 +45,9 @@ describe('lookup queries', () => {
     expect(query.select(response)).toMatchObject({ id: 9, status: 'done' })
   })
 
-  it('polls every 15 seconds while a lookup runs', () => {
-    const done = lookup()
-    const running = lookup({ status: 'running', categories: undefined })
-    const list = lookupsQuery({ page: 1 }).refetchInterval
-    const detail = lookupQuery(1).refetchInterval
-
-    expect(RUNNING_REFRESH).toBe(15_000)
-    expect(list({ state: { data: pageFixture([done, running]) } })).toBe(RUNNING_REFRESH)
-    expect(list({ state: { data: pageFixture([done]) } })).toBe(false)
-    expect(list({ state: {} })).toBe(false)
-    expect(detail({ state: { data: { data: running } } })).toBe(RUNNING_REFRESH)
-    expect(detail({ state: { data: { data: done } } })).toBe(false)
-    expect(detail({ state: {} })).toBe(false)
+  it('never polls, the live stream refreshes them', () => {
+    expect(lookupsQuery({ page: 1 })).not.toHaveProperty('refetchInterval')
+    expect(lookupQuery(1)).not.toHaveProperty('refetchInterval')
   })
 
   it('keeps the previous page while the next loads, not across searchers', () => {
