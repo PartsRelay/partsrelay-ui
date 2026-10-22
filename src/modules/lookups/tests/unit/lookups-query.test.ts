@@ -3,7 +3,7 @@ import axios from 'axios'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { http } from '@/core/http/client'
 import type { LookupObject } from '@/core/api/models'
-import { DEFAULT_PER_PAGE } from '@/core/pagination'
+import { DEFAULT_PER_PAGE, type PaginationParams } from '@/core/pagination'
 import {
   RUNNING_REFRESH,
   lookupQuery,
@@ -81,7 +81,7 @@ describe('lookup queries', () => {
     }
     client.setQueryData(lookupsListKey(params), previous)
     const query = client.getQueryCache().find({ queryKey: lookupsListKey(params) })!
-    const placeholder = (next: typeof params | { page: number; perPage: number }) =>
+    const placeholder = (next: typeof params | PaginationParams) =>
       lookupsQuery(next).placeholderData(previous, query as never)
 
     expect(placeholder({ ...params, page: 2 })).toBe(previous)

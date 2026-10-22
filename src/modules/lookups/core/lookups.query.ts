@@ -13,12 +13,11 @@ import type {
   LookupObject,
   SearcherType,
 } from '@/core/api/models'
+import type { PaginationParams } from '@/core/pagination'
 
 export const RUNNING_REFRESH = 15_000
 
-export type LookupListParams = {
-  page: number
-  perPage: number
+export type LookupListParams = PaginationParams & {
   searcherType?: SearcherType
   searcherId?: number
 }
