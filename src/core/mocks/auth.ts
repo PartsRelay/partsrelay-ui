@@ -67,9 +67,16 @@ const myRole = ({ company, me }: World) =>
 // The REST mocks act for the signed in member
 export function signedInMember() {
   return world((state) =>
-    state.signedIn ? { company: state.company.slug, role: myRole(state) } : null
+    state.signedIn ? { company: state.company.slug, role: myRole(state), user: state.me } : null
   )
 }
+
+export function member() {
+  return signedInMember() ?? fail(401, 'UNAUTHORIZED_ACCESS')
+}
+
+export const invalid = (field: string, rule: string) =>
+  fail(422, 'VALIDATION_ERROR', 'VALIDATION_ERROR', [{ field, rule }])
 
 function ownerOnly(state: World, code: string) {
   if (myRole(state) !== 'owner') fail(403, code)

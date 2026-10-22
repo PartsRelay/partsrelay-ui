@@ -11,9 +11,9 @@ import {
   type PatchApiV1WorkspaceContactsContactIdBody,
   type PostApiV1WorkspaceContactsBody,
 } from '@/core/api/models'
-import { fail, signedInMember } from '@/core/mocks/auth'
-import { daysAgo } from '@/core/mocks/data'
-import { DEFAULT_PER_PAGE } from '@/core/pagination'
+import { fail, invalid, member } from '@/core/mocks/auth'
+import { daysAgo, page } from '@/core/mocks/data'
+import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
 import { MAX_STRING_LENGTH } from '@/core/strings'
 
 // Contacts of each company, by company slug
@@ -22,7 +22,6 @@ type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
 type Searches = [total: number, month: number, lastDaysAgo: number | null]
 
 const INTERNATIONAL = /^\+[1-9]\d{7,14}$/
-const PER_PAGE_MAX = 100
 
 const contact = (
   id: number,
@@ -100,18 +99,10 @@ function directory<T>(change: (state: Directory) => T): T {
   return result
 }
 
-function member() {
-  return signedInMember() ?? fail(401, 'UNAUTHORIZED_ACCESS')
-}
-
 // Same rule as the contact policy of the core
 function authorize(role: string | undefined) {
   if (role === 'viewer') fail(403, 'AUTHORIZATION_FAILURE')
 }
-
-// The core names the field and the VineJS rule
-const invalid = (field: string, rule: string) =>
-  fail(422, 'VALIDATION_ERROR', 'VALIDATION_ERROR', [{ field, rule }])
 
 const isStatus = (value: unknown): value is ContactObject['status'] =>
   Object.values<unknown>(ContactObjectStatus).includes(value)
@@ -142,26 +133,6 @@ function checkedName(name: unknown) {
   return trimmed
 }
 
-function page(items: ContactObject[], currentPage: number, perPage: number) {
-  const lastPage = Math.max(1, Math.ceil(items.length / perPage))
-  const link = (target: number) => `/?page=${target}`
-
-  return {
-    data: items.slice((currentPage - 1) * perPage, currentPage * perPage),
-    metadata: {
-      total: items.length,
-      perPage,
-      currentPage,
-      lastPage,
-      firstPage: 1,
-      firstPageUrl: link(1),
-      lastPageUrl: link(lastPage),
-      nextPageUrl: currentPage < lastPage ? link(currentPage + 1) : null,
-      previousPageUrl: currentPage > 1 ? link(currentPage - 1) : null,
-    },
-  } satisfies GetApiV1WorkspaceContacts200
-}
-
 function found(state: Directory, company: string, id: string) {
   return (
     contactsOf(state, company).find((item) => item.id === Number(id)) ?? fail(404, 'ROW_NOT_FOUND')
@@ -178,14 +149,14 @@ export const contactMocks = [
     const perPage = Number(query.get('perPage') ?? DEFAULT_PER_PAGE)
     if (query.has('status') || !statuses.every(isStatus)) invalid('status', 'enum')
     if (!(currentPage >= 1)) invalid('page', 'min')
-    if (!(perPage >= 1 && perPage <= PER_PAGE_MAX)) invalid('perPage', 'range')
+    if (!(perPage >= 1 && perPage <= MAX_PER_PAGE)) invalid('perPage', 'range')
 
     return directory((state) => {
       const matching = contactsOf(state, company)
         .filter((item) => statuses.length === 0 || statuses.includes(item.status))
         .sort((a, b) => b.id - a.id)
 
-      return page(matching, currentPage, perPage)
+      return page(matching, currentPage, perPage) satisfies GetApiV1WorkspaceContacts200
     })
   }),
   getPostApiV1WorkspaceContactsMockHandler(async ({ request }) => {
