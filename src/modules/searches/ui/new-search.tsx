@@ -152,6 +152,7 @@ export function NewSearch({
                       type="button"
                       variant="outline"
                       onClick={() => {
+                        void client.invalidateQueries({ queryKey: searchKeys.all(workspace.id) })
                         onOpenChange(false)
                         void navigate({ to: '/searches', search: { page: 1, requester: 'all' } })
                       }}

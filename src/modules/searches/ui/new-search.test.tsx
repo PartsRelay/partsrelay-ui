@@ -1,6 +1,7 @@
 import { isValidElement, type ReactElement, type ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { failureNotice } from '@/modules/auth/core/session.query'
+import { searchKeys } from '@/modules/searches/core/searches.query'
 import { NewSearch } from '@/modules/searches/ui/new-search'
 
 const harness = vi.hoisted(() => ({
@@ -157,6 +158,9 @@ describe('new search submission', () => {
     ).toBe(true)
     const check = tree.find((node) => text(node.props.children) === 'searches.new.check-queue')!
     check.props.onClick!()
+    expect(harness.invalidateQueries).toHaveBeenCalledWith({
+      queryKey: searchKeys.all('company-a'),
+    })
     expect(harness.close).toHaveBeenCalledWith(false)
     expect(harness.navigate).toHaveBeenCalledWith({
       to: '/searches',
