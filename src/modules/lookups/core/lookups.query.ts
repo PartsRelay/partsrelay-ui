@@ -13,7 +13,7 @@ import type {
   LookupObject,
   SearcherType,
 } from '@/core/api/models'
-import type { PaginationParams } from '@/core/pagination'
+import { type PaginationParams, withPerPage } from '@/core/pagination'
 
 export const RUNNING_REFRESH = 15_000
 
@@ -61,7 +61,8 @@ export function lookupsQuery(params: LookupListParams) {
   return {
     queryKey: lookupsListKey(params),
     // The OpenAPI omits the filters, axios sends them
-    queryFn: ({ signal }: QueryFunctionContext) => getApiV1WorkspaceLookups({ params }, signal),
+    queryFn: ({ signal }: QueryFunctionContext) =>
+      getApiV1WorkspaceLookups({ params: withPerPage(params) }, signal),
     // Keep the previous page only for the same searcher
     placeholderData: (previous?: LookupsPage, query?: Query<LookupsPage>) => {
       const before = query && listParamsOf(query.queryKey)

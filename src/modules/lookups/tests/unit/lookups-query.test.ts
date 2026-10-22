@@ -3,7 +3,7 @@ import axios from 'axios'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { http } from '@/core/http/client'
 import type { LookupObject } from '@/core/api/models'
-import { DEFAULT_PER_PAGE, type PaginationParams } from '@/core/pagination'
+import { type PaginationParams, withPerPage } from '@/core/pagination'
 import {
   RUNNING_REFRESH,
   lookupQuery,
@@ -22,21 +22,16 @@ describe('lookup queries', () => {
   it('asks the core for one searcher at a time, through the generated client', async () => {
     const page = pageFixture([lookupFixture(3, { source: 'whatsapp' })])
     vi.mocked(http).mockResolvedValue(page)
-    const params = {
-      page: 2,
-      perPage: DEFAULT_PER_PAGE,
-      searcherType: 'contact' as const,
-      searcherId: 7,
-    }
+    const params = { page: 2, searcherType: 'contact' as const, searcherId: 7 }
 
     expect(lookupsQuery(params).queryKey).toEqual(['/api/v1/workspace/lookups', params])
     expect(await new QueryClient().fetchQuery(lookupsQuery(params))).toBe(page)
     expect(http).toHaveBeenCalledWith(
       expect.objectContaining({ url: '/api/v1/workspace/lookups', method: 'GET' }),
-      { params }
+      { params: { ...params, perPage: 20 } }
     )
-    expect(axios.getUri({ url: '/lookups', params })).toBe(
-      '/lookups?page=2&perPage=20&searcherType=contact&searcherId=7'
+    expect(axios.getUri({ url: '/lookups', params: withPerPage(params) })).toBe(
+      '/lookups?page=2&searcherType=contact&searcherId=7&perPage=20'
     )
   })
 
@@ -58,7 +53,7 @@ describe('lookup queries', () => {
   it('polls every 15 seconds while a lookup runs', () => {
     const done = lookup()
     const running = lookup({ status: 'running', categories: undefined })
-    const list = lookupsQuery({ page: 1, perPage: DEFAULT_PER_PAGE }).refetchInterval
+    const list = lookupsQuery({ page: 1 }).refetchInterval
     const detail = lookupQuery(1).refetchInterval
 
     expect(RUNNING_REFRESH).toBe(15_000)
@@ -73,12 +68,7 @@ describe('lookup queries', () => {
   it('keeps the previous page while the next loads, not across searchers', () => {
     const client = new QueryClient()
     const previous = pageFixture([lookup()])
-    const params = {
-      page: 1,
-      perPage: DEFAULT_PER_PAGE,
-      searcherType: 'user' as const,
-      searcherId: 101,
-    }
+    const params = { page: 1, searcherType: 'user' as const, searcherId: 101 }
     client.setQueryData(lookupsListKey(params), previous)
     const query = client.getQueryCache().find({ queryKey: lookupsListKey(params) })!
     const placeholder = (next: typeof params | PaginationParams) =>
@@ -86,7 +76,7 @@ describe('lookup queries', () => {
 
     expect(placeholder({ ...params, page: 2 })).toBe(previous)
     expect(placeholder({ ...params, searcherId: 102 })).toBeUndefined()
-    expect(placeholder({ page: 1, perPage: DEFAULT_PER_PAGE })).toBeUndefined()
+    expect(placeholder({ page: 1 })).toBeUndefined()
     expect(lookupsQuery(params).placeholderData()).toBeUndefined()
   })
 })
