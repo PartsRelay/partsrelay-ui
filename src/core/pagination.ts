@@ -1,5 +1,8 @@
 import { message } from '@/core/message'
 
+// Page size of every paginated list of the app
+export const DEFAULT_PER_PAGE = 20
+
 // The metadata of every paginated list of the core
 export type PageMetadata = {
   total: number

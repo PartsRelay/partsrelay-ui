@@ -4,9 +4,8 @@ import {
   getGetApiV1WorkspaceContactsQueryKey,
 } from '@/core/api/endpoints/contacts/contacts'
 import type { ContactStatus, GetApiV1WorkspaceContacts200 } from '@/core/api/models'
+import { DEFAULT_PER_PAGE } from '@/core/pagination'
 import type { ContactsSearch } from '@/modules/contacts/core/contacts'
-
-export const CONTACTS_PER_PAGE = 20
 
 export type ContactListParams = { status?: ContactStatus[]; page: number; perPage: number }
 
@@ -21,7 +20,7 @@ export function contactsListKey(params: ContactListParams) {
 }
 
 export function contactListParams({ status, page }: ContactsSearch): ContactListParams {
-  const params = { page, perPage: CONTACTS_PER_PAGE }
+  const params = { page, perPage: DEFAULT_PER_PAGE }
 
   return status ? { status: [status], ...params } : params
 }

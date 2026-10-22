@@ -3,8 +3,8 @@ import axios from 'axios'
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { http } from '@/core/http/client'
 import type { LookupObject } from '@/core/api/models'
+import { DEFAULT_PER_PAGE } from '@/core/pagination'
 import {
-  LOOKUPS_PER_PAGE,
   RUNNING_REFRESH,
   lookupQuery,
   lookupsListKey,
@@ -24,7 +24,7 @@ describe('lookup queries', () => {
     vi.mocked(http).mockResolvedValue(page)
     const params = {
       page: 2,
-      perPage: LOOKUPS_PER_PAGE,
+      perPage: DEFAULT_PER_PAGE,
       searcherType: 'contact' as const,
       searcherId: 7,
     }
@@ -58,7 +58,7 @@ describe('lookup queries', () => {
   it('polls every 15 seconds while a lookup runs', () => {
     const done = lookup()
     const running = lookup({ status: 'running', categories: undefined })
-    const list = lookupsQuery({ page: 1, perPage: LOOKUPS_PER_PAGE }).refetchInterval
+    const list = lookupsQuery({ page: 1, perPage: DEFAULT_PER_PAGE }).refetchInterval
     const detail = lookupQuery(1).refetchInterval
 
     expect(RUNNING_REFRESH).toBe(15_000)
@@ -75,7 +75,7 @@ describe('lookup queries', () => {
     const previous = pageFixture([lookup()])
     const params = {
       page: 1,
-      perPage: LOOKUPS_PER_PAGE,
+      perPage: DEFAULT_PER_PAGE,
       searcherType: 'user' as const,
       searcherId: 101,
     }
@@ -86,7 +86,7 @@ describe('lookup queries', () => {
 
     expect(placeholder({ ...params, page: 2 })).toBe(previous)
     expect(placeholder({ ...params, searcherId: 102 })).toBeUndefined()
-    expect(placeholder({ page: 1, perPage: LOOKUPS_PER_PAGE })).toBeUndefined()
+    expect(placeholder({ page: 1, perPage: DEFAULT_PER_PAGE })).toBeUndefined()
     expect(lookupsQuery(params).placeholderData()).toBeUndefined()
   })
 })

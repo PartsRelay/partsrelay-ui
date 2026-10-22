@@ -16,8 +16,6 @@ import type {
 
 export const RUNNING_REFRESH = 15_000
 
-export const LOOKUPS_PER_PAGE = 20
-
 export type LookupListParams = {
   page: number
   perPage: number

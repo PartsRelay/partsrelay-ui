@@ -1,5 +1,6 @@
 import { AxiosError, AxiosHeaders } from 'axios'
 import type { ContactObject, GetApiV1WorkspaceContacts200 } from '@/core/api/models'
+import { DEFAULT_PER_PAGE } from '@/core/pagination'
 import { permissionsFor } from '@/modules/workspaces/core/permissions'
 import type { Role } from '@/modules/workspaces/core/role'
 import type { Me } from '@/modules/workspaces/core/workspace'
@@ -38,7 +39,7 @@ export function contactFixture(id: number, overrides: Partial<ContactObject> = {
 export function pageFixture(
   data: ContactObject[],
   page = 1,
-  perPage = 20,
+  perPage = DEFAULT_PER_PAGE,
   total = data.length
 ): GetApiV1WorkspaceContacts200 {
   const lastPage = Math.max(1, Math.ceil(total / perPage))

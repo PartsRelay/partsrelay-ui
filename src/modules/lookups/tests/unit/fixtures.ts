@@ -1,4 +1,5 @@
 import type { GetApiV1WorkspaceLookups200, LookupObject } from '@/core/api/models'
+import { DEFAULT_PER_PAGE } from '@/core/pagination'
 import type { Role } from '@/modules/workspaces/core/role'
 import type { Member, Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -72,7 +73,7 @@ export function lookupFixture(id: number, overrides: Partial<LookupObject> = {})
 export function pageFixture(
   data: LookupObject[],
   page = 1,
-  perPage = 20,
+  perPage = DEFAULT_PER_PAGE,
   total = data.length
 ): GetApiV1WorkspaceLookups200 {
   const lastPage = Math.max(1, Math.ceil(total / perPage))
