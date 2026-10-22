@@ -4,7 +4,7 @@ import {
   getGetApiV1WorkspaceContactsQueryKey,
 } from '@/core/api/endpoints/contacts/contacts'
 import type { ContactStatus, GetApiV1WorkspaceContacts200 } from '@/core/api/models'
-import { DEFAULT_PER_PAGE, type PaginationParams } from '@/core/pagination'
+import { type PaginationParams, withPerPage } from '@/core/pagination'
 import type { ContactsSearch } from '@/modules/contacts/core/contacts'
 
 export type ContactListParams = PaginationParams & { status?: ContactStatus[] }
@@ -20,9 +20,7 @@ export function contactsListKey(params: ContactListParams) {
 }
 
 export function contactListParams({ status, page }: ContactsSearch): ContactListParams {
-  const params = { page, perPage: DEFAULT_PER_PAGE }
-
-  return status ? { status: [status], ...params } : params
+  return status ? { status: [status], page } : { page }
 }
 
 export function listParamsOf(key: readonly unknown[]) {
@@ -37,7 +35,8 @@ export function contactsQuery(params: ContactListParams) {
   return {
     queryKey: contactsListKey(params),
     // The OpenAPI omits the filters, axios sends them as status[]
-    queryFn: ({ signal }: QueryFunctionContext) => getApiV1WorkspaceContacts({ params }, signal),
+    queryFn: ({ signal }: QueryFunctionContext) =>
+      getApiV1WorkspaceContacts({ params: withPerPage(params) }, signal),
     // Keep the previous page only within the same tab
     placeholderData: (previous?: ContactsPage, query?: Query<ContactsPage>) => {
       const before = query && listParamsOf(query.queryKey)
