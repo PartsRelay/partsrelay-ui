@@ -30,8 +30,9 @@ function loginPath(next: string, signedIn = false) {
   const search = new URLSearchParams()
   if (next !== '/') search.set('next', next)
   if (signedIn) search.set('signedIn', 'true')
+  const query = search.toString()
 
-  return search.size ? `/login?${search}` : '/login'
+  return query ? `/login?${query}` : '/login'
 }
 
 export function googleSignIn({ back, failed, selectAccount }: SignInFlow) {
