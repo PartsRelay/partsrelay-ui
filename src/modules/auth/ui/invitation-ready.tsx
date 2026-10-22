@@ -4,42 +4,61 @@ import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { acceptError, type InvitationDetails } from '@/modules/auth/core/invitation'
 import { currentCompanyKey } from '@/modules/auth/core/invitation.query'
+import { sessionQuery } from '@/modules/auth/core/session.query'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
+import { requiredText, useAppForm } from '@/form'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent } from '@/ui/components/ui/card'
-import { Spinner } from '@/ui/components/ui/spinner'
 
 type InvitationReadyProps = {
   details: InvitationDetails
   confirm: boolean
   email: string | null
+  askName: boolean
   invitationId: string
 }
 
-export function InvitationReady({ details, confirm, email, invitationId }: InvitationReadyProps) {
+export function InvitationReady({
+  details,
+  confirm,
+  email,
+  askName,
+  invitationId,
+}: InvitationReadyProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { client, pending, error, run } = useBetterAuthAction()
   const [confirming, setConfirming] = useState(false)
   const failure = error ? acceptError(error) : null
   // Errors show on the card, not as a toast
-  const joinNow = async () => {
-    const result = await run(() => authClient.organization.acceptInvitation({ invitationId }), {
-      notice: 'invitation.notices.joined',
-      values: { workspace: details.workspace },
-      silent: true,
-    })
+  const joinNow = async (name: string) => {
+    const result = await run(
+      async () => {
+        if (askName) await authClient.updateUser({ name: name.trim() })
+        await authClient.organization.acceptInvitation({ invitationId })
+      },
+      {
+        notice: 'invitation.notices.joined',
+        values: { workspace: details.workspace },
+        silent: true,
+      }
+    )
     if (!result.ok) {
       setConfirming(false)
       return client.invalidateQueries({ queryKey: currentCompanyKey })
     }
 
     client.removeQueries({ type: 'inactive' })
+    await client.invalidateQueries({ queryKey: sessionQuery.queryKey })
     await navigate({ to: '/' })
   }
+  const form = useAppForm({
+    defaultValues: { name: '' },
+    onSubmit: ({ value }) => (confirm ? setConfirming(true) : joinNow(value.name)),
+  })
 
   return (
     <Card>
@@ -58,18 +77,31 @@ export function InvitationReady({ details, confirm, email, invitationId }: Invit
           </Callout>
         )}
         {failure && <Callout tone="danger">{t(...failure)}</Callout>}
-        <div className="grid gap-2">
-          <Button
-            disabled={pending}
-            onClick={() => (confirm ? setConfirming(true) : void joinNow())}
-          >
-            {pending && !confirm && <Spinner data-icon="inline-start" />}
-            {t('invitation.accept')}
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link to="/">{t('invitation.actions.not-now')}</Link>
-          </Button>
-        </div>
+        <form.AppForm>
+          <form.Form className="grid gap-6">
+            {askName && (
+              <form.AppField
+                name="name"
+                validators={{ onSubmit: requiredText('invitation.errors.name-required') }}
+              >
+                {(field) => (
+                  <field.InputField
+                    label={t('invitation.name')}
+                    required
+                    description={t('invitation.name-hint')}
+                    autoComplete="name"
+                  />
+                )}
+              </form.AppField>
+            )}
+            <div className="grid gap-2">
+              <form.SubmitButton disabled={pending}>{t('invitation.accept')}</form.SubmitButton>
+              <Button variant="ghost" asChild>
+                <Link to="/">{t('invitation.actions.not-now')}</Link>
+              </Button>
+            </div>
+          </form.Form>
+        </form.AppForm>
       </CardContent>
       <ConfirmDialog
         open={confirming}
@@ -78,7 +110,7 @@ export function InvitationReady({ details, confirm, email, invitationId }: Invit
         action={t('invitation.confirm.action')}
         pending={pending}
         onClose={() => setConfirming(false)}
-        onConfirm={() => void joinNow()}
+        onConfirm={() => void joinNow(form.state.values.name)}
       />
     </Card>
   )

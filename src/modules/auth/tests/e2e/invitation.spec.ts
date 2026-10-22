@@ -25,11 +25,23 @@ test.describe('as a newcomer invited to a company', () => {
     ).toBeVisible()
     await expect(page.getByText(/^You'll join as Admin/)).toBeVisible()
 
+    await page.getByRole('textbox', { name: 'Your name' }).fill('Anna North')
     await page.getByRole('button', { name: 'Accept invitation' }).click()
 
     await expect(page).toHaveURL('/contacts')
     await expect(notices(page).getByText('Ironworks Garage Ltd is now your company.')).toBeVisible()
     await expect(page.getByRole('link', { name: /Ironworks Garage Ltd/ })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Anna North/ })).toBeVisible()
+  })
+
+  test('my name is required before joining', async ({ page }) => {
+    await page.goto('/invitations/31')
+    await page.getByRole('button', { name: 'Accept invitation' }).click()
+
+    const name = page.getByRole('textbox', { name: 'Your name' })
+    await expect(name).toBeFocused()
+    await expect(name).toHaveAccessibleDescription('Enter your name.')
+    await expect(page).toHaveURL('/invitations/31')
   })
 
   test('not now keeps my own company', async ({ page }) => {
