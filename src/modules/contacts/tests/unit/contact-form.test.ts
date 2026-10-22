@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test'
-import { newContact, phoneError, renameChange } from '@/modules/contacts/core/contact-form'
+import { fieldErrors } from '@/core/errors'
+import { contactFieldErrors, newContact, renameChange } from '@/modules/contacts/core/contact-form'
 import { contactFixture, coreError } from '@/modules/contacts/tests/unit/fixtures'
 
 describe('new contact', () => {
@@ -13,9 +14,19 @@ describe('new contact', () => {
     })
   })
 
-  it('shows a wrong or taken number under the phone field', () => {
-    expect(phoneError(coreError(422, 'VALIDATION_ERROR'))).toBe('contacts.add.errors.phone')
-    expect(phoneError(coreError(403, 'AUTHORIZATION_FAILURE'))).toBeNull()
+  it('shows each error under the field the core names', () => {
+    const taken = coreError(422, 'VALIDATION_ERROR', [{ field: 'phone', rule: 'database.unique' }])
+    const both = coreError(422, 'VALIDATION_ERROR', [
+      { field: 'phone', rule: 'waId' },
+      { field: 'name', rule: 'maxLength' },
+    ])
+
+    expect(fieldErrors(taken, contactFieldErrors)).toEqual({ phone: 'contacts.add.errors.phone' })
+    expect(fieldErrors(both, contactFieldErrors)).toEqual({
+      phone: 'contacts.add.errors.phone',
+      name: 'contacts.add.errors.name',
+    })
+    expect(fieldErrors(coreError(403, 'AUTHORIZATION_FAILURE'), contactFieldErrors)).toBeNull()
   })
 })
 

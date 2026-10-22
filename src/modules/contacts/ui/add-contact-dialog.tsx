@@ -2,7 +2,8 @@ import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { requiredText, useAppForm } from '@/form'
-import { emptyContact, newContact, phoneError } from '@/modules/contacts/core/contact-form'
+import { fieldErrors } from '@/core/errors'
+import { contactFieldErrors, emptyContact, newContact } from '@/modules/contacts/core/contact-form'
 import { useAddContact } from '@/modules/contacts/ui/hooks/use-add-contact'
 import { Button } from '@/ui/components/ui/button'
 import {
@@ -46,8 +47,8 @@ function AddContactForm({ onDone }: { onDone: () => void }) {
         await add.mutateAsync(newContact(value))
         onDone()
       } catch (error) {
-        const key = phoneError(error)
-        if (key) formApi.setErrorMap({ onSubmit: { fields: { phone: key } } })
+        const fields = fieldErrors(error, contactFieldErrors)
+        if (fields) formApi.setErrorMap({ onSubmit: { fields } })
       }
     },
   })
