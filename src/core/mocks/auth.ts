@@ -14,6 +14,7 @@ import {
   type Person,
   type Role,
 } from '@/core/mocks/data'
+import type { FieldError } from '@/core/errors'
 
 type World = {
   signedIn: boolean
@@ -50,8 +51,8 @@ function world<T>(change: (state: World) => T): T {
 }
 
 // Errors in the shape the core sends
-export function fail(status: number, code: string, message = code): never {
-  throw HttpResponse.json({ code, status, message }, { status })
+export function fail(status: number, code: string, message = code, fields?: FieldError[]): never {
+  throw HttpResponse.json({ code, status, message, ...(fields && { fields }) }, { status })
 }
 
 function signedIn(state: World) {

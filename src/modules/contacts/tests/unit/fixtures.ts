@@ -1,5 +1,6 @@
 import { AxiosError, AxiosHeaders } from 'axios'
 import type { ContactObject, GetApiV1WorkspaceContacts200 } from '@/core/api/models'
+import type { FieldError } from '@/core/errors'
 import { DEFAULT_PER_PAGE } from '@/core/pagination'
 import { permissionsFor } from '@/modules/workspaces/core/permissions'
 import type { Role } from '@/modules/workspaces/core/role'
@@ -62,9 +63,10 @@ export function pageFixture(
 }
 
 // The flat error body of the core
-export function coreError(status: number, code: string) {
+export function coreError(status: number, code: string, fields?: FieldError[]) {
   const config = { headers: new AxiosHeaders() }
-  const response = { status, statusText: '', headers: {}, config, data: { code, status } }
+  const data = { code, status, ...(fields && { fields }) }
+  const response = { status, statusText: '', headers: {}, config, data }
 
   return new AxiosError('failed', 'ERR_BAD_REQUEST', config, null, response)
 }

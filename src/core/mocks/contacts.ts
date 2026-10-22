@@ -109,7 +109,9 @@ function authorize(role: string | undefined) {
   if (role === 'viewer') fail(403, 'AUTHORIZATION_FAILURE')
 }
 
-const invalid = () => fail(422, 'VALIDATION_ERROR')
+// The core names the field and the VineJS rule
+const invalid = (field: string, rule: string) =>
+  fail(422, 'VALIDATION_ERROR', 'VALIDATION_ERROR', [{ field, rule }])
 
 const isStatus = (value: unknown): value is ContactObject['status'] =>
   Object.values<unknown>(ContactObjectStatus).includes(value)
@@ -131,10 +133,11 @@ function toWaId(phone: unknown) {
 // Empty strings arrive as null, like the core body parser
 function checkedName(name: unknown) {
   if (name === undefined || name === null || name === '') return null
-  if (typeof name !== 'string') return invalid()
+  if (typeof name !== 'string') return invalid('name', 'string')
 
   const trimmed = name.trim()
-  if (trimmed.length === 0 || trimmed.length > MAX_STRING_LENGTH) invalid()
+  if (trimmed.length === 0) invalid('name', 'minLength')
+  if (trimmed.length > MAX_STRING_LENGTH) invalid('name', 'maxLength')
 
   return trimmed
 }
@@ -173,8 +176,9 @@ export const contactMocks = [
     const statuses = query.getAll('status[]')
     const currentPage = Number(query.get('page') ?? 1)
     const perPage = Number(query.get('perPage') ?? DEFAULT_PER_PAGE)
-    if (query.has('status') || !statuses.every(isStatus)) invalid()
-    if (!(currentPage >= 1 && perPage >= 1 && perPage <= PER_PAGE_MAX)) invalid()
+    if (query.has('status') || !statuses.every(isStatus)) invalid('status', 'enum')
+    if (!(currentPage >= 1)) invalid('page', 'min')
+    if (!(perPage >= 1 && perPage <= PER_PAGE_MAX)) invalid('perPage', 'range')
 
     return directory((state) => {
       const matching = contactsOf(state, company)
@@ -188,14 +192,14 @@ export const contactMocks = [
     const { company, role } = member()
     authorize(role)
     const body = (await request.json()) as Partial<PostApiV1WorkspaceContactsBody>
-    const waId = toWaId(body.phone) ?? invalid()
+    const waId = toWaId(body.phone) ?? invalid('phone', 'waId')
     const name = checkedName(body.name)
 
     return directory((state) => {
       const taken = Object.values(state.companies).some((items) =>
         items.some((item) => item.waId === waId)
       )
-      if (taken) invalid()
+      if (taken) invalid('phone', 'database.unique')
 
       const created = { ...contact(state.nextId++, waId, name, null), createdAt: daysAgo(0) }
       contactsOf(state, company).push(created)
@@ -212,7 +216,7 @@ export const contactMocks = [
       const target = found(state, company, String(params.contactId))
       authorize(role)
       const name = body.name === undefined ? undefined : checkedName(body.name)
-      if (body.status !== undefined && !isStatus(body.status)) invalid()
+      if (body.status !== undefined && !isStatus(body.status)) invalid('status', 'enum')
 
       if (name !== undefined) target.name = name
       if (body.status !== undefined) target.status = body.status

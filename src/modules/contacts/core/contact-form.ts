@@ -1,5 +1,4 @@
 import type { ContactObject, PostApiV1WorkspaceContactsBody } from '@/core/api/models'
-import { errorCode } from '@/core/errors'
 import type { ContactChange } from '@/modules/contacts/core/contacts.mutation'
 
 export type ContactValues = { phone: string; name: string }
@@ -13,9 +12,10 @@ export function newContact({ phone, name }: ContactValues): PostApiV1WorkspaceCo
   return trimmed ? { phone: phone.trim(), name: trimmed } : { phone: phone.trim() }
 }
 
-// The name input is capped, so 422 means the number
-export function phoneError(error: unknown) {
-  return errorCode(error) === 'VALIDATION_ERROR' ? 'contacts.add.errors.phone' : null
+// The error under each field the core rejects
+export const contactFieldErrors = {
+  phone: 'contacts.add.errors.phone',
+  name: 'contacts.add.errors.name',
 }
 
 // Only real changes, an empty name shows the WhatsApp one

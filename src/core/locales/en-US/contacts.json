@@ -65,7 +65,8 @@
       "submit": "Add contact",
       "errors": {
         "phone-required": "Enter the WhatsApp number.",
-        "phone": "Check the number: it needs the international prefix, and it may already belong to a company."
+        "phone": "Check the number: it needs the international prefix, and it may already belong to a company.",
+        "name": "Use a name of up to 255 characters."
       }
     },
     "confirm": {
