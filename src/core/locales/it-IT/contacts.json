@@ -34,6 +34,12 @@
       "last-search": "Ultima ricerca",
       "actions": "Azioni"
     },
+    "searches-link": {
+      "total_one": "{{count}} ricerca di {{name}}",
+      "total_other": "{{count}} ricerche di {{name}}",
+      "month_one": "{{count}} ricerca di {{name}} questo mese",
+      "month_other": "{{count}} ricerche di {{name}} questo mese"
+    },
     "status": {
       "active": "Attivo",
       "blocked": "Bloccato"
