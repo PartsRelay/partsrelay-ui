@@ -2,7 +2,7 @@
 
 ## Structure
 
-- Repository root: `index.html`, `index.css` and the tool configs (`vite.config.ts`, `orval.config.ts`, `tsconfig.json`, `components.json`).
+- Repository root: `index.html`, `index.css` and the tool configs (`vite.config.ts`, `vitest.config.ts`, `playwright.config.ts`, `orval.config.ts`, `tsconfig.json`, `components.json`).
 - `src/`: the app configuration (`env.ts`, `router.ts`, `query-client.ts`, `i18n.ts`, `form.ts`, `form-context.ts`) and `main.tsx`. Every form uses `useAppForm` from `form.ts`, which registers the shared field and form components and holds the shared validators. The shared components read the form and field contexts from `form-context.ts`.
 - `src/core/`: TypeScript shared across the whole frontend, including the core API client Orval generates in `src/core/api`. Better Auth is called only through its client in `src/modules/auth/core/auth.client.ts`.
 - `src/ui/`: `routeTree.gen.ts`.
@@ -13,5 +13,14 @@
 - `src/modules/<module>/core/`: TypeScript business logic of that module.
 - `src/modules/<module>/ui/`: smart components of that module.
 - `src/modules/<module>/ui/hooks/`: React hooks of that module.
-- `src/modules/<module>/tests/unit/`: Vitest unit tests of that module, named `*.test.ts`.
-- `src/core/tests/unit/`: Vitest unit tests of `src/core`, named `*.test.ts`.
+- `src/modules/<module>/tests/unit/`: Vitest tests of the `core/` of that module, only `*.test.ts`.
+- `src/modules/<module>/tests/e2e/`: Playwright tests of the flows of that module, only `*.spec.ts`.
+- `src/core/tests/unit/`: Vitest tests of `src/core`, only `*.test.ts`.
+
+## Tests
+
+- `vitest.config.ts` is the only Vitest config: it runs `tests/unit/**/*.test.ts` of every module and of `src/core` in Node and in UTC, one file per worker in parallel, without the Vite plugins. Keep the test settings there, not in `vite.config.ts`. Import the test API from `vite-plus/test`. Mock `@/modules/auth/core/auth.client` in tests whose imports reach it, the real client needs a browser.
+- `playwright.config.ts` is the only Playwright config: it runs `tests/e2e/**/*.spec.ts` of every module, fully parallel, on headless Chromium, Firefox and WebKit (the `chromium`, `firefox` and `webkit` projects, as Chrome, Firefox and Safari), against the dev server it starts on port 5180 with `APP_ENV=development`, so the MSW mocks of `src/core/mocks` answer. Use role based locators and web first assertions, and wait for a page to show before leaving it: when a navigation cuts off a lazy route chunk, Firefox and WebKit reject its import and TanStack Router reloads the page, which interrupts the next `page.goto`.
+- The mocks start signed in as Mark Reed, the owner of Redwood Parts Ltd, and keep their state in `sessionStorage`, so every test starts from the same data. Set `mock.user` (`admin`, `viewer` or `new`), `mock.setup` (`pending`) or `mock.invitation` (`1`) in `localStorage` with `page.addInitScript` before the first page load to start as someone else.
+- `bun run test:unit` runs the unit tests, `bun run test:e2e` the e2e tests on the three browsers and `bun run test` both. Add `--project=firefox` to `test:e2e` for one browser. CI runs the unit tests in one job and the e2e tests in one job per browser, all in parallel with the build, on the `node_modules` the `oxc` job caches.
+- Playwright needs the headless browsers of its version, without the full Chromium: `bunx playwright install --only-shell chromium firefox webkit`, with `--with-deps` the first time on Linux. `--headed` and `--debug` on the `chromium` project, `--ui` and `show-trace` also need the full Chromium (`bunx playwright install --no-shell chromium`) or an installed Chrome for the last two.
