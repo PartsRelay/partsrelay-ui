@@ -3,6 +3,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { getRouteApi, Navigate, redirect } from '@tanstack/react-router'
 import { requireSession, sessionQuery } from '@/modules/auth/core/session.query'
 import { loadAccount } from '@/modules/workspaces/core/account'
+import { needsSetup } from '@/modules/workspaces/core/workspace'
 import { SetupLayout } from '@/modules/workspaces/ui/setup-layout'
 import { WorkspaceForm } from '@/modules/workspaces/ui/workspace-form'
 
@@ -15,7 +16,7 @@ export async function requireSetupOwner({ context, location }: SetupGuard) {
   if (login) throw redirect(login)
 
   const { workspace, me } = await loadAccount(context.queryClient, session.user.id)
-  if (!me.permissions.updateCompany) throw redirect({ to: '/' })
+  if (!needsSetup(workspace, me)) throw redirect({ to: '/' })
 
   return { session, workspace }
 }

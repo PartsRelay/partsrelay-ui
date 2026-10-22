@@ -40,7 +40,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
           client.invalidateQueries({ queryKey: workspaceKey }),
           client.invalidateQueries({ queryKey: sessionQuery.queryKey }),
         ])
-        await navigate({ to: '/' })
+        await navigate({ to: '/', replace: true })
       })
     },
   })

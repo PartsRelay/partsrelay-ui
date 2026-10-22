@@ -47,6 +47,9 @@ test.describe('as a newcomer', () => {
 
     await page.goto('/')
     await expect(page).toHaveURL('/contacts')
+
+    await page.goto('/setup')
+    await expect(page).toHaveURL('/contacts')
   })
 
   test('signing out leaves the setup', async ({ page }) => {
