@@ -45,7 +45,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
         <CardDescription>{t('profile.identity.description')}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
-        <PersonItem name={view.name} email={view.email} image={view.image} />
+        <PersonItem name={view.name} description={view.email} image={view.image} />
         <Facts
           className="text-sm"
           items={[

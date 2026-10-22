@@ -18,6 +18,12 @@
   "confirm": {
     "cancel": "Cancel"
   },
+  "pagination": {
+    "label": "Pages",
+    "previous": "Previous",
+    "next": "Next",
+    "range": "{{from}}-{{to}} of {{total}}"
+  },
   "notices": {
     "copy-failed": "Copy failed, select the text and copy it by hand."
   },

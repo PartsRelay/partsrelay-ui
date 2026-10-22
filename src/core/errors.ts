@@ -1,11 +1,15 @@
 import { isAxiosError } from 'axios'
 import { message } from '@/core/message'
 
+// A field the core rejected and the rule it broke
+export type FieldError = { field: string; rule?: string }
+
 // The same body the core sends, message only in development
 export type ErrorBody = {
   code: string
   status: number
   message?: string
+  fields?: FieldError[]
 }
 
 // What the Better Auth client throws
@@ -40,7 +44,9 @@ function errorBody(code: string, status: number, text?: string): ErrorBody {
 }
 
 function fromCore(status: number, body: Partial<ErrorBody> | null | undefined) {
-  return errorBody(body?.code ?? 'UNKNOWN', status, body?.message)
+  const error = errorBody(body?.code ?? 'UNKNOWN', status, body?.message)
+
+  return body?.fields?.length ? { ...error, fields: body.fields } : error
 }
 
 export function toErrorBody(error: unknown): ErrorBody {
@@ -68,6 +74,19 @@ export function errorStatus(error: unknown) {
 
 export function errorCode(error: unknown) {
   return toErrorBody(error).code
+}
+
+// The fields the core rejected, each with the form's error key
+export function fieldErrors<Field extends string>(error: unknown, keys: Record<Field, string>) {
+  const fields = (toErrorBody(error).fields ?? [])
+    .map(({ field }) => field)
+    .filter((field): field is Field => Object.hasOwn(keys, field))
+
+  return fields.length > 0
+    ? (Object.fromEntries(fields.map((field) => [field, keys[field]])) as Partial<
+        Record<Field, string>
+      >)
+    : null
 }
 
 // Locale keys are kebab case, error codes are not

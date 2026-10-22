@@ -38,6 +38,7 @@ const viewer = permissionsFor('viewer')
 
 describe('pageAt', () => {
   it.each([
+    ['/contacts', 'contacts'],
     ['/workspace', 'workspace'],
     ['/workspace/', 'workspace'],
     ['/company', 'company'],
@@ -51,6 +52,14 @@ describe('pageAt', () => {
 })
 
 describe('canOpen', () => {
+  it('opens the contacts to everyone', () => {
+    expect([owner, admin, viewer].map((permissions) => canOpen('contacts', permissions))).toEqual([
+      true,
+      true,
+      true,
+    ])
+  })
+
   it('opens the workspace to owners and admins only', () => {
     expect([owner, admin, viewer].map((permissions) => canOpen('workspace', permissions))).toEqual([
       true,
@@ -74,29 +83,33 @@ describe('canOpen', () => {
 })
 
 describe('homePath', () => {
-  it('starts on the workspace, or on the profile without access to it', () => {
-    expect(homePath(owner)).toBe('/workspace')
-    expect(homePath(admin)).toBe('/workspace')
-    expect(homePath(viewer)).toBe('/profile')
+  it('starts on the contacts for every role', () => {
+    expect(homePath(owner)).toBe('/contacts')
+    expect(homePath(admin)).toBe('/contacts')
+    expect(homePath(viewer)).toBe('/contacts')
   })
 })
 
 describe('navigation', () => {
   it('lists the sections I can open and marks the current one', () => {
     expect(navigation(owner, 'company')).toEqual([
+      { page: 'contacts', path: '/contacts', label: ['nav.contacts'], active: false },
       { page: 'workspace', path: '/workspace', label: ['nav.workspace'], active: false },
       { page: 'company', path: '/company', label: ['nav.company'], active: true },
     ])
   })
 
   it('hides the sections I cannot open', () => {
-    expect(navigation(admin, 'profile').map(({ page }) => page)).toEqual(['workspace'])
-    expect(navigation(viewer, 'profile')).toEqual([])
+    expect(navigation(admin, 'profile').map(({ page }) => page)).toEqual(['contacts', 'workspace'])
+    expect(navigation(viewer, 'contacts')).toEqual([
+      { page: 'contacts', path: '/contacts', label: ['nav.contacts'], active: true },
+    ])
   })
 })
 
 describe('breadcrumbs', () => {
-  it('puts the workspace at the top of its own trail', () => {
+  it('puts the contacts and the workspace at the top of their own trails', () => {
+    expect(breadcrumbs('contacts')).toEqual([['crumbs.contacts']])
     expect(breadcrumbs('workspace')).toEqual([['crumbs.workspace']])
     expect(breadcrumbs('company')).toEqual([['crumbs.workspace'], ['crumbs.company']])
   })

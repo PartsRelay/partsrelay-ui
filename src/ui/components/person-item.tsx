@@ -5,12 +5,12 @@ import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/ui/c
 
 type PersonItemProps = {
   name: string
-  email: string
+  description?: ReactNode
   image?: string | null
   title?: ReactNode
 }
 
-export function PersonItem({ name, email, image, title = name }: PersonItemProps) {
+export function PersonItem({ name, description, image, title = name }: PersonItemProps) {
   return (
     <Item size="sm" className="flex-nowrap gap-3 p-0">
       <ItemMedia>
@@ -23,7 +23,7 @@ export function PersonItem({ name, email, image, title = name }: PersonItemProps
       </ItemMedia>
       <ItemContent className="gap-0">
         <ItemTitle>{title}</ItemTitle>
-        <ItemDescription>{email}</ItemDescription>
+        {description && <ItemDescription>{description}</ItemDescription>}
       </ItemContent>
     </Item>
   )

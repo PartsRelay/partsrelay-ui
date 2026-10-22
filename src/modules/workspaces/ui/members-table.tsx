@@ -51,7 +51,7 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
                 <TableCell>
                   <PersonItem
                     name={row.member.name}
-                    email={row.member.email}
+                    description={row.member.email}
                     image={row.member.image}
                     title={
                       row.isMe ? t('workspace.members.you', { name: row.member.name }) : undefined

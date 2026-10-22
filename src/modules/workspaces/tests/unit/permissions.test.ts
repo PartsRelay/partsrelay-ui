@@ -4,6 +4,7 @@ import { canManageRole, permissionsFor } from '@/modules/workspaces/core/permiss
 describe('permissionsFor', () => {
   it('lets the owner do everything but leave', () => {
     expect(permissionsFor('owner')).toEqual({
+      manageContacts: true,
       viewWorkspace: true,
       viewCompany: true,
       inviteRoles: ['viewer', 'admin'],
@@ -16,6 +17,7 @@ describe('permissionsFor', () => {
 
   it('lets an admin see the workspace and invite viewers', () => {
     expect(permissionsFor('admin')).toEqual({
+      manageContacts: true,
       viewWorkspace: true,
       viewCompany: false,
       inviteRoles: ['viewer'],
@@ -28,6 +30,7 @@ describe('permissionsFor', () => {
 
   it('lets a viewer only leave', () => {
     expect(permissionsFor('viewer')).toEqual({
+      manageContacts: false,
       viewWorkspace: false,
       viewCompany: false,
       inviteRoles: [],

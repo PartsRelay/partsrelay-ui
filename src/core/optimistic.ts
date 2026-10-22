@@ -4,14 +4,14 @@ import type { QueryClient, QueryKey } from '@tanstack/query-core'
 export async function optimistic<TData>(
   client: QueryClient,
   queryKey: QueryKey,
-  update: (data: TData) => TData,
+  update: (data: TData, key: QueryKey) => TData,
   call: () => Promise<unknown>
 ) {
   await client.cancelQueries({ queryKey })
   const snapshot = client.getQueriesData<TData>({ queryKey })
 
   for (const [key, data] of snapshot) {
-    if (data !== undefined) client.setQueryData<TData>(key, update(data))
+    if (data !== undefined) client.setQueryData<TData>(key, update(data, key))
   }
 
   try {
