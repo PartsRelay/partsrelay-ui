@@ -13,9 +13,9 @@ import { contactFixture, coreError, pageFixture } from '@/modules/contacts/tests
 
 vi.mock('@/core/http/client', () => ({ http: vi.fn() }))
 
-const all = { page: 1, perPage: 20 }
-const active = { status: ['active' as const], page: 1, perPage: 20 }
-const blocked = { status: ['blocked' as const], page: 1, perPage: 20 }
+const all = { page: 1 }
+const active = { status: ['active' as const], page: 1 }
+const blocked = { status: ['blocked' as const], page: 1 }
 const never = () => new Promise<never>(() => {})
 
 function setup() {
