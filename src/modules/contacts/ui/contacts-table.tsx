@@ -5,15 +5,9 @@ import { ContactActions } from '@/modules/contacts/ui/contact-actions'
 import { ContactNameForm } from '@/modules/contacts/ui/contact-name-form'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { PersonItem } from '@/ui/components/person-item'
+import { ResponsiveTable } from '@/ui/components/responsive-table'
 import { StatusBadge } from '@/ui/components/status-badge'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/ui/components/ui/table'
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
 const columns = ['contact', 'phone', 'status', 'searches', 'month', 'last-search']
 
@@ -30,7 +24,7 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
   const manage = me.permissions.manageContacts
 
   return (
-    <Table>
+    <ResponsiveTable>
       <TableHeader>
         <TableRow>
           {[...columns, ...(manage ? ['actions'] : [])].map((column) => (
@@ -56,13 +50,17 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
                   <PersonItem name={row.name} />
                 )}
               </TableCell>
-              <TableCell>{row.phone}</TableCell>
-              <TableCell>
+              <TableCell data-label={t('contacts.columns.phone')}>{row.phone}</TableCell>
+              <TableCell data-label={t('contacts.columns.status')}>
                 <StatusBadge tone={row.tone}>{t(...row.statusLabel)}</StatusBadge>
               </TableCell>
-              <TableCell>{row.searches.total}</TableCell>
-              <TableCell>{row.searches.month}</TableCell>
-              <TableCell>{row.lastSearch ?? t('contacts.never')}</TableCell>
+              <TableCell data-label={t('contacts.columns.searches')}>
+                {row.searches.total}
+              </TableCell>
+              <TableCell data-label={t('contacts.columns.month')}>{row.searches.month}</TableCell>
+              <TableCell data-label={t('contacts.columns.last-search')}>
+                {row.lastSearch ?? t('contacts.never')}
+              </TableCell>
               {manage && (
                 <TableCell>
                   {!editing && (
@@ -79,6 +77,6 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
           )
         })}
       </TableBody>
-    </Table>
+    </ResponsiveTable>
   )
 }
