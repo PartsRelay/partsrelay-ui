@@ -7,18 +7,18 @@ import { Badge } from '@/ui/components/ui/badge'
 export function ContactsPage() {
   const { t } = useTranslation()
   const { me } = useMe()
-  const header = { title: t('contacts.title'), description: t('contacts.description') }
 
   return (
     <>
-      {me.permissions.manageContacts ? (
-        <PageHeader {...header} />
-      ) : (
-        <PageHeader
-          {...header}
-          badge={<Badge variant="secondary">{t('contacts.view-only')}</Badge>}
-        />
-      )}
+      <PageHeader
+        title={t('contacts.title')}
+        description={t('contacts.description')}
+        badge={
+          !me.permissions.manageContacts && (
+            <Badge variant="secondary">{t('contacts.view-only')}</Badge>
+          )
+        }
+      />
       <ContactDirectory />
     </>
   )
