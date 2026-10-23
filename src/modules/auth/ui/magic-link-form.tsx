@@ -1,6 +1,7 @@
 import { MailCheckIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useInterval } from 'usehooks-ts'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { emailError, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
 import { magicLinkSignIn, type SignInFlow } from '@/modules/auth/core/sign-in'
@@ -33,13 +34,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
     wasSent.current = sent !== null
   }, [sent])
 
-  useEffect(() => {
-    if (wait === 0) return
-
-    const tick = setTimeout(() => setNow(Date.now()), 1000)
-
-    return () => clearTimeout(tick)
-  }, [wait, now])
+  useInterval(() => setNow(Date.now()), wait > 0 ? 1000 : null)
 
   // Errors show in the form, not as a toast
   const send = async (address: string) => {

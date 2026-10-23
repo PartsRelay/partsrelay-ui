@@ -1,9 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { authClient } from '@/modules/auth/core/auth.client'
-import { optimistic } from '@/core/optimistic'
 import type { Locale } from '@/modules/workspaces/core/locale'
-import type { FullOrganization } from '@/modules/workspaces/core/workspace'
-import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
+import { updateCompany } from '@/modules/workspaces/core/workspace.mutation'
 import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -28,16 +25,10 @@ export function CompanyLanguage({ locale }: { locale: Locale }) {
           onValueChange={(next) => {
             if (next === locale) return
 
-            void run(
-              () =>
-                optimistic<FullOrganization>(
-                  client,
-                  workspaceKey,
-                  (organization) => ({ ...organization, locale: next }),
-                  () => authClient.organization.update({ data: { locale: next } })
-                ),
-              { notice: 'company.notices.language', values: { language: t(`languages.${next}`) } }
-            )
+            void run(() => updateCompany(client, { locale: next }), {
+              notice: 'company.notices.language',
+              values: { language: t(`languages.${next}`) },
+            })
           }}
         />
       </CardContent>
