@@ -1,6 +1,7 @@
 {
   "app": {
     "go-home": "Back to home",
+    "title": "{{page}} · {{app}}",
     "error": {
       "title": "Couldn't load the page",
       "retry": "Try again"

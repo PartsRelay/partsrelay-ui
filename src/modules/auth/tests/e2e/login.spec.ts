@@ -53,6 +53,21 @@ test('the magic link form sends a link and waits before sending another', async 
   await expect(page.getByRole('textbox', { name: 'Email' })).toBeFocused()
 })
 
+test('a new sign-in link clears the error of the previous one', async ({ page }) => {
+  await page.goto('/login?next=%2Fcompany&error=INVALID_TOKEN')
+  const expired = page.getByText(
+    'This sign-in link has expired or was already used. Ask for a new one.'
+  )
+  await expect(expired).toBeVisible()
+
+  await page.getByRole('textbox', { name: 'Email' }).fill('mark.reed@redwoodparts.com')
+  await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
+
+  await expect(page.getByRole('status').filter({ hasText: 'Check your email' })).toBeFocused()
+  await expect(expired).toBeHidden()
+  await expect(page).toHaveURL('/login?next=%2Fcompany')
+})
+
 test('Google sign in comes back signed in', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue with Google' }).click()
 
