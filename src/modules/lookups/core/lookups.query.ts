@@ -59,6 +59,7 @@ export function lookupsQuery(params: LookupListParams) {
 
       return before && sameSearcher(before, params) ? previous : undefined
     },
+    meta: { silent: true },
   }
 }
 

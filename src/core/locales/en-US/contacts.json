@@ -34,6 +34,8 @@
       "last-search": "Last search",
       "actions": "Actions"
     },
+    "searches-link_one": "{{count}} search by {{name}}",
+    "searches-link_other": "{{count}} searches by {{name}}",
     "status": {
       "active": "Active",
       "blocked": "Blocked"

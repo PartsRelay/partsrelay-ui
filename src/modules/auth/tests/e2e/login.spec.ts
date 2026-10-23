@@ -71,9 +71,9 @@ test('a new sign-in link clears the error of the previous one', async ({ page })
 test('Google sign in comes back signed in', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue with Google' }).click()
 
-  await expect(page).toHaveURL('/contacts')
+  await expect(page).toHaveURL('/searches')
   await expect(notices(page).getByText('Signed in as mark.reed@redwoodparts.com.')).toBeVisible()
-  await expect(page.getByRole('heading', { level: 1, name: 'Contacts' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Searches' })).toBeVisible()
 })
 
 test('a protected page asks to sign in, then opens', async ({ page }) => {

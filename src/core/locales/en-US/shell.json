@@ -1,5 +1,6 @@
 {
   "nav": {
+    "searches": "Searches",
     "contacts": "Contacts",
     "workspace": "Workspace",
     "company": "Company",
@@ -7,6 +8,8 @@
     "menu": "Main menu"
   },
   "crumbs": {
+    "searches": "Searches",
+    "search": "Search result",
     "contacts": "Contacts",
     "workspace": "Workspace",
     "account": "Account",

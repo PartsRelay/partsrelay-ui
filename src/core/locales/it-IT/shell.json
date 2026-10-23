@@ -1,5 +1,6 @@
 {
   "nav": {
+    "searches": "Ricerche",
     "contacts": "Contatti",
     "workspace": "Area di lavoro",
     "company": "Azienda",
@@ -7,6 +8,8 @@
     "menu": "Menu principale"
   },
   "crumbs": {
+    "searches": "Ricerche",
+    "search": "Risultato",
     "contacts": "Contatti",
     "workspace": "Area di lavoro",
     "account": "Account",

@@ -35,9 +35,9 @@ test.describe('as a newcomer', () => {
     await page.getByRole('option', { name: 'Italian' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page).toHaveURL('/contacts')
+    await expect(page).toHaveURL('/searches')
     await expect(page.getByRole('link', { name: /North Garage Ltd/ })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 1, name: 'Contacts' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Searches' })).toBeVisible()
 
     await page.goto('/workspace')
     await expect(page.getByRole('row', { name: /Anna North \(you\)/ })).toContainText('Owner')
@@ -46,7 +46,7 @@ test.describe('as a newcomer', () => {
     await expect(page.getByRole('combobox', { name: 'Reply language' })).toHaveText('Italian')
 
     await page.goto('/')
-    await expect(page).toHaveURL('/contacts')
+    await expect(page).toHaveURL('/searches')
   })
 
   test('signing out leaves the setup', async ({ page }) => {

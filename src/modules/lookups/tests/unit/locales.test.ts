@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vite-plus/test'
 import { LookupObjectSource, LookupObjectStatus } from '@/core/api/models'
 import { lookupDetail } from '@/modules/lookups/core/lookup-detail'
+import { lookupFieldErrors, plateError, queryError } from '@/modules/lookups/core/lookup-form'
+import { textKey } from '@/modules/lookups/core/lookup-row'
 import { lookupFixture, workspaceFixture } from '@/modules/lookups/tests/unit/fixtures'
 
 type Texts = Record<string, Record<string, unknown>>
@@ -34,7 +36,7 @@ describe('lookups texts', () => {
 
   it('name every key in kebab case', () => {
     for (const key of keys(texts('en-US', 'lookups'))) {
-      expect(key).toMatch(/^[a-z]+(-[a-z]+)*(\.[a-z]+(-[a-z]+)*)*$/)
+      expect(key.replace(/_(one|other)$/, '')).toMatch(/^[a-z]+(-[a-z]+)*(\.[a-z]+(-[a-z]+)*)*$/)
     }
   })
 
@@ -54,5 +56,24 @@ describe('lookups texts', () => {
     ]
 
     expect(english).toEqual(expect.arrayContaining(used))
+  })
+
+  it('explain every outcome but the results and every error of a new search', () => {
+    const english = keys(texts('en-US', 'lookups'))
+    const workspace = workspaceFixture()
+    const states = [
+      ...Object.values(LookupObjectStatus).map((status) => lookupFixture(1, { status })),
+      lookupFixture(1, { categories: undefined }),
+    ].map((lookup) => lookupDetail(lookup, workspace, 'en-US').state)
+    const outcomes = states
+      .filter((state) => state !== 'results')
+      .map((state) => `lookups.outcome.${textKey(state)}.description`)
+    const errors = [
+      ...['', 'A'].flatMap((value) => [plateError({ value }), queryError({ value })]),
+      ...Object.values(lookupFieldErrors),
+    ]
+
+    expect(outcomes).toHaveLength(5)
+    expect(english).toEqual(expect.arrayContaining([...outcomes, ...errors]))
   })
 })

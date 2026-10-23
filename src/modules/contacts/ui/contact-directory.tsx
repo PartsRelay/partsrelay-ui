@@ -11,9 +11,9 @@ import { contactListParams, contactsQuery } from '@/modules/contacts/core/contac
 import { AddContactDialog } from '@/modules/contacts/ui/add-contact-dialog'
 import { BlockContactDialog } from '@/modules/contacts/ui/block-contact-dialog'
 import { ContactsTable } from '@/modules/contacts/ui/contacts-table'
-import { LoadError, RefetchError } from '@/modules/contacts/ui/load-error'
 import { RemoveContactDialog } from '@/modules/contacts/ui/remove-contact-dialog'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
+import { LoadError, RefetchError } from '@/ui/components/load-error'
 import { PaginationBar } from '@/ui/components/pagination-bar'
 import {
   Card,
@@ -115,7 +115,11 @@ export function ContactDirectory() {
             aria-busy={list.isPlaceholderData}
             className={cn('grid gap-4', list.isPlaceholderData && 'opacity-60')}
           >
-            {list.isRefetchError && <RefetchError error={list.error} onRetry={retry} />}
+            {list.isRefetchError && (
+              <RefetchError error={list.error} onRetry={retry}>
+                {t('contacts.list.stale')}
+              </RefetchError>
+            )}
             {list.data && rows && !info?.outOfRange ? (
               rows.length > 0 ? (
                 <>

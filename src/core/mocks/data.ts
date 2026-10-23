@@ -163,3 +163,23 @@ export function ironworksGarage(newMember: Person, role: Role): Company {
     invitations: [],
   }
 }
+
+export function page<T>(items: T[], currentPage: number, perPage: number) {
+  const lastPage = Math.max(1, Math.ceil(items.length / perPage))
+  const link = (target: number) => `/?page=${target}`
+
+  return {
+    data: items.slice((currentPage - 1) * perPage, currentPage * perPage),
+    metadata: {
+      total: items.length,
+      perPage,
+      currentPage,
+      lastPage,
+      firstPage: 1,
+      firstPageUrl: link(1),
+      lastPageUrl: link(lastPage),
+      nextPageUrl: currentPage < lastPage ? link(currentPage + 1) : null,
+      previousPageUrl: currentPage > 1 ? link(currentPage - 1) : null,
+    },
+  }
+}

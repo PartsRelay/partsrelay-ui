@@ -1,5 +1,11 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { BookUserIcon, Building2Icon, type LucideIcon, UsersIcon } from 'lucide-react'
+import {
+  BookUserIcon,
+  Building2Icon,
+  type LucideIcon,
+  ScanSearchIcon,
+  UsersIcon,
+} from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { navigation, pageAt, type Section } from '@/modules/workspaces/core/navigation'
@@ -21,6 +27,7 @@ import {
 } from '@/ui/components/ui/sidebar'
 
 const icons: Record<Section, LucideIcon> = {
+  searches: ScanSearchIcon,
   contacts: BookUserIcon,
   workspace: UsersIcon,
   company: Building2Icon,
