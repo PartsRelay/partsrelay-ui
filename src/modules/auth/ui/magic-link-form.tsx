@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { emailError, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
 import { magicLinkSignIn, type SignInFlow } from '@/modules/auth/core/sign-in'
+import { useClearSignInError } from '@/modules/auth/ui/hooks/use-clear-sign-in-error'
 import { errorCode, errorKey } from '@/core/errors'
 import { useAppForm } from '@/form'
 import { Callout } from '@/ui/components/callout'
@@ -18,6 +19,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   const [sentAt, setSentAt] = useState<number | null>(null)
   const [failure, setFailure] = useState<string | null>(null)
   const { pending, run } = useBetterAuthAction()
+  const clearSignInError = useClearSignInError()
   const [now, setNow] = useState(Date.now)
   const wait = resendWait(sentAt, now)
   const input = useRef<HTMLInputElement>(null)
@@ -59,6 +61,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
     onSubmit: async ({ value, formApi }) => {
       const error = await send(value.email.trim().toLowerCase())
       if (error) formApi.setErrorMap({ onSubmit: { fields: { email: error } } })
+      else await clearSignInError()
     },
   })
 
