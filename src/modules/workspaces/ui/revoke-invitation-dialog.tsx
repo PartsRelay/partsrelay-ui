@@ -1,6 +1,7 @@
 import type { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
+import { alreadyGone } from '@/core/errors'
 import { optimistic } from '@/core/optimistic'
 import {
   type FullOrganization,
@@ -46,7 +47,7 @@ export function RevokeInvitationDialog({
             ),
           { notice: 'workspace.notices.invitation-revoked' }
         )
-        if (result.ok) onClose()
+        if (result.ok || alreadyGone(result.error)) onClose()
       }}
       onClose={onClose}
       returnTo={returnTo}

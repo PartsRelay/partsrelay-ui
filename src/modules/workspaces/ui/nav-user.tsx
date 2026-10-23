@@ -39,7 +39,7 @@ function Identity({ name, email, image }: { name: string; email: string; image: 
 
 export function NavUser() {
   const { t } = useTranslation()
-  const { isMobile } = useSidebar()
+  const { isMobile, setOpenMobile } = useSidebar()
   const { me } = useMe()
   const navigate = useNavigate()
   const { pending, signOut } = useSignOut()
@@ -72,7 +72,7 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link to="/profile">
+                <Link to="/profile" onClick={() => setOpenMobile(false)}>
                   <UserIcon aria-hidden />
                   {t('shell.user.profile')}
                 </Link>
