@@ -1,5 +1,6 @@
 import type { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
+import { alreadyGone } from '@/core/errors'
 import type { ContactRow } from '@/modules/contacts/core/contact-row'
 import { useUpdateContact } from '@/modules/contacts/ui/hooks/use-update-contact'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
@@ -25,7 +26,12 @@ export function BlockContactDialog({ row, open, onClose, returnTo }: BlockContac
       onConfirm={() =>
         update.mutate(
           { contact: row.contact, change: { status: 'blocked' } },
-          { onSuccess: onClose }
+          {
+            onSuccess: onClose,
+            onError: (error) => {
+              if (alreadyGone(error)) onClose()
+            },
+          }
         )
       }
       onClose={onClose}

@@ -10,9 +10,7 @@ import {
 } from '@/modules/workspaces/core/permissions'
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
 
-export type FullOrganization = NonNullable<
-  Awaited<ReturnType<typeof authClient.organization.getFullOrganization>>
->
+export type FullOrganization = typeof authClient.$Infer.ActiveOrganization
 
 export type Member = {
   id: string

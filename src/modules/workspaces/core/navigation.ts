@@ -18,7 +18,7 @@ export const pagePaths = {
   profile: '/profile',
 } as const satisfies Record<Page, string>
 
-export type CrumbId = 'searches' | 'search' | 'contacts' | 'workspace' | 'company' | 'profile'
+export type CrumbId = Page | 'search'
 
 const CRUMB_PARENTS = {
   searches: null,

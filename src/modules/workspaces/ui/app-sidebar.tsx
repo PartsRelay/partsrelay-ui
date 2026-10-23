@@ -23,6 +23,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from '@/ui/components/ui/sidebar'
 
 const icons: Record<Section, LucideIcon> = {
@@ -35,16 +36,18 @@ const icons: Record<Section, LucideIcon> = {
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation()
   const { workspace, me } = useMe()
+  const { setOpenMobile } = useSidebar()
+  const close = () => setOpenMobile(false)
   const page = useLocation({ select: (location) => pageAt(location.pathname) })
   const items = navigation(me.permissions, page)
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="offcanvas" role="navigation" aria-label={t('nav.menu')} {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to="/">
+              <Link to="/" onClick={close}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Building2Icon aria-hidden className="size-4" />
                 </div>
@@ -68,7 +71,11 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
                   return (
                     <SidebarMenuItem key={item.page}>
                       <SidebarMenuButton asChild isActive={item.active}>
-                        <Link to={item.path} aria-current={item.active ? 'page' : undefined}>
+                        <Link
+                          to={item.path}
+                          aria-current={item.active ? 'page' : undefined}
+                          onClick={close}
+                        >
                           <Icon aria-hidden />
                           <span>{t(...item.label)}</span>
                         </Link>

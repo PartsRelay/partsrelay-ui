@@ -4,7 +4,8 @@
     "contacts": "Contacts",
     "workspace": "Workspace",
     "company": "Company",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "menu": "Main menu"
   },
   "crumbs": {
     "searches": "Searches",
@@ -25,6 +26,12 @@
       "ask-owner": "Ask {{owner}}, your company owner, for help.",
       "ask-any-owner": "Ask your company owner for help.",
       "back": "Back to home"
-    }
+    },
+    "sidebar": {
+      "toggle": "Toggle Sidebar",
+      "title": "Sidebar",
+      "description": "Displays the mobile sidebar."
+    },
+    "notifications": "Notifications"
   }
 }

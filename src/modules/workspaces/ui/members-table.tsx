@@ -4,17 +4,11 @@ import { type Member, memberRows } from '@/modules/workspaces/core/workspace'
 import { RemoveMemberDialog } from '@/modules/workspaces/ui/remove-member-dialog'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { PersonItem } from '@/ui/components/person-item'
+import { ResponsiveTable } from '@/ui/components/responsive-table'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { MemberActions } from '@/modules/workspaces/ui/member-actions'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/ui/components/ui/table'
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
 const columns = ['member', 'role', 'actions']
 
@@ -37,7 +31,7 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
         <CardDescription>{t('workspace.members.description')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
+        <ResponsiveTable>
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
@@ -58,7 +52,7 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
                     }
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell data-label={t('workspace.members.columns.role')}>
                   <StatusBadge tone="neutral">{t(...row.roleLabel)}</StatusBadge>
                 </TableCell>
                 <TableCell>
@@ -74,7 +68,7 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+        </ResponsiveTable>
         {removing && (
           <RemoveMemberDialog
             key={removing.id}

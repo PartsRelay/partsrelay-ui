@@ -30,6 +30,8 @@ const STATUS_CODES = [
   'INTERNAL_SERVER_ERROR',
 ]
 
+const GONE_CODES = ['ROW_NOT_FOUND', 'MEMBER_NOT_FOUND', 'INVITATION_NOT_FOUND']
+
 function isAuthClientError(error: unknown): error is AuthClientError {
   return (
     typeof error === 'object' &&
@@ -74,6 +76,10 @@ export function errorStatus(error: unknown) {
 
 export function errorCode(error: unknown) {
   return toErrorBody(error).code
+}
+
+export function alreadyGone(error: unknown) {
+  return GONE_CODES.includes(errorCode(error))
 }
 
 // The fields the core rejected, each with the form's error key
