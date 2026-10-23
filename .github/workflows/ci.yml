@@ -16,6 +16,8 @@ jobs:
   oxc:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
+    outputs:
+      playwright: ${{ steps.playwright.outputs.version }}
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
@@ -35,6 +37,8 @@ jobs:
         with:
           path: node_modules
           key: ${{ steps.modules.outputs.cache-primary-key }}
+      - id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
       - run: bun run check
 
   build:
@@ -74,22 +78,22 @@ jobs:
   e2e:
     needs: oxc
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container: mcr.microsoft.com/playwright:v${{ needs.oxc.outputs.playwright }}-noble
     strategy:
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
       - uses: actions/cache/restore@v6
         with:
           path: node_modules
           key: modules-${{ runner.os }}-${{ hashFiles('bun.lock', 'package.json') }}
           fail-on-cache-miss: true
-      - run: bunx playwright install --with-deps --only-shell ${{ matrix.browser }}
+      - run: npm install --global "$(node -p "require('./package.json').packageManager")"
       - run: bun run test:e2e --project=${{ matrix.browser }}
+        env:
+          HOME: /root
       - if: ${{ failure() }}
         uses: actions/upload-artifact@v7
         with:
