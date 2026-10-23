@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ContactRow } from '@/modules/contacts/core/contact-row'
 import { ContactActions } from '@/modules/contacts/ui/contact-actions'
@@ -27,6 +27,7 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
   const { t } = useTranslation()
   const { me } = useMe()
   const [renaming, setRenaming] = useState<number | null>(null)
+  const renamed = useRef<number | null>(null)
   const manage = me.permissions.manageContacts
 
   return (
@@ -46,7 +47,13 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
             <TableRow key={row.contact.id}>
               <TableCell>
                 {editing ? (
-                  <ContactNameForm row={row} onDone={() => setRenaming(null)} />
+                  <ContactNameForm
+                    row={row}
+                    onDone={() => {
+                      renamed.current = row.contact.id
+                      setRenaming(null)
+                    }}
+                  />
                 ) : row.whatsappName ? (
                   <PersonItem
                     name={row.name}
@@ -68,6 +75,12 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
                   {!editing && (
                     <ContactActions
                       row={row}
+                      renameRef={(button) => {
+                        if (button && renamed.current === row.contact.id) {
+                          renamed.current = null
+                          button.focus()
+                        }
+                      }}
                       onRename={() => setRenaming(row.contact.id)}
                       onBlock={() => onBlock(row)}
                       onRemove={() => onRemove(row)}
