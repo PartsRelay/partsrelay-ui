@@ -112,6 +112,17 @@ test.describe('as the owner', () => {
     await expect(page.getByText('3 members · 2 pending invitations')).toBeVisible()
   })
 
+  test('cancelling a removal puts the focus back on its button', async ({ page }) => {
+    const remove = page.getByRole('button', { name: 'Remove Luke Foster' })
+    await remove.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByRole('alertdialog', { name: 'Remove Luke Foster?' })).toBeVisible()
+    await page.keyboard.press('Escape')
+
+    await expect(page.getByRole('alertdialog')).toBeHidden()
+    await expect(remove).toBeFocused()
+  })
+
   test('transferring ownership makes me an admin', async ({ page }) => {
     await page.getByRole('button', { name: 'Transfer ownership' }).click()
     const dialog = page.getByRole('alertdialog', { name: 'Transfer ownership' })

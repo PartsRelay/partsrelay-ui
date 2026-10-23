@@ -31,6 +31,7 @@ export function PaginationBar({ metadata }: { metadata: PageMetadata }) {
             to="."
             search={(prev) => ({ ...prev, page: info.page - 1 })}
             disabled={!info.hasPrevious}
+            tabIndex={0}
             text={t('pagination.previous')}
             aria-label={t('pagination.previous')}
             className={disabled}
@@ -41,6 +42,7 @@ export function PaginationBar({ metadata }: { metadata: PageMetadata }) {
             to="."
             search={(prev) => ({ ...prev, page: info.page + 1 })}
             disabled={!info.hasNext}
+            tabIndex={0}
             text={t('pagination.next')}
             aria-label={t('pagination.next')}
             className={disabled}
