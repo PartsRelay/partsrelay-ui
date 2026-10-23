@@ -11,7 +11,6 @@ export const lookupsChannel = (workspaceId: string) => `workspaces/${workspaceId
 
 const [lookupPrefix] = getGetApiV1LookupsLookupIdQueryKey('')
 
-// Lists, single lookups and the contact search counts reload through REST
 export function refreshLookups(client: QueryClient) {
   return Promise.all([
     client.invalidateQueries({ queryKey: lookupsKey }),
