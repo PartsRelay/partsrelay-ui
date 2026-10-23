@@ -73,7 +73,7 @@
   --destructive: #b42318;
   --border: #dce3e6;
   --input: #dce3e6;
-  --ring: var(--teal);
+  --ring: var(--navy);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
