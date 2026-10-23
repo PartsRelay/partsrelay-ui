@@ -70,7 +70,7 @@
   --muted-foreground: var(--slate);
   --accent: var(--mist);
   --accent-foreground: var(--navy);
-  --destructive: #b42318;
+  --destructive: oklch(0.48 0.2 27.325);
   --border: #dce3e6;
   --input: #dce3e6;
   --ring: var(--navy);
