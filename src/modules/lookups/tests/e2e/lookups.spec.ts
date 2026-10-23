@@ -74,6 +74,17 @@ test.describe('as the owner', () => {
     await expect(page).toHaveURL('/searches')
   })
 
+  test('closing a new search puts the focus back on its link', async ({ page }) => {
+    const open = page.getByRole('link', { name: 'New search' }).first()
+    await open.focus()
+    await page.keyboard.press('Enter')
+    await expect(sheet(page)).toBeVisible()
+    await page.keyboard.press('Escape')
+
+    await expect(sheet(page)).toBeHidden()
+    await expect(open).toBeFocused()
+  })
+
   test('a new search opens its result', async ({ page }) => {
     await startSearch(page, 'ca 770-ne', 'pastiglie freno anteriori')
 

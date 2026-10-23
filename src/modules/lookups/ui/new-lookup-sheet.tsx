@@ -25,13 +25,19 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/ui/components/ui/sheet'
+import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 
 type NewLookupSheetProps = { open: boolean; plate?: string; onClose: () => void }
 
 export function NewLookupSheet({ open, plate, onClose }: NewLookupSheetProps) {
+  const returnFocus = useReturnFocus(open)
+
   return (
     <Sheet open={open} onOpenChange={(next) => !next && onClose()}>
-      <SheetContent className="gap-0 overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-lg">
+      <SheetContent
+        onCloseAutoFocus={returnFocus}
+        className="gap-0 overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-lg"
+      >
         <NewLookupForm plate={plate} />
       </SheetContent>
     </Sheet>
