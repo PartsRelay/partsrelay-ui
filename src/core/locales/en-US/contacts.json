@@ -34,12 +34,8 @@
       "last-search": "Last search",
       "actions": "Actions"
     },
-    "searches-link": {
-      "total_one": "{{count}} search by {{name}}",
-      "total_other": "{{count}} searches by {{name}}",
-      "month_one": "{{count}} search this month by {{name}}",
-      "month_other": "{{count}} searches this month by {{name}}"
-    },
+    "searches-link_one": "{{count}} search by {{name}}",
+    "searches-link_other": "{{count}} searches by {{name}}",
     "status": {
       "active": "Active",
       "blocked": "Blocked"
