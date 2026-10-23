@@ -8,7 +8,7 @@ import '@/i18n'
 import { queryClient } from '@/query-client'
 import { router } from '@/router'
 
-if (mocksEnabled) {
+if (import.meta.env.DEV && mocksEnabled) {
   const { worker } = await import('@/core/mocks/browser')
   await worker.start({ onUnhandledRequest: 'bypass' })
 }
