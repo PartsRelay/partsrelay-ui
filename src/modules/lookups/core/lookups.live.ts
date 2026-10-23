@@ -1,6 +1,7 @@
 import type { Transmit } from '@adonisjs/transmit-client'
 import type { QueryClient } from '@tanstack/query-core'
 import { getGetApiV1LookupsLookupIdQueryKey } from '@/core/api/endpoints/lookups/lookups'
+import { contactsKey } from '@/modules/contacts/core/contacts.query'
 import { lookupsKey } from '@/modules/lookups/core/lookups.query'
 
 export type LiveClient = Pick<Transmit, 'subscription' | 'on' | 'off'>
@@ -10,10 +11,10 @@ export const lookupsChannel = (workspaceId: string) => `workspaces/${workspaceId
 
 const [lookupPrefix] = getGetApiV1LookupsLookupIdQueryKey('')
 
-// Lists and single lookups reload through REST
 export function refreshLookups(client: QueryClient) {
   return Promise.all([
     client.invalidateQueries({ queryKey: lookupsKey }),
+    client.invalidateQueries({ queryKey: contactsKey }),
     client.invalidateQueries({
       predicate: ({ queryKey }) => String(queryKey[0]).startsWith(lookupPrefix),
     }),

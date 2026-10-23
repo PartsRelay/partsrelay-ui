@@ -3,7 +3,8 @@
     "contacts": "Contacts",
     "workspace": "Workspace",
     "company": "Company",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "menu": "Main menu"
   },
   "crumbs": {
     "contacts": "Contacts",

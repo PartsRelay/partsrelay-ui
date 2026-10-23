@@ -6,6 +6,7 @@ import { cn } from 'cn'
 import { Slot } from 'radix-ui'
 
 import { useIsMobile } from '@/ui/hooks/use-mobile'
+import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 import { Button } from '@/ui/components/ui/button'
 import { Input } from '@/ui/components/ui/input'
 import { Separator } from '@/ui/components/ui/separator'
@@ -155,6 +156,7 @@ function Sidebar({
   collapsible?: 'offcanvas' | 'icon' | 'none'
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+  const returnFocus = useReturnFocus(openMobile)
 
   if (collapsible === 'none') {
     return (
@@ -186,6 +188,7 @@ function Sidebar({
             } as React.CSSProperties
           }
           side={side}
+          onCloseAutoFocus={returnFocus}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>Sidebar</SheetTitle>
