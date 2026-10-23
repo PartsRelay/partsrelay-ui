@@ -35,7 +35,7 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
   const items = navigation(me.permissions, page)
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="offcanvas" role="navigation" aria-label={t('nav.menu')} {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

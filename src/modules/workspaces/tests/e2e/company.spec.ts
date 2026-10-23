@@ -93,3 +93,15 @@ test('deleting the company signs everyone out', async ({ page }) => {
     )
   ).toBeVisible()
 })
+
+test('each page has its own title and the menu is a navigation landmark', async ({ page }) => {
+  await expect(page).toHaveTitle(/^Company · /)
+
+  await page
+    .getByRole('navigation', { name: 'Main menu' })
+    .getByRole('link', { name: 'Contacts' })
+    .click()
+
+  await expect(page.getByRole('heading', { level: 1, name: 'Contacts' })).toBeVisible()
+  await expect(page).toHaveTitle(/^Contacts · /)
+})

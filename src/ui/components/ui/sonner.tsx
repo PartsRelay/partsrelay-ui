@@ -6,12 +6,16 @@ import {
   OctagonXIcon,
   TriangleAlertIcon,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Toaster as Sonner, type ToasterProps } from 'sonner'
 
 function Toaster(props: ToasterProps) {
+  const { t } = useTranslation()
+
   return (
     <Sonner
       className="toaster group"
+      containerAriaLabel={t('shell.notifications')}
       icons={{
         success: <CircleCheckIcon className="size-4" />,
         info: <InfoIcon className="size-4" />,
