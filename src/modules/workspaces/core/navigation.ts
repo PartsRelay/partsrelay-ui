@@ -17,6 +17,7 @@ export const pagePaths = {
   profile: '/profile',
 } as const satisfies Record<Page, string>
 
+// The contacts and workspace pages top their own trails
 const CRUMB_PARENTS = {
   contacts: null,
   workspace: null,

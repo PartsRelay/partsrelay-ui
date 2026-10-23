@@ -6,6 +6,7 @@ import { notify } from '@/core/notify'
 type ActionOptions = {
   notice?: string
   values?: MessageValues
+  // A function picks the errors the caller shows itself
   silent?: boolean | ((error: unknown) => boolean)
 }
 
