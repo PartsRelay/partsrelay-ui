@@ -87,7 +87,9 @@ export function LookupQueue() {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <RequesterFilter selected={first && text(first.searcher)} />
+        {(!info || info.total > 0 || params.searcherType) && (
+          <RequesterFilter selected={first && text(first.searcher)} />
+        )}
         <div
           aria-busy={list.isPlaceholderData}
           className={cn('grid gap-4', list.isPlaceholderData && 'opacity-60')}

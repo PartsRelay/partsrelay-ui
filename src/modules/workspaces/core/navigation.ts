@@ -20,7 +20,6 @@ export const pagePaths = {
 
 export type CrumbId = 'searches' | 'search' | 'contacts' | 'workspace' | 'company' | 'profile'
 
-// The searches, contacts and workspace pages top their own trails
 const CRUMB_PARENTS = {
   searches: null,
   search: 'searches',

@@ -1,4 +1,4 @@
-import { getRouteApi } from '@tanstack/react-router'
+import { getRouteApi, useCanGoBack, useRouter } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { LookupQueue } from '@/modules/lookups/ui/lookup-queue'
 import { NewLookupButton } from '@/modules/lookups/ui/new-lookup-button'
@@ -11,11 +11,15 @@ export function LookupsPage() {
   const { t } = useTranslation()
   const search = route.useSearch()
   const navigate = route.useNavigate()
+  const router = useRouter()
+  const canGoBack = useCanGoBack()
   const close = () =>
-    void navigate({
-      search: (prev) => ({ ...prev, new: undefined, plate: undefined }),
-      replace: true,
-    })
+    canGoBack
+      ? router.history.back()
+      : void navigate({
+          search: (prev) => ({ ...prev, new: undefined, plate: undefined }),
+          replace: true,
+        })
 
   return (
     <>

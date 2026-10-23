@@ -32,7 +32,7 @@
       "status": "Stato",
       "channel": "Canale",
       "requester": "Richiedente",
-      "requested": "Richiesta"
+      "requested": "Data richiesta"
     },
     "filter": {
       "label": "Richiedente",
