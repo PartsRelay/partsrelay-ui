@@ -1,6 +1,7 @@
 {
   "app": {
     "go-home": "Torna alla home",
+    "title": "{{page}} · {{app}}",
     "error": {
       "title": "Impossibile caricare la pagina",
       "retry": "Riprova"
