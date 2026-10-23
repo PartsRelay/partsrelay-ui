@@ -1,5 +1,6 @@
 import { QueryClient } from '@tanstack/query-core'
 import { describe, expect, it, vi } from 'vite-plus/test'
+import { contactsListKey } from '@/modules/contacts/core/contacts.query'
 import { type LiveClient, lookupsChannel, watchLookups } from '@/modules/lookups/core/lookups.live'
 import { lookupKey, lookupsListKey } from '@/modules/lookups/core/lookups.query'
 
@@ -39,9 +40,12 @@ function cachedLookups() {
   const client = new QueryClient()
   const list = lookupsListKey({ page: 1 })
   const detail = lookupKey(9)
+  const contacts = contactsListKey({ page: 1 })
   client.setQueryData(list, { data: [] })
   client.setQueryData(detail, { data: {} })
-  const stale = () => [list, detail].map((key) => client.getQueryState(key)?.isInvalidated)
+  client.setQueryData(contacts, { data: [] })
+  const stale = () =>
+    [list, detail, contacts].map((key) => client.getQueryState(key)?.isInvalidated)
 
   return { client, stale }
 }
@@ -57,15 +61,15 @@ describe('live lookups', () => {
     expect(subscription.create).toHaveBeenCalled()
   })
 
-  it('reloads every cached list and lookup when the core says they changed', () => {
+  it('reloads every cached lookup and contact list when the core says lookups changed', () => {
     const { live, send } = fakeLive()
     const { client, stale } = cachedLookups()
 
     watchLookups(client, live, '7')
-    expect(stale()).toEqual([false, false])
+    expect(stale()).toEqual([false, false, false])
 
     send()
-    expect(stale()).toEqual([true, true])
+    expect(stale()).toEqual([true, true, true])
   })
 
   it('catches up after a dropped stream, not on the first connection', () => {
@@ -74,11 +78,11 @@ describe('live lookups', () => {
 
     watchLookups(client, live, '7')
     emit('connected')
-    expect(stale()).toEqual([false, false])
+    expect(stale()).toEqual([false, false, false])
 
     emit('disconnected')
     emit('connected')
-    expect(stale()).toEqual([true, true])
+    expect(stale()).toEqual([true, true, true])
   })
 
   it('stops listening and leaves the channel when unmounted', () => {
@@ -88,7 +92,7 @@ describe('live lookups', () => {
     watchLookups(client, live, '7')()
     send()
 
-    expect(stale()).toEqual([false, false])
+    expect(stale()).toEqual([false, false, false])
     expect(listeners.size).toBe(0)
     expect(subscription.delete).toHaveBeenCalled()
   })
