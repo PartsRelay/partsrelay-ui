@@ -2,7 +2,7 @@ import { type RefObject, useState } from 'react'
 
 export function useReturnFocus(open: boolean, fallback?: RefObject<HTMLElement | null>) {
   const [opener, setOpener] = useState<HTMLElement | null>(null)
-  const [wasOpen, setWasOpen] = useState(open)
+  const [wasOpen, setWasOpen] = useState(false)
 
   if (open !== wasOpen) {
     const focused = document.activeElement
