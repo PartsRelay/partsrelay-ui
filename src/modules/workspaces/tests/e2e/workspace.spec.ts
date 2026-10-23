@@ -32,6 +32,22 @@ test.describe('as the owner', () => {
     ])
   })
 
+  test('on a phone every row shows its role and actions', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    const owner = members(page).getByRole('row', { name: /Mark Reed/ })
+    await expect(owner.getByText('Owner', { exact: true })).toBeInViewport()
+    await expect(owner.getByRole('button', { name: 'Transfer ownership' })).toBeInViewport()
+
+    const invitation = invitations(page).getByRole('row', { name: /f\.roberts@redwoodparts\.com/ })
+    await invitation.scrollIntoViewIfNeeded()
+    await expect(invitation.getByText('Viewer', { exact: true })).toBeInViewport()
+    await expect(
+      invitation.getByRole('button', {
+        name: 'Revoke the invitation for f.roberts@redwoodparts.com',
+      })
+    ).toBeInViewport()
+  })
+
   test('inviting someone adds a pending invitation', async ({ page }) => {
     const email = page.getByRole('textbox', { name: 'Email' })
     await email.fill(' New.Buyer@RedwoodParts.com ')

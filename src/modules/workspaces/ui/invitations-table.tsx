@@ -6,19 +6,13 @@ import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { RevokeInvitationDialog } from '@/modules/workspaces/ui/revoke-invitation-dialog'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { CopyButton } from '@/ui/components/copy-button'
+import { ResponsiveTable } from '@/ui/components/responsive-table'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { ActionButton } from '@/modules/workspaces/ui/action-button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Empty, EmptyHeader, EmptyTitle } from '@/ui/components/ui/empty'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/ui/components/ui/table'
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
 const columns = ['invitation', 'role', 'sent', 'actions']
 
@@ -49,7 +43,7 @@ export function InvitationsTable() {
             </EmptyHeader>
           </Empty>
         ) : (
-          <Table>
+          <ResponsiveTable>
             <TableHeader>
               <TableRow>
                 {columns.map((column) => (
@@ -61,8 +55,10 @@ export function InvitationsTable() {
               {rows.map((row) => (
                 <TableRow key={row.invitation.id}>
                   <TableCell className="font-medium">{row.invitation.email}</TableCell>
-                  <TableCell>{t(...row.roleLabel)}</TableCell>
-                  <TableCell>
+                  <TableCell data-label={t('workspace.invitations.columns.role')}>
+                    {t(...row.roleLabel)}
+                  </TableCell>
+                  <TableCell data-label={t('workspace.invitations.columns.sent')}>
                     <span className="inline-flex items-center gap-2">
                       {row.sent}
                       {row.expired && (
@@ -84,7 +80,7 @@ export function InvitationsTable() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </ResponsiveTable>
         )}
         {revoking && (
           <RevokeInvitationDialog
