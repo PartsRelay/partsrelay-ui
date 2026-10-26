@@ -13,7 +13,7 @@ import { lengthError, MAX_STRING_LENGTH } from '@/core/strings'
 
 type Texts = Record<string, Record<string, unknown>>
 
-const files: Record<string, Texts> = import.meta.glob('@/core/locales/*/errors.json', {
+const files: Record<string, Texts> = import.meta.glob('@/locales/*/errors.json', {
   eager: true,
   import: 'default',
 })

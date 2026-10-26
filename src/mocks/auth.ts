@@ -13,8 +13,8 @@ import {
   type Invitation,
   type Person,
   type Role,
-} from '@/core/mocks/data'
-import { capStrings, fail } from '@/core/mocks/errors'
+} from '@/mocks/data'
+import { capStrings, fail } from '@/mocks/errors'
 
 type World = {
   signedIn: boolean

@@ -1,7 +1,7 @@
 import { isAxiosError } from 'axios'
 import type { ErrorBody, FieldError } from '@/core/api/models'
-import { errors as texts } from '@/core/locales/en-US/errors.json'
 import { message } from '@/core/message'
+import { errors as texts } from '@/locales/en-US/errors.json'
 
 export type { ErrorBody, FieldError }
 

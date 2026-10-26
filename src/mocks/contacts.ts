@@ -11,10 +11,10 @@ import {
   type PatchApiV1WorkspaceContactsContactIdBody,
   type PostApiV1WorkspaceContactsBody,
 } from '@/core/api/models'
-import { signedInMember } from '@/core/mocks/auth'
-import { daysAgo } from '@/core/mocks/data'
-import { apiBody, capStrings, fail, invalid } from '@/core/mocks/errors'
 import { DEFAULT_PER_PAGE } from '@/core/pagination'
+import { signedInMember } from '@/mocks/auth'
+import { daysAgo } from '@/mocks/data'
+import { apiBody, capStrings, fail, invalid } from '@/mocks/errors'
 
 // Contacts of each company, by company slug
 type Directory = { companies: Record<string, ContactObject[]>; nextId: number }

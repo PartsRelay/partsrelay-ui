@@ -6,11 +6,11 @@ import { env } from '@/env'
 
 type Catalog = Record<string, Record<string, unknown>>
 
-const enUS: Catalog = import.meta.glob('@/core/locales/en-US/*.json', {
+const enUS: Catalog = import.meta.glob('@/locales/en-US/*.json', {
   eager: true,
   import: 'default',
 })
-const itIT: Catalog = import.meta.glob('@/core/locales/it-IT/*.json', {
+const itIT: Catalog = import.meta.glob('@/locales/it-IT/*.json', {
   eager: true,
   import: 'default',
 })

@@ -53,7 +53,7 @@ export default defineConfig({
     options: { typeAware: true, typeCheck: true },
     overrides: [
       {
-        files: ['src/core/**', 'src/modules/*/core/**'],
+        files: ['src/core/**', 'src/mocks/**', 'src/modules/*/core/**'],
         rules: {
           'no-restricted-imports': [
             'error',

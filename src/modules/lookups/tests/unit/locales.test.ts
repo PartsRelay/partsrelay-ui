@@ -5,7 +5,7 @@ import { lookupFixture, workspaceFixture } from '@/modules/lookups/tests/unit/fi
 
 type Texts = Record<string, Record<string, unknown>>
 
-const files: Record<string, Texts> = import.meta.glob('@/core/locales/*/*.json', {
+const files: Record<string, Texts> = import.meta.glob('@/locales/*/*.json', {
   eager: true,
   import: 'default',
 })

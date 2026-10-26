@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vite-plus/test'
 
 type Texts = Record<string, Record<string, unknown>>
 
-const files: Record<string, Texts> = import.meta.glob('@/core/locales/*/*.json', {
+const files: Record<string, Texts> = import.meta.glob('@/locales/*/*.json', {
   eager: true,
   import: 'default',
 })

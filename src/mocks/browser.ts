@@ -1,7 +1,7 @@
 import { setupWorker } from 'msw/browser'
 import * as apiMocks from '@/core/api/endpoints/index.msw'
-import { authMocks } from '@/core/mocks/auth'
-import { contactMocks } from '@/core/mocks/contacts'
+import { authMocks } from '@/mocks/auth'
+import { contactMocks } from '@/mocks/contacts'
 
 const generated = Object.values(apiMocks).flatMap((mock) => mock())
 
