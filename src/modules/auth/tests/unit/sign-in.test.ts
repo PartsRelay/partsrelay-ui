@@ -36,6 +36,20 @@ describe('loginFlow', () => {
   it('drops a next page outside the app', () => {
     expect(loginFlow('//evil.example')).toEqual(loginFlow())
   })
+
+  it('keeps the page asked for on browsers without URLSearchParams.size', () => {
+    const size = vi
+      .spyOn(URLSearchParams.prototype, 'size', 'get')
+      .mockReturnValue(undefined as never)
+    const flow = loginFlow('/company')
+    size.mockRestore()
+
+    expect(flow).toEqual({
+      back: '/login?next=%2Fcompany&signedIn=true',
+      failed: '/login?next=%2Fcompany',
+      selectAccount: false,
+    })
+  })
 })
 
 describe('invitationFlow', () => {

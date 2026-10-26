@@ -29,11 +29,6 @@ export default defineConfig({
     }),
     react(),
     tailwindcss(),
-    // The page title is the app name too
-    {
-      name: 'app-name',
-      transformIndexHtml: (html) => html.replaceAll('%APP_NAME%', env.APP_NAME),
-    },
   ],
 
   resolve: {

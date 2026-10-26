@@ -17,15 +17,13 @@ export const pagePaths = {
   profile: '/profile',
 } as const satisfies Record<Page, string>
 
-export type CrumbId = 'contacts' | 'workspace' | 'company' | 'profile'
-
 // The contacts and workspace pages top their own trails
 const CRUMB_PARENTS = {
   contacts: null,
   workspace: null,
   company: 'workspace',
   profile: 'account',
-} as const satisfies Record<CrumbId, string | null>
+} as const satisfies Record<Page, string | null>
 
 function within(pathname: string, path: string) {
   return pathname === path || pathname.startsWith(`${path}/`)
@@ -60,7 +58,7 @@ export function navigation(permissions: Permissions, current: Page | null) {
     }))
 }
 
-export function breadcrumbs(id: CrumbId) {
+export function breadcrumbs(id: Page) {
   const parent = CRUMB_PARENTS[id]
 
   return parent ? [message(`crumbs.${parent}`), message(`crumbs.${id}`)] : [message(`crumbs.${id}`)]

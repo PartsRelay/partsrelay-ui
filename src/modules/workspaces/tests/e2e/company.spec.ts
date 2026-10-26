@@ -21,6 +21,25 @@ test('the sidebar and the breadcrumbs show where I am', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Workspace' })).toBeVisible()
 })
 
+test('on a phone the menu closes once I pick a page', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('button', { name: 'Toggle Sidebar' }).click()
+  const menu = page.getByRole('dialog')
+  await menu.getByRole('link', { name: 'Workspace' }).click()
+
+  await expect(page).toHaveURL('/workspace')
+  await expect(menu).toBeHidden()
+  await expect(page.getByRole('heading', { level: 1, name: 'Workspace' })).toBeVisible()
+
+  await page.getByRole('button', { name: 'Toggle Sidebar' }).click()
+  await menu.getByRole('button', { name: /Mark Reed/ }).click()
+  await page.getByRole('menuitem', { name: 'Profile' }).click()
+
+  await expect(page).toHaveURL('/profile')
+  await expect(menu).toBeHidden()
+  await expect(page.getByRole('heading', { level: 1, name: 'Profile' })).toBeVisible()
+})
+
 test('renaming the company updates the whole app', async ({ page }) => {
   const name = page.getByRole('textbox', { name: 'Name' })
   await expect(name).toHaveValue('Redwood Parts Ltd')
@@ -73,4 +92,16 @@ test('deleting the company signs everyone out', async ({ page }) => {
       'The company and every account were deleted. Signing in again starts a new company.'
     )
   ).toBeVisible()
+})
+
+test('each page has its own title and the menu is a navigation landmark', async ({ page }) => {
+  await expect(page).toHaveTitle(/^Company · /)
+
+  await page
+    .getByRole('navigation', { name: 'Main menu' })
+    .getByRole('link', { name: 'Contacts' })
+    .click()
+
+  await expect(page.getByRole('heading', { level: 1, name: 'Contacts' })).toBeVisible()
+  await expect(page).toHaveTitle(/^Contacts · /)
 })
