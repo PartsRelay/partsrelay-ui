@@ -103,6 +103,7 @@ describe('loginError', () => {
     ['failed-to-create-session', 'errors.failed-to-create-session'],
     ['unable-to-create-session', 'errors.failed-to-create-session'],
     ['email-not-verified', 'errors.email-not-verified'],
+    ['too-many-requests', 'errors.too-many-requests'],
     ['state-mismatch', 'login.errors.failed'],
     ['access_denied', 'login.errors.cancelled'],
   ])('explains %s', (error, key) => {
