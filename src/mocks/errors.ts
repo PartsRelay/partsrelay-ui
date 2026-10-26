@@ -20,6 +20,8 @@ export function invalid(fields: FieldError[]): never {
   return fail(422, 'validation-error', 'The request failed validation', fields)
 }
 
+export const rejected = (field: string, rule: string) => invalid([{ field, rule }])
+
 function longStrings(value: unknown, path = ''): string[] {
   const key = path.split('.').at(-1) ?? ''
 

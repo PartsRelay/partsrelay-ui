@@ -1,4 +1,5 @@
 import { subDays } from 'date-fns'
+import { rejected } from '@/mocks/errors'
 
 // Shapes of the Better Auth JSON the mocks send
 export type Role = 'owner' | 'admin' | 'viewer'
@@ -161,5 +162,39 @@ export function ironworksGarage(newMember: Person, role: Role): Company {
       member('3', '21', newMember, role, new Date().toISOString()),
     ],
     invitations: [],
+  }
+}
+
+export function checkedPage(
+  query: URLSearchParams,
+  name: string,
+  fallback: number,
+  max = Infinity
+) {
+  const value = Number(query.get(name) ?? fallback)
+  if (Number.isNaN(value)) rejected(name, 'number')
+  if (value < 1) rejected(name, 'min')
+  if (value > max) rejected(name, 'max')
+
+  return value
+}
+
+export function page<T>(items: T[], currentPage: number, perPage: number) {
+  const lastPage = Math.max(1, Math.ceil(items.length / perPage))
+  const link = (target: number) => `/?page=${target}`
+
+  return {
+    data: items.slice((currentPage - 1) * perPage, currentPage * perPage),
+    metadata: {
+      total: items.length,
+      perPage,
+      currentPage,
+      lastPage,
+      firstPage: 1,
+      firstPageUrl: link(1),
+      lastPageUrl: link(lastPage),
+      nextPageUrl: currentPage < lastPage ? link(currentPage + 1) : null,
+      previousPageUrl: currentPage > 1 ? link(currentPage - 1) : null,
+    },
   }
 }

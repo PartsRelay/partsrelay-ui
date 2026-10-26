@@ -1,5 +1,5 @@
 import { createRouter } from '@tanstack/react-router'
-import type { Page } from '@/modules/workspaces/core/navigation'
+import type { CrumbId } from '@/modules/workspaces/core/navigation'
 import { routeTree } from '@/ui/routeTree.gen'
 import { queryClient } from '@/query-client'
 
@@ -17,6 +17,6 @@ declare module '@tanstack/react-router' {
   }
 
   interface StaticDataRouteOption {
-    crumb?: Page
+    crumb?: CrumbId
   }
 }

@@ -60,10 +60,14 @@ const myRole = ({ company, me }: World) =>
   company.members.find(({ userId }) => userId === me.id)?.role
 
 // The REST mocks act for the signed in member
-export function signedInMember() {
+function signedInMember() {
   return world((state) =>
-    state.signedIn ? { company: state.company.slug, role: myRole(state) } : null
+    state.signedIn ? { company: state.company.slug, role: myRole(state), user: state.me } : null
   )
+}
+
+export function member() {
+  return signedInMember() ?? fail(401, 'unauthorized-access', 'Unauthorized access')
 }
 
 function ownerOnly(state: World, code: string, message: string) {

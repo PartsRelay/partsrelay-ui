@@ -11,10 +11,10 @@ import {
   type PatchApiV1WorkspaceContactsContactIdBody,
   type PostApiV1WorkspaceContactsBody,
 } from '@/core/api/models'
-import { DEFAULT_PER_PAGE } from '@/core/pagination'
-import { signedInMember } from '@/mocks/auth'
-import { daysAgo } from '@/mocks/data'
-import { apiBody, capStrings, fail, invalid } from '@/mocks/errors'
+import { member } from '@/mocks/auth'
+import { checkedPage, daysAgo, page } from '@/mocks/data'
+import { apiBody, capStrings, fail, rejected } from '@/mocks/errors'
+import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
 
 // Contacts of each company, by company slug
 type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
@@ -22,7 +22,6 @@ type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
 type Searches = [total: number, month: number, lastDaysAgo: number | null]
 
 const INTERNATIONAL = /^\+[1-9]\d{7,14}$/
-const PER_PAGE_MAX = 100
 
 const contact = (
   id: number,
@@ -100,16 +99,10 @@ function directory<T>(change: (state: Directory) => T): T {
   return result
 }
 
-function member() {
-  return signedInMember() ?? fail(401, 'unauthorized-access', 'Unauthorized access')
-}
-
 // Same rule as the contact policy of the core
 function authorize(role: string | undefined) {
   if (role === 'viewer') fail(403, 'authorization-failure', 'Access denied')
 }
-
-const rejected = (field: string, rule: string) => invalid([{ field, rule }])
 
 const isStatus = (value: unknown): value is ContactObject['status'] =>
   Object.values<unknown>(ContactObjectStatus).includes(value)
@@ -136,35 +129,6 @@ function checkedName(name: unknown) {
   return name.trim() || null
 }
 
-function checkedPage(query: URLSearchParams, name: string, fallback: number, max = Infinity) {
-  const value = Number(query.get(name) ?? fallback)
-  if (Number.isNaN(value)) rejected(name, 'number')
-  if (value < 1) rejected(name, 'min')
-  if (value > max) rejected(name, 'max')
-
-  return value
-}
-
-function page(items: ContactObject[], currentPage: number, perPage: number) {
-  const lastPage = Math.max(1, Math.ceil(items.length / perPage))
-  const link = (target: number) => `/?page=${target}`
-
-  return {
-    data: items.slice((currentPage - 1) * perPage, currentPage * perPage),
-    metadata: {
-      total: items.length,
-      perPage,
-      currentPage,
-      lastPage,
-      firstPage: 1,
-      firstPageUrl: link(1),
-      lastPageUrl: link(lastPage),
-      nextPageUrl: currentPage < lastPage ? link(currentPage + 1) : null,
-      previousPageUrl: currentPage > 1 ? link(currentPage - 1) : null,
-    },
-  } satisfies GetApiV1WorkspaceContacts200
-}
-
 function found(state: Directory, company: string, id: string) {
   return (
     contactsOf(state, company).find((item) => item.id === Number(id)) ??
@@ -184,14 +148,14 @@ export const contactMocks = [
       if (!isStatus(status)) rejected(`status.${index}`, 'enum')
     }
     const currentPage = checkedPage(query, 'page', 1)
-    const perPage = checkedPage(query, 'perPage', DEFAULT_PER_PAGE, PER_PAGE_MAX)
+    const perPage = checkedPage(query, 'perPage', DEFAULT_PER_PAGE, MAX_PER_PAGE)
 
     return directory((state) => {
       const matching = contactsOf(state, company)
         .filter((item) => statuses.length === 0 || statuses.includes(item.status))
         .sort((a, b) => b.id - a.id)
 
-      return page(matching, currentPage, perPage)
+      return page(matching, currentPage, perPage) satisfies GetApiV1WorkspaceContacts200
     })
   }),
   getPostApiV1WorkspaceContactsMockHandler(async ({ request }) => {

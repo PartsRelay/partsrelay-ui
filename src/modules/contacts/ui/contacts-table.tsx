@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ContactRow } from '@/modules/contacts/core/contact-row'
@@ -10,6 +11,23 @@ import { StatusBadge } from '@/ui/components/status-badge'
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
 const columns = ['contact', 'phone', 'status', 'searches', 'month', 'last-search']
+
+function SearchesLink({ row }: { row: ContactRow }) {
+  const { t } = useTranslation()
+  const count = row.searches.total
+  if (count === 0) return count
+
+  return (
+    <Link
+      to="/searches"
+      search={{ searcherType: 'contact', searcherId: row.contact.id }}
+      aria-label={t('contacts.searches-link', { count, name: row.name })}
+      className="underline underline-offset-4"
+    >
+      {count}
+    </Link>
+  )
+}
 
 type ContactsTableProps = {
   rows: ContactRow[]
@@ -62,7 +80,7 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
                 <StatusBadge tone={row.tone}>{t(...row.statusLabel)}</StatusBadge>
               </TableCell>
               <TableCell data-label={t('contacts.columns.searches')}>
-                {row.searches.total}
+                <SearchesLink row={row} />
               </TableCell>
               <TableCell data-label={t('contacts.columns.month')}>{row.searches.month}</TableCell>
               <TableCell data-label={t('contacts.columns.last-search')}>

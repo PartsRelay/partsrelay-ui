@@ -1,5 +1,7 @@
 {
   "lookups": {
+    "title": "Searches",
+    "description": "Every parts search of the company, from the web or WhatsApp, in one queue.",
     "status": {
       "running": "Searching",
       "done": "Done",
@@ -16,25 +18,106 @@
       "unnamed-contact": "Unnamed contact",
       "member": "Team member"
     },
+    "list": {
+      "title": "Search queue",
+      "description": "Searches from the counter and from WhatsApp, newest first.",
+      "stale": "The searches shown may be out of date.",
+      "count_one": "{{count}} search",
+      "count_other": "{{count}} searches",
+      "open": "Open the search of {{plate}}"
+    },
+    "columns": {
+      "plate": "Plate",
+      "parts": "Part and vehicle",
+      "status": "Status",
+      "channel": "Channel",
+      "requester": "Requester",
+      "requested": "Requested"
+    },
+    "filter": {
+      "label": "Requester",
+      "everyone": "Everyone",
+      "members": "Team",
+      "contacts": "WhatsApp contacts",
+      "selected": "Selected requester"
+    },
+    "empty": {
+      "title": "No searches yet",
+      "description": "When your team or a WhatsApp contact searches a part, its vehicle, parts and result appear here.",
+      "filtered": "No searches from this requester",
+      "filtered-description": "Clear the filter to see every search of the company.",
+      "clear": "Clear the filter"
+    },
+    "new": {
+      "open": "New search",
+      "eyebrow": "New request · Web",
+      "title": "Find the part.",
+      "description": "Enter the registration plate and the part you need. The result stays in the company search queue.",
+      "plate": "Registration plate",
+      "plate-hint": "Spaces, dots and dashes are fine.",
+      "plate-placeholder": "CA770NE",
+      "query": "Part needed",
+      "query-hint": "Be specific: part name and position, if known.",
+      "query-placeholder": "Front brake pads",
+      "tips": {
+        "title": "Search tips",
+        "body": "Check the registration plate, and include the position of the part, such as front or rear."
+      },
+      "requester": "Requested by {{name}} · Web",
+      "submit": "Start search",
+      "errors": {
+        "plate-required": "Enter the registration plate.",
+        "plate": "Check the plate: 4 to 8 letters and digits.",
+        "query-required": "Enter the part you need, such as front brake pads.",
+        "query": "Describe the part in 2 to 200 characters."
+      }
+    },
+    "fitment": "Results are identification guidance. Always confirm vehicle fitment and current price before purchase.",
+    "detail": {
+      "title": "Search result",
+      "description": "The vehicle, the status and the parts found, updated while the search runs.",
+      "back": "Back to searches",
+      "vin": "VIN",
+      "no-vehicle": "Vehicle not identified",
+      "retry": "New search with this plate",
+      "stale": "This search may be out of date."
+    },
     "outcome": {
       "running": {
-        "title": "Searching the catalog"
+        "title": "Searching the catalog",
+        "description": "The result shows here as soon as it is ready, no need to reload. You can leave this page, the search keeps going."
       },
       "results": {
         "title": "Parts found"
       },
       "unavailable": {
-        "title": "Details unavailable"
+        "title": "Details unavailable",
+        "description": "The search is done, but its parts are no longer available. Search again to see them."
       },
       "vehicle-not-found": {
-        "title": "Vehicle not found"
+        "title": "Vehicle not found",
+        "description": "The catalog does not know this registration plate. Check it and search again."
       },
       "not-matched": {
-        "title": "No category matched"
+        "title": "No category matched",
+        "description": "The vehicle was identified, but no part category matched the request. Try a more specific part name or its position."
       },
       "failed": {
-        "title": "The search failed"
+        "title": "The search failed",
+        "description": "The catalog could not complete the search. Try again in a moment."
       }
+    },
+    "results": {
+      "original_one": "{{count}} original part",
+      "original_other": "{{count}} original parts",
+      "aftermarket_one": "{{count}} aftermarket match",
+      "aftermarket_other": "{{count}} aftermarket matches",
+      "unit": "Unit {{code}}",
+      "image": "Exploded view of {{name}}",
+      "no-parts": "No parts listed for this unit.",
+      "original-code": "OE {{code}}",
+      "price": "Price",
+      "no-aftermarket": "No aftermarket matches."
     }
   }
 }

@@ -3,6 +3,8 @@ import { message } from '@/core/message'
 // Page size of every paginated list of the app
 export const DEFAULT_PER_PAGE = 20
 
+export const MAX_PER_PAGE = 100
+
 // The page a list asks for, perPage defaults to DEFAULT_PER_PAGE
 export type PaginationParams = { page: number; perPage?: number }
 
