@@ -54,7 +54,7 @@ test('the magic link form sends a link and waits before sending another', async 
 })
 
 test('a new sign-in link clears the error of the previous one', async ({ page }) => {
-  await page.goto('/login?next=%2Fcompany&error=INVALID_TOKEN')
+  await page.goto('/login?next=%2Fcompany&error=invalid-token')
   const expired = page.getByText(
     'This sign-in link has expired or was already used. Ask for a new one.'
   )
@@ -66,6 +66,15 @@ test('a new sign-in link clears the error of the previous one', async ({ page })
   await expect(page.getByRole('status').filter({ hasText: 'Check your email' })).toBeFocused()
   await expect(expired).toBeHidden()
   await expect(page).toHaveURL('/login?next=%2Fcompany')
+})
+
+test('a failed Google sign in explains the codes it knows', async ({ page }) => {
+  await page.goto('/login?error=access-denied&error_description=The+user+denied+access')
+  await expect(page.getByText('Google sign in was cancelled.')).toBeVisible()
+  await expect(page.getByText('The user denied access')).toHaveCount(0)
+
+  await page.goto('/login?error=state-mismatch')
+  await expect(page.getByText('Sign in failed. Try again.')).toBeVisible()
 })
 
 test('Google sign in comes back signed in', async ({ page }) => {

@@ -55,7 +55,7 @@ describe('loginFlow', () => {
 describe('invitationFlow', () => {
   it('returns to the invitation without the previous sign in error', () => {
     expect(
-      invitationFlow('/invitations/31?error=access_denied&error_description=denied&tab=1#top')
+      invitationFlow('/invitations/31?error=access-denied&error_description=denied&tab=1#top')
     ).toEqual({
       back: '/invitations/31?tab=1#top',
       failed: '/invitations/31?tab=1#top',
@@ -98,11 +98,13 @@ describe('loginError', () => {
   })
 
   it.each([
+    ['access-denied', 'login.errors.cancelled'],
+    ['invalid-token', 'errors.invalid-token'],
+    ['failed-to-create-session', 'errors.failed-to-create-session'],
+    ['unable-to-create-session', 'errors.failed-to-create-session'],
+    ['email-not-verified', 'errors.email-not-verified'],
+    ['state-mismatch', 'login.errors.failed'],
     ['access_denied', 'login.errors.cancelled'],
-    ['INVALID_TOKEN', 'errors.invalid-token'],
-    ['failed_to_create_session', 'errors.failed-to-create-session'],
-    ['email_not_verified', 'errors.email-not-verified'],
-    ['state_mismatch', 'login.errors.failed'],
   ])('explains %s', (error, key) => {
     expect(loginError(error)).toEqual([key])
   })
@@ -111,8 +113,8 @@ describe('loginError', () => {
 describe('loginSearchSchema', () => {
   it('keeps valid search params', () => {
     expect(
-      loginSearchSchema.parse({ next: '/company', signedIn: true, error: 'access_denied' })
-    ).toEqual({ next: '/company', signedIn: true, error: 'access_denied' })
+      loginSearchSchema.parse({ next: '/company', signedIn: true, error: 'access-denied' })
+    ).toEqual({ next: '/company', signedIn: true, error: 'access-denied' })
   })
 
   it('drops search params of the wrong type instead of failing', () => {

@@ -34,7 +34,8 @@ void i18n
     // {{app}} is the app name from the environment
     interpolation: { escapeValue: false, defaultVariables: { app: env.APP_NAME } },
     // Error codes without their own text get the generic one
-    parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.unknown') : key),
+    parseMissingKeyHandler: (key) =>
+      key.startsWith('errors.') ? i18n.t('errors.unknown-error') : key,
   })
 
 export { i18n }

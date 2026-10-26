@@ -15,8 +15,8 @@ describe('new contact', () => {
   })
 
   it('shows each error under the field the core names', () => {
-    const taken = coreError(422, 'VALIDATION_ERROR', [{ field: 'phone', rule: 'database.unique' }])
-    const both = coreError(422, 'VALIDATION_ERROR', [
+    const taken = coreError(422, 'validation-error', [{ field: 'phone', rule: 'database.unique' }])
+    const both = coreError(422, 'validation-error', [
       { field: 'phone', rule: 'waId' },
       { field: 'name', rule: 'maxLength' },
     ])
@@ -26,7 +26,7 @@ describe('new contact', () => {
       phone: 'contacts.add.errors.phone',
       name: 'contacts.add.errors.name',
     })
-    expect(fieldErrors(coreError(403, 'AUTHORIZATION_FAILURE'), contactFieldErrors)).toBeNull()
+    expect(fieldErrors(coreError(403, 'authorization-failure'), contactFieldErrors)).toBeNull()
   })
 })
 

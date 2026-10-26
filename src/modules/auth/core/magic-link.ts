@@ -1,6 +1,5 @@
 import { addSeconds, differenceInSeconds } from 'date-fns'
 import { z } from 'zod'
-import { errorKey } from '@/core/errors'
 
 export const MAGIC_LINK_MINUTES = 10
 
@@ -10,7 +9,7 @@ const email = z.email()
 
 // The core answers a generic error and limits sign in
 export function emailError(value: string) {
-  return email.safeParse(value.trim()).success ? undefined : errorKey('INVALID_EMAIL')
+  return email.safeParse(value.trim()).success ? undefined : 'errors.invalid-email'
 }
 
 export function resendWait(sentAt: number | null, now: number) {
