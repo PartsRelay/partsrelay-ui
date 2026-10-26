@@ -4,12 +4,12 @@
  * Parts Relay
  * OpenAPI spec version: 1.0.0
  */
+import type { TopSearcherType } from './topSearcherType';
 
-export interface CatalogNode {
-  id: string;
+export interface TopSearcher {
+  type: TopSearcherType;
+  id: number;
   /** @nullable */
   name: string | null;
-  /** @nullable */
-  parentId: string | null;
-  selectable: boolean;
+  total: number;
 }

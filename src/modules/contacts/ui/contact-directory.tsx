@@ -15,6 +15,7 @@ import { RemoveContactDialog } from '@/modules/contacts/ui/remove-contact-dialog
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { LoadError, RefetchError } from '@/ui/components/load-error'
 import { PaginationBar } from '@/ui/components/pagination-bar'
+import { SearchField } from '@/ui/components/search-field'
 import {
   Card,
   CardAction,
@@ -37,7 +38,7 @@ const route = getRouteApi('/_app/(contacts)/contacts')
 
 type Confirmation = { action: 'block' | 'remove'; row: ContactRow }
 
-function NoContacts({ tab }: { tab: ContactTab }) {
+function NoContacts({ tab, searched }: { tab: ContactTab; searched: boolean }) {
   const { t } = useTranslation()
   const { me } = useMe()
   const hint = me.permissions.manageContacts ? 'manager' : 'viewer'
@@ -48,8 +49,10 @@ function NoContacts({ tab }: { tab: ContactTab }) {
         <EmptyMedia variant="icon">
           <BookUserIcon aria-hidden />
         </EmptyMedia>
-        <EmptyTitle>{t(`contacts.empty.${tab}`)}</EmptyTitle>
-        {tab === 'all' && <EmptyDescription>{t(`contacts.empty.${hint}`)}</EmptyDescription>}
+        <EmptyTitle>{t(searched ? 'contacts.empty.search' : `contacts.empty.${tab}`)}</EmptyTitle>
+        {tab === 'all' && !searched && (
+          <EmptyDescription>{t(`contacts.empty.${hint}`)}</EmptyDescription>
+        )}
       </EmptyHeader>
     </Empty>
   )
@@ -99,9 +102,22 @@ export function ContactDirectory() {
       <CardContent>
         <Tabs
           value={tab}
-          onValueChange={(value) => void navigate({ search: { status: tabStatus(value) } })}
+          onValueChange={(value) =>
+            void navigate({
+              search: (prev) => ({ ...prev, status: tabStatus(value), page: undefined }),
+            })
+          }
           className="gap-4"
         >
+          <SearchField
+            label={t('contacts.search.label')}
+            placeholder={t('contacts.search.placeholder')}
+            value={search.search}
+            className="sm:max-w-xs"
+            onSearch={(value) =>
+              void navigate({ search: (prev) => ({ ...prev, search: value, page: undefined }) })
+            }
+          />
           <TabsList aria-label={t('contacts.tabs.label')}>
             {contactTabs.map((item) => (
               <TabsTrigger key={item} value={item} className="text-muted-foreground">
@@ -130,7 +146,7 @@ export function ContactDirectory() {
                   <PaginationBar metadata={list.data.metadata} />
                 </>
               ) : (
-                <NoContacts tab={tab} />
+                <NoContacts tab={tab} searched={search.search !== undefined} />
               )
             ) : list.isLoadingError ? (
               <LoadError error={list.error} onRetry={retry} />

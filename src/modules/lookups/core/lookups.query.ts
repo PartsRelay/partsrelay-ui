@@ -1,70 +1,45 @@
-import type { Query, QueryFunctionContext } from '@tanstack/query-core'
+import { keepPreviousData, type QueryClient } from '@tanstack/query-core'
 import {
-  getApiV1LookupsLookupId,
   getGetApiV1LookupsLookupIdQueryKey,
+  getGetApiV1LookupsLookupIdQueryOptions,
 } from '@/core/api/endpoints/lookups/lookups'
 import {
-  getApiV1WorkspaceLookups,
   getGetApiV1WorkspaceLookupsQueryKey,
+  getGetApiV1WorkspaceLookupsQueryOptions,
+  getGetApiV1WorkspaceLookupsStatsQueryKey,
+  getGetApiV1WorkspaceLookupsStatsQueryOptions,
 } from '@/core/api/endpoints/workspace-lookups/workspace-lookups'
-import type {
-  GetApiV1LookupsLookupId200,
-  GetApiV1WorkspaceLookups200,
-  SearcherType,
-} from '@/core/api/models'
-import { type PaginationParams, withPerPage } from '@/core/pagination'
+import type { GetApiV1WorkspaceLookupsParams, LookupObject } from '@/core/api/models'
 
-export type LookupListParams = PaginationParams & {
-  searcherType?: SearcherType
-  searcherId?: number
-}
+const STATS_DAYS = 30
 
-export type LookupsPage = GetApiV1WorkspaceLookups200
+const lookupsKey = getGetApiV1WorkspaceLookupsQueryKey()
 
-type LookupResponse = GetApiV1LookupsLookupId200
-
-export const lookupsKey = getGetApiV1WorkspaceLookupsQueryKey()
-
-export function lookupsListKey(params: LookupListParams) {
-  return [...lookupsKey, params] as const
-}
-
-function listParamsOf(key: readonly unknown[]) {
-  return key[1] as LookupListParams | undefined
-}
+const lookupStatsKey = getGetApiV1WorkspaceLookupsStatsQueryKey()
 
 export function lookupKey(id: number) {
   return getGetApiV1LookupsLookupIdQueryKey(String(id))
 }
 
-function sameSearcher(a: LookupListParams, b: LookupListParams) {
-  return a.searcherType === b.searcherType && a.searcherId === b.searcherId
+export function refreshLookupLists(client: QueryClient) {
+  return Promise.all(
+    [lookupsKey, lookupStatsKey].map((queryKey) => client.invalidateQueries({ queryKey }))
+  )
 }
 
-function lookupOf({ data }: LookupResponse) {
-  return data
+export function lookupsQuery(params: GetApiV1WorkspaceLookupsParams) {
+  return getGetApiV1WorkspaceLookupsQueryOptions(params, {
+    query: { placeholderData: keepPreviousData, meta: { silent: true } },
+  })
 }
 
-export function lookupsQuery(params: LookupListParams) {
-  return {
-    queryKey: lookupsListKey(params),
-    queryFn: ({ signal }: QueryFunctionContext) =>
-      getApiV1WorkspaceLookups({ params: withPerPage(params) }, signal),
-    placeholderData: (previous?: LookupsPage, query?: Query<LookupsPage>) => {
-      const before = query && listParamsOf(query.queryKey)
-
-      return before && sameSearcher(before, params) ? previous : undefined
-    },
-    meta: { silent: true },
-  }
-}
+export const lookupStatsQuery = getGetApiV1WorkspaceLookupsStatsQueryOptions(
+  { days: STATS_DAYS },
+  { query: { select: ({ data }) => data, meta: { silent: true } } }
+)
 
 export function lookupQuery(id: number) {
-  return {
-    queryKey: lookupKey(id),
-    queryFn: ({ signal }: QueryFunctionContext) =>
-      getApiV1LookupsLookupId(String(id), undefined, signal),
-    select: lookupOf,
-    meta: { silent: true },
-  }
+  return getGetApiV1LookupsLookupIdQueryOptions<LookupObject>(String(id), {
+    query: { select: ({ data }) => data, meta: { silent: true } },
+  })
 }

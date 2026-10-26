@@ -193,7 +193,13 @@ test.describe('as a viewer', () => {
   test('home is the searches and the workspace is not available', async ({ page }) => {
     await page.goto('/')
     await expect(page).toHaveURL('/searches')
-    await expect(page.getByRole('heading', { level: 1, name: 'Searches' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: /^Good (morning|afternoon|evening), Sarah Collins\.$/,
+      })
+    ).toBeVisible()
+    await expect(page.getByText('Top searchers')).toHaveCount(0)
     await expect(page.getByRole('link', { name: 'Workspace' })).toHaveCount(0)
 
     await page.goto('/workspace')

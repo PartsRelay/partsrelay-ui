@@ -6,12 +6,12 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { pageInfo } from '@/core/pagination'
 import { lookupRow } from '@/modules/lookups/core/lookup-row'
-import { lookupListParams } from '@/modules/lookups/core/lookups'
+import { filtered, lookupListParams } from '@/modules/lookups/core/lookups'
 import { lookupsQuery } from '@/modules/lookups/core/lookups.query'
 import { useText } from '@/modules/lookups/ui/hooks/use-text'
+import { LookupFilters } from '@/modules/lookups/ui/lookup-filters'
 import { LookupsTable } from '@/modules/lookups/ui/lookups-table'
 import { NewLookupButton } from '@/modules/lookups/ui/new-lookup-button'
-import { RequesterFilter } from '@/modules/lookups/ui/requester-filter'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { LoadError, RefetchError } from '@/ui/components/load-error'
 import { PaginationBar } from '@/ui/components/pagination-bar'
@@ -29,32 +29,57 @@ import { Skeleton } from '@/ui/components/ui/skeleton'
 
 const route = getRouteApi('/_app/(lookups)/searches/')
 
-function NoLookups({ filtered }: { filtered: boolean }) {
+function FirstLookup() {
   const { t } = useTranslation()
+  const { me } = useMe()
 
   return (
-    <Empty className="border">
+    <>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <ScanSearchIcon aria-hidden />
         </EmptyMedia>
-        <EmptyTitle>{t(filtered ? 'lookups.empty.filtered' : 'lookups.empty.title')}</EmptyTitle>
-        <EmptyDescription>
-          {t(filtered ? 'lookups.empty.filtered-description' : 'lookups.empty.description')}
-        </EmptyDescription>
+        <EmptyTitle>{t('lookups.empty.title')}</EmptyTitle>
+        <EmptyDescription>{t('lookups.empty.description')}</EmptyDescription>
+        <EmptyDescription>{t('lookups.empty.example')}</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        {filtered ? (
-          <Button variant="outline" asChild>
-            <Link to="/searches" search={{}}>
-              {t('lookups.empty.clear')}
-            </Link>
+        <NewLookupButton>{t('lookups.empty.start')}</NewLookupButton>
+        <div className="flex flex-wrap justify-center gap-x-4">
+          {me.permissions.viewWorkspace && (
+            <Button variant="link" asChild>
+              <Link to="/workspace">{t('lookups.empty.invite')}</Link>
+            </Button>
+          )}
+          <Button variant="link" asChild>
+            <Link to="/contacts">{t('lookups.empty.connect')}</Link>
           </Button>
-        ) : (
-          <NewLookupButton />
-        )}
+        </div>
       </EmptyContent>
-    </Empty>
+    </>
+  )
+}
+
+function NoMatches() {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <ScanSearchIcon aria-hidden />
+        </EmptyMedia>
+        <EmptyTitle>{t('lookups.empty.filtered')}</EmptyTitle>
+        <EmptyDescription>{t('lookups.empty.filtered-description')}</EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button variant="outline" asChild>
+          <Link to="/searches" search={{}}>
+            {t('lookups.empty.clear')}
+          </Link>
+        </Button>
+      </EmptyContent>
+    </>
   )
 }
 
@@ -64,8 +89,8 @@ export function LookupQueue() {
   const text = useText()
   const search = route.useSearch()
   const navigate = route.useNavigate()
-  const params = lookupListParams(search)
-  const list = useQuery(lookupsQuery(params))
+  const list = useQuery(lookupsQuery(lookupListParams(search)))
+  const narrowed = filtered(search)
   const info = list.data && pageInfo(list.data.metadata)
   const lastPage = info?.outOfRange ? info.pages : undefined
   const rows = list.data?.data.map((lookup) => lookupRow(lookup, workspace, i18n.language))
@@ -87,8 +112,10 @@ export function LookupQueue() {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        {(!info || info.total > 0 || params.searcherType) && (
-          <RequesterFilter selected={first && text(first.searcher)} />
+        {(!info || info.total > 0 || narrowed) && (
+          <LookupFilters
+            requester={first && !list.isPlaceholderData ? text(first.searcher) : undefined}
+          />
         )}
         <div
           aria-busy={list.isPlaceholderData}
@@ -106,7 +133,7 @@ export function LookupQueue() {
                 <PaginationBar metadata={list.data.metadata} />
               </>
             ) : (
-              <NoLookups filtered={params.searcherType !== undefined} />
+              <Empty className="border">{narrowed ? <NoMatches /> : <FirstLookup />}</Empty>
             )
           ) : list.isLoadingError ? (
             <LoadError error={list.error} onRetry={retry} />

@@ -2,7 +2,7 @@ import type { Transmit } from '@adonisjs/transmit-client'
 import type { QueryClient } from '@tanstack/query-core'
 import { getGetApiV1LookupsLookupIdQueryKey } from '@/core/api/endpoints/lookups/lookups'
 import { contactsKey } from '@/modules/contacts/core/contacts.query'
-import { lookupsKey } from '@/modules/lookups/core/lookups.query'
+import { refreshLookupLists } from '@/modules/lookups/core/lookups.query'
 
 export type LiveClient = Pick<Transmit, 'subscription' | 'on' | 'off'>
 
@@ -12,7 +12,7 @@ const [lookupPrefix] = getGetApiV1LookupsLookupIdQueryKey('')
 
 function refreshLookups(client: QueryClient) {
   return Promise.all([
-    client.invalidateQueries({ queryKey: lookupsKey }),
+    refreshLookupLists(client),
     client.invalidateQueries({ queryKey: contactsKey }),
     client.invalidateQueries({
       predicate: ({ queryKey }) => String(queryKey[0]).startsWith(lookupPrefix),

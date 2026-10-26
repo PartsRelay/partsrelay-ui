@@ -40,7 +40,7 @@ export function LookupOutcome({ detail }: { detail: LookupDetail }) {
       </EmptyHeader>
       {!running && (
         <EmptyContent>
-          <NewLookupButton plate={detail.plate}>{t('lookups.detail.retry')}</NewLookupButton>
+          <NewLookupButton prefill={detail.retry}>{t('lookups.detail.retry')}</NewLookupButton>
         </EmptyContent>
       )}
     </Empty>

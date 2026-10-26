@@ -5,6 +5,7 @@ const MANAGES: Record<Role, Role[]> = { owner: ['admin', 'viewer'], admin: ['vie
 
 export type Permissions = {
   manageContacts: boolean
+  viewStats: boolean
   viewWorkspace: boolean
   viewCompany: boolean
   inviteRoles: Role[]
@@ -27,6 +28,7 @@ function can(role: Role, request: Request) {
 export function permissionsFor(role: Role): Permissions {
   return {
     manageContacts: role !== 'viewer',
+    viewStats: role === 'owner',
     viewWorkspace: can(role, { invitation: ['create'] }),
     viewCompany: can(role, { organization: ['update'] }),
     inviteRoles: [...MANAGES[role]].reverse(),

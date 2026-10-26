@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { http } from '@/core/http/client'
 import { coreError } from '@/modules/contacts/tests/unit/fixtures'
 import { startLookup } from '@/modules/lookups/core/lookups.mutation'
-import { lookupsListKey } from '@/modules/lookups/core/lookups.query'
+import { lookupsQuery } from '@/modules/lookups/core/lookups.query'
 import { lookupFixture, pageFixture } from '@/modules/lookups/tests/unit/fixtures'
 
 vi.mock('@/core/http/client', () => ({ http: vi.fn() }))
@@ -15,7 +15,7 @@ describe('starting a search', () => {
     const running = lookupFixture(12, { status: 'running', vin: null, categories: undefined })
     vi.mocked(http).mockResolvedValue({ data: running })
     const client = new QueryClient()
-    const list = lookupsListKey({ page: 1 })
+    const list = lookupsQuery({ page: 1 }).queryKey
     client.setQueryData(list, pageFixture([]))
 
     expect(await startLookup(client, { plate: 'CA770NE', query: 'filtro olio' })).toBe(running)
@@ -35,7 +35,7 @@ describe('starting a search', () => {
       coreError(422, 'validation-error', [{ field: 'plate', rule: 'plate' }])
     )
     const client = new QueryClient()
-    const list = lookupsListKey({ page: 1 })
+    const list = lookupsQuery({ page: 1 }).queryKey
     client.setQueryData(list, pageFixture([]))
 
     await expect(startLookup(client, { plate: 'CA770NE', query: 'olio' })).rejects.toThrow()

@@ -6,11 +6,7 @@
  */
 
 export type PostApiV1WorkspaceContactsBody = {
-  /** @maxLength 255 */
   phone: string;
-  /**
-     * @minLength 1
-     * @maxLength 255
-     */
+  /** @minLength 1 */
   name?: string;
 };

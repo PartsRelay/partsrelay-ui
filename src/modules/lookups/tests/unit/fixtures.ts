@@ -36,6 +36,7 @@ export function lookupFixture(id: number, overrides: Partial<LookupObject> = {})
     id,
     plate: 'AB12CDE',
     vin: 'WF0FXXGCDFKA12345',
+    query: 'Oil filter change',
     nodeIds: ['g1'],
     status: 'done',
     source: 'web',

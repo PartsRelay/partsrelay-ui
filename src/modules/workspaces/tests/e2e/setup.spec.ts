@@ -36,7 +36,25 @@ test.describe('as a newcomer', () => {
 
     await expect(page).toHaveURL('/searches')
     await expect(page.getByRole('link', { name: /North Garage Ltd/ })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 1, name: 'Searches' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: /^Good (morning|afternoon|evening), Anna North\.$/,
+      })
+    ).toBeVisible()
+    await expect(page.getByText('No searches yet')).toBeVisible()
+    await expect(page.getByText('For example: GH482KL · Front brake pads')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Invite your team' })).toHaveAttribute(
+      'href',
+      '/workspace'
+    )
+    await expect(page.getByRole('link', { name: 'Connect workshops' })).toHaveAttribute(
+      'href',
+      '/contacts'
+    )
+    await page.getByRole('link', { name: 'Start a search' }).click()
+    await expect(page.getByRole('dialog', { name: 'Find the part.' })).toBeVisible()
+    await page.keyboard.press('Escape')
 
     await page.goto('/workspace')
     await expect(page.getByRole('row', { name: /Anna North \(you\)/ })).toContainText('Owner')

@@ -19,11 +19,11 @@ const resultOf = ({ lookup }: LookupRow) =>
   ({ to: '/searches/$lookupId', params: { lookupId: String(lookup.id) } }) as const
 
 function Parts({ row }: { row: LookupRow }) {
-  if (row.parts.length === 0 && !row.vehicle) return <span aria-hidden>-</span>
+  if (!row.part && !row.vehicle) return <span aria-hidden>-</span>
 
   return (
     <div className="grid gap-0.5 whitespace-normal">
-      {row.parts.length > 0 && <span className="font-medium">{row.parts.join(', ')}</span>}
+      {row.part && <span className="font-medium">{row.part}</span>}
       {row.vehicle && <span className="text-muted-foreground">{row.vehicle}</span>}
     </div>
   )
@@ -55,13 +55,13 @@ export function LookupsTable({ rows }: { rows: LookupRow[] }) {
                 <TableCell>
                   <Link
                     {...resultOf(row)}
-                    aria-label={t('lookups.list.open', { plate: row.plate })}
+                    aria-label={t('lookups.list.open', { plate: row.identifier })}
                     className="font-mono font-medium underline-offset-4 hover:underline"
                     onClick={(event) => event.stopPropagation()}
                   >
-                    {row.plate}
+                    {row.identifier}
                   </Link>
-                  {row.lookup.vin && (
+                  {row.lookup.plate && row.lookup.vin && (
                     <p className="font-mono text-xs text-muted-foreground">{row.lookup.vin}</p>
                   )}
                 </TableCell>
@@ -85,7 +85,7 @@ export function LookupsTable({ rows }: { rows: LookupRow[] }) {
             <Item variant="outline" asChild>
               <Link {...resultOf(row)}>
                 <ItemContent className="min-w-0">
-                  <ItemTitle className="font-mono">{row.plate}</ItemTitle>
+                  <ItemTitle className="font-mono">{row.identifier}</ItemTitle>
                   <div className="text-sm">
                     <Parts row={row} />
                   </div>

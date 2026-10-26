@@ -1,28 +1,42 @@
 import { describe, expect, it } from 'vite-plus/test'
-import { fieldErrors } from '@/core/errors'
+import type { z } from 'zod'
 import {
-  compactPlate,
+  compactIdentifier,
   emptyLookup,
+  identifierSchemas,
   lookupFieldErrors,
   newLookup,
-  plateSchema,
   querySchema,
 } from '@/modules/lookups/core/lookup-form'
 import { coreError } from '@/modules/contacts/tests/unit/fixtures'
 
-const plate = (value: string) => plateSchema.safeParse(value).error?.issues[0]?.message
+const error = (schema: z.ZodType) => (value: string) =>
+  schema.safeParse(value).error?.issues[0]?.message
 
-const query = (value: string) => querySchema.safeParse(value).error?.issues[0]?.message
+const plate = error(identifierSchemas.plate)
+
+const vin = error(identifierSchemas.vin)
+
+const query = error(querySchema)
 
 describe('new search form', () => {
-  it('starts empty, or with the plate of a previous search', () => {
-    expect(emptyLookup()).toEqual({ plate: '', query: '' })
-    expect(emptyLookup('CA770NE')).toEqual({ plate: 'CA770NE', query: '' })
+  it('starts empty, or with the plate or VIN and the part of a previous search', () => {
+    expect(emptyLookup()).toEqual({ by: 'plate', identifier: '', query: '' })
+    expect(emptyLookup({ plate: 'CA770NE', query: 'Oil filter' })).toEqual({
+      by: 'plate',
+      identifier: 'CA770NE',
+      query: 'Oil filter',
+    })
+    expect(emptyLookup({ vin: 'WVWZZZAUZHW204411' })).toEqual({
+      by: 'vin',
+      identifier: 'WVWZZZAUZHW204411',
+      query: '',
+    })
   })
 
-  it('reads plates like the core, without spaces, dots and dashes', () => {
-    expect(compactPlate(' ca 770-ne ')).toBe('CA770NE')
-    expect(compactPlate('ab.123.cd')).toBe('AB123CD')
+  it('reads plates and VINs like the core, without spaces, dots and dashes', () => {
+    expect(compactIdentifier(' ca 770-ne ')).toBe('CA770NE')
+    expect(compactIdentifier('ab.123.cd')).toBe('AB123CD')
   })
 
   it('asks for a plate of 4 to 8 letters and digits', () => {
@@ -34,6 +48,13 @@ describe('new search form', () => {
     expect(plate('AB_123')).toBe('lookups.new.errors.plate')
   })
 
+  it('asks for a VIN of 17 letters and digits without I, O and Q', () => {
+    expect(vin(' ')).toBe('lookups.new.errors.vin-required')
+    expect(vin('wvwzzzauzhw204411')).toBeUndefined()
+    expect(vin('WVWZZZAUZHW20441')).toBe('lookups.new.errors.vin')
+    expect(vin('WVWZZZAUZHW20441O')).toBe('lookups.new.errors.vin')
+  })
+
   it('asks for the part in 2 to 200 characters', () => {
     expect(query(' ')).toBe('lookups.new.errors.query-required')
     expect(query(' a ')).toBe('lookups.new.errors.query')
@@ -43,22 +64,28 @@ describe('new search form', () => {
   })
 
   it('shows each error of the core under the field it names', () => {
-    const both = coreError(422, 'validation-error', [
+    const plateAndQuery = coreError(422, 'validation-error', [
       { field: 'plate', rule: 'plate' },
       { field: 'query', rule: 'maxLength' },
     ])
+    const vinOnly = coreError(422, 'validation-error', [{ field: 'vin', rule: 'regex' }])
 
-    expect(fieldErrors(both, lookupFieldErrors)).toEqual({
-      plate: 'lookups.new.errors.plate',
+    expect(lookupFieldErrors(plateAndQuery)).toEqual({
+      identifier: 'lookups.new.errors.plate',
       query: 'lookups.new.errors.query',
     })
-    expect(fieldErrors(coreError(404, 'row-not-found'), lookupFieldErrors)).toBeNull()
+    expect(lookupFieldErrors(vinOnly)).toEqual({ identifier: 'lookups.new.errors.vin' })
+    expect(lookupFieldErrors(coreError(404, 'row-not-found'))).toBeNull()
   })
 
-  it('sends the compact plate and the trimmed part as free text', () => {
-    expect(newLookup({ plate: 'ca 770-ne', query: '  filtro olio ' })).toEqual({
+  it('sends the compact plate or VIN and the trimmed part as free text', () => {
+    expect(newLookup({ by: 'plate', identifier: 'ca 770-ne', query: '  filtro olio ' })).toEqual({
       plate: 'CA770NE',
       query: 'filtro olio',
+    })
+    expect(newLookup({ by: 'vin', identifier: 'wvwzzzauzhw204411', query: 'oil' })).toEqual({
+      vin: 'WVWZZZAUZHW204411',
+      query: 'oil',
     })
   })
 })

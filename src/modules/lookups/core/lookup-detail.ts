@@ -6,6 +6,7 @@ import type {
   OemPart,
 } from '@/core/api/models'
 import { type Message, message } from '@/core/message'
+import type { LookupPrefill } from '@/modules/lookups/core/lookup-form'
 import { type LookupRow, lookupRow, textKey } from '@/modules/lookups/core/lookup-row'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -37,6 +38,7 @@ export type CategoryView = {
 
 export type LookupDetail = LookupRow & {
   vin: string | null
+  retry: LookupPrefill
   state: LookupState
   announcement: Message
   categories: CategoryView[]
@@ -98,6 +100,12 @@ function categoryView(category: LookupCategory, locale: string): CategoryView {
   }
 }
 
+function retryOf({ plate, vin, query }: LookupObject): LookupPrefill {
+  const identifier = plate ? { plate } : { vin: vin ?? undefined }
+
+  return { ...identifier, query: query ?? undefined }
+}
+
 export function lookupDetail(
   lookup: LookupObject,
   workspace: Workspace,
@@ -108,6 +116,7 @@ export function lookupDetail(
   return {
     ...lookupRow(lookup, workspace, locale),
     vin: lookup.vin,
+    retry: retryOf(lookup),
     state,
     announcement: message(`lookups.outcome.${textKey(state)}.title`),
     categories: (lookup.categories ?? []).map((category) => categoryView(category, locale)),

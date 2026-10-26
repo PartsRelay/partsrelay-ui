@@ -6,18 +6,12 @@
  */
 
 export type PostApiV1LookupsBody = {
-  /** @maxLength 255 */
-  plate: string;
-  /**
-     * @minItems 1
-     * @maxItems 25
-     * @items.minLength 1
-     * @items.maxLength 128
-     */
-  nodeIds?: string[];
+  plate?: string;
+  /** @pattern ^[A-HJ-NPR-Z0-9]{17}$ */
+  vin?: string;
   /**
      * @minLength 2
      * @maxLength 200
      */
-  query?: string;
+  query: string;
 };

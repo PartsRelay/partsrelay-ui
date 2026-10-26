@@ -10,14 +10,14 @@ const row = (overrides: Partial<LookupObject> = {}) =>
   lookupRow(lookupFixture(1, overrides), workspace, 'en-US')
 
 describe('lookup rows', () => {
-  it('shows the plate, the vehicle, who searched and when', () => {
+  it('shows the plate, the part, the vehicle, who searched and when', () => {
     const lookup = lookupFixture(1)
 
     expect(lookupRow(lookup, workspace, 'en-US')).toEqual({
       lookup,
-      plate: 'AB12CDE',
+      identifier: 'AB12CDE',
+      part: 'Oil filter change',
       vehicle: 'Ford Fiesta 1.0',
-      parts: ['Oil filter'],
       statusLabel: message('lookups.status.done'),
       tone: 'success',
       sourceLabel: message('lookups.source.web'),
@@ -28,14 +28,18 @@ describe('lookup rows', () => {
     expect(row({ vehicleDescription: null }).vehicle).toBeNull()
   })
 
-  it('names the parts found, by id when the catalog has no name', () => {
+  it('names a search by its VIN when it has no plate', () => {
+    expect(row({ plate: null }).identifier).toBe('WF0FXXGCDFKA12345')
+  })
+
+  it('names the parts found when the requested part is unknown, by id without a name', () => {
     const categories = [
       { id: 'g1', name: 'Oil filter', units: [] },
       { id: 'g9', name: null, units: [] },
     ]
 
-    expect(row({ categories }).parts).toEqual(['Oil filter', 'g9'])
-    expect(row({ status: 'running', categories: undefined }).parts).toEqual([])
+    expect(row({ query: null, categories }).part).toBe('Oil filter, g9')
+    expect(row({ query: null, status: 'running', categories: undefined }).part).toBeNull()
   })
 
   it('dates the lookup in the app language', () => {

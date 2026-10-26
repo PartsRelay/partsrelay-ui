@@ -11,9 +11,12 @@ import type { Searcher } from './searcher';
 
 export interface Lookup {
   id: number;
-  plate: string;
+  /** @nullable */
+  plate: string | null;
   /** @nullable */
   vin: string | null;
+  /** @nullable */
+  query: string | null;
   nodeIds: string[];
   status: LookupStatus;
   source: LookupSource;

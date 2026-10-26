@@ -26,7 +26,9 @@ import type {
 import type {
   ErrorBody,
   GetApiV1WorkspaceLookups200,
-  GetApiV1WorkspaceLookupsMembers200
+  GetApiV1WorkspaceLookupsParams,
+  GetApiV1WorkspaceLookupsStats200,
+  GetApiV1WorkspaceLookupsStatsParams
 } from '../../models';
 
 import { http } from '../../../http/client';
@@ -53,13 +55,14 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
 };
 
 export const getApiV1WorkspaceLookups = (
-
+    params?: GetApiV1WorkspaceLookupsParams,
  options?: SecondParameter<typeof http>,signal?: AbortSignal
 ) => {
 
 
       return http<GetApiV1WorkspaceLookups200>(
-      {url: `/api/v1/workspace/lookups`, method: 'GET', signal
+      {url: `/api/v1/workspace/lookups`, method: 'GET',
+        params, signal
     },
       options);
     }
@@ -67,23 +70,23 @@ export const getApiV1WorkspaceLookups = (
 
 
 
-export const getGetApiV1WorkspaceLookupsQueryKey = () => {
+export const getGetApiV1WorkspaceLookupsQueryKey = (params?: GetApiV1WorkspaceLookupsParams,) => {
     return [
-    `/api/v1/workspace/lookups`
+    `/api/v1/workspace/lookups`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getGetApiV1WorkspaceLookupsQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1WorkspaceLookupsQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(params?: GetApiV1WorkspaceLookupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceLookupsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceLookupsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>> = ({ signal }) => getApiV1WorkspaceLookups(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>> = ({ signal }) => getApiV1WorkspaceLookups(params, requestOptions, signal);
 
 
 
@@ -97,7 +100,7 @@ export type GetApiV1WorkspaceLookupsQueryError = ErrorType<ErrorBody>
 
 
 export function useGetApiV1WorkspaceLookups<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>> & Pick<
+ params: undefined |  GetApiV1WorkspaceLookupsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>,
           TError,
@@ -107,7 +110,7 @@ export function useGetApiV1WorkspaceLookups<TData = Awaited<ReturnType<typeof ge
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV1WorkspaceLookups<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>> & Pick<
+ params?: GetApiV1WorkspaceLookupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>,
           TError,
@@ -117,16 +120,16 @@ export function useGetApiV1WorkspaceLookups<TData = Awaited<ReturnType<typeof ge
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV1WorkspaceLookups<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceLookupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useGetApiV1WorkspaceLookups<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceLookupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV1WorkspaceLookupsQueryOptions(options)
+  const queryOptions = getGetApiV1WorkspaceLookupsQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -138,16 +141,16 @@ export function useGetApiV1WorkspaceLookups<TData = Awaited<ReturnType<typeof ge
 
 
 
-export const getGetApiV1WorkspaceLookupsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1WorkspaceLookupsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(params?: GetApiV1WorkspaceLookupsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceLookupsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceLookupsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>> = ({ signal }) => getApiV1WorkspaceLookups(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>> = ({ signal }) => getApiV1WorkspaceLookups(params, requestOptions, signal);
 
 
 
@@ -161,24 +164,24 @@ export type GetApiV1WorkspaceLookupsSuspenseQueryError = ErrorType<ErrorBody>
 
 
 export function useGetApiV1WorkspaceLookupsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(
-  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params: undefined |  GetApiV1WorkspaceLookupsParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV1WorkspaceLookupsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceLookupsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV1WorkspaceLookupsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceLookupsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useGetApiV1WorkspaceLookupsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceLookupsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookups>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV1WorkspaceLookupsSuspenseQueryOptions(options)
+  const queryOptions = getGetApiV1WorkspaceLookupsSuspenseQueryOptions(params,options)
 
   const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -190,14 +193,15 @@ export function useGetApiV1WorkspaceLookupsSuspense<TData = Awaited<ReturnType<t
 
 
 
-export const getApiV1WorkspaceLookupsMembers = (
-
+export const getApiV1WorkspaceLookupsStats = (
+    params?: GetApiV1WorkspaceLookupsStatsParams,
  options?: SecondParameter<typeof http>,signal?: AbortSignal
 ) => {
 
 
-      return http<GetApiV1WorkspaceLookupsMembers200>(
-      {url: `/api/v1/workspace/lookups/members`, method: 'GET', signal
+      return http<GetApiV1WorkspaceLookupsStats200>(
+      {url: `/api/v1/workspace/lookups/stats`, method: 'GET',
+        params, signal
     },
       options);
     }
@@ -205,66 +209,66 @@ export const getApiV1WorkspaceLookupsMembers = (
 
 
 
-export const getGetApiV1WorkspaceLookupsMembersQueryKey = () => {
+export const getGetApiV1WorkspaceLookupsStatsQueryKey = (params?: GetApiV1WorkspaceLookupsStatsParams,) => {
     return [
-    `/api/v1/workspace/lookups/members`
+    `/api/v1/workspace/lookups/stats`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getGetApiV1WorkspaceLookupsMembersQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1WorkspaceLookupsStatsQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(params?: GetApiV1WorkspaceLookupsStatsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceLookupsMembersQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceLookupsStatsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>> = ({ signal }) => getApiV1WorkspaceLookupsMembers(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>> = ({ signal }) => getApiV1WorkspaceLookupsStats(params, requestOptions, signal);
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetApiV1WorkspaceLookupsMembersQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>>
-export type GetApiV1WorkspaceLookupsMembersQueryError = ErrorType<ErrorBody>
+export type GetApiV1WorkspaceLookupsStatsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>>
+export type GetApiV1WorkspaceLookupsStatsQueryError = ErrorType<ErrorBody>
 
 
-export function useGetApiV1WorkspaceLookupsMembers<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>> & Pick<
+export function useGetApiV1WorkspaceLookupsStats<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(
+ params: undefined |  GetApiV1WorkspaceLookupsStatsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>,
+          Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>,
           TError,
-          Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>
+          Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>
         > , 'initialData'
       >, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1WorkspaceLookupsMembers<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>> & Pick<
+export function useGetApiV1WorkspaceLookupsStats<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(
+ params?: GetApiV1WorkspaceLookupsStatsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>,
+          Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>,
           TError,
-          Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>
+          Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>
         > , 'initialData'
       >, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1WorkspaceLookupsMembers<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export function useGetApiV1WorkspaceLookupsStats<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(
+ params?: GetApiV1WorkspaceLookupsStatsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiV1WorkspaceLookupsMembers<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export function useGetApiV1WorkspaceLookupsStats<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(
+ params?: GetApiV1WorkspaceLookupsStatsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV1WorkspaceLookupsMembersQueryOptions(options)
+  const queryOptions = getGetApiV1WorkspaceLookupsStatsQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -276,47 +280,47 @@ export function useGetApiV1WorkspaceLookupsMembers<TData = Awaited<ReturnType<ty
 
 
 
-export const getGetApiV1WorkspaceLookupsMembersSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1WorkspaceLookupsStatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(params?: GetApiV1WorkspaceLookupsStatsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceLookupsMembersQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceLookupsStatsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>> = ({ signal }) => getApiV1WorkspaceLookupsMembers(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>> = ({ signal }) => getApiV1WorkspaceLookupsStats(params, requestOptions, signal);
 
 
 
 
 
-   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
+   return  queryOptionsBuilder({ queryKey, ...queryOptions, queryFn: queryOptions?.queryFn ?? queryFn}) as UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> } & { throwOnError?: ((this: never, error: TError) => boolean) & { readonly __inferenceOnly: never } }
 }
 
-export type GetApiV1WorkspaceLookupsMembersSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>>
-export type GetApiV1WorkspaceLookupsMembersSuspenseQueryError = ErrorType<ErrorBody>
+export type GetApiV1WorkspaceLookupsStatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>>
+export type GetApiV1WorkspaceLookupsStatsSuspenseQueryError = ErrorType<ErrorBody>
 
 
-export function useGetApiV1WorkspaceLookupsMembersSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>(
-  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export function useGetApiV1WorkspaceLookupsStatsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(
+ params: undefined |  GetApiV1WorkspaceLookupsStatsParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1WorkspaceLookupsMembersSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export function useGetApiV1WorkspaceLookupsStatsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(
+ params?: GetApiV1WorkspaceLookupsStatsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1WorkspaceLookupsMembersSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export function useGetApiV1WorkspaceLookupsStatsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(
+ params?: GetApiV1WorkspaceLookupsStatsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiV1WorkspaceLookupsMembersSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsMembers>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export function useGetApiV1WorkspaceLookupsStatsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError = ErrorType<ErrorBody>>(
+ params?: GetApiV1WorkspaceLookupsStatsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceLookupsStats>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV1WorkspaceLookupsMembersSuspenseQueryOptions(options)
+  const queryOptions = getGetApiV1WorkspaceLookupsStatsSuspenseQueryOptions(params,options)
 
   const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

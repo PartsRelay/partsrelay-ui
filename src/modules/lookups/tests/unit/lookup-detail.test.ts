@@ -47,6 +47,14 @@ describe('lookup detail', () => {
     expect(lookupState(lookup({ status: 'failed' }))).toBe('failed')
   })
 
+  it('starts a new search with the plate, or the VIN, and the part', () => {
+    const retry = (overrides: Partial<LookupObject>) =>
+      lookupDetail(lookup(overrides), workspace, 'en-US').retry
+
+    expect(retry({})).toEqual({ plate: 'AB12CDE', query: 'Oil filter change' })
+    expect(retry({ plate: null, query: null })).toEqual({ vin: 'WF0FXXGCDFKA12345' })
+  })
+
   it('announces the outcome in kebab case keys', () => {
     const announcement = (overrides: Partial<LookupObject>) =>
       lookupDetail(lookup(overrides), workspace, 'en-US').announcement

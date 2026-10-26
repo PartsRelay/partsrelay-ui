@@ -5,6 +5,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetApiV1CatalogNodesParams = {
-plate: string;
+export type GetApiV1WorkspaceLookupsStatsParams = {
+/**
+ * @minimum 1
+ */
+days?: number;
 };

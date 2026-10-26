@@ -7,9 +7,9 @@ type LookupTone = 'success' | 'warning' | 'danger'
 
 export type LookupRow = {
   lookup: LookupObject
-  plate: string
+  identifier: string
+  part: string | null
   vehicle: string | null
-  parts: string[]
   statusLabel: Message
   tone: LookupTone
   sourceLabel: Message
@@ -40,12 +40,16 @@ export function searcherName(searcher: Searcher | null, workspace: Workspace) {
   return searcher.name || member?.email || message('lookups.searcher.member')
 }
 
+function partsFound({ categories = [] }: LookupObject) {
+  return categories.map(({ id, name }) => name ?? id).join(', ') || null
+}
+
 export function lookupRow(lookup: LookupObject, workspace: Workspace, locale: string): LookupRow {
   return {
     lookup,
-    plate: lookup.plate,
+    identifier: lookup.plate ?? lookup.vin ?? '',
+    part: lookup.query ?? partsFound(lookup),
     vehicle: lookup.vehicleDescription ?? null,
-    parts: (lookup.categories ?? []).map(({ id, name }) => name ?? id),
     statusLabel: message(`lookups.status.${textKey(lookup.status)}`),
     tone: TONES[lookup.status],
     sourceLabel: message(`lookups.source.${lookup.source}`),

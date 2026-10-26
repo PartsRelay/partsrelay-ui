@@ -10,7 +10,7 @@ import { ResponsiveTable } from '@/ui/components/responsive-table'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
-const columns = ['contact', 'phone', 'status', 'searches', 'month', 'last-search']
+const columns = ['contact', 'phone', 'status', 'searches', 'month', 'last-search', 'joined']
 
 function SearchesLink({ row }: { row: ContactRow }) {
   const { t } = useTranslation()
@@ -86,6 +86,7 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
               <TableCell data-label={t('contacts.columns.last-search')}>
                 {row.lastSearch ?? t('contacts.never')}
               </TableCell>
+              <TableCell data-label={t('contacts.columns.joined')}>{row.joined}</TableCell>
               {manage && (
                 <TableCell>
                   {!editing && (

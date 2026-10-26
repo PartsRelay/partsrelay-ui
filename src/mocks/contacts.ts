@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw'
+import { getGetApiV1ChannelsMockHandler } from '@/core/api/endpoints/channels/channels.msw'
 import {
   getGetApiV1WorkspaceContactsMockHandler,
   getPatchApiV1WorkspaceContactsContactIdMockHandler,
@@ -141,10 +142,18 @@ export const contactMocks = [
     }
     const currentPage = checkedPage(query, 'page', 1)
     const perPage = checkedPage(query, 'perPage', DEFAULT_PER_PAGE, MAX_PER_PAGE)
+    const search = query.get('search')?.trim().toLowerCase()
+    const digits = search?.replace(/\D/g, '')
 
     return directory((state) => {
       const matching = contactsOf(state, company)
         .filter((item) => statuses.length === 0 || statuses.includes(item.status))
+        .filter(
+          ({ name, profileName, waId }) =>
+            !search ||
+            [name, profileName].some((value) => value?.toLowerCase().includes(search)) ||
+            (digits && waId.includes(digits))
+        )
         .sort((a, b) => b.id - a.id)
 
       return page(matching, currentPage, perPage) satisfies GetApiV1WorkspaceContacts200
@@ -197,5 +206,12 @@ export const contactMocks = [
     })
 
     return new HttpResponse(null, { status: 204 })
+  }),
+  getGetApiV1ChannelsMockHandler(async () => {
+    member()
+
+    return {
+      data: [{ source: 'whatsapp', address: '+390287341190', url: 'https://wa.me/390287341190' }],
+    }
   }),
 ]

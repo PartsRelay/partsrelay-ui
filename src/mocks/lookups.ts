@@ -1,19 +1,24 @@
-import { subMinutes } from 'date-fns'
+import { subDays, subMinutes } from 'date-fns'
 import {
   getGetApiV1LookupsLookupIdMockHandler,
   getPostApiV1LookupsMockHandler,
 } from '@/core/api/endpoints/lookups/lookups.msw'
-import { getGetApiV1WorkspaceLookupsMockHandler } from '@/core/api/endpoints/workspace-lookups/workspace-lookups.msw'
+import {
+  getGetApiV1WorkspaceLookupsMockHandler,
+  getGetApiV1WorkspaceLookupsStatsMockHandler,
+} from '@/core/api/endpoints/workspace-lookups/workspace-lookups.msw'
 import {
   type LookupObject,
-  type LookupObjectStatus,
+  LookupObjectSource,
+  LookupObjectStatus,
   type PostApiV1LookupsBody,
   type Searcher,
   SearcherType,
+  type TopSearcher,
 } from '@/core/api/models'
 import { member } from '@/mocks/auth'
 import { checkedPage, page, people, type Person } from '@/mocks/data'
-import { apiBody, fail, rejected } from '@/mocks/errors'
+import { apiBody, fail, invalid, rejected } from '@/mocks/errors'
 import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
 
 type Text = [en: string, it: string]
@@ -39,7 +44,11 @@ type Stored = Omit<LookupObject, 'searcher' | 'vehicleDescription' | 'categories
 type Archive = { lookups: Stored[]; nextId: number }
 
 const PLATE = /^[A-Z0-9]{4,8}$/
+const VIN = /^[A-HJ-NPR-Z0-9]{17}$/
 const STALE_MINUTES = 15
+const STATS_DAYS = 30
+const TOP_SEARCHERS = 5
+const FAILED: LookupObjectStatus[] = ['failed', 'vehicle_not_found', 'not_matched']
 const FAILING_PLATE = 'ER500ER'
 
 const VEHICLES: Record<string, { vin: string; description: string }> = {
@@ -150,45 +159,53 @@ const workshops = {
 const identified: LookupObjectStatus[] = ['done', 'not_matched']
 
 type Seed = [
-  plate: string,
+  identifier: string,
   status: LookupObjectStatus,
   searcher: Searcher,
   nodeIds: string[],
+  query: string,
   options?: { gone?: boolean; cached?: boolean },
 ]
 
 const RECENT: Seed[] = [
-  ['GH482KL', 'running', user(people.julia), []],
-  ['FT915ZR', 'done', workshops.oakfield, ['g1']],
-  ['EX204BB', 'vehicle_not_found', user(people.mark), []],
-  ['CA770NE', 'done', user(people.mark), ['g4']],
-  ['DK318MP', 'not_matched', workshops.baker, []],
-  ['GH482KL', 'failed', user(people.luke), []],
-  ['CA770NE', 'done', workshops.hillside, ['g1', 'g2']],
-  ['FT915ZR', 'done', workshops.quickFit, ['g6'], { gone: true }],
-  ['DK318MP', 'done', workshops.capitol, ['g5'], { cached: false }],
+  ['GH482KL', 'running', user(people.julia), [], 'Front brake pads'],
+  ['FT915ZR', 'done', workshops.oakfield, ['g1'], 'Oil filter'],
+  ['EX204BB', 'vehicle_not_found', user(people.mark), [], 'Clutch kit'],
+  ['CA770NE', 'done', user(people.mark), ['g4'], 'Front brake pads'],
+  ['DK318MP', 'not_matched', workshops.baker, [], 'Wiper blades'],
+  ['GH482KL', 'failed', user(people.luke), [], 'Timing belt kit'],
+  ['CA770NE', 'done', workshops.hillside, ['g1', 'g2'], 'Oil and air filters'],
+  ['FT915ZR', 'done', workshops.quickFit, ['g6'], 'Timing belt kit', { gone: true }],
+  ['DK318MP', 'done', workshops.capitol, ['g5'], 'Clutch kit', { cached: false }],
 ]
 
 const OLDER: Seed[] = [
-  ['CA770NE', 'done', workshops.oakfield, ['g2']],
-  ['FT915ZR', 'done', user(people.sarah), ['g4']],
-  ['ZZ999ZZ', 'vehicle_not_found', workshops.baker, []],
-  ['GH482KL', 'done', user(people.julia), ['g6']],
-  ['DK318MP', 'done', workshops.oakfield, ['g1']],
+  ['CA770NE', 'done', workshops.oakfield, ['g2'], 'Air filter'],
+  ['WVWZZZAUZHW204411', 'done', user(people.sarah), ['g4'], 'Front brake pads'],
+  ['ZZ999ZZ', 'vehicle_not_found', workshops.baker, [], 'Oil filter'],
+  ['GH482KL', 'done', user(people.julia), ['g6'], 'Timing belt kit'],
+  ['DK318MP', 'done', workshops.oakfield, ['g1'], 'Oil filter'],
 ]
+
+const vehicleOf = ({ plate, vin }: Pick<LookupObject, 'plate' | 'vin'>) =>
+  (plate && VEHICLES[plate]) || Object.values(VEHICLES).find((vehicle) => vehicle.vin === vin)
 
 function seed(): Stored[] {
   const now = new Date()
   const seeds = [...RECENT, ...OLDER, ...OLDER, ...OLDER].reverse()
 
-  return seeds.map(([plate, status, searcher, nodeIds, options], index) => {
-    const minutes = (seeds.length - index - 1) ** 2 * 9 + 1
+  return seeds.map(([identifier, status, searcher, nodeIds, query, options], index) => {
+    const minutes = (seeds.length - index - 1) ** 2 * 136 + 1
+    const plate = VIN.test(identifier) ? null : identifier
+    const vin =
+      plate === null ? identifier : identified.includes(status) ? VEHICLES[plate]!.vin : null
 
     return {
       id: index + 1,
       company: 'redwood-parts',
       plate,
-      vin: identified.includes(status) ? VEHICLES[plate]!.vin : null,
+      vin,
+      query,
       nodeIds,
       status,
       source: searcher.type === 'contact' ? 'whatsapp' : 'web',
@@ -244,30 +261,36 @@ function categoriesOf(nodeIds: string[], language: Language) {
 const stale = ({ status, createdAt }: Stored) =>
   status === 'running' && new Date(createdAt) < subMinutes(new Date(), STALE_MINUTES)
 
+const statusOf = (stored: Stored) => (stale(stored) ? 'failed' : stored.status)
+
 function lookupOf(stored: Stored, language: Language): LookupObject {
   const { company: _company, gone, cached, searcher, ...lookup } = stored
-  const status = stale(stored) ? 'failed' : stored.status
+  const status = statusOf(stored)
   const details = cached && identified.includes(status)
 
   return {
     ...lookup,
     status,
     searcher: gone ? null : searcher,
-    ...(details && { vehicleDescription: VEHICLES[lookup.plate]?.description ?? null }),
+    ...(details && { vehicleDescription: vehicleOf(lookup)?.description ?? null }),
     ...(details && status === 'done' && { categories: categoriesOf(lookup.nodeIds, language) }),
   }
 }
 
 function checkedPlate(plate: unknown) {
-  if (plate === undefined || plate === null || plate === '') return rejected('plate', 'required')
+  if (plate === undefined || plate === null) return null
   if (typeof plate !== 'string') return rejected('plate', 'string')
 
-  const compact = plate
-    .trim()
-    .toUpperCase()
-    .replace(/[\s.-]/g, '')
+  const compact = plate.toUpperCase().replace(/[\s.-]/g, '')
 
   return PLATE.test(compact) ? compact : rejected('plate', 'plate')
+}
+
+function checkedVin(vin: unknown) {
+  if (vin === undefined || vin === null) return null
+  if (typeof vin !== 'string') return rejected('vin', 'string')
+
+  return VIN.test(vin.toUpperCase()) ? vin.toUpperCase() : rejected('vin', 'regex')
 }
 
 function checkedQuery(query: unknown) {
@@ -299,15 +322,38 @@ function matching(query: string) {
     .map(([id]) => id)
 }
 
-function settled(lookup: Stored, query: string): Stored {
-  const vehicle = VEHICLES[lookup.plate]
+function settled(lookup: Stored): Stored {
+  const vehicle = vehicleOf(lookup)
   if (lookup.plate === FAILING_PLATE) return { ...lookup, status: 'failed' }
   if (!vehicle) return { ...lookup, status: 'vehicle_not_found' }
 
-  const nodeIds = matching(query)
+  const nodeIds = matching(lookup.query ?? '')
   const status = nodeIds.length === 0 ? 'not_matched' : 'done'
 
   return { ...lookup, vin: vehicle.vin, nodeIds, status }
+}
+
+function checkedEnum<T extends string>(query: URLSearchParams, name: string, values: T[]) {
+  const value = query.get(name)
+  if (value === null) return null
+
+  return values.find((item) => item === value) ?? rejected(name, 'enum')
+}
+
+function contains(values: (string | null)[], search: string | null) {
+  return !search || values.some((value) => value?.toLowerCase().includes(search.toLowerCase()))
+}
+
+function topSearchers(lookups: Stored[]) {
+  const counts = new Map<string, TopSearcher>()
+
+  for (const { searcher, gone } of lookups) {
+    const key = `${searcher.type}:${searcher.id}`
+    const top = counts.get(key) ?? { ...searcher, name: gone ? null : searcher.name, total: 0 }
+    counts.set(key, { ...top, total: top.total + 1 })
+  }
+
+  return [...counts.values()].sort((a, b) => b.total - a.total).slice(0, TOP_SEARCHERS)
 }
 
 const isSearcherType = (value: string): value is SearcherType =>
@@ -323,6 +369,10 @@ export const lookupMocks = [
     if (searcherType !== null && !isSearcherType(searcherType)) rejected('searcherType', 'enum')
     if (searcherType === null && query.has('searcherId')) rejected('searcherType', 'required')
     const searcherId = checkedSearcherId(query)
+    const search = query.get('search')?.trim() || null
+    const status = checkedEnum(query, 'status', Object.values(LookupObjectStatus))
+    const source = checkedEnum(query, 'source', Object.values(LookupObjectSource))
+    const since = query.has('days') ? subDays(new Date(), checkedPage(query, 'days', 1)) : null
 
     return archive((state) => {
       const lookups = state.lookups
@@ -331,6 +381,10 @@ export const lookupMocks = [
         .filter(({ searcher }) => searcherId === null || searcher.id === searcherId)
         .sort((a, b) => b.id - a.id)
         .map((item) => lookupOf(item, languageOf(request)))
+        .filter((item) => contains([item.plate, item.vin], search))
+        .filter((item) => status === null || item.status === status)
+        .filter((item) => source === null || item.source === source)
+        .filter((item) => since === null || new Date(item.createdAt) >= since)
 
       return page(lookups, currentPage, perPage)
     })
@@ -352,6 +406,13 @@ export const lookupMocks = [
     const body = await apiBody<PostApiV1LookupsBody>(request)
     const { company, user: me } = member()
     const plate = checkedPlate(body.plate)
+    const vin = checkedVin(body.vin)
+    if (!plate && !vin) {
+      invalid([
+        { field: 'plate', rule: 'required' },
+        { field: 'vin', rule: 'required' },
+      ])
+    }
     const query = checkedQuery(body.query)
 
     return archive((state) => {
@@ -359,7 +420,8 @@ export const lookupMocks = [
         id: state.nextId++,
         company,
         plate,
-        vin: null,
+        vin,
+        query,
         nodeIds: [],
         status: 'running',
         source: 'web',
@@ -367,9 +429,35 @@ export const lookupMocks = [
         createdAt: new Date().toISOString(),
         cached: true,
       }
-      state.lookups.push(settled(running, query))
+      state.lookups.push(settled(running))
 
       return { data: lookupOf(running, languageOf(request)) }
+    })
+  }),
+  getGetApiV1WorkspaceLookupsStatsMockHandler(async ({ request }) => {
+    const { company, role } = member()
+    if (role !== 'owner') fail(403, 'authorization-failure', 'Access denied')
+    const days = checkedPage(new URL(request.url).searchParams, 'days', STATS_DAYS)
+    const since = subDays(new Date(), days)
+    const before = subDays(since, days)
+
+    return archive((state) => {
+      const lookups = state.lookups.filter((item) => item.company === company)
+      const after = (date: Date) => lookups.filter((item) => new Date(item.createdAt) >= date)
+      const current = after(since)
+      const count = (statuses: LookupObjectStatus[]) =>
+        current.filter((item) => statuses.includes(statusOf(item))).length
+
+      return {
+        data: {
+          days,
+          total: current.length,
+          done: count(['done']),
+          failed: count(FAILED),
+          previousTotal: after(before).length - current.length,
+          topSearchers: topSearchers(current),
+        },
+      }
     })
   }),
 ]

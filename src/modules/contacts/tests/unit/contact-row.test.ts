@@ -54,6 +54,8 @@ describe('contact rows', () => {
     expect(contactRow(oakfield, owner, 'en-US').lastSearch).toMatch(/^Oct 14, 2026, 4:12\sPM$/u)
     expect(contactRow(oakfield, owner, 'it-IT').lastSearch).toBe('14 ott 2026, 16:12')
     expect(contactRow(contactFixture(2), owner, 'en-US').lastSearch).toBeNull()
+    expect(contactRow(oakfield, owner, 'en-US').joined).toBe('Mar 12, 2026')
+    expect(contactRow(oakfield, owner, 'it-IT').joined).toBe('12 mar 2026')
   })
 
   it('lets owners and admins manage contacts, viewers only read', () => {

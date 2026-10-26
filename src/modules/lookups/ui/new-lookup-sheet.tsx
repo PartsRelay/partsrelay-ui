@@ -2,12 +2,13 @@ import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { ArrowRightIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { fieldErrors } from '@/core/errors'
 import {
   emptyLookup,
+  identifierSchemas,
+  identifiers,
+  type LookupPrefill,
   lookupFieldErrors,
   newLookup,
-  plateSchema,
   QUERY_LENGTH,
   querySchema,
 } from '@/modules/lookups/core/lookup-form'
@@ -19,6 +20,7 @@ import { InputField } from '@/ui/components/input-field'
 import { SubmitButton } from '@/ui/components/submit-button'
 import { Button } from '@/ui/components/ui/button'
 import { FieldGroup } from '@/ui/components/ui/field'
+import { ToggleGroup, ToggleGroupItem } from '@/ui/components/ui/toggle-group'
 import {
   Sheet,
   SheetClose,
@@ -30,9 +32,9 @@ import {
 } from '@/ui/components/ui/sheet'
 import { useReturnFocus } from '@/ui/hooks/use-return-focus'
 
-type NewLookupSheetProps = { open: boolean; plate?: string; onClose: () => void }
+type NewLookupSheetProps = { open: boolean; prefill: LookupPrefill; onClose: () => void }
 
-export function NewLookupSheet({ open, plate, onClose }: NewLookupSheetProps) {
+export function NewLookupSheet({ open, prefill, onClose }: NewLookupSheetProps) {
   const returnFocus = useReturnFocus(open)
 
   return (
@@ -41,19 +43,19 @@ export function NewLookupSheet({ open, plate, onClose }: NewLookupSheetProps) {
         onCloseAutoFocus={returnFocus}
         className="gap-0 overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-lg"
       >
-        <NewLookupForm plate={plate} />
+        <NewLookupForm prefill={prefill} />
       </SheetContent>
     </Sheet>
   )
 }
 
-function NewLookupForm({ plate }: { plate?: string }) {
+function NewLookupForm({ prefill }: { prefill: LookupPrefill }) {
   const { t } = useTranslation()
   const { me } = useMe()
   const navigate = useNavigate()
   const start = useStartLookup()
   const form = useForm({
-    defaultValues: emptyLookup(plate),
+    defaultValues: emptyLookup(prefill),
     onSubmit: async ({ value, formApi }) => {
       try {
         const { id } = await start.mutateAsync(newLookup(value))
@@ -63,7 +65,7 @@ function NewLookupForm({ plate }: { plate?: string }) {
           replace: true,
         })
       } catch (error) {
-        const fields = fieldErrors(error, lookupFieldErrors)
+        const fields = lookupFieldErrors(error)
         if (fields) formApi.setErrorMap({ onSubmit: { fields } })
       }
     },
@@ -80,21 +82,45 @@ function NewLookupForm({ plate }: { plate?: string }) {
       </SheetHeader>
       <div className="grid gap-6 px-6 pb-6">
         <FieldGroup>
-          <form.Field name="plate" validators={{ onSubmit: plateSchema }}>
+          <form.Field name="by">
             {(field) => (
-              <InputField
-                field={field}
-                label={t('lookups.new.plate')}
-                required
-                description={t('lookups.new.plate-hint')}
-                autoComplete="off"
-                autoCapitalize="characters"
-                spellCheck={false}
-                placeholder={t('lookups.new.plate-placeholder')}
-                className="uppercase placeholder:normal-case"
-              />
+              <ToggleGroup
+                type="single"
+                variant="outline"
+                aria-label={t('lookups.new.identify')}
+                value={field.state.value}
+                onValueChange={(value) => {
+                  const by = identifiers.find((item) => item === value)
+                  if (by) field.handleChange(by)
+                }}
+              >
+                {identifiers.map((by) => (
+                  <ToggleGroupItem key={by} value={by}>
+                    {t(`lookups.new.by.${by}`)}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
             )}
           </form.Field>
+          <form.Subscribe selector={(state) => state.values.by}>
+            {(by) => (
+              <form.Field name="identifier" validators={{ onSubmit: identifierSchemas[by] }}>
+                {(field) => (
+                  <InputField
+                    field={field}
+                    label={t(`lookups.new.${by}`)}
+                    required
+                    description={t(`lookups.new.${by}-hint`)}
+                    autoComplete="off"
+                    autoCapitalize="characters"
+                    spellCheck={false}
+                    placeholder={t(`lookups.new.${by}-placeholder`)}
+                    className="uppercase placeholder:normal-case"
+                  />
+                )}
+              </form.Field>
+            )}
+          </form.Subscribe>
           <form.Field name="query" validators={{ onSubmit: querySchema }}>
             {(field) => (
               <InputField

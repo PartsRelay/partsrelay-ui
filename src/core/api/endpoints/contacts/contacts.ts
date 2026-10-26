@@ -30,6 +30,7 @@ import type {
 import type {
   ErrorBody,
   GetApiV1WorkspaceContacts200,
+  GetApiV1WorkspaceContactsParams,
   PatchApiV1WorkspaceContactsContactId200,
   PatchApiV1WorkspaceContactsContactIdBody,
   PostApiV1WorkspaceContacts201,
@@ -60,13 +61,14 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
 };
 
 export const getApiV1WorkspaceContacts = (
-
+    params?: GetApiV1WorkspaceContactsParams,
  options?: SecondParameter<typeof http>,signal?: AbortSignal
 ) => {
 
 
       return http<GetApiV1WorkspaceContacts200>(
-      {url: `/api/v1/workspace/contacts`, method: 'GET', signal
+      {url: `/api/v1/workspace/contacts`, method: 'GET',
+        params, signal
     },
       options);
     }
@@ -74,23 +76,23 @@ export const getApiV1WorkspaceContacts = (
 
 
 
-export const getGetApiV1WorkspaceContactsQueryKey = () => {
+export const getGetApiV1WorkspaceContactsQueryKey = (params?: GetApiV1WorkspaceContactsParams,) => {
     return [
-    `/api/v1/workspace/contacts`
+    `/api/v1/workspace/contacts`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getGetApiV1WorkspaceContactsQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1WorkspaceContactsQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(params?: GetApiV1WorkspaceContactsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceContactsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceContactsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>> = ({ signal }) => getApiV1WorkspaceContacts(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>> = ({ signal }) => getApiV1WorkspaceContacts(params, requestOptions, signal);
 
 
 
@@ -104,7 +106,7 @@ export type GetApiV1WorkspaceContactsQueryError = ErrorType<ErrorBody>
 
 
 export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>> & Pick<
+ params: undefined |  GetApiV1WorkspaceContactsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>,
           TError,
@@ -114,7 +116,7 @@ export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof g
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>> & Pick<
+ params?: GetApiV1WorkspaceContactsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>,
           TError,
@@ -124,16 +126,16 @@ export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof g
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceContactsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceContactsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV1WorkspaceContactsQueryOptions(options)
+  const queryOptions = getGetApiV1WorkspaceContactsQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -145,16 +147,16 @@ export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof g
 
 
 
-export const getGetApiV1WorkspaceContactsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1WorkspaceContactsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(params?: GetApiV1WorkspaceContactsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceContactsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV1WorkspaceContactsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>> = ({ signal }) => getApiV1WorkspaceContacts(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>> = ({ signal }) => getApiV1WorkspaceContacts(params, requestOptions, signal);
 
 
 
@@ -168,24 +170,24 @@ export type GetApiV1WorkspaceContactsSuspenseQueryError = ErrorType<ErrorBody>
 
 
 export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
-  options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params: undefined |  GetApiV1WorkspaceContactsParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceContactsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceContactsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
-  options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+ params?: GetApiV1WorkspaceContactsParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiV1WorkspaceContactsSuspenseQueryOptions(options)
+  const queryOptions = getGetApiV1WorkspaceContactsSuspenseQueryOptions(params,options)
 
   const query = useSuspenseQuery(queryOptions, queryClient) as  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

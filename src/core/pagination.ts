@@ -4,12 +4,6 @@ export const DEFAULT_PER_PAGE = 20
 
 export const MAX_PER_PAGE = 100
 
-export type PaginationParams = { page: number; perPage?: number }
-
-export function withPerPage<Params extends PaginationParams>(params: Params) {
-  return { ...params, perPage: params.perPage ?? DEFAULT_PER_PAGE }
-}
-
 export type PageMetadata = {
   total: number
   perPage: number

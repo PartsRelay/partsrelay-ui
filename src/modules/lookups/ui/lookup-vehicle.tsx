@@ -22,7 +22,7 @@ export function LookupVehicle({ detail }: { detail: LookupDetail }) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2 className="font-mono text-2xl">{detail.plate}</h2>
+          <h2 className="font-mono text-2xl">{detail.identifier}</h2>
         </CardTitle>
         {vehicle && <CardDescription className="text-base">{vehicle}</CardDescription>}
         <CardAction>
@@ -31,8 +31,9 @@ export function LookupVehicle({ detail }: { detail: LookupDetail }) {
       </CardHeader>
       <CardContent>
         <Facts
-          className="grid-cols-2 md:grid-cols-4"
+          className="grid-cols-2 md:grid-cols-3"
           items={[
+            { label: t('lookups.detail.query'), value: detail.lookup.query ?? '-' },
             {
               label: t('lookups.detail.vin'),
               value: <span className="font-mono break-all">{detail.vin ?? '-'}</span>,
