@@ -113,11 +113,20 @@ describe('failureNotice', () => {
     expect(client.getQueryData(sessionQuery.queryKey)).toBe(session)
   })
 
-  it('ends the session even when the caller shows the error itself', () => {
+  it('ends the session and says so even when the caller shows its errors itself', () => {
     client.setQueryData(sessionQuery.queryKey, session)
 
-    expect(failureNotice(client, authError(401, 'UNAUTHORIZED_ACCESS'), true)).toBeNull()
+    expect(failureNotice(client, authError(401, 'UNAUTHORIZED_ACCESS'), true)).toEqual([
+      'errors.unauthorized-access',
+    ])
     expect(client.getQueryData(sessionQuery.queryKey)).toBeNull()
+  })
+
+  it('leaves other errors to the caller that shows them itself', () => {
+    client.setQueryData(sessionQuery.queryKey, session)
+
+    expect(failureNotice(client, authError(400, 'BAD_REQUEST'), true)).toBeNull()
+    expect(client.getQueryData(sessionQuery.queryKey)).toBe(session)
   })
 })
 

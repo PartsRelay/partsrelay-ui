@@ -33,9 +33,10 @@ export async function redirectSignedIn(
 
 export function failureNotice(client: QueryClient, error: unknown, silent = false) {
   const signedIn = Boolean(client.getQueryData(sessionQuery.queryKey))
-  if (sessionEnded(error)) client.setQueryData(sessionQuery.queryKey, null)
+  const ended = sessionEnded(error)
+  if (ended) client.setQueryData(sessionQuery.queryKey, null)
 
-  return silent ? null : errorNotice(error, signedIn)
+  return silent && !ended ? null : errorNotice(error, signedIn)
 }
 
 // The session is over: nothing cached belongs to anyone now
