@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vite-plus/test'
+import { fieldErrors } from '@/core/errors'
+import { MAX_STRING_LENGTH } from '@/core/strings'
 import {
   compactPlate,
   emptyLookup,
+  lookupFieldErrors,
   newLookup,
   plateError,
   queryError,
 } from '@/modules/lookups/core/lookup-form'
+import { coreError } from '@/modules/contacts/tests/unit/fixtures'
 
 const plate = (value: string) => plateError({ value })
 
@@ -29,6 +33,7 @@ describe('new search form', () => {
     expect(plate('AB1')).toBe('lookups.new.errors.plate')
     expect(plate('AB1234567')).toBe('lookups.new.errors.plate')
     expect(plate('AB_123')).toBe('lookups.new.errors.plate')
+    expect(plate('A'.repeat(MAX_STRING_LENGTH + 1))).toBe('form.too-long')
   })
 
   it('asks for the part in 2 to 200 characters', () => {
@@ -37,6 +42,19 @@ describe('new search form', () => {
     expect(query('ab')).toBeUndefined()
     expect(query('a'.repeat(200))).toBeUndefined()
     expect(query('a'.repeat(201))).toBe('lookups.new.errors.query')
+  })
+
+  it('shows each error of the core under the field it names', () => {
+    const both = coreError(422, 'validation-error', [
+      { field: 'plate', rule: 'plate' },
+      { field: 'query', rule: 'maxLength' },
+    ])
+
+    expect(fieldErrors(both, lookupFieldErrors)).toEqual({
+      plate: 'lookups.new.errors.plate',
+      query: 'lookups.new.errors.query',
+    })
+    expect(fieldErrors(coreError(404, 'row-not-found'), lookupFieldErrors)).toBeNull()
   })
 
   it('sends the compact plate and the trimmed part as free text', () => {

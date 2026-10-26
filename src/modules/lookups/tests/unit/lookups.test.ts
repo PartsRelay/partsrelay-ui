@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test'
 import type { ContactObject } from '@/core/api/models'
+import { MAX_STRING_LENGTH } from '@/core/strings'
 import {
   EVERYONE,
   lookupListParams,
@@ -40,6 +41,9 @@ describe('searches address', () => {
     expect(
       lookupsSearchSchema.parse({ page: 0, searcherType: 'robot', searcherId: -1, new: 'yes' })
     ).toEqual({ page: 1 })
+    expect(lookupsSearchSchema.parse({ plate: 'A'.repeat(MAX_STRING_LENGTH + 1) })).toEqual({
+      page: 1,
+    })
   })
 
   it('asks the core for one requester only when both its type and id are known', () => {

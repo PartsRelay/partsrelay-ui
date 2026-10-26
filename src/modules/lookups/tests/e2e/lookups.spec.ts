@@ -59,11 +59,14 @@ test.describe('as the owner', () => {
     await sheet(page).getByRole('button', { name: 'Start search' }).click()
 
     const plate = sheet(page).getByRole('textbox', { name: 'Registration plate' })
+    const part = sheet(page).getByRole('textbox', { name: 'Part needed' })
     await expect(plate).toBeFocused()
     await expect(plate).toHaveAccessibleDescription('Enter the registration plate.')
-    await expect(
-      sheet(page).getByRole('textbox', { name: 'Part needed' })
-    ).toHaveAccessibleDescription('Enter the part you need, such as front brake pads.')
+    await expect(part).toHaveAccessibleDescription(
+      'Enter the part you need, such as front brake pads.'
+    )
+    await expect(plate).toHaveAttribute('maxlength', '255')
+    await expect(part).toHaveAttribute('maxlength', '200')
 
     await plate.fill('CA 7')
     await sheet(page).getByRole('button', { name: 'Start search' }).click()
@@ -111,6 +114,12 @@ test.describe('as the owner', () => {
       'XY123ZZ'
     )
     await expect(sheet(page).getByRole('textbox', { name: 'Part needed' })).toBeEmpty()
+  })
+
+  test('a search that does not exist says so', async ({ page }) => {
+    await page.goto('/searches/9999')
+
+    await expect(page.getByText('The requested item does not exist.')).toBeVisible()
   })
 
   test('a running search says it is still searching', async ({ page }) => {

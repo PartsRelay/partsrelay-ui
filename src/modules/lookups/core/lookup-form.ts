@@ -1,4 +1,5 @@
 import type { PostApiV1LookupsBody } from '@/core/api/models'
+import { lengthError } from '@/core/strings'
 
 export type LookupValues = { plate: string; query: string }
 
@@ -19,6 +20,7 @@ export function compactPlate(plate: string) {
 
 export function plateError({ value }: { value: string }) {
   if (!value.trim()) return 'lookups.new.errors.plate-required'
+  if (lengthError(value)) return lengthError(value)
 
   return PLATE.test(compactPlate(value)) ? undefined : 'lookups.new.errors.plate'
 }
