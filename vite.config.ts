@@ -7,11 +7,12 @@ import { loadEnv } from 'vite'
 import { defineConfig } from 'vite-plus'
 import { readEnv } from './src/env'
 
-const generated = [
+const ignored = [
   '**/dist/**',
   'src/core/api/**',
   'src/ui/routeTree.gen.ts',
   'public/mockServiceWorker.js',
+  'src/locales/**',
 ]
 
 const env = readEnv(loadEnv(process.env.APP_ENV ?? 'development', process.cwd(), ''))
@@ -46,7 +47,7 @@ export default defineConfig({
   },
 
   lint: {
-    ignorePatterns: generated,
+    ignorePatterns: ignored,
     plugins: ['react'],
     env: { browser: true },
     options: { typeAware: true, typeCheck: true },
@@ -71,7 +72,7 @@ export default defineConfig({
   },
 
   fmt: {
-    ignorePatterns: generated,
+    ignorePatterns: ignored,
     printWidth: 100,
     semi: false,
     singleQuote: true,

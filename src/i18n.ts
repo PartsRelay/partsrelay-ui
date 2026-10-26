@@ -1,7 +1,7 @@
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import ICU from 'i18next-icu'
 import { initReactI18next } from 'react-i18next'
-import { env } from '@/env'
 
 const files = import.meta.glob<Record<string, unknown>>('./locales/*/*.json', {
   eager: true,
@@ -9,9 +9,10 @@ const files = import.meta.glob<Record<string, unknown>>('./locales/*/*.json', {
 })
 
 const resources: Record<string, { translation: Record<string, unknown> }> = {}
-for (const [path, texts] of Object.entries(files)) {
-  const [, , locale] = path.split('/')
-  resources[locale] = { translation: { ...resources[locale]?.translation, ...texts } }
+for (const [path, messages] of Object.entries(files)) {
+  const [, , locale, file] = path.split('/')
+  resources[locale] ??= { translation: {} }
+  resources[locale].translation[file.replace(/\.json$/, '')] = messages
 }
 
 i18n.on('languageChanged', (language) =>
@@ -19,6 +20,7 @@ i18n.on('languageChanged', (language) =>
 )
 
 void i18n
+  .use(ICU)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -26,11 +28,7 @@ void i18n
     supportedLngs: Object.keys(resources),
     load: 'currentOnly',
     fallbackLng: 'en-US',
-    detection: { order: ['navigator'], caches: [] },
-    interpolation: {
-      escapeValue: false,
-      defaultVariables: { app: env.APP_NAME },
-    },
+    detection: { order: ['localStorage', 'navigator'], caches: ['localStorage'] },
     parseMissingKeyHandler: (key) =>
       key.startsWith('errors.') ? i18n.t('errors.unknown-error') : key,
   })

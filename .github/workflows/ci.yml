@@ -20,6 +20,8 @@ jobs:
       playwright: ${{ steps.playwright.outputs.version }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
       - uses: oven-sh/setup-bun@v2
       - id: modules
         uses: actions/cache/restore@v6
@@ -63,6 +65,8 @@ jobs:
             report: webkit
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
       - uses: actions/cache/restore@v6
         with:
           path: node_modules
