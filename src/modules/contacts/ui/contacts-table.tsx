@@ -1,19 +1,13 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ContactRow } from '@/modules/contacts/core/contact-row'
 import { ContactActions } from '@/modules/contacts/ui/contact-actions'
 import { ContactNameForm } from '@/modules/contacts/ui/contact-name-form'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { PersonItem } from '@/ui/components/person-item'
+import { ResponsiveTable } from '@/ui/components/responsive-table'
 import { StatusBadge } from '@/ui/components/status-badge'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/ui/components/ui/table'
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
 const columns = ['contact', 'phone', 'status', 'searches', 'month', 'last-search']
 
@@ -27,10 +21,11 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
   const { t } = useTranslation()
   const { me } = useMe()
   const [renaming, setRenaming] = useState<number | null>(null)
+  const renamed = useRef<number | null>(null)
   const manage = me.permissions.manageContacts
 
   return (
-    <Table>
+    <ResponsiveTable>
       <TableHeader>
         <TableRow>
           {[...columns, ...(manage ? ['actions'] : [])].map((column) => (
@@ -46,7 +41,13 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
             <TableRow key={row.contact.id}>
               <TableCell>
                 {editing ? (
-                  <ContactNameForm row={row} onDone={() => setRenaming(null)} />
+                  <ContactNameForm
+                    row={row}
+                    onDone={() => {
+                      renamed.current = row.contact.id
+                      setRenaming(null)
+                    }}
+                  />
                 ) : row.whatsappName ? (
                   <PersonItem
                     name={row.name}
@@ -56,18 +57,28 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
                   <PersonItem name={row.name} />
                 )}
               </TableCell>
-              <TableCell>{row.phone}</TableCell>
-              <TableCell>
+              <TableCell data-label={t('contacts.columns.phone')}>{row.phone}</TableCell>
+              <TableCell data-label={t('contacts.columns.status')}>
                 <StatusBadge tone={row.tone}>{t(...row.statusLabel)}</StatusBadge>
               </TableCell>
-              <TableCell>{row.searches.total}</TableCell>
-              <TableCell>{row.searches.month}</TableCell>
-              <TableCell>{row.lastSearch ?? t('contacts.never')}</TableCell>
+              <TableCell data-label={t('contacts.columns.searches')}>
+                {row.searches.total}
+              </TableCell>
+              <TableCell data-label={t('contacts.columns.month')}>{row.searches.month}</TableCell>
+              <TableCell data-label={t('contacts.columns.last-search')}>
+                {row.lastSearch ?? t('contacts.never')}
+              </TableCell>
               {manage && (
                 <TableCell>
                   {!editing && (
                     <ContactActions
                       row={row}
+                      renameRef={(button) => {
+                        if (button && renamed.current === row.contact.id) {
+                          renamed.current = null
+                          button.focus()
+                        }
+                      }}
                       onRename={() => setRenaming(row.contact.id)}
                       onBlock={() => onBlock(row)}
                       onRemove={() => onRemove(row)}
@@ -79,6 +90,6 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
           )
         })}
       </TableBody>
-    </Table>
+    </ResponsiveTable>
   )
 }
