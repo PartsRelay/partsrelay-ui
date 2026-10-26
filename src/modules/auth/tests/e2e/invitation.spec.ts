@@ -44,6 +44,15 @@ test.describe('as a newcomer invited to a company', () => {
     await expect(page).toHaveURL('/invitations/31')
   })
 
+  test('my name is capped at the longest string the core accepts', async ({ page }) => {
+    await page.goto('/invitations/31')
+
+    await expect(page.getByRole('textbox', { name: 'Your name' })).toHaveAttribute(
+      'maxlength',
+      '255'
+    )
+  })
+
   test('not now keeps my own company', async ({ page }) => {
     await page.goto('/invitations/31')
     await page.getByRole('link', { name: 'Not now' }).click()
