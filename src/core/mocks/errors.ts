@@ -52,13 +52,32 @@ function queryOf(url: string) {
   )
 }
 
+function cap(request: Request, body: unknown) {
+  const fields = [...longStrings(queryOf(request.url)), ...longStrings(body)]
+
+  if (fields.length > 0) invalid(fields.map((field) => ({ field, rule: 'maxLength' })))
+}
+
 export async function capStrings(request: Request) {
-  const query = queryOf(request.url)
   const body: unknown = await request
     .clone()
     .json()
     .catch(() => null)
-  const fields = [...longStrings(query), ...longStrings(body)]
 
-  if (fields.length > 0) invalid(fields.map((field) => ({ field, rule: 'maxLength' })))
+  cap(request, body)
+}
+
+function trimmed(value: unknown): unknown {
+  if (typeof value === 'string') return value.trim() || null
+  if (Array.isArray(value)) return value.map(trimmed)
+  if (!value || typeof value !== 'object') return value
+
+  return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, trimmed(item)]))
+}
+
+export async function apiBody<T>(request: Request) {
+  const body = trimmed(await request.json())
+  cap(request, body)
+
+  return body as { [Key in keyof T]?: T[Key] | null }
 }
