@@ -13,7 +13,7 @@ import {
 } from '@/core/api/models'
 import { member } from '@/core/mocks/auth'
 import { checkedPage, page, people, type Person } from '@/core/mocks/data'
-import { capStrings, fail, rejected } from '@/core/mocks/errors'
+import { apiBody, capStrings, fail, rejected } from '@/core/mocks/errors'
 import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
 
 type Text = [en: string, it: string]
@@ -284,6 +284,7 @@ function checkedQuery(query: unknown) {
 }
 
 function checkedNodeId(id: unknown, index: number) {
+  if (id === null) return rejected(`nodeIds.${index}`, 'required')
   if (typeof id !== 'string') return rejected(`nodeIds.${index}`, 'string')
 
   const trimmed = id.trim()
@@ -298,7 +299,8 @@ function checkedNodeIds(nodeIds: unknown) {
   if (!Array.isArray(nodeIds)) return rejected('nodeIds', 'array')
   if (nodeIds.length < 1) rejected('nodeIds', 'array.minLength')
   if (nodeIds.length > MAX_NODES) rejected('nodeIds', 'array.maxLength')
-  if (new Set(nodeIds).size !== nodeIds.length) rejected('nodeIds', 'distinct')
+  const present = nodeIds.filter((id) => id !== null)
+  if (new Set(present).size !== present.length) rejected('nodeIds', 'distinct')
 
   return nodeIds.map(checkedNodeId)
 }
@@ -374,9 +376,8 @@ export const lookupMocks = [
     })
   }),
   getPostApiV1LookupsMockHandler(async ({ request }) => {
-    await capStrings(request)
+    const body = await apiBody<PostApiV1LookupsBody>(request)
     const { company, user: me } = member()
-    const body = (await request.json()) as Partial<PostApiV1LookupsBody>
     const plate = checkedPlate(body.plate)
     const nodeIds = checkedNodeIds(body.nodeIds)
     const query = checkedQuery(body.query)
