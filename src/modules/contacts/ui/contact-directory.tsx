@@ -66,7 +66,6 @@ export function ContactDirectory() {
   const tab: ContactTab = search.status ?? 'all'
   const rows = list.data?.data.map((contact) => contactRow(contact, me, i18n.language))
   const heading = useRef<HTMLHeadingElement>(null)
-  // Outlives the row, which leaves before the core answers
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
   const [confirming, setConfirming] = useState(false)
   const confirm = (action: Confirmation['action']) => (row: ContactRow) => {

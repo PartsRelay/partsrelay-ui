@@ -6,7 +6,7 @@ import type { Workspace } from '@/modules/workspaces/core/workspace'
 
 export const EVERYONE = 'everyone'
 
-export const lookupIdSchema = z.coerce.number().int().positive().max(2_147_483_647)
+export const lookupIdSchema = z.coerce.number().int().positive()
 
 const requesterSchema = z.object({
   searcherType: z.enum(SearcherType).optional().catch(undefined),

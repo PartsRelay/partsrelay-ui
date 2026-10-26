@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vite-plus/test'
 import { message } from '@/core/message'
 import { pageInfo, withPerPage } from '@/core/pagination'
 
-// The metadata the core sends for a page
 function metadata(currentPage: number, perPage: number, total: number) {
   return { total, perPage, currentPage, lastPage: Math.max(1, Math.ceil(total / perPage)) }
 }

@@ -62,7 +62,6 @@ export function pageFixture(
   }
 }
 
-// The flat error body of the core
 export function coreError(status: number, code: string, fields?: FieldError[]) {
   const config = { headers: new AxiosHeaders() }
   const data = { code, status, message: 'Failed', ...(fields && { fields }) }

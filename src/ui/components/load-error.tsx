@@ -28,7 +28,6 @@ export function LoadError({ error, onRetry }: LoadErrorProps) {
   )
 }
 
-// A failed refresh keeps the possibly stale rows
 export function RefetchError({
   error,
   onRetry,

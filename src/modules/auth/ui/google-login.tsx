@@ -15,7 +15,6 @@ export function GoogleLogin({ flow }: { flow: SignInFlow }) {
     <Button
       className="w-full"
       disabled={pending}
-      // The client follows the Google redirect
       onClick={() => {
         void clearSignInError()
         void run(() => authClient.signIn.social(googleSignIn(flow)))

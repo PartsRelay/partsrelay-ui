@@ -16,7 +16,6 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
   const { t } = useTranslation()
   const { workspace, me } = useMe()
   const heading = useRef<HTMLHeadingElement>(null)
-  // Outlives the row, which leaves before the core answers
   const [removing, setRemoving] = useState<Member | null>(null)
   const [confirming, setConfirming] = useState(false)
 

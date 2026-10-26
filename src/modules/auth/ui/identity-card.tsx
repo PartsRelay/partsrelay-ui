@@ -35,7 +35,6 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
         },
         { notice: 'profile.notices.name-saved' }
       )
-      // The prop stays the default and catches up later
       if (result.ok) formApi.reset({ name }, { keepDefaultValues: true })
     },
   })

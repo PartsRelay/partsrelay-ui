@@ -1,6 +1,6 @@
 import { env } from '@/env'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { errorMessage, isGenericCode, NO_STATUS, toErrorBody } from '@/core/errors'
+import { errorMessage, NO_STATUS, statusCode, toErrorBody } from '@/core/errors'
 import { message } from '@/core/message'
 
 type OneTapHandlers = { onSuccess: () => Promise<void> | void; onError: (error: unknown) => void }
@@ -14,7 +14,6 @@ export function startOneTap({ onSuccess, onError }: OneTapHandlers) {
     .oneTap({
       autoSelect: false,
       cancelOnTapOutside: true,
-      // fetchOptions keeps the client from redirecting
       fetchOptions: { onSuccess: () => onSuccess() },
     })
     .catch(onError)
@@ -26,8 +25,7 @@ export function cancelOneTap() {
 
 export function oneTapError(error: unknown) {
   const { code, status } = toErrorBody(error)
-  // A Google script that fails to load stays quiet
   if (status === NO_STATUS && code !== 'network-error') return null
 
-  return isGenericCode(code) ? message('login.errors.google') : errorMessage(error)
+  return code === statusCode(status) ? message('login.errors.google') : errorMessage(error)
 }

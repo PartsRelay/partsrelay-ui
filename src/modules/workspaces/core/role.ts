@@ -1,6 +1,6 @@
 import { message } from '@/core/message'
 
-export const roles = ['owner', 'admin', 'viewer'] as const
+const roles = ['owner', 'admin', 'viewer'] as const
 
 export type Role = (typeof roles)[number]
 

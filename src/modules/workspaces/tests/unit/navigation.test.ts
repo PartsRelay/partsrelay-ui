@@ -21,7 +21,6 @@ const member = (id: string, role: Role, name: string): Member => ({
   joinedAt: new Date('2025-09-28T10:00:00Z'),
 })
 
-// Redwood Parts Ltd, with its owner and an admin
 const workspace = (): Workspace => ({
   id: '1',
   name: 'Redwood Parts Ltd',

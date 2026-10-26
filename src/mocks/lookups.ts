@@ -39,8 +39,6 @@ type Stored = Omit<LookupObject, 'searcher' | 'vehicleDescription' | 'categories
 type Archive = { lookups: Stored[]; nextId: number }
 
 const PLATE = /^[A-Z0-9]{4,8}$/
-const MAX_NODES = 25
-const MAX_NODE_ID_LENGTH = 128
 const STALE_MINUTES = 15
 const FAILING_PLATE = 'ER500ER'
 
@@ -273,7 +271,7 @@ function checkedPlate(plate: unknown) {
 }
 
 function checkedQuery(query: unknown) {
-  if (query === undefined || query === null || query === '') return null
+  if (query === undefined || query === null || query === '') return rejected('query', 'required')
   if (typeof query !== 'string') return rejected('query', 'string')
 
   const trimmed = query.trim()
@@ -281,28 +279,6 @@ function checkedQuery(query: unknown) {
   if (trimmed.length > 200) rejected('query', 'maxLength')
 
   return trimmed
-}
-
-function checkedNodeId(id: unknown, index: number) {
-  if (id === null) return rejected(`nodeIds.${index}`, 'required')
-  if (typeof id !== 'string') return rejected(`nodeIds.${index}`, 'string')
-
-  const trimmed = id.trim()
-  if (trimmed.length < 1) rejected(`nodeIds.${index}`, 'minLength')
-  if (trimmed.length > MAX_NODE_ID_LENGTH) rejected(`nodeIds.${index}`, 'maxLength')
-
-  return trimmed
-}
-
-function checkedNodeIds(nodeIds: unknown) {
-  if (nodeIds === undefined || nodeIds === null) return null
-  if (!Array.isArray(nodeIds)) return rejected('nodeIds', 'array')
-  if (nodeIds.length < 1) rejected('nodeIds', 'array.minLength')
-  if (nodeIds.length > MAX_NODES) rejected('nodeIds', 'array.maxLength')
-  const present = nodeIds.filter((id) => id !== null)
-  if (new Set(present).size !== present.length) rejected('nodeIds', 'distinct')
-
-  return nodeIds.map(checkedNodeId)
 }
 
 function checkedSearcherId(query: URLSearchParams) {
@@ -323,14 +299,13 @@ function matching(query: string) {
     .map(([id]) => id)
 }
 
-function settled(lookup: Stored, query: string | null): Stored {
+function settled(lookup: Stored, query: string): Stored {
   const vehicle = VEHICLES[lookup.plate]
   if (lookup.plate === FAILING_PLATE) return { ...lookup, status: 'failed' }
   if (!vehicle) return { ...lookup, status: 'vehicle_not_found' }
 
-  const nodeIds = query ? matching(query).slice(0, MAX_NODES) : lookup.nodeIds
-  const known = nodeIds.every((id) => id in CATALOG)
-  const status = nodeIds.length === 0 ? 'not_matched' : known ? 'done' : 'failed'
+  const nodeIds = matching(query)
+  const status = nodeIds.length === 0 ? 'not_matched' : 'done'
 
   return { ...lookup, vin: vehicle.vin, nodeIds, status }
 }
@@ -377,10 +352,7 @@ export const lookupMocks = [
     const body = await apiBody<PostApiV1LookupsBody>(request)
     const { company, user: me } = member()
     const plate = checkedPlate(body.plate)
-    const nodeIds = checkedNodeIds(body.nodeIds)
     const query = checkedQuery(body.query)
-    if (nodeIds === null && query === null) rejected('nodeIds', 'required')
-    if (nodeIds !== null && query !== null) rejected('query', 'prohibitedWith')
 
     return archive((state) => {
       const running: Stored = {
@@ -388,7 +360,7 @@ export const lookupMocks = [
         company,
         plate,
         vin: null,
-        nodeIds: nodeIds ?? [],
+        nodeIds: [],
         status: 'running',
         source: 'web',
         searcher: user(me),

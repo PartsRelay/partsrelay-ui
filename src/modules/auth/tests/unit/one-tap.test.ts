@@ -1,10 +1,8 @@
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { oneTapError } from '@/modules/auth/core/one-tap'
 
-// Only startOneTap calls it, the real client needs a browser
 vi.mock('@/modules/auth/core/auth.client', () => ({ authClient: {} }))
 
-// What the Better Auth client throws
 const authError = (status: number, code: string) => ({
   status,
   error: { code, status, message: 'Failed' },

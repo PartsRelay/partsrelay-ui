@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test'
 
 test.describe('as a newcomer', () => {
   test.beforeEach(async ({ page }) => {
-    // A new account, its company still to set up
     await page.addInitScript(() => localStorage.setItem('mock.user', 'new'))
     await page.goto('/')
     await expect(page).toHaveURL('/setup')

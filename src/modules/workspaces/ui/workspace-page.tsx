@@ -19,7 +19,6 @@ export function WorkspacePage() {
     <>
       <WorkspaceHeader />
       <MembersTable onTransfer={() => setTransfer(true)} />
-      {/* A new form when an ownership hand-over changes my roles */}
       <InviteCard key={me.role} />
       <InvitationsTable />
       <TransferOwnershipDialog

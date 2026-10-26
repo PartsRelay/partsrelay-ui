@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vite-plus/test'
 import { acceptError, invitationHeadline, invitationView } from '@/modules/auth/core/invitation'
 import type { Member } from '@/modules/workspaces/core/workspace'
 
-// What the Better Auth client throws
 const authError = (status: number, code: string) => ({
   status,
   error: { code, status, message: 'Failed' },
@@ -26,7 +25,6 @@ const member = (id: string): Member => ({
   joinedAt: new Date('2026-10-01T10:00:00Z'),
 })
 
-// My current company, alone in it unless told otherwise
 const company = ({
   id = '2',
   members = 1,

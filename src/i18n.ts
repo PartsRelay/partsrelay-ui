@@ -3,30 +3,27 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { env } from '@/env'
 
-type Catalog = Record<string, Record<string, unknown>>
-
-const enUS: Catalog = import.meta.glob('@/locales/en-US/*.json', {
-  eager: true,
-  import: 'default',
-})
-const itIT: Catalog = import.meta.glob('@/locales/it-IT/*.json', {
+const files = import.meta.glob<Record<string, unknown>>('./locales/*/*.json', {
   eager: true,
   import: 'default',
 })
 
-const translation = (catalog: Catalog) => Object.assign({}, ...Object.values(catalog))
+const resources: Record<string, { translation: Record<string, unknown> }> = {}
+for (const [path, texts] of Object.entries(files)) {
+  const [, , locale] = path.split('/')
+  resources[locale] = { translation: { ...resources[locale]?.translation, ...texts } }
+}
 
-i18n.on('languageChanged', (language) => document.documentElement.setAttribute('lang', language))
+i18n.on('languageChanged', (language) =>
+  globalThis.document?.documentElement.setAttribute('lang', language)
+)
 
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      'en-US': { translation: translation(enUS) },
-      'it-IT': { translation: translation(itIT) },
-    },
-    supportedLngs: ['en-US', 'it-IT'],
+    resources,
+    supportedLngs: Object.keys(resources),
     load: 'currentOnly',
     fallbackLng: 'en-US',
     detection: { order: ['navigator'], caches: [] },

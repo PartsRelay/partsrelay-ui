@@ -21,7 +21,6 @@ export function InvitationsTable() {
   const { workspace, me } = useMe()
   const rows = invitationRows(workspace, me, new Date(), window.location.origin, i18n.language)
   const heading = useRef<HTMLHeadingElement>(null)
-  // Outlives the row, which leaves before the core answers
   const [revoking, setRevoking] = useState<InvitationRow | null>(null)
   const [confirming, setConfirming] = useState(false)
 

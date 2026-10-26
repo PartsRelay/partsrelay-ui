@@ -48,7 +48,6 @@ test.describe('as the owner', () => {
 
 test.describe('as a viewer', () => {
   test.beforeEach(async ({ page }) => {
-    // The mocks read who is signed in from localStorage
     await page.addInitScript(() => localStorage.setItem('mock.user', 'viewer'))
   })
 

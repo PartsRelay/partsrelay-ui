@@ -1,7 +1,6 @@
 import { subDays } from 'date-fns'
 import { rejected } from '@/mocks/errors'
 
-// Shapes of the Better Auth JSON the mocks send
 export type Role = 'owner' | 'admin' | 'viewer'
 
 export type Person = {
@@ -45,10 +44,8 @@ export type Company = {
   invitations: Invitation[]
 }
 
-// Days before now, negative for the future
 export const daysAgo = (days: number) => subDays(new Date(), days).toISOString()
 
-// localStorage switches: user owner|admin|viewer|new, setup pending, invitation 1
 export const setting = (name: 'user' | 'setup' | 'invitation') =>
   localStorage.getItem(`mock.${name}`)
 
@@ -79,7 +76,7 @@ const users = {
 
 export const signedInAs = () => users[setting('user') as keyof typeof users] ?? people.mark
 
-export const member = (
+const member = (
   organizationId: string,
   id: string,
   { id: userId, name, email }: Person,

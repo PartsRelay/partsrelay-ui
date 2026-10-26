@@ -18,7 +18,6 @@ const meAs = (role: Role): Me => ({
   permissions: permissionsFor(role),
 })
 
-// What the Better Auth client throws
 const authError = (status: number, code: string) => ({
   status,
   error: { code, status, message: 'Failed' },

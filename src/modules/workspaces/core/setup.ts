@@ -19,7 +19,6 @@ export function pendingInvitation(invitations: UserInvitation[] | undefined, now
   )
 }
 
-// A pending company starts empty, in the browser language
 export function setupDefaults(
   workspace: Pick<Workspace, 'name' | 'locale' | 'setup'>,
   browserLocale: Locale

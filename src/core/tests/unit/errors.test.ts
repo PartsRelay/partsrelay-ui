@@ -1,27 +1,7 @@
 import { AxiosError, AxiosHeaders } from 'axios'
 import { describe, expect, it } from 'vite-plus/test'
-import {
-  alreadyGone,
-  errorMessage,
-  type FieldError,
-  fieldErrors,
-  kebabCode,
-  redirectError,
-  toErrorBody,
-} from '@/core/errors'
-
-type Texts = Record<string, Record<string, unknown>>
-
-const files: Record<string, Texts> = import.meta.glob('@/locales/*/errors.json', {
-  eager: true,
-  import: 'default',
-})
-
-function errorTexts(locale: string) {
-  const path = Object.keys(files).find((item) => item.endsWith(`/${locale}/errors.json`))
-
-  return Object.keys(path ? files[path]!.errors! : {}).sort()
-}
+import { alreadyGone, errorMessage, type FieldError, fieldErrors, toErrorBody } from '@/core/errors'
+import { i18n } from '@/i18n'
 
 const config = { headers: new AxiosHeaders() }
 
@@ -107,9 +87,9 @@ describe('error body', () => {
       message: 'Bad Gateway',
     })
     expect(toErrorBody({ status: 409, error: null })).toEqual({
-      code: 'bad-request',
+      code: 'conflict',
       status: 409,
-      message: 'Bad Request',
+      message: 'Conflict',
     })
   })
 
@@ -134,40 +114,15 @@ describe('error body', () => {
     expect(toErrorBody(new Error('No active company'))).toEqual(unknown)
     expect(toErrorBody('failed')).toEqual(unknown)
   })
-
-  it('reads the code of a sign in redirect', () => {
-    expect(redirectError('access-denied')).toEqual({
-      code: 'access-denied',
-      status: 0,
-      message: 'Access denied',
-    })
-  })
-})
-
-describe('kebabCode', () => {
-  it.each([
-    ['validation-error', 'validation-error'],
-    ['E_ROW_NOT_FOUND', 'row-not-found'],
-    ['INVALID_TOKEN', 'invalid-token'],
-    ['access_denied', 'access-denied'],
-    ['id_token not supported', 'id-token-not-supported'],
-    ['requestEntityTooLarge', 'request-entity-too-large'],
-  ])('turns %s into %s', (code, kebab) => {
-    expect(kebabCode(code)).toBe(kebab)
-    expect(toErrorBody(coreError(400, code)).code).toBe(kebab)
-  })
 })
 
 describe('error texts', () => {
-  it('exist in English and Italian with the same kebab case codes', () => {
-    const english = errorTexts('en-US')
+  it('exist for every code the core can answer the UI and every status fallback', () => {
+    const missing = [...CATALOG_CODES, ...STATUS_CODES].filter(
+      (code) => !i18n.exists(`errors.${code}`)
+    )
 
-    expect(errorTexts('it-IT')).toEqual(english)
-    for (const code of english) expect(code).toBe(kebabCode(code))
-  })
-
-  it('cover every code the core can answer the UI and every status fallback', () => {
-    expect(errorTexts('en-US')).toEqual(expect.arrayContaining([...CATALOG_CODES, ...STATUS_CODES]))
+    expect(missing).toEqual([])
   })
 
   it('fall back to the text of the status, then to the generic one', () => {
@@ -176,7 +131,7 @@ describe('error texts', () => {
     ])
     expect(errorMessage(coreError(504, 'yq-timeout'))).toEqual(['errors.gateway-timeout'])
     expect(errorMessage(coreError(403, 'invalid-origin'))).toEqual(['errors.forbidden'])
-    expect(errorMessage(coreError(418, 'teapot'))).toEqual(['errors.bad-request'])
+    expect(errorMessage(coreError(418, 'teapot'))).toEqual(['errors.unknown-error'])
     expect(errorMessage(new Error('No active company'))).toEqual(['errors.unknown-error'])
   })
 })

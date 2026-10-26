@@ -35,7 +35,6 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
 
-  // Every variable of the environment, without prefixes
   define: {
     __ENV__: JSON.stringify(env),
   },

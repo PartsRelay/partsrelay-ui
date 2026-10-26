@@ -6,7 +6,6 @@ import { lookupKey, lookupsListKey } from '@/modules/lookups/core/lookups.query'
 
 vi.mock('@/core/http/client', () => ({ http: vi.fn() }))
 
-// A Transmit client that records what the app asks of it
 function fakeLive() {
   const handlers = new Set<(message: unknown) => void>()
   const listeners = new Map<string, () => void>()

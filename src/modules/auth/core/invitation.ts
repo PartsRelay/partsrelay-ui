@@ -81,7 +81,6 @@ function joinable(
     return { state: 'unavailable', reason: message('invitation.unavailable.company-not-empty') }
   }
 
-  // A company never set up has nothing to lose
   return { state: 'ready', details: details(invitation), confirm: company.data.setup === 'done' }
 }
 

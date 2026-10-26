@@ -11,10 +11,8 @@ export type ContactListParams = PaginationParams & { status?: ContactStatus[] }
 
 export type ContactsPage = GetApiV1WorkspaceContacts200
 
-// Every list, whatever its filters
 export const contactsKey = getGetApiV1WorkspaceContactsQueryKey()
 
-// Orval leaves the filters out, the list key adds them
 export function contactsListKey(params: ContactListParams) {
   return [...contactsKey, params] as const
 }
@@ -34,16 +32,13 @@ function sameStatus(a: ContactListParams, b: ContactListParams) {
 export function contactsQuery(params: ContactListParams) {
   return {
     queryKey: contactsListKey(params),
-    // The OpenAPI omits the filters, axios sends them as status[]
     queryFn: ({ signal }: QueryFunctionContext) =>
       getApiV1WorkspaceContacts({ params: withPerPage(params) }, signal),
-    // Keep the previous page only within the same tab
     placeholderData: (previous?: ContactsPage, query?: Query<ContactsPage>) => {
       const before = query && listParamsOf(query.queryKey)
 
       return before && sameStatus(before, params) ? previous : undefined
     },
-    // The directory shows load and refresh errors inline
     meta: { silent: true },
   }
 }

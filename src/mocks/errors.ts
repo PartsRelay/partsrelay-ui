@@ -5,7 +5,7 @@ export function fail(status: number, code: string, message: string, fields?: Fie
   throw HttpResponse.json({ code, status, message, ...(fields && { fields }) }, { status })
 }
 
-export function invalid(fields: FieldError[]): never {
+function invalid(fields: FieldError[]): never {
   return fail(422, 'validation-error', 'The request failed validation', fields)
 }
 

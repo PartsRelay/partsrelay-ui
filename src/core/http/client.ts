@@ -11,7 +11,6 @@ const instance = axios.create({
   withCredentials: true,
 })
 
-// The core picks the language of the catalog data and of the emails from it
 instance.interceptors.request.use((config) => {
   config.headers.set('Accept-Language', i18n.language)
   return config

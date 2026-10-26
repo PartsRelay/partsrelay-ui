@@ -158,7 +158,6 @@ test.describe('as the owner', () => {
 
 test.describe('as an admin', () => {
   test.beforeEach(async ({ page }) => {
-    // The mocks read who is signed in from localStorage
     await page.addInitScript(() => localStorage.setItem('mock.user', 'admin'))
     await page.goto('/workspace')
     await expect(page.getByRole('heading', { level: 1, name: 'Workspace' })).toBeVisible()

@@ -13,7 +13,6 @@ const { getSession } = vi.hoisted(() => ({ getSession: vi.fn() }))
 
 vi.mock('@/modules/auth/core/auth.client', () => ({ authClient: { getSession } }))
 
-// What the Better Auth client throws
 const authError = (status: number, code: string) => ({
   status,
   error: { code, status, message: 'Failed' },

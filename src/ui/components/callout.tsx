@@ -2,7 +2,7 @@ import { CircleAlertIcon, InfoIcon, type LucideIcon, TriangleAlertIcon } from 'l
 import type { ComponentProps, ReactNode } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/ui/components/ui/alert'
 
-export type CalloutTone = 'info' | 'warning' | 'danger' | 'neutral'
+type CalloutTone = 'info' | 'warning' | 'danger' | 'neutral'
 
 const icons: Record<CalloutTone, LucideIcon | null> = {
   info: InfoIcon,

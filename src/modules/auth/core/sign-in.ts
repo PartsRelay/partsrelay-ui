@@ -1,7 +1,5 @@
 import { z } from 'zod'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { redirectPath } from '@/modules/auth/core/redirect-path'
-import { redirectError } from '@/core/errors'
 import { message } from '@/core/message'
 
 const optionalString = z.string().optional().catch(undefined)
@@ -13,7 +11,6 @@ export const loginSearchSchema = signInErrorSearchSchema.extend({
   signedIn: z.boolean().optional().catch(undefined),
 })
 
-// Where the browser lands after signing in or failing
 export type SignInFlow = { back: string; failed: string; selectAccount: boolean }
 
 const LOGIN_ERRORS = new Map([
@@ -29,15 +26,6 @@ function absolute(path: string) {
   return new URL(path, window.location.origin).href
 }
 
-function loginPath(next: string, signedIn = false) {
-  const search = new URLSearchParams()
-  if (next !== '/') search.set('next', next)
-  if (signedIn) search.set('signedIn', 'true')
-  const query = search.toString()
-
-  return query ? `/login?${query}` : '/login'
-}
-
 export function googleSignIn({ back, failed, selectAccount }: SignInFlow) {
   return {
     provider: 'google',
@@ -47,7 +35,6 @@ export function googleSignIn({ back, failed, selectAccount }: SignInFlow) {
   } satisfies Parameters<typeof authClient.signIn.social>[0]
 }
 
-// The core decodes magic link URLs once more
 function encodedAgain(path: string) {
   return absolute(path).replaceAll('%', '%25')
 }
@@ -58,12 +45,6 @@ export function magicLinkSignIn({ back, failed }: SignInFlow, email: string) {
     callbackURL: encodedAgain(back),
     errorCallbackURL: encodedAgain(failed),
   } satisfies Parameters<typeof authClient.signIn.magicLink>[0]
-}
-
-export function loginFlow(next?: unknown): SignInFlow {
-  const target = redirectPath(next)
-
-  return { back: loginPath(target, true), failed: loginPath(target), selectAccount: false }
 }
 
 function withoutSignInError(href: string) {
@@ -83,5 +64,5 @@ export function invitationFlow(href: string): SignInFlow {
 export function loginError(error: string | undefined) {
   if (!error) return null
 
-  return message(LOGIN_ERRORS.get(redirectError(error).code) ?? 'login.errors.failed')
+  return message(LOGIN_ERRORS.get(error) ?? 'login.errors.failed')
 }

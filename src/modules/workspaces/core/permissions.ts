@@ -20,14 +20,12 @@ export function canManageRole(actor: Role, target: Role) {
 
 type Request = Parameters<(typeof roles)[Role]['authorize']>[0]
 
-// Better Auth access control, the same the core checks
 function can(role: Role, request: Request) {
   return roles[role].authorize(request).success
 }
 
 export function permissionsFor(role: Role): Permissions {
   return {
-    // Same rule as the contact policy of the core
     manageContacts: role !== 'viewer',
     viewWorkspace: can(role, { invitation: ['create'] }),
     viewCompany: can(role, { organization: ['update'] }),
@@ -35,7 +33,6 @@ export function permissionsFor(role: Role): Permissions {
     transferOwnership: can(role, { member: ['update'] }),
     updateCompany: can(role, { organization: ['update'] }),
     deleteCompany: can(role, { organization: ['delete'] }),
-    // The only owner cannot leave
     leaveCompany: role !== 'owner',
   }
 }

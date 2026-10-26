@@ -20,8 +20,7 @@ import {
 
 export type ContactChange = PatchApiV1WorkspaceContactsContactIdBody
 
-// Cache updates shown before the core answers
-export function withoutContact(page: ContactsPage, id: number): ContactsPage {
+function withoutContact(page: ContactsPage, id: number): ContactsPage {
   if (!page.data.some((item) => item.id === id)) return page
 
   return {
@@ -30,8 +29,7 @@ export function withoutContact(page: ContactsPage, id: number): ContactsPage {
   }
 }
 
-// A list filtering out the new status drops the contact
-export function withContactChange(
+function withContactChange(
   page: ContactsPage,
   key: QueryKey,
   id: number,

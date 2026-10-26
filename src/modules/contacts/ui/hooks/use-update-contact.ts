@@ -10,7 +10,6 @@ import { reportError } from '@/query-client'
 
 type Update = { contact: ContactObject; change: ContactChange }
 
-// Notifies even when the row leaves the list first
 export function useUpdateContact() {
   const client = useQueryClient()
 

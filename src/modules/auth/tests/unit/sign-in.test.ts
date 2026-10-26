@@ -3,54 +3,21 @@ import {
   googleSignIn,
   invitationFlow,
   loginError,
-  loginFlow,
   loginSearchSchema,
   magicLinkSignIn,
 } from '@/modules/auth/core/sign-in'
 
-// Used for types only, the real client needs a browser
 vi.mock('@/modules/auth/core/auth.client', () => ({ authClient: {} }))
 
-// The helpers build absolute URLs on the app origin
 beforeEach(() => {
   vi.stubGlobal('window', { location: new URL('http://localhost:5173/workspace') })
 })
 
-describe('loginFlow', () => {
-  it('comes back to the login page, which sends home', () => {
-    expect(loginFlow()).toEqual({
-      back: '/login?signedIn=true',
-      failed: '/login',
-      selectAccount: false,
-    })
-  })
-
-  it('keeps the page asked for before signing in', () => {
-    expect(loginFlow('/company')).toEqual({
-      back: '/login?next=%2Fcompany&signedIn=true',
-      failed: '/login?next=%2Fcompany',
-      selectAccount: false,
-    })
-  })
-
-  it('drops a next page outside the app', () => {
-    expect(loginFlow('//evil.example')).toEqual(loginFlow())
-  })
-
-  it('keeps the page asked for on browsers without URLSearchParams.size', () => {
-    const size = vi
-      .spyOn(URLSearchParams.prototype, 'size', 'get')
-      .mockReturnValue(undefined as never)
-    const flow = loginFlow('/company')
-    size.mockRestore()
-
-    expect(flow).toEqual({
-      back: '/login?next=%2Fcompany&signedIn=true',
-      failed: '/login?next=%2Fcompany',
-      selectAccount: false,
-    })
-  })
-})
+const loginFlow = {
+  back: '/login?next=%2Fcompany&signedIn=true',
+  failed: '/login?next=%2Fcompany',
+  selectAccount: false,
+}
 
 describe('invitationFlow', () => {
   it('returns to the invitation without the previous sign in error', () => {
@@ -66,7 +33,7 @@ describe('invitationFlow', () => {
 
 describe('googleSignIn', () => {
   it('sends absolute callback URLs', () => {
-    expect(googleSignIn(loginFlow('/company'))).toEqual({
+    expect(googleSignIn(loginFlow)).toEqual({
       provider: 'google',
       callbackURL: 'http://localhost:5173/login?next=%2Fcompany&signedIn=true',
       errorCallbackURL: 'http://localhost:5173/login?next=%2Fcompany',
@@ -83,7 +50,7 @@ describe('googleSignIn', () => {
 
 describe('magicLinkSignIn', () => {
   it('encodes the callback URLs once more for the core', () => {
-    expect(magicLinkSignIn(loginFlow('/company'), 'mark.reed@redwoodparts.com')).toEqual({
+    expect(magicLinkSignIn(loginFlow, 'mark.reed@redwoodparts.com')).toEqual({
       email: 'mark.reed@redwoodparts.com',
       callbackURL: 'http://localhost:5173/login?next=%252Fcompany&signedIn=true',
       errorCallbackURL: 'http://localhost:5173/login?next=%252Fcompany',
@@ -105,7 +72,6 @@ describe('loginError', () => {
     ['email-not-verified', 'errors.email-not-verified'],
     ['too-many-requests', 'errors.too-many-requests'],
     ['state-mismatch', 'login.errors.failed'],
-    ['access_denied', 'login.errors.cancelled'],
   ])('explains %s', (error, key) => {
     expect(loginError(error)).toEqual([key])
   })

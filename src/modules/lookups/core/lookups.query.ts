@@ -21,17 +21,15 @@ export type LookupListParams = PaginationParams & {
 
 export type LookupsPage = GetApiV1WorkspaceLookups200
 
-export type LookupResponse = GetApiV1LookupsLookupId200
+type LookupResponse = GetApiV1LookupsLookupId200
 
-// Every list, whatever its filters
 export const lookupsKey = getGetApiV1WorkspaceLookupsQueryKey()
 
-// Orval leaves the filters out, the list key adds them
 export function lookupsListKey(params: LookupListParams) {
   return [...lookupsKey, params] as const
 }
 
-export function listParamsOf(key: readonly unknown[]) {
+function listParamsOf(key: readonly unknown[]) {
   return key[1] as LookupListParams | undefined
 }
 
@@ -50,10 +48,8 @@ function lookupOf({ data }: LookupResponse) {
 export function lookupsQuery(params: LookupListParams) {
   return {
     queryKey: lookupsListKey(params),
-    // The OpenAPI omits the filters, axios sends them
     queryFn: ({ signal }: QueryFunctionContext) =>
       getApiV1WorkspaceLookups({ params: withPerPage(params) }, signal),
-    // Keep the previous page only for the same searcher
     placeholderData: (previous?: LookupsPage, query?: Query<LookupsPage>) => {
       const before = query && listParamsOf(query.queryKey)
 
@@ -68,9 +64,7 @@ export function lookupQuery(id: number) {
     queryKey: lookupKey(id),
     queryFn: ({ signal }: QueryFunctionContext) =>
       getApiV1LookupsLookupId(String(id), undefined, signal),
-    // The cache keeps the response, select unwraps the lookup
     select: lookupOf,
-    // The page shows its own error
     meta: { silent: true },
   }
 }

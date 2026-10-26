@@ -9,11 +9,9 @@ import { type Message, message } from '@/core/message'
 import { type LookupRow, lookupRow, textKey } from '@/modules/lookups/core/lookup-row'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
-// Done lookups without categories miss their details in the cache
 export type LookupState = Exclude<LookupObjectStatus, 'done'> | 'results' | 'unavailable'
 
-// The catalog has no prices yet, the core sends null
-export const NO_PRICE = '-'
+const NO_PRICE = '-'
 
 export type PartView = {
   code: string
@@ -83,7 +81,7 @@ function unitView(unit: CatalogUnit, key: string, locale: string): UnitView {
   }
 }
 
-export function categoryView(category: LookupCategory, locale: string): CategoryView {
+function categoryView(category: LookupCategory, locale: string): CategoryView {
   const units = category.units.map((unit, index) =>
     unitView(unit, `${category.id}:${index}`, locale)
   )

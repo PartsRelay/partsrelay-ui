@@ -18,7 +18,6 @@ export type ContactRow = {
 
 const TONES = { active: 'success', blocked: 'danger' } as const
 
-// WhatsApp ids are international numbers without the plus
 function phoneOf({ waId }: ContactObject) {
   const phone = `+${waId}`
 

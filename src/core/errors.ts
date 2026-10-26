@@ -1,39 +1,17 @@
 import { isAxiosError } from 'axios'
+import { kebabCase } from 'change-case'
+import { getReasonPhrase } from 'http-status-codes'
 import type { ErrorBody, FieldError } from '@/core/api/models'
 import { message } from '@/core/message'
-import { errors as texts } from '@/locales/en-US/errors.json'
+import { i18n } from '@/i18n'
 
 export type { ErrorBody, FieldError }
 
 export const NO_STATUS = 0
 
-const STATUS_MESSAGES: Record<number, string> = {
-  400: 'Bad Request',
-  401: 'Unauthorized',
-  403: 'Forbidden',
-  404: 'Not Found',
-  422: 'Unprocessable Entity',
-  429: 'Too Many Requests',
-  500: 'Internal Server Error',
-  502: 'Bad Gateway',
-  503: 'Service Unavailable',
-  504: 'Gateway Timeout',
-}
-
 const SESSION_CODES = ['unauthorized', 'unauthorized-access']
 
 const GONE_CODES = ['row-not-found', 'member-not-found', 'invitation-not-found']
-
-export function kebabCode(code: string) {
-  return code
-    .replace(/^E_/, '')
-    .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-    .replace(/[^a-zA-Z\d]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .toLowerCase()
-}
-
-const GENERIC_CODES = ['unknown-error', ...Object.values(STATUS_MESSAGES).map(kebabCode)]
 
 const NETWORK_ERROR: ErrorBody = {
   code: 'network-error',
@@ -41,19 +19,18 @@ const NETWORK_ERROR: ErrorBody = {
   message: 'Network Error',
 }
 
-function statusMessage(status: number) {
-  if (status >= 500) return STATUS_MESSAGES[status] ?? STATUS_MESSAGES[500]!
-  if (status >= 400) return STATUS_MESSAGES[status] ?? STATUS_MESSAGES[400]!
-
-  return 'Unknown Error'
-}
-
-function statusCode(status: number) {
-  return kebabCode(statusMessage(status))
-}
-
 function statusBody(status: number): ErrorBody {
-  return { code: statusCode(status), status, message: statusMessage(status) }
+  try {
+    const reason = getReasonPhrase(status)
+
+    return { code: kebabCase(reason), status, message: reason }
+  } catch {
+    return { code: 'unknown-error', status, message: 'Unknown Error' }
+  }
+}
+
+export function statusCode(status: number) {
+  return statusBody(status).code
 }
 
 function nonEmpty(value: unknown) {
@@ -63,11 +40,11 @@ function nonEmpty(value: unknown) {
 function fromResponse(status: number, data: unknown): ErrorBody {
   const body: Partial<Record<keyof ErrorBody, unknown>> =
     typeof data === 'object' && data !== null ? data : {}
-  const code = nonEmpty(body.code)
+  const fallback = statusBody(status)
   const error = {
-    code: code ? kebabCode(code) : statusCode(status),
+    code: nonEmpty(body.code) ?? fallback.code,
     status,
-    message: nonEmpty(body.message) ?? statusMessage(status),
+    message: nonEmpty(body.message) ?? fallback.message,
   }
 
   return Array.isArray(body.fields) && body.fields.length > 0
@@ -96,21 +73,6 @@ export function toErrorBody(error: unknown): ErrorBody {
   return statusBody(NO_STATUS)
 }
 
-export function redirectError(code: string): ErrorBody {
-  const kebab = kebabCode(code)
-  const words = kebab.replaceAll('-', ' ')
-
-  return {
-    code: kebab,
-    status: NO_STATUS,
-    message: `${words.charAt(0).toUpperCase()}${words.slice(1)}`,
-  }
-}
-
-export function isGenericCode(code: string) {
-  return GENERIC_CODES.includes(code)
-}
-
 export function errorStatus(error: unknown) {
   return toErrorBody(error).status
 }
@@ -135,14 +97,11 @@ export function fieldErrors<Field extends string>(error: unknown, keys: Record<F
     : null
 }
 
-function hasText(code: string) {
-  return Object.hasOwn(texts, code)
-}
-
 export function errorKey(error: unknown) {
   const { code, status } = toErrorBody(error)
+  const keys = [code, statusCode(status)].map((item) => `errors.${item}`)
 
-  return `errors.${[code, statusCode(status)].find(hasText) ?? 'unknown-error'}`
+  return keys.find((key) => i18n.exists(key)) ?? 'errors.unknown-error'
 }
 
 export function errorMessage(error: unknown) {

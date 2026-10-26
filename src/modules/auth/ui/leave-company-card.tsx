@@ -66,7 +66,6 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
           void run(
             async () => {
               await authClient.organization.leave({ organizationId: workspace.id })
-              // The core deletes the account, so this ends the session
               endSession(client)
               await navigate({ to: '/login' })
             },

@@ -5,7 +5,6 @@ import type { Me } from '@/modules/workspaces/core/workspace'
 
 export type Invitee = { email: string; role: Role }
 
-// Errors about the address, shown under the email field
 const INVITEE_CODES = [
   'invalid-email',
   'user-is-already-a-member-of-this-organization',

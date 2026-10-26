@@ -3,7 +3,7 @@ import type { LookupObject, LookupObjectStatus, Searcher } from '@/core/api/mode
 import { type Message, message } from '@/core/message'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
-export type LookupTone = 'success' | 'warning' | 'danger'
+type LookupTone = 'success' | 'warning' | 'danger'
 
 export type LookupRow = {
   lookup: LookupObject
@@ -25,12 +25,10 @@ const TONES: Record<LookupObjectStatus, LookupTone> = {
   failed: 'danger',
 }
 
-// Locale keys are kebab case, core values are not
 export function textKey(value: string) {
   return value.replaceAll('_', '-')
 }
 
-// Deleted members and contacts leave the searcher empty
 export function searcherName(searcher: Searcher | null, workspace: Workspace) {
   if (!searcher) return message('lookups.searcher.gone')
   if (searcher.type === 'contact') {

@@ -1,9 +1,9 @@
 import type { QueryClient } from '@tanstack/query-core'
-import { getRouteApi, redirect } from '@tanstack/react-router'
+import { getRouteApi, redirect, useRouter } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import type { z } from 'zod'
 import { redirectSignedIn } from '@/modules/auth/core/session.query'
-import { loginError, loginFlow, type loginSearchSchema } from '@/modules/auth/core/sign-in'
+import { loginError, type loginSearchSchema } from '@/modules/auth/core/sign-in'
 import { AuthTitle } from '@/modules/auth/ui/auth-title'
 import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
 import { Callout } from '@/ui/components/callout'
@@ -28,8 +28,11 @@ export async function redirectIfSignedIn({ context, search }: LoginGuard) {
 
 export function LoginPage() {
   const { t } = useTranslation()
+  const router = useRouter()
   const { next, error } = route.useSearch()
   const failure = loginError(error)
+  const login = (signedIn?: true) =>
+    router.buildLocation({ to: '/login', search: { next, signedIn } }).href
 
   return (
     <Card>
@@ -39,7 +42,7 @@ export function LoginPage() {
       </CardHeader>
       <CardContent className="grid gap-6">
         {failure && <Callout tone="danger">{t(...failure)}</Callout>}
-        <SignInOptions flow={loginFlow(next)} />
+        <SignInOptions flow={{ back: login(true), failed: login(), selectAccount: false }} />
       </CardContent>
     </Card>
   )

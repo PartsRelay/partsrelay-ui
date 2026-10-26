@@ -38,7 +38,6 @@ export function DeleteCompany({ workspace }: { workspace: Workspace }) {
           void run(
             async () => {
               await authClient.organization.delete({ organizationId: workspace.id })
-              // The core deletes every account too
               endSession(client)
               await navigate({ to: '/login' })
             },

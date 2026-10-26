@@ -6,12 +6,11 @@ import { lookupsKey } from '@/modules/lookups/core/lookups.query'
 
 export type LiveClient = Pick<Transmit, 'subscription' | 'on' | 'off'>
 
-// The core sends { changed: true } here on every change
 export const lookupsChannel = (workspaceId: string) => `workspaces/${workspaceId}/lookups`
 
 const [lookupPrefix] = getGetApiV1LookupsLookupIdQueryKey('')
 
-export function refreshLookups(client: QueryClient) {
+function refreshLookups(client: QueryClient) {
   return Promise.all([
     client.invalidateQueries({ queryKey: lookupsKey }),
     client.invalidateQueries({ queryKey: contactsKey }),
@@ -21,7 +20,6 @@ export function refreshLookups(client: QueryClient) {
   ])
 }
 
-// Changes sent while the stream was down are caught up on reconnect
 export function watchLookups(client: QueryClient, live: LiveClient, workspaceId: string) {
   const subscription = live.subscription(lookupsChannel(workspaceId))
   const refresh = () => void refreshLookups(client)

@@ -12,7 +12,6 @@ type RoleFieldProps = {
   onValueChange: (role: Role) => void
 }
 
-// The title names the choice once, the hint describes it
 export function RoleField({ label, hint, roles, value, onValueChange }: RoleFieldProps) {
   const { t } = useTranslation()
   const labelId = useId()

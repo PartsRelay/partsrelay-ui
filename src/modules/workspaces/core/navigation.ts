@@ -2,15 +2,15 @@ import { message } from '@/core/message'
 import type { Permissions } from '@/modules/workspaces/core/permissions'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
-export const sections = ['searches', 'contacts', 'workspace', 'company'] as const
+const sections = ['searches', 'contacts', 'workspace', 'company'] as const
 
-export const pages = [...sections, 'profile'] as const
+const pages = [...sections, 'profile'] as const
 
 export type Section = (typeof sections)[number]
 
 export type Page = (typeof pages)[number]
 
-export const pagePaths = {
+const pagePaths = {
   searches: '/searches',
   contacts: '/contacts',
   workspace: '/workspace',
