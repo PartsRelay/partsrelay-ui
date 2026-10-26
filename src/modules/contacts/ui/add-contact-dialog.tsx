@@ -1,7 +1,7 @@
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { requiredText, useAppForm } from '@/form'
+import { limitedText, requiredText, useAppForm } from '@/form'
 import { fieldErrors } from '@/core/errors'
 import { contactFieldErrors, emptyContact, newContact } from '@/modules/contacts/core/contact-form'
 import { useAddContact } from '@/modules/contacts/ui/hooks/use-add-contact'
@@ -77,7 +77,7 @@ function AddContactForm({ onDone }: { onDone: () => void }) {
               />
             )}
           </form.AppField>
-          <form.AppField name="name">
+          <form.AppField name="name" validators={{ onSubmit: limitedText }}>
             {(field) => (
               <field.InputField
                 label={t('contacts.add.name')}

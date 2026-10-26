@@ -66,6 +66,10 @@ test('the company name cannot be empty', async ({ page }) => {
   await expect(page.getByRole('link', { name: /Redwood Parts Ltd/ })).toBeVisible()
 })
 
+test('the company name is capped at the longest string the core accepts', async ({ page }) => {
+  await expect(page.getByRole('textbox', { name: 'Name' })).toHaveAttribute('maxlength', '255')
+})
+
 test('changing the WhatsApp language keeps the app language', async ({ page }) => {
   const language = page.getByRole('combobox', { name: 'Reply language' })
   await expect(language).toHaveText('English')

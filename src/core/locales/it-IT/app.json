@@ -36,5 +36,8 @@
   "languages": {
     "en-US": "Inglese",
     "it-IT": "Italiano"
+  },
+  "form": {
+    "too-long": "Usa al massimo {{maxLength}} caratteri."
   }
 }

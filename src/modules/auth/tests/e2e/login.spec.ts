@@ -77,6 +77,12 @@ test('a failed Google sign in explains the codes it knows', async ({ page }) => 
   await expect(page.getByText('Sign in failed. Try again.')).toBeVisible()
 })
 
+test('the email of the magic link is capped at the longest string the core accepts', async ({
+  page,
+}) => {
+  await expect(page.getByRole('textbox', { name: 'Email' })).toHaveAttribute('maxlength', '255')
+})
+
 test('Google sign in comes back signed in', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue with Google' }).click()
 
