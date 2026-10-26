@@ -7,7 +7,13 @@ export function useSession() {
   const { data, isPending } = useQuery(sessionQuery)
   const { pending: signingOut, signOut } = useSignOut()
 
-  return { email: data?.user.email ?? null, isPending, signingOut, signOut }
+  return {
+    email: data?.user.email ?? null,
+    name: data?.user.name ?? null,
+    isPending,
+    signingOut,
+    signOut,
+  }
 }
 
 export type SessionState = ReturnType<typeof useSession>
