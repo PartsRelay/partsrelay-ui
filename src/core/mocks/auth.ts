@@ -14,7 +14,7 @@ import {
   type Person,
   type Role,
 } from '@/core/mocks/data'
-import type { FieldError } from '@/core/errors'
+import { capStrings, fail } from '@/core/mocks/errors'
 
 type World = {
   signedIn: boolean
@@ -50,13 +50,8 @@ function world<T>(change: (state: World) => T): T {
   return result
 }
 
-// Errors in the shape the core sends
-export function fail(status: number, code: string, message = code, fields?: FieldError[]): never {
-  throw HttpResponse.json({ code, status, message, ...(fields && { fields }) }, { status })
-}
-
 function signedIn(state: World) {
-  if (!state.signedIn) fail(401, 'UNAUTHORIZED')
+  if (!state.signedIn) fail(401, 'unauthorized', 'Unauthorized')
 
   return state
 }
@@ -71,14 +66,16 @@ export function signedInMember() {
   )
 }
 
-function ownerOnly(state: World, code: string) {
-  if (myRole(state) !== 'owner') fail(403, code)
+function ownerOnly(state: World, code: string, message: string) {
+  if (myRole(state) !== 'owner') fail(403, code, message)
 }
 
 const MANAGES: Record<string, string[]> = { owner: ['admin', 'viewer'], admin: ['viewer'] }
 
 function managed(state: World, role: string | undefined) {
-  if (!MANAGES[myRole(state) ?? '']?.includes(role ?? '')) fail(403, 'WORKSPACE_ROLE_NOT_MANAGED')
+  if (!MANAGES[myRole(state) ?? '']?.includes(role ?? '')) {
+    fail(403, 'workspace-role-not-managed', 'Your role cannot manage members with this role')
+  }
 }
 
 const live = (invitation: Invitation) =>
@@ -113,8 +110,11 @@ const body = <T>(request: Request) => request.json() as Promise<T>
 
 type Resolve = (info: { request: Request }) => unknown
 
-const respond = (resolve: Resolve) => async (info: { request: Request }) =>
-  HttpResponse.json((await resolve(info)) as JsonBodyType)
+const respond = (resolve: Resolve) => async (info: { request: Request }) => {
+  await capStrings(info.request)
+
+  return HttpResponse.json((await resolve(info)) as JsonBodyType)
+}
 
 const get = (path: string, resolve: Resolve) => http.get(`*/api/auth${path}`, respond(resolve))
 
@@ -184,9 +184,13 @@ export const authMocks = [
 
     return world((state) => {
       const { company } = signedIn(state)
-      ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION')
+      ownerOnly(
+        state,
+        'you-are-not-allowed-to-update-this-organization',
+        'You are not allowed to update this organization'
+      )
       if (data.locale != null && data.locale !== 'en-US' && data.locale !== 'it-IT') {
-        fail(400, 'LOCALE_NOT_SUPPORTED')
+        fail(400, 'locale-not-supported', 'The locale is not supported')
       }
 
       if (data.name !== undefined) company.name = data.name
@@ -202,11 +206,21 @@ export const authMocks = [
 
     return world((state) => {
       const { company } = signedIn(state)
-      ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER')
       const target = company.members.find((item) => item.id === memberId)
-      if (!target) fail(400, 'MEMBER_NOT_FOUND')
+      if (!target) fail(400, 'member-not-found', 'Member not found')
+      ownerOnly(
+        state,
+        'you-are-not-allowed-to-update-this-member',
+        'You are not allowed to update this member'
+      )
       // The core allows only the ownership transfer
-      if (role !== 'owner') fail(403, 'ROLE_CHANGE_NOT_ALLOWED')
+      if (role !== 'owner') {
+        fail(
+          403,
+          'role-change-not-allowed',
+          'Roles are fixed, only the ownership can be transferred'
+        )
+      }
 
       // The core hands the old owner admin rights
       for (const item of company.members) if (item.role === 'owner') item.role = 'admin'
@@ -222,8 +236,21 @@ export const authMocks = [
     return world((state) => {
       const { company } = signedIn(state)
       const target = company.members.find((item) => item.id === memberIdOrEmail)
-      if (!target) fail(400, 'MEMBER_NOT_FOUND')
-      if (myRole(state) === 'viewer') fail(401, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER')
+      if (!target) fail(400, 'member-not-found', 'Member not found')
+      if (target.role === 'owner') {
+        fail(
+          400,
+          'you-cannot-leave-the-organization-as-the-only-owner',
+          'You cannot leave the organization as the only owner'
+        )
+      }
+      if (myRole(state) === 'viewer') {
+        fail(
+          401,
+          'you-are-not-allowed-to-delete-this-member',
+          'You are not allowed to delete this member'
+        )
+      }
       managed(state, target.role)
 
       company.members = company.members.filter((item) => item !== target)
@@ -248,13 +275,20 @@ export const authMocks = [
 
     return world((state) => {
       const { company, me } = signedIn(state)
-      if (!z.email().safeParse(email).success) fail(400, 'INVALID_EMAIL')
+      if (!z.email().safeParse(email).success) fail(400, 'invalid-email', 'Invalid email')
       if (myRole(state) === 'viewer') {
-        fail(403, 'YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION')
+        fail(
+          403,
+          'you-are-not-allowed-to-invite-users-to-this-organization',
+          'You are not allowed to invite users to this organization'
+        )
       }
-      managed(state, role)
       if (company.members.some(({ user }) => user.email.toLowerCase() === email)) {
-        fail(400, 'USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION')
+        fail(
+          400,
+          'user-is-already-a-member-of-this-organization',
+          'User is already a member of this organization'
+        )
       }
 
       // Like the core, an expired invitation no longer counts
@@ -262,7 +296,14 @@ export const authMocks = [
       const pending = company.invitations.find(
         (item) => item.email.toLowerCase() === email && live(item)
       )
-      if (pending && !resend) fail(400, 'USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION')
+      if (pending && !resend) {
+        fail(
+          400,
+          'user-is-already-invited-to-this-organization',
+          'User is already invited to this organization'
+        )
+      }
+      managed(state, role)
       if (pending) return Object.assign(pending, { expiresAt })
 
       const invitation: Invitation = {
@@ -286,7 +327,14 @@ export const authMocks = [
     return world((state) => {
       const { company } = signedIn(state)
       const invitation = company.invitations.find((item) => item.id === invitationId)
-      if (!invitation) fail(400, 'INVITATION_NOT_FOUND')
+      if (!invitation) fail(400, 'invitation-not-found', 'Invitation not found')
+      if (myRole(state) === 'viewer') {
+        fail(
+          403,
+          'you-are-not-allowed-to-cancel-this-invitation',
+          'You are not allowed to cancel this invitation'
+        )
+      }
       managed(state, invitation.role)
       invitation.status = 'canceled'
 
@@ -296,7 +344,11 @@ export const authMocks = [
   post('/organization/delete', () =>
     world((state) => {
       const { company } = signedIn(state)
-      ownerOnly(state, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION')
+      ownerOnly(
+        state,
+        'you-are-not-allowed-to-delete-this-organization',
+        'You are not allowed to delete this organization'
+      )
       const { members: _members, invitations: _invitations, ...organization } = company
       endAccount(state)
 
@@ -307,8 +359,14 @@ export const authMocks = [
     world((state) => {
       const { company, me } = signedIn(state)
       const target = company.members.find(({ userId }) => userId === me.id)
-      if (!target) fail(400, 'MEMBER_NOT_FOUND')
-      if (target.role === 'owner') fail(400, 'YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER')
+      if (!target) fail(400, 'member-not-found', 'Member not found')
+      if (target.role === 'owner') {
+        fail(
+          400,
+          'you-cannot-leave-the-organization-as-the-only-owner',
+          'You cannot leave the organization as the only owner'
+        )
+      }
       const { user: _user, ...member } = target
       endAccount(state)
 
@@ -327,9 +385,13 @@ export const authMocks = [
       }
 
       if (company.invitations.some((item) => item.id === id && live(item))) {
-        fail(403, 'YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION')
+        fail(
+          403,
+          'you-are-not-the-recipient-of-the-invitation',
+          'You are not the recipient of the invitation'
+        )
       }
-      fail(400, 'BAD_REQUEST', 'Invitation not found!')
+      fail(400, 'bad-request', 'Invitation not found!')
     })
   }),
   post('/organization/accept-invitation', async ({ request }) => {
@@ -337,8 +399,14 @@ export const authMocks = [
 
     return world((state) => {
       const invitation = offers(signedIn(state)).find((item) => item.id === invitationId)
-      if (!invitation) fail(400, 'INVITATION_NOT_FOUND')
-      if (state.company.members.length > 1) fail(403, 'WORKSPACE_NOT_RELEASABLE')
+      if (!invitation) fail(400, 'invitation-not-found', 'Invitation not found')
+      if (state.company.members.length > 1) {
+        fail(
+          403,
+          'workspace-not-releasable',
+          'Only a personal company without other members can be left to join another one'
+        )
+      }
 
       state.offered = false
       state.company = ironworksGarage(state.me, invitation.role)
