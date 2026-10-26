@@ -11,8 +11,9 @@ import {
   type Searcher,
   SearcherType,
 } from '@/core/api/models'
-import { fail, invalid, member } from '@/core/mocks/auth'
-import { page, people, type Person } from '@/core/mocks/data'
+import { member } from '@/core/mocks/auth'
+import { checkedPage, page, people, type Person } from '@/core/mocks/data'
+import { capStrings, fail, rejected } from '@/core/mocks/errors'
 import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
 
 type Text = [en: string, it: string]
@@ -39,6 +40,7 @@ type Archive = { lookups: Stored[]; nextId: number }
 
 const PLATE = /^[A-Z0-9]{4,8}$/
 const MAX_NODES = 25
+const MAX_NODE_ID_LENGTH = 128
 const STALE_MINUTES = 15
 const FAILING_PLATE = 'ER500ER'
 
@@ -259,38 +261,56 @@ function lookupOf(stored: Stored, language: Language): LookupObject {
 }
 
 function checkedPlate(plate: unknown) {
-  if (plate === undefined || plate === null || plate === '') return invalid('plate', 'required')
-  if (typeof plate !== 'string') return invalid('plate', 'string')
+  if (plate === undefined || plate === null || plate === '') return rejected('plate', 'required')
+  if (typeof plate !== 'string') return rejected('plate', 'string')
 
   const compact = plate
     .trim()
     .toUpperCase()
     .replace(/[\s.-]/g, '')
 
-  return PLATE.test(compact) ? compact : invalid('plate', 'plate')
+  return PLATE.test(compact) ? compact : rejected('plate', 'plate')
 }
 
 function checkedQuery(query: unknown) {
   if (query === undefined || query === null || query === '') return null
-  if (typeof query !== 'string') return invalid('query', 'string')
+  if (typeof query !== 'string') return rejected('query', 'string')
 
   const trimmed = query.trim()
-  if (trimmed.length < 2) invalid('query', 'minLength')
-  if (trimmed.length > 200) invalid('query', 'maxLength')
+  if (trimmed.length < 2) rejected('query', 'minLength')
+  if (trimmed.length > 200) rejected('query', 'maxLength')
+
+  return trimmed
+}
+
+function checkedNodeId(id: unknown, index: number) {
+  if (typeof id !== 'string') return rejected(`nodeIds.${index}`, 'string')
+
+  const trimmed = id.trim()
+  if (trimmed.length < 1) rejected(`nodeIds.${index}`, 'minLength')
+  if (trimmed.length > MAX_NODE_ID_LENGTH) rejected(`nodeIds.${index}`, 'maxLength')
 
   return trimmed
 }
 
 function checkedNodeIds(nodeIds: unknown) {
-  if (nodeIds === undefined) return null
-  if (!Array.isArray(nodeIds) || !nodeIds.every((id) => typeof id === 'string' && id.trim())) {
-    return invalid('nodeIds', 'array')
-  }
-  if (nodeIds.length < 1) invalid('nodeIds', 'minLength')
-  if (nodeIds.length > MAX_NODES) invalid('nodeIds', 'maxLength')
-  if (new Set(nodeIds).size !== nodeIds.length) invalid('nodeIds', 'distinct')
+  if (nodeIds === undefined || nodeIds === null) return null
+  if (!Array.isArray(nodeIds)) return rejected('nodeIds', 'array')
+  if (nodeIds.length < 1) rejected('nodeIds', 'array.minLength')
+  if (nodeIds.length > MAX_NODES) rejected('nodeIds', 'array.maxLength')
+  if (new Set(nodeIds).size !== nodeIds.length) rejected('nodeIds', 'distinct')
 
-  return nodeIds.map((id: string) => id.trim())
+  return nodeIds.map(checkedNodeId)
+}
+
+function checkedSearcherId(query: URLSearchParams) {
+  if (!query.has('searcherId')) return null
+
+  const value = Number(query.get('searcherId'))
+  if (Number.isNaN(value)) rejected('searcherId', 'number')
+  if (value <= 0) rejected('searcherId', 'positive')
+
+  return value
 }
 
 function matching(query: string) {
@@ -317,20 +337,16 @@ const isSearcherType = (value: string): value is SearcherType =>
   Object.values<string>(SearcherType).includes(value)
 
 export const lookupMocks = [
-  getGetApiV1WorkspaceLookupsMockHandler(({ request }) => {
+  getGetApiV1WorkspaceLookupsMockHandler(async ({ request }) => {
+    await capStrings(request)
     const { company } = member()
     const query = new URL(request.url).searchParams
-    const currentPage = Number(query.get('page') ?? 1)
-    const perPage = Number(query.get('perPage') ?? DEFAULT_PER_PAGE)
+    const currentPage = checkedPage(query, 'page', 1)
+    const perPage = checkedPage(query, 'perPage', DEFAULT_PER_PAGE, MAX_PER_PAGE)
     const searcherType = query.get('searcherType')
-    const searcherId = query.has('searcherId') ? Number(query.get('searcherId')) : null
-    if (!(currentPage >= 1)) invalid('page', 'min')
-    if (!(perPage >= 1 && perPage <= MAX_PER_PAGE)) invalid('perPage', 'range')
-    if (searcherType !== null && !isSearcherType(searcherType)) invalid('searcherType', 'enum')
-    if (searcherId !== null && !(searcherId > 0)) invalid('searcherId', 'positive')
-    if (searcherId !== null && searcherType === null) {
-      invalid('searcherType', 'requiredIfExists')
-    }
+    if (searcherType !== null && !isSearcherType(searcherType)) rejected('searcherType', 'enum')
+    if (searcherType === null && query.has('searcherId')) rejected('searcherType', 'required')
+    const searcherId = checkedSearcherId(query)
 
     return archive((state) => {
       const lookups = state.lookups
@@ -343,7 +359,8 @@ export const lookupMocks = [
       return page(lookups, currentPage, perPage)
     })
   }),
-  getGetApiV1LookupsLookupIdMockHandler(({ request, params }) => {
+  getGetApiV1LookupsLookupIdMockHandler(async ({ request, params }) => {
+    await capStrings(request)
     const { company } = member()
 
     return archive((state) => {
@@ -351,17 +368,20 @@ export const lookupMocks = [
         (item) => item.company === company && item.id === Number(params.lookupId)
       )
 
-      return { data: lookupOf(found ?? fail(404, 'ROW_NOT_FOUND'), languageOf(request)) }
+      return {
+        data: lookupOf(found ?? fail(404, 'row-not-found', 'Row not found'), languageOf(request)),
+      }
     })
   }),
   getPostApiV1LookupsMockHandler(async ({ request }) => {
+    await capStrings(request)
     const { company, user: me } = member()
     const body = (await request.json()) as Partial<PostApiV1LookupsBody>
     const plate = checkedPlate(body.plate)
     const nodeIds = checkedNodeIds(body.nodeIds)
     const query = checkedQuery(body.query)
-    if (nodeIds === null && query === null) invalid('nodeIds', 'requiredIfMissing')
-    if (nodeIds !== null && query !== null) invalid('query', 'prohibitedWith')
+    if (nodeIds === null && query === null) rejected('nodeIds', 'required')
+    if (nodeIds !== null && query !== null) rejected('query', 'prohibitedWith')
 
     return archive((state) => {
       const running: Stored = {

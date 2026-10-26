@@ -28,45 +28,6 @@
   "notices": {
     "copy-failed": "Copy failed, select the text and copy it by hand."
   },
-  "errors": {
-    "unauthorized-access": "Your session has expired, sign in again.",
-    "authorization-failure": "You are not allowed to do this.",
-    "validation-error": "Some fields are not valid.",
-    "row-not-found": "The requested item does not exist.",
-    "route-not-found": "The requested resource does not exist.",
-    "internal-server-error": "Something went wrong, try again later.",
-    "network-error": "Cannot reach the server, check your connection.",
-    "too-many-requests": "Too many attempts. Wait a minute and try again.",
-    "unknown": "Something went wrong.",
-    "auth-google-failed": "Google sign in failed.",
-    "email-not-verified": "Your Google email is not verified, so it cannot be used to sign in.",
-    "invalid-token": "This sign-in link has expired or was already used. Ask for a new one.",
-    "failed-to-create-session": "We could not open your session. Try again in a moment.",
-    "invalid-email": "Enter a valid email address.",
-    "invitation-not-found": "This invitation has expired or was already used. Ask for a new one.",
-    "you-are-not-the-recipient-of-the-invitation": "This invitation is for another email address.",
-    "inviter-is-no-longer-a-member-of-the-organization": "The person who invited you is no longer in the company. Ask for a new invitation.",
-    "workspace-not-releasable": "You belong to a company with other members, so you cannot join another one.",
-    "workspace-role-not-managed": "You cannot manage this role.",
-    "workspace-owner": "The owner cannot delete the account: hand over the company or delete it.",
-    "locale-not-supported": "This language is not available.",
-    "role-change-not-allowed": "Roles cannot be changed, you can only transfer ownership.",
-    "organization-not-found": "This company no longer exists.",
-    "you-cannot-leave-the-organization-as-the-only-owner": "As the owner you cannot leave: hand over the company or delete it.",
-    "you-are-not-allowed-to-update-this-organization": "Only the owner can change the company.",
-    "you-are-not-allowed-to-delete-this-organization": "Only the owner can delete the company.",
-    "you-are-not-a-member-of-this-organization": "You are no longer a member of this company.",
-    "user-is-already-a-member-of-this-organization": "This person is already in the team.",
-    "user-is-already-invited-to-this-organization": "This person already has a pending invitation.",
-    "member-not-found": "This person is no longer in the team.",
-    "you-are-not-allowed-to-update-this-member": "Only the owner can transfer ownership.",
-    "you-are-not-allowed-to-delete-this-member": "You cannot remove this member.",
-    "you-are-not-allowed-to-invite-users-to-this-organization": "You cannot invite people to this company.",
-    "you-are-not-allowed-to-invite-user-with-this-role": "You cannot invite people with this role.",
-    "you-are-not-allowed-to-cancel-this-invitation": "You cannot revoke this invitation.",
-    "invitation-limit-reached": "Too many pending invitations. Revoke some before inviting more people.",
-    "organization-membership-limit-reached": "The company has reached its member limit."
-  },
   "common": {
     "close": "Close",
     "loading": "Loading",
@@ -75,5 +36,8 @@
   "languages": {
     "en-US": "English",
     "it-IT": "Italian"
+  },
+  "form": {
+    "too-long": "Use up to {{maxLength}} characters."
   }
 }

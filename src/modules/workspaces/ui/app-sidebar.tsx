@@ -12,6 +12,7 @@ import { navigation, pageAt, type Section } from '@/modules/workspaces/core/navi
 import { roleLabel } from '@/modules/workspaces/core/role'
 import { NavUser } from '@/modules/workspaces/ui/nav-user'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
+import { Logo } from '@/ui/components/logo'
 import {
   Sidebar,
   SidebarContent,
@@ -44,6 +45,7 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="offcanvas" role="navigation" aria-label={t('nav.menu')} {...props}>
       <SidebarHeader>
+        <Logo reversed className="m-2" />
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -70,7 +72,11 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
 
                   return (
                     <SidebarMenuItem key={item.page}>
-                      <SidebarMenuButton asChild isActive={item.active}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={item.active}
+                        className="data-active:bg-sidebar-primary data-active:text-sidebar-primary-foreground"
+                      >
                         <Link
                           to={item.path}
                           aria-current={item.active ? 'page' : undefined}

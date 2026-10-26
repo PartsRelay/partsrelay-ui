@@ -6,7 +6,7 @@ import { authClient } from '@/modules/auth/core/auth.client'
 import { emailError, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
 import { magicLinkSignIn, type SignInFlow } from '@/modules/auth/core/sign-in'
 import { useClearSignInError } from '@/modules/auth/ui/hooks/use-clear-sign-in-error'
-import { errorCode, errorKey } from '@/core/errors'
+import { errorKey } from '@/core/errors'
 import { useAppForm } from '@/form'
 import { Callout } from '@/ui/components/callout'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
@@ -41,7 +41,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
     const result = await run(() => authClient.signIn.magicLink(magicLinkSignIn(flow, address)), {
       silent: true,
     })
-    if (!result.ok) return errorKey(errorCode(result.error))
+    if (!result.ok) return errorKey(result.error)
 
     const at = Date.now()
     setNow(at)

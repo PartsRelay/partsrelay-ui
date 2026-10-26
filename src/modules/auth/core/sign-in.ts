@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { redirectPath } from '@/modules/auth/core/redirect-path'
+import { redirectError } from '@/core/errors'
 import { message } from '@/core/message'
 
 const optionalString = z.string().optional().catch(undefined)
@@ -16,10 +17,11 @@ export const loginSearchSchema = signInErrorSearchSchema.extend({
 export type SignInFlow = { back: string; failed: string; selectAccount: boolean }
 
 const LOGIN_ERRORS = new Map([
-  ['access_denied', 'login.errors.cancelled'],
-  ['INVALID_TOKEN', 'errors.invalid-token'],
-  ['failed_to_create_session', 'errors.failed-to-create-session'],
-  ['email_not_verified', 'errors.email-not-verified'],
+  ['access-denied', 'login.errors.cancelled'],
+  ['invalid-token', 'errors.invalid-token'],
+  ['failed-to-create-session', 'errors.failed-to-create-session'],
+  ['unable-to-create-session', 'errors.failed-to-create-session'],
+  ['email-not-verified', 'errors.email-not-verified'],
 ])
 
 function absolute(path: string) {
@@ -80,5 +82,5 @@ export function invitationFlow(href: string): SignInFlow {
 export function loginError(error: string | undefined) {
   if (!error) return null
 
-  return message(LOGIN_ERRORS.get(error) ?? 'login.errors.failed')
+  return message(LOGIN_ERRORS.get(redirectError(error).code) ?? 'login.errors.failed')
 }

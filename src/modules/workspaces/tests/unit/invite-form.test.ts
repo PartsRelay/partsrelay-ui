@@ -19,7 +19,10 @@ const meAs = (role: Role): Me => ({
 })
 
 // What the Better Auth client throws
-const authError = (status: number, code: string) => ({ status, error: { code } })
+const authError = (status: number, code: string) => ({
+  status,
+  error: { code, status, message: 'Failed' },
+})
 
 describe('inviteDefaults', () => {
   it('starts empty with the lowest role I can invite', () => {
@@ -47,13 +50,13 @@ describe('roleHint', () => {
 
 describe('inviteeError', () => {
   it.each([
-    ['INVALID_EMAIL', 'errors.invalid-email'],
+    ['invalid-email', 'errors.invalid-email'],
     [
-      'USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION',
+      'user-is-already-a-member-of-this-organization',
       'errors.user-is-already-a-member-of-this-organization',
     ],
     [
-      'USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION',
+      'user-is-already-invited-to-this-organization',
       'errors.user-is-already-invited-to-this-organization',
     ],
   ])('shows %s under the email field', (code, key) => {
@@ -61,8 +64,8 @@ describe('inviteeError', () => {
   })
 
   it('leaves other errors to the notice', () => {
-    expect(inviteeError(authError(403, 'WORKSPACE_ROLE_NOT_MANAGED'))).toBeNull()
-    expect(inviteeError(authError(500, 'INTERNAL_SERVER_ERROR'))).toBeNull()
+    expect(inviteeError(authError(403, 'workspace-role-not-managed'))).toBeNull()
+    expect(inviteeError(authError(500, 'internal-server-error'))).toBeNull()
     expect(inviteeError(new TypeError('Failed to fetch'))).toBeNull()
   })
 })

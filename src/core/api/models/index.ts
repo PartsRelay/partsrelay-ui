@@ -12,6 +12,8 @@ export * from './contact';
 export * from './contactObject';
 export * from './contactObjectStatus';
 export * from './contactStatus';
+export * from './errorBody';
+export * from './fieldError';
 export * from './getApiV1CatalogNodes200';
 export * from './getApiV1CatalogNodesParams';
 export * from './getApiV1LookupsLookupId200';

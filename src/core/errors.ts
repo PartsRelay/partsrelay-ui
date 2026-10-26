@@ -1,73 +1,114 @@
 import { isAxiosError } from 'axios'
+import type { ErrorBody, FieldError } from '@/core/api/models'
+import { errors as texts } from '@/core/locales/en-US/errors.json'
 import { message } from '@/core/message'
 
-// A field the core rejected and the rule it broke
-export type FieldError = { field: string; rule?: string }
+export type { ErrorBody, FieldError }
 
-// The same body the core sends, message only in development
-export type ErrorBody = {
-  code: string
-  status: number
-  message?: string
-  fields?: FieldError[]
-}
-
-// What the Better Auth client throws
-type AuthClientError = { status: number; error: Partial<ErrorBody> | null }
-
-// No HTTP response, like a network failure
 export const NO_STATUS = 0
 
-// Other coded 401s, like removing a member, keep the session
-const SESSION_CODES = ['UNAUTHORIZED', 'UNAUTHORIZED_ACCESS']
+const STATUS_MESSAGES: Record<number, string> = {
+  400: 'Bad Request',
+  401: 'Unauthorized',
+  403: 'Forbidden',
+  404: 'Not Found',
+  422: 'Unprocessable Entity',
+  429: 'Too Many Requests',
+  500: 'Internal Server Error',
+  502: 'Bad Gateway',
+  503: 'Service Unavailable',
+  504: 'Gateway Timeout',
+}
 
-// Codes the core takes from the status alone
-const STATUS_CODES = [
-  'BAD_REQUEST',
-  'UNAUTHORIZED',
-  'FORBIDDEN',
-  'NOT_FOUND',
-  'INTERNAL_SERVER_ERROR',
-]
+const SESSION_CODES = ['unauthorized', 'unauthorized-access']
 
-const GONE_CODES = ['ROW_NOT_FOUND', 'MEMBER_NOT_FOUND', 'INVITATION_NOT_FOUND']
+const GONE_CODES = ['row-not-found', 'member-not-found', 'invitation-not-found']
 
-function isAuthClientError(error: unknown): error is AuthClientError {
+export function kebabCode(code: string) {
+  return code
+    .replace(/^E_/, '')
+    .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+    .replace(/[^a-zA-Z\d]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase()
+}
+
+const GENERIC_CODES = ['unknown-error', ...Object.values(STATUS_MESSAGES).map(kebabCode)]
+
+const NETWORK_ERROR: ErrorBody = {
+  code: 'network-error',
+  status: NO_STATUS,
+  message: 'Network Error',
+}
+
+function statusMessage(status: number) {
+  if (status >= 500) return STATUS_MESSAGES[status] ?? STATUS_MESSAGES[500]!
+  if (status >= 400) return STATUS_MESSAGES[status] ?? STATUS_MESSAGES[400]!
+
+  return 'Unknown Error'
+}
+
+function statusCode(status: number) {
+  return kebabCode(statusMessage(status))
+}
+
+function statusBody(status: number): ErrorBody {
+  return { code: statusCode(status), status, message: statusMessage(status) }
+}
+
+function nonEmpty(value: unknown) {
+  return typeof value === 'string' && value ? value : null
+}
+
+function fromResponse(status: number, data: unknown): ErrorBody {
+  const body: Partial<Record<keyof ErrorBody, unknown>> =
+    typeof data === 'object' && data !== null ? data : {}
+  const code = nonEmpty(body.code)
+  const error = {
+    code: code ? kebabCode(code) : statusCode(status),
+    status,
+    message: nonEmpty(body.message) ?? statusMessage(status),
+  }
+
+  return Array.isArray(body.fields) && body.fields.length > 0
+    ? { ...error, fields: body.fields as FieldError[] }
+    : error
+}
+
+function isAuthClientError(error: unknown): error is { status: number; error: unknown } {
   return (
     typeof error === 'object' &&
     error !== null &&
     'error' in error &&
-    typeof (error as AuthClientError).status === 'number'
+    'status' in error &&
+    typeof error.status === 'number'
   )
 }
 
-function errorBody(code: string, status: number, text?: string): ErrorBody {
-  return import.meta.env.DEV && text ? { code, status, message: text } : { code, status }
-}
-
-function fromCore(status: number, body: Partial<ErrorBody> | null | undefined) {
-  const error = errorBody(body?.code ?? 'UNKNOWN', status, body?.message)
-
-  return body?.fields?.length ? { ...error, fields: body.fields } : error
-}
-
 export function toErrorBody(error: unknown): ErrorBody {
-  if (isAxiosError<Partial<ErrorBody>>(error)) {
-    if (error.response) return fromCore(error.response.status, error.response.data)
-
-    return errorBody('NETWORK_ERROR', NO_STATUS, error.message)
+  if (isAxiosError(error)) {
+    return error.response ? fromResponse(error.response.status, error.response.data) : NETWORK_ERROR
   }
+  if (error instanceof Response) return statusBody(error.status)
+  if (isAuthClientError(error)) return fromResponse(error.status, error.error)
+  if (error instanceof TypeError) return NETWORK_ERROR
 
-  if (isAuthClientError(error)) return fromCore(error.status, error.error)
+  return statusBody(NO_STATUS)
+}
 
-  // fetch rejects with a TypeError when offline
-  const code = error instanceof TypeError ? 'NETWORK_ERROR' : 'UNKNOWN'
+export function redirectError(code: string): ErrorBody {
+  const kebab = kebabCode(code)
+  const words = kebab.replaceAll('-', ' ')
 
-  return errorBody(code, NO_STATUS, error instanceof Error ? error.message : undefined)
+  return {
+    code: kebab,
+    status: NO_STATUS,
+    message: `${words.charAt(0).toUpperCase()}${words.slice(1)}`,
+  }
 }
 
 export function isGenericCode(code: string) {
-  return code === 'UNKNOWN' || STATUS_CODES.includes(code)
+  return GENERIC_CODES.includes(code)
 }
 
 export function errorStatus(error: unknown) {
@@ -82,7 +123,6 @@ export function alreadyGone(error: unknown) {
   return GONE_CODES.includes(errorCode(error))
 }
 
-// The fields the core rejected, each with the form's error key
 export function fieldErrors<Field extends string>(error: unknown, keys: Record<Field, string>) {
   const fields = (toErrorBody(error).fields ?? [])
     .map(({ field }) => field)
@@ -95,13 +135,18 @@ export function fieldErrors<Field extends string>(error: unknown, keys: Record<F
     : null
 }
 
-// Locale keys are kebab case, error codes are not
-export function errorKey(code: string) {
-  return `errors.${code.toLowerCase().replaceAll('_', '-')}`
+function hasText(code: string) {
+  return Object.hasOwn(texts, code)
+}
+
+export function errorKey(error: unknown) {
+  const { code, status } = toErrorBody(error)
+
+  return `errors.${[code, statusCode(status)].find(hasText) ?? 'unknown-error'}`
 }
 
 export function errorMessage(error: unknown) {
-  return message(errorKey(errorCode(error)))
+  return message(errorKey(error))
 }
 
 export function sessionEnded(error: unknown) {

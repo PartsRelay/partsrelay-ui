@@ -105,7 +105,7 @@ export function ContactDirectory() {
         >
           <TabsList aria-label={t('contacts.tabs.label')}>
             {contactTabs.map((item) => (
-              <TabsTrigger key={item} value={item}>
+              <TabsTrigger key={item} value={item} className="text-muted-foreground">
                 {t(`contacts.tabs.${item}`)}
               </TabsTrigger>
             ))}

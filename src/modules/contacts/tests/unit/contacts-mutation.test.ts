@@ -74,7 +74,7 @@ describe('contact changes', () => {
 
   it('restores a deleted contact when the core refuses', async () => {
     const { client, oakfield, list } = setup()
-    vi.mocked(http).mockRejectedValue(coreError(403, 'AUTHORIZATION_FAILURE'))
+    vi.mocked(http).mockRejectedValue(coreError(403, 'authorization-failure'))
 
     await expect(removeContact(client, oakfield)).rejects.toBeTruthy()
     expect(list(all).data.map((item) => item.id)).toEqual([2, 1])

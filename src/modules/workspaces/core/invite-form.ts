@@ -7,9 +7,9 @@ export type Invitee = { email: string; role: Role }
 
 // Errors about the address, shown under the email field
 const INVITEE_CODES = [
-  'INVALID_EMAIL',
-  'USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION',
-  'USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION',
+  'invalid-email',
+  'user-is-already-a-member-of-this-organization',
+  'user-is-already-invited-to-this-organization',
 ]
 
 export function roleHint(role: Role, me: Me) {
@@ -23,7 +23,5 @@ export function inviteDefaults(me: Me): Invitee {
 }
 
 export function inviteeError(error: unknown) {
-  const code = errorCode(error)
-
-  return INVITEE_CODES.includes(code) ? errorKey(code) : null
+  return INVITEE_CODES.includes(errorCode(error)) ? errorKey(error) : null
 }

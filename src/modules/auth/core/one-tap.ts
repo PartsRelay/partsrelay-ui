@@ -27,7 +27,7 @@ export function cancelOneTap() {
 export function oneTapError(error: unknown) {
   const { code, status } = toErrorBody(error)
   // A Google script that fails to load stays quiet
-  if (status === NO_STATUS && code !== 'NETWORK_ERROR') return null
+  if (status === NO_STATUS && code !== 'network-error') return null
 
-  return isGenericCode(code) ? message('errors.auth-google-failed') : errorMessage(error)
+  return isGenericCode(code) ? message('login.errors.google') : errorMessage(error)
 }
