@@ -8,7 +8,6 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('the sidebar and the breadcrumbs show where I am', async ({ page }) => {
-  // The current breadcrumb is a disabled link too
   const company = page.getByRole('link', { name: 'Company', disabled: false })
   await expect(company).toHaveAttribute('aria-current', 'page')
   await expect(page.getByRole('link', { name: 'Workspace' })).not.toHaveAttribute('aria-current')
@@ -64,10 +63,6 @@ test('the company name cannot be empty', async ({ page }) => {
   await expect(name).toBeFocused()
   await expect(name).toHaveAccessibleDescription('Enter the company name.')
   await expect(page.getByRole('link', { name: /Redwood Parts Ltd/ })).toBeVisible()
-})
-
-test('the company name is capped at the longest string the core accepts', async ({ page }) => {
-  await expect(page.getByRole('textbox', { name: 'Name' })).toHaveAttribute('maxlength', '255')
 })
 
 test('changing the WhatsApp language keeps the app language', async ({ page }) => {

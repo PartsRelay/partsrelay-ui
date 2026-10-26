@@ -14,7 +14,7 @@ import {
   type Person,
   type Role,
 } from '@/mocks/data'
-import { capStrings, fail } from '@/mocks/errors'
+import { fail } from '@/mocks/errors'
 
 type World = {
   signedIn: boolean
@@ -40,7 +40,6 @@ function freshWorld(): World {
   }
 }
 
-// Kept in sessionStorage, sign in reloads the page
 function world<T>(change: (state: World) => T): T {
   const saved = sessionStorage.getItem(worldKey())
   const state: World = saved ? JSON.parse(saved) : freshWorld()
@@ -59,7 +58,6 @@ function signedIn(state: World) {
 const myRole = ({ company, me }: World) =>
   company.members.find(({ userId }) => userId === me.id)?.role
 
-// The REST mocks act for the signed in member
 function signedInMember() {
   return world((state) =>
     state.signedIn ? { company: state.company.slug, role: myRole(state), user: state.me } : null
@@ -104,7 +102,6 @@ const offers = ({ offered, me }: World): Offer[] =>
       ]
     : []
 
-// The core deletes the account, signing in again starts over
 function endAccount(state: World) {
   state.company = newCompany(state.me)
   state.signedIn = false
@@ -114,11 +111,8 @@ const body = <T>(request: Request) => request.json() as Promise<T>
 
 type Resolve = (info: { request: Request }) => unknown
 
-const respond = (resolve: Resolve) => async (info: { request: Request }) => {
-  await capStrings(info.request)
-
-  return HttpResponse.json((await resolve(info)) as JsonBodyType)
-}
+const respond = (resolve: Resolve) => async (info: { request: Request }) =>
+  HttpResponse.json((await resolve(info)) as JsonBodyType)
 
 const get = (path: string, resolve: Resolve) => http.get(`*/api/auth${path}`, respond(resolve))
 
@@ -217,7 +211,6 @@ export const authMocks = [
         'you-are-not-allowed-to-update-this-member',
         'You are not allowed to update this member'
       )
-      // The core allows only the ownership transfer
       if (role !== 'owner') {
         fail(
           403,
@@ -226,7 +219,6 @@ export const authMocks = [
         )
       }
 
-      // The core hands the old owner admin rights
       for (const item of company.members) if (item.role === 'owner') item.role = 'admin'
       target.role = role
       const { user: _user, ...member } = target
@@ -274,7 +266,6 @@ export const authMocks = [
       role: Invitation['role']
       resend?: boolean
     }>(request)
-    // Like Better Auth: lowercased, then checked
     const email = typed.toLowerCase()
 
     return world((state) => {
@@ -295,7 +286,6 @@ export const authMocks = [
         )
       }
 
-      // Like the core, an expired invitation no longer counts
       const expiresAt = daysAgo(-7)
       const pending = company.invitations.find(
         (item) => item.email.toLowerCase() === email && live(item)

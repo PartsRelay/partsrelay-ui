@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { type ContactObject, SearcherType } from '@/core/api/models'
-import { MAX_STRING_LENGTH } from '@/core/strings'
 import { contactName } from '@/modules/contacts/core/contact-row'
 import type { LookupListParams } from '@/modules/lookups/core/lookups.query'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
@@ -17,7 +16,7 @@ const requesterSchema = z.object({
 export const lookupsSearchSchema = requesterSchema.extend({
   page: z.number().int().min(1).default(1).catch(1),
   new: z.boolean().optional().catch(undefined),
-  plate: z.string().max(MAX_STRING_LENGTH).optional().catch(undefined),
+  plate: z.string().optional().catch(undefined),
 })
 
 export type LookupsSearch = z.infer<typeof lookupsSearchSchema>

@@ -1,19 +1,18 @@
 import { describe, expect, it } from 'vite-plus/test'
 import { fieldErrors } from '@/core/errors'
-import { MAX_STRING_LENGTH } from '@/core/strings'
 import {
   compactPlate,
   emptyLookup,
   lookupFieldErrors,
   newLookup,
-  plateError,
-  queryError,
+  plateSchema,
+  querySchema,
 } from '@/modules/lookups/core/lookup-form'
 import { coreError } from '@/modules/contacts/tests/unit/fixtures'
 
-const plate = (value: string) => plateError({ value })
+const plate = (value: string) => plateSchema.safeParse(value).error?.issues[0]?.message
 
-const query = (value: string) => queryError({ value })
+const query = (value: string) => querySchema.safeParse(value).error?.issues[0]?.message
 
 describe('new search form', () => {
   it('starts empty, or with the plate of a previous search', () => {
@@ -33,7 +32,6 @@ describe('new search form', () => {
     expect(plate('AB1')).toBe('lookups.new.errors.plate')
     expect(plate('AB1234567')).toBe('lookups.new.errors.plate')
     expect(plate('AB_123')).toBe('lookups.new.errors.plate')
-    expect(plate('A'.repeat(MAX_STRING_LENGTH + 1))).toBe('form.too-long')
   })
 
   it('asks for the part in 2 to 200 characters', () => {

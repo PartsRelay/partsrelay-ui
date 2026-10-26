@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vite-plus/test'
 import { LookupObjectSource, LookupObjectStatus } from '@/core/api/models'
 import { lookupDetail } from '@/modules/lookups/core/lookup-detail'
-import { lookupFieldErrors, plateError, queryError } from '@/modules/lookups/core/lookup-form'
+import { lookupFieldErrors, plateSchema, querySchema } from '@/modules/lookups/core/lookup-form'
 import { textKey } from '@/modules/lookups/core/lookup-row'
 import { lookupFixture, workspaceFixture } from '@/modules/lookups/tests/unit/fixtures'
 
@@ -69,7 +69,11 @@ describe('lookups texts', () => {
       .filter((state) => state !== 'results')
       .map((state) => `lookups.outcome.${textKey(state)}.description`)
     const errors = [
-      ...['', 'A'].flatMap((value) => [plateError({ value }), queryError({ value })]),
+      ...['', 'A'].flatMap((value) =>
+        [plateSchema, querySchema].map(
+          (schema) => schema.safeParse(value).error?.issues[0]?.message
+        )
+      ),
       ...Object.values(lookupFieldErrors),
     ]
 

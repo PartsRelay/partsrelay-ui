@@ -1,14 +1,17 @@
+import { useForm } from '@tanstack/react-form'
 import { MailCheckIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useInterval } from 'usehooks-ts'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { emailError, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
+import { emailSchema, MAGIC_LINK_MINUTES, resendWait } from '@/modules/auth/core/magic-link'
 import { magicLinkSignIn, type SignInFlow } from '@/modules/auth/core/sign-in'
 import { useClearSignInError } from '@/modules/auth/ui/hooks/use-clear-sign-in-error'
 import { errorKey } from '@/core/errors'
-import { useAppForm } from '@/form'
 import { Callout } from '@/ui/components/callout'
+import { Form } from '@/ui/components/form'
+import { InputField } from '@/ui/components/input-field'
+import { SubmitButton } from '@/ui/components/submit-button'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
@@ -27,7 +30,6 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   const status = useRef<HTMLDivElement>(null)
   const wasSent = useRef(false)
 
-  // Keeps focus on screen when the form and status swap
   useEffect(() => {
     if (sent) status.current?.focus()
     else if (wasSent.current) input.current?.focus()
@@ -36,7 +38,6 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
 
   useInterval(() => setNow(Date.now()), wait > 0 ? 1000 : null)
 
-  // Errors show in the form, not as a toast
   const send = async (address: string) => {
     const result = await run(() => authClient.signIn.magicLink(magicLinkSignIn(flow, address)), {
       silent: true,
@@ -51,7 +52,7 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
     return null
   }
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: { email: '' },
     onSubmit: async ({ value, formApi }) => {
       const error = await send(value.email.trim().toLowerCase())
@@ -106,25 +107,26 @@ export function MagicLinkForm({ flow }: { flow: SignInFlow }) {
   }
 
   return (
-    <form.AppForm>
-      <form.Form>
-        <FieldGroup>
-          <form.AppField name="email" validators={{ onSubmit: ({ value }) => emailError(value) }}>
-            {(field) => (
-              <field.InputField
-                ref={input}
-                label={t('login.magic-link.email')}
-                type="email"
-                autoComplete="email"
-                placeholder={t('login.magic-link.placeholder')}
-              />
-            )}
-          </form.AppField>
-          <Field>
-            <form.SubmitButton variant="outline">{t('login.magic-link.send')}</form.SubmitButton>
-          </Field>
-        </FieldGroup>
-      </form.Form>
-    </form.AppForm>
+    <Form form={form}>
+      <FieldGroup>
+        <form.Field name="email" validators={{ onSubmit: emailSchema }}>
+          {(field) => (
+            <InputField
+              field={field}
+              ref={input}
+              label={t('login.magic-link.email')}
+              type="email"
+              autoComplete="email"
+              placeholder={t('login.magic-link.placeholder')}
+            />
+          )}
+        </form.Field>
+        <Field>
+          <SubmitButton form={form} variant="outline">
+            {t('login.magic-link.send')}
+          </SubmitButton>
+        </Field>
+      </FieldGroup>
+    </Form>
   )
 }

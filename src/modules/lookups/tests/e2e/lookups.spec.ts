@@ -65,7 +65,6 @@ test.describe('as the owner', () => {
     await expect(part).toHaveAccessibleDescription(
       'Enter the part you need, such as front brake pads.'
     )
-    await expect(plate).toHaveAttribute('maxlength', '255')
     await expect(part).toHaveAttribute('maxlength', '200')
 
     await plate.fill('CA 7')

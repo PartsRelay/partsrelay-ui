@@ -4,7 +4,6 @@ const notices = (page: Page) => page.getByRole('region', { name: /Notifications/
 
 test.describe('as a newcomer invited to a company', () => {
   test.beforeEach(async ({ page }) => {
-    // A new account with a pending invitation from Ironworks Garage
     await page.addInitScript(() => {
       localStorage.setItem('mock.user', 'new')
       localStorage.setItem('mock.invitation', '1')
@@ -44,15 +43,6 @@ test.describe('as a newcomer invited to a company', () => {
     await expect(page).toHaveURL('/invitations/31')
   })
 
-  test('my name is capped at the longest string the core accepts', async ({ page }) => {
-    await page.goto('/invitations/31')
-
-    await expect(page.getByRole('textbox', { name: 'Your name' })).toHaveAttribute(
-      'maxlength',
-      '255'
-    )
-  })
-
   test('not now keeps my own company', async ({ page }) => {
     await page.goto('/invitations/31')
     await page.getByRole('link', { name: 'Not now' }).click()
@@ -64,7 +54,6 @@ test.describe('as a newcomer invited to a company', () => {
 
 test.describe('as the owner of a company', () => {
   test('an invitation for another address asks to switch account', async ({ page }) => {
-    // One of the pending invitations of my own company
     await page.goto('/invitations/7')
 
     const problem = page.getByRole('alert')

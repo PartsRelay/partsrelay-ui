@@ -9,7 +9,6 @@ import {
   redirectError,
   toErrorBody,
 } from '@/core/errors'
-import { lengthError, MAX_STRING_LENGTH } from '@/core/strings'
 
 type Texts = Record<string, Record<string, unknown>>
 
@@ -232,13 +231,5 @@ describe('already gone', () => {
     expect(alreadyGone(coreError(403, 'workspace-role-not-managed'))).toBe(false)
     expect(alreadyGone(coreError(404, 'route-not-found'))).toBe(false)
     expect(alreadyGone(new TypeError('offline'))).toBe(false)
-  })
-})
-
-describe('lengthError', () => {
-  it('accepts up to the longest string the core takes, spaces around it aside', () => {
-    expect(lengthError('a'.repeat(MAX_STRING_LENGTH))).toBeUndefined()
-    expect(lengthError(` ${'a'.repeat(MAX_STRING_LENGTH)} `)).toBeUndefined()
-    expect(lengthError('a'.repeat(MAX_STRING_LENGTH + 1))).toBe('form.too-long')
   })
 })

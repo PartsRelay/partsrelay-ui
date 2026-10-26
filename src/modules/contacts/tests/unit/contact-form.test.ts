@@ -18,14 +18,11 @@ describe('new contact', () => {
     const taken = coreError(422, 'validation-error', [{ field: 'phone', rule: 'database.unique' }])
     const both = coreError(422, 'validation-error', [
       { field: 'phone', rule: 'waId' },
-      { field: 'name', rule: 'maxLength' },
+      { field: 'name', rule: 'minLength' },
     ])
 
     expect(fieldErrors(taken, contactFieldErrors)).toEqual({ phone: 'contacts.add.errors.phone' })
-    expect(fieldErrors(both, contactFieldErrors)).toEqual({
-      phone: 'contacts.add.errors.phone',
-      name: 'contacts.add.errors.name',
-    })
+    expect(fieldErrors(both, contactFieldErrors)).toEqual({ phone: 'contacts.add.errors.phone' })
     expect(fieldErrors(coreError(403, 'authorization-failure'), contactFieldErrors)).toBeNull()
   })
 })

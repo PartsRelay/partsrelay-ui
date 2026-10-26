@@ -67,8 +67,7 @@
       "submit": "Aggiungi contatto",
       "errors": {
         "phone-required": "Inserisci il numero WhatsApp.",
-        "phone": "Controlla il numero: serve il prefisso internazionale e potrebbe già appartenere a un'azienda.",
-        "name": "Usa un nome di massimo {{maxLength}} caratteri."
+        "phone": "Controlla il numero: serve il prefisso internazionale e potrebbe già appartenere a un'azienda."
       }
     },
     "confirm": {

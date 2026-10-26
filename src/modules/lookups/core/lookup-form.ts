@@ -1,5 +1,5 @@
+import { z } from 'zod'
 import type { PostApiV1LookupsBody } from '@/core/api/models'
-import { lengthError } from '@/core/strings'
 
 export type LookupValues = { plate: string; query: string }
 
@@ -18,21 +18,19 @@ export function compactPlate(plate: string) {
     .replace(/[\s.-]/g, '')
 }
 
-export function plateError({ value }: { value: string }) {
-  if (!value.trim()) return 'lookups.new.errors.plate-required'
-  if (lengthError(value)) return lengthError(value)
+export const plateSchema = z
+  .string()
+  .trim()
+  .min(1, 'lookups.new.errors.plate-required')
+  .transform(compactPlate)
+  .pipe(z.string().regex(PLATE, 'lookups.new.errors.plate'))
 
-  return PLATE.test(compactPlate(value)) ? undefined : 'lookups.new.errors.plate'
-}
-
-export function queryError({ value }: { value: string }) {
-  const { length } = value.trim()
-  if (length === 0) return 'lookups.new.errors.query-required'
-
-  return length < QUERY_LENGTH.min || length > QUERY_LENGTH.max
-    ? 'lookups.new.errors.query'
-    : undefined
-}
+export const querySchema = z
+  .string()
+  .trim()
+  .min(1, { error: 'lookups.new.errors.query-required', abort: true })
+  .min(QUERY_LENGTH.min, 'lookups.new.errors.query')
+  .max(QUERY_LENGTH.max, 'lookups.new.errors.query')
 
 export function newLookup({ plate, query }: LookupValues): PostApiV1LookupsBody {
   return { plate: compactPlate(plate), query: query.trim() }

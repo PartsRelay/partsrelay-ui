@@ -1,14 +1,18 @@
+import { useForm } from '@tanstack/react-form'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { acceptError, type InvitationDetails } from '@/modules/auth/core/invitation'
 import { currentCompanyKey } from '@/modules/auth/core/invitation.query'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
-import { requiredText, useAppForm } from '@/form'
 import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
+import { Form } from '@/ui/components/form'
+import { InputField } from '@/ui/components/input-field'
+import { SubmitButton } from '@/ui/components/submit-button'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent } from '@/ui/components/ui/card'
@@ -33,7 +37,6 @@ export function InvitationReady({
   const { client, pending, error, run } = useBetterAuthAction()
   const [confirming, setConfirming] = useState(false)
   const failure = error ? acceptError(error) : null
-  // Errors show on the card, not as a toast
   const joinNow = async (name: string) => {
     const result = await run(
       async () => {
@@ -55,7 +58,7 @@ export function InvitationReady({
     await client.invalidateQueries({ queryKey: sessionQuery.queryKey })
     await navigate({ to: '/' })
   }
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: { name: '' },
     onSubmit: ({ value }) => (confirm ? setConfirming(true) : joinNow(value.name)),
   })
@@ -77,31 +80,32 @@ export function InvitationReady({
           </Callout>
         )}
         {failure && <Callout tone="danger">{t(...failure)}</Callout>}
-        <form.AppForm>
-          <form.Form className="grid gap-6">
-            {askName && (
-              <form.AppField
-                name="name"
-                validators={{ onSubmit: requiredText('invitation.errors.name-required') }}
-              >
-                {(field) => (
-                  <field.InputField
-                    label={t('invitation.name')}
-                    required
-                    description={t('invitation.name-hint')}
-                    autoComplete="name"
-                  />
-                )}
-              </form.AppField>
-            )}
-            <div className="grid gap-2">
-              <form.SubmitButton disabled={pending}>{t('invitation.accept')}</form.SubmitButton>
-              <Button variant="ghost" asChild>
-                <Link to="/">{t('invitation.actions.not-now')}</Link>
-              </Button>
-            </div>
-          </form.Form>
-        </form.AppForm>
+        <Form form={form} className="grid gap-6">
+          {askName && (
+            <form.Field
+              name="name"
+              validators={{ onSubmit: z.string().trim().min(1, 'invitation.errors.name-required') }}
+            >
+              {(field) => (
+                <InputField
+                  field={field}
+                  label={t('invitation.name')}
+                  required
+                  description={t('invitation.name-hint')}
+                  autoComplete="name"
+                />
+              )}
+            </form.Field>
+          )}
+          <div className="grid gap-2">
+            <SubmitButton form={form} disabled={pending}>
+              {t('invitation.accept')}
+            </SubmitButton>
+            <Button variant="ghost" asChild>
+              <Link to="/">{t('invitation.actions.not-now')}</Link>
+            </Button>
+          </div>
+        </Form>
       </CardContent>
       <ConfirmDialog
         open={confirming}

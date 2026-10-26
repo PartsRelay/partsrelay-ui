@@ -1,12 +1,10 @@
 import { expect, type Page, test } from '@playwright/test'
 
-// The mocks start signed in, as Mark Reed, the owner
 async function signOut(page: Page) {
   await page.goto('/profile')
   await page.getByRole('button', { name: /Mark Reed/ }).click()
   await page.getByRole('menuitem', { name: 'Sign out' }).click()
   await expect(page).toHaveURL('/login')
-  // Leaving before the lazy login page loads reloads it
   await expect(page.getByRole('heading', { level: 1, name: /^Sign in to / })).toBeVisible()
 }
 
@@ -75,12 +73,6 @@ test('a failed Google sign in explains the codes it knows', async ({ page }) => 
 
   await page.goto('/login?error=state-mismatch')
   await expect(page.getByText('Sign in failed. Try again.')).toBeVisible()
-})
-
-test('the email of the magic link is capped at the longest string the core accepts', async ({
-  page,
-}) => {
-  await expect(page.getByRole('textbox', { name: 'Email' })).toHaveAttribute('maxlength', '255')
 })
 
 test('Google sign in comes back signed in', async ({ page }) => {

@@ -13,7 +13,7 @@ import {
 } from '@/core/api/models'
 import { member } from '@/mocks/auth'
 import { checkedPage, page, people, type Person } from '@/mocks/data'
-import { apiBody, capStrings, fail, rejected } from '@/mocks/errors'
+import { apiBody, fail, rejected } from '@/mocks/errors'
 import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
 
 type Text = [en: string, it: string]
@@ -340,7 +340,6 @@ const isSearcherType = (value: string): value is SearcherType =>
 
 export const lookupMocks = [
   getGetApiV1WorkspaceLookupsMockHandler(async ({ request }) => {
-    await capStrings(request)
     const { company } = member()
     const query = new URL(request.url).searchParams
     const currentPage = checkedPage(query, 'page', 1)
@@ -362,7 +361,6 @@ export const lookupMocks = [
     })
   }),
   getGetApiV1LookupsLookupIdMockHandler(async ({ request, params }) => {
-    await capStrings(request)
     const { company } = member()
 
     return archive((state) => {

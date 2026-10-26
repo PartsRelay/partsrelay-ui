@@ -13,10 +13,9 @@ import {
 } from '@/core/api/models'
 import { member } from '@/mocks/auth'
 import { checkedPage, daysAgo, page } from '@/mocks/data'
-import { apiBody, capStrings, fail, rejected } from '@/mocks/errors'
+import { apiBody, fail, rejected } from '@/mocks/errors'
 import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
 
-// Contacts of each company, by company slug
 type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
 
 type Searches = [total: number, month: number, lastDaysAgo: number | null]
@@ -42,7 +41,6 @@ const contact = (
   lastLookupAt: last === null ? null : daysAgo(last),
 })
 
-// Workshop and WhatsApp profile names
 const MORE_WORKSHOPS = [
   ['Riverside Motors', 'Liam Carter'],
   ['Elm Street Garage', 'Olivia Hughes'],
@@ -64,7 +62,6 @@ const MORE_WORKSHOPS = [
   ['Fairview Motors', 'Sophie Allen'],
 ] as const
 
-// Enough Redwood Parts contacts for two pages
 function seed(): Directory['companies'] {
   return {
     'redwood-parts': [
@@ -89,7 +86,6 @@ function seed(): Directory['companies'] {
   }
 }
 
-// Kept in sessionStorage like the auth mocks
 function directory<T>(change: (state: Directory) => T): T {
   const saved = sessionStorage.getItem('mock.contacts')
   const state: Directory = saved ? JSON.parse(saved) : { companies: seed(), nextId: 100 }
@@ -99,7 +95,6 @@ function directory<T>(change: (state: Directory) => T): T {
   return result
 }
 
-// Same rule as the contact policy of the core
 function authorize(role: string | undefined) {
   if (role === 'viewer') fail(403, 'authorization-failure', 'Access denied')
 }
@@ -109,7 +104,6 @@ const isStatus = (value: unknown): value is ContactObject['status'] =>
 
 const contactsOf = (state: Directory, company: string) => (state.companies[company] ??= [])
 
-// Same normalisation as the core validator
 function toWaId(phone: unknown) {
   if (phone === undefined || phone === null || phone === '') return rejected('phone', 'required')
   if (typeof phone !== 'string') return rejected('phone', 'string')
@@ -138,10 +132,8 @@ function found(state: Directory, company: string, id: string) {
 
 export const contactMocks = [
   getGetApiV1WorkspaceContactsMockHandler(async ({ request }) => {
-    await capStrings(request)
     const { company } = member()
     const query = new URL(request.url).searchParams
-    // The core reads status[], like axios sends it
     const statuses = query.getAll('status[]')
     if (query.has('status')) rejected('status', 'array')
     for (const [index, status] of statuses.entries()) {
@@ -181,7 +173,6 @@ export const contactMocks = [
     const body = await apiBody<PatchApiV1WorkspaceContactsContactIdBody>(request)
     const { company, role } = member()
 
-    // Not found, then forbidden, then invalid, like the core
     return directory((state) => {
       const target = found(state, company, String(params.contactId))
       authorize(role)
@@ -195,7 +186,6 @@ export const contactMocks = [
       return { data: target }
     })
   }),
-  // The generated handler answers 200, the core 204
   http.delete('*/api/v1/workspace/contacts/:contactId', ({ params }) => {
     const { company, role } = member()
 
