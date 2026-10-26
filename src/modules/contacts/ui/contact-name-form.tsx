@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useAppForm } from '@/form'
+import { limitedText, useAppForm } from '@/form'
 import { renameChange } from '@/modules/contacts/core/contact-form'
 import type { ContactRow } from '@/modules/contacts/core/contact-row'
 import { useUpdateContact } from '@/modules/contacts/ui/hooks/use-update-contact'
@@ -26,7 +26,7 @@ export function ContactNameForm({ row, onDone }: ContactNameFormProps) {
     <form.AppForm>
       <form.Form className="min-w-56 whitespace-normal">
         <FieldGroup className="gap-3">
-          <form.AppField name="name">
+          <form.AppField name="name" validators={{ onSubmit: limitedText }}>
             {(field) => (
               <field.InputField
                 label={t('contacts.rename.label', { name: row.name })}

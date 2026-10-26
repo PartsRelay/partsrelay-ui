@@ -5,7 +5,10 @@ import { oneTapError } from '@/modules/auth/core/one-tap'
 vi.mock('@/modules/auth/core/auth.client', () => ({ authClient: {} }))
 
 // What the Better Auth client throws
-const authError = (status: number, code: string) => ({ status, error: { code } })
+const authError = (status: number, code: string) => ({
+  status,
+  error: { code, status, message: 'Failed' },
+})
 
 describe('oneTapError', () => {
   it('stays quiet when the Google script fails', () => {
@@ -17,13 +20,11 @@ describe('oneTapError', () => {
   })
 
   it('reports a generic failure as a Google sign in failure', () => {
-    expect(oneTapError(authError(500, 'INTERNAL_SERVER_ERROR'))).toEqual([
-      'errors.auth-google-failed',
-    ])
-    expect(oneTapError(authError(400, 'UNKNOWN'))).toEqual(['errors.auth-google-failed'])
+    expect(oneTapError(authError(500, 'internal-server-error'))).toEqual(['login.errors.google'])
+    expect(oneTapError(authError(400, 'bad-request'))).toEqual(['login.errors.google'])
   })
 
   it('explains a coded error of the core', () => {
-    expect(oneTapError(authError(403, 'EMAIL_NOT_VERIFIED'))).toEqual(['errors.email-not-verified'])
+    expect(oneTapError(authError(403, 'email-not-verified'))).toEqual(['errors.email-not-verified'])
   })
 })

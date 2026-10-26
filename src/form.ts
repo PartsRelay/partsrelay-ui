@@ -1,4 +1,5 @@
 import { createFormHook } from '@tanstack/react-form'
+import { lengthError } from '@/core/strings'
 import { fieldContext, formContext } from '@/form-context'
 import { Form } from '@/ui/components/form'
 import { InputField } from '@/ui/components/input-field'
@@ -12,7 +13,11 @@ export const { useAppForm } = createFormHook({
   formComponents: { Form, SubmitButton },
 })
 
+export function limitedText({ value }: { value: string }) {
+  return lengthError(value)
+}
+
 // Trimmed text is required, the error is a translation key
 export function requiredText(key: string) {
-  return ({ value }: { value: string }) => (value.trim() ? undefined : key)
+  return ({ value }: { value: string }) => (value.trim() ? lengthError(value) : key)
 }

@@ -28,6 +28,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ErrorBody,
   GetApiV1LookupsLookupId200,
   PostApiV1Lookups202,
   PostApiV1LookupsBody
@@ -75,7 +76,7 @@ export const postApiV1Lookups = (
 
 export const getPostApiV1LookupsMutationKey = () => ['postApiV1Lookups'] as const;
 
-export const getPostApiV1LookupsMutationOptions = <TError = ErrorType<unknown>,
+export const getPostApiV1LookupsMutationOptions = <TError = ErrorType<ErrorBody>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiV1Lookups>>, TError,PostApiV1LookupsMutationVariables, TContext>, request?: SecondParameter<typeof http>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiV1Lookups>>, TError,PostApiV1LookupsMutationVariables, TContext> => {
 
@@ -104,10 +105,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostApiV1LookupsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiV1Lookups>>>
     export type PostApiV1LookupsMutationBody = BodyType<PostApiV1LookupsBody> | undefined
-    export type PostApiV1LookupsMutationError = ErrorType<unknown>
+    export type PostApiV1LookupsMutationError = ErrorType<ErrorBody>
     export type PostApiV1LookupsMutationVariables = {data?: BodyType<PostApiV1LookupsBody>}
 
-    export const usePostApiV1Lookups = <TError = ErrorType<unknown>,
+    export const usePostApiV1Lookups = <TError = ErrorType<ErrorBody>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiV1Lookups>>, TError,PostApiV1LookupsMutationVariables, TContext>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiV1Lookups>>,
@@ -139,7 +140,7 @@ export const getGetApiV1LookupsLookupIdQueryKey = (lookupId: string,) => {
     }
 
 
-export const getGetApiV1LookupsLookupIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(lookupId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1LookupsLookupIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(lookupId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -158,10 +159,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetApiV1LookupsLookupIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>>
-export type GetApiV1LookupsLookupIdQueryError = ErrorType<unknown>
+export type GetApiV1LookupsLookupIdQueryError = ErrorType<ErrorBody>
 
 
-export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(
+export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(
  lookupId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1LookupsLookupId>>,
@@ -171,7 +172,7 @@ export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof get
       >, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(
+export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(
  lookupId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1LookupsLookupId>>,
@@ -181,12 +182,12 @@ export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof get
       >, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(
+export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(
  lookupId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(
+export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(
  lookupId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -203,7 +204,7 @@ export function useGetApiV1LookupsLookupId<TData = Awaited<ReturnType<typeof get
 
 
 
-export const getGetApiV1LookupsLookupIdSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(lookupId: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1LookupsLookupIdSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(lookupId: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -222,23 +223,23 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetApiV1LookupsLookupIdSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>>
-export type GetApiV1LookupsLookupIdSuspenseQueryError = ErrorType<unknown>
+export type GetApiV1LookupsLookupIdSuspenseQueryError = ErrorType<ErrorBody>
 
 
-export function useGetApiV1LookupsLookupIdSuspense<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(
+export function useGetApiV1LookupsLookupIdSuspense<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(
  lookupId: string, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1LookupsLookupIdSuspense<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(
+export function useGetApiV1LookupsLookupIdSuspense<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(
  lookupId: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1LookupsLookupIdSuspense<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(
+export function useGetApiV1LookupsLookupIdSuspense<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(
  lookupId: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiV1LookupsLookupIdSuspense<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<unknown>>(
+export function useGetApiV1LookupsLookupIdSuspense<TData = Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError = ErrorType<ErrorBody>>(
  lookupId: string, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1LookupsLookupId>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {

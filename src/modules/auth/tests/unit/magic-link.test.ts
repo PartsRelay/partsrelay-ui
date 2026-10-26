@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vite-plus/test'
+import { MAX_STRING_LENGTH } from '@/core/strings'
 import { emailError, RESEND_AFTER_SECONDS, resendWait } from '@/modules/auth/core/magic-link'
 
 describe('emailError', () => {
@@ -13,6 +14,12 @@ describe('emailError', () => {
       expect(emailError(value)).toBe('errors.invalid-email')
     }
   )
+
+  it('rejects an address longer than the core accepts', () => {
+    const local = 'm'.repeat(MAX_STRING_LENGTH)
+
+    expect(emailError(`${local}@redwoodparts.com`)).toBe('form.too-long')
+  })
 })
 
 describe('resendWait', () => {

@@ -3,7 +3,7 @@ import { authClient } from '@/modules/auth/core/auth.client'
 import { inviteDefaults, inviteeError, roleHint } from '@/modules/workspaces/core/invite-form'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
-import { useAppForm } from '@/form'
+import { limitedText, useAppForm } from '@/form'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -50,7 +50,7 @@ export function InviteCard() {
           <form.Form>
             <FieldGroup>
               {/* The core checks the address, resubmitting clears its error */}
-              <form.AppField name="email" validators={{ onSubmit: () => undefined }}>
+              <form.AppField name="email" validators={{ onSubmit: limitedText }}>
                 {(field) => (
                   <field.InputField
                     label={t('workspace.invite.email')}

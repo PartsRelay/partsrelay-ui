@@ -13,7 +13,7 @@ export const authClient = createAuthClient({
   baseURL: env.API_URL || window.location.origin,
   fetchOptions: {
     throw: true,
-    // The core answers in the app language
+    // The core picks the language of the emails from it
     onRequest: (context) => {
       context.headers.set('Accept-Language', i18n.language)
     },
