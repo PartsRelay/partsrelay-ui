@@ -13,7 +13,7 @@ import {
 } from '@/core/api/models'
 import { signedInMember } from '@/core/mocks/auth'
 import { daysAgo } from '@/core/mocks/data'
-import { capStrings, fail, invalid } from '@/core/mocks/errors'
+import { apiBody, capStrings, fail, invalid } from '@/core/mocks/errors'
 import { DEFAULT_PER_PAGE } from '@/core/pagination'
 
 // Contacts of each company, by company slug
@@ -195,10 +195,9 @@ export const contactMocks = [
     })
   }),
   getPostApiV1WorkspaceContactsMockHandler(async ({ request }) => {
-    await capStrings(request)
+    const body = await apiBody<PostApiV1WorkspaceContactsBody>(request)
     const { company, role } = member()
     authorize(role)
-    const body = (await request.json()) as Partial<PostApiV1WorkspaceContactsBody>
     const waId = toWaId(body.phone)
     const name = checkedName(body.name)
 
@@ -215,19 +214,19 @@ export const contactMocks = [
     })
   }),
   getPatchApiV1WorkspaceContactsContactIdMockHandler(async ({ request, params }) => {
-    await capStrings(request)
+    const body = await apiBody<PatchApiV1WorkspaceContactsContactIdBody>(request)
     const { company, role } = member()
-    const body = (await request.json()) as PatchApiV1WorkspaceContactsContactIdBody
 
     // Not found, then forbidden, then invalid, like the core
     return directory((state) => {
       const target = found(state, company, String(params.contactId))
       authorize(role)
       const name = body.name === undefined ? undefined : checkedName(body.name)
-      if (body.status !== undefined && !isStatus(body.status)) rejected('status', 'enum')
+      const status = body.status ?? undefined
+      if (status !== undefined && !isStatus(status)) rejected('status', 'enum')
 
       if (name !== undefined) target.name = name
-      if (body.status !== undefined) target.status = body.status
+      if (status !== undefined) target.status = status
 
       return { data: target }
     })
