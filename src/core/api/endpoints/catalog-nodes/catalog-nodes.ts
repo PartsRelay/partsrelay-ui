@@ -24,6 +24,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ErrorBody,
   GetApiV1CatalogNodes200,
   GetApiV1CatalogNodesParams
 } from '../../models';
@@ -74,7 +75,7 @@ export const getGetApiV1CatalogNodesQueryKey = (params?: GetApiV1CatalogNodesPar
     }
 
 
-export const getGetApiV1CatalogNodesQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1CatalogNodesQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -93,10 +94,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetApiV1CatalogNodesQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1CatalogNodes>>>
-export type GetApiV1CatalogNodesQueryError = ErrorType<unknown>
+export type GetApiV1CatalogNodesQueryError = ErrorType<ErrorBody>
 
 
-export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(
+export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(
  params: GetApiV1CatalogNodesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1CatalogNodes>>,
@@ -106,7 +107,7 @@ export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApi
       >, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(
+export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(
  params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1CatalogNodes>>,
@@ -116,12 +117,12 @@ export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApi
       >, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(
+export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(
  params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(
+export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(
  params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -138,7 +139,7 @@ export function useGetApiV1CatalogNodes<TData = Awaited<ReturnType<typeof getApi
 
 
 
-export const getGetApiV1CatalogNodesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1CatalogNodesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -157,23 +158,23 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetApiV1CatalogNodesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1CatalogNodes>>>
-export type GetApiV1CatalogNodesSuspenseQueryError = ErrorType<unknown>
+export type GetApiV1CatalogNodesSuspenseQueryError = ErrorType<ErrorBody>
 
 
-export function useGetApiV1CatalogNodesSuspense<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(
+export function useGetApiV1CatalogNodesSuspense<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(
  params: GetApiV1CatalogNodesParams, options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1CatalogNodesSuspense<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(
+export function useGetApiV1CatalogNodesSuspense<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(
  params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1CatalogNodesSuspense<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(
+export function useGetApiV1CatalogNodesSuspense<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(
  params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiV1CatalogNodesSuspense<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<unknown>>(
+export function useGetApiV1CatalogNodesSuspense<TData = Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError = ErrorType<ErrorBody>>(
  params: GetApiV1CatalogNodesParams, options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1CatalogNodes>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {

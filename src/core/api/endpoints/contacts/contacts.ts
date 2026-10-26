@@ -28,6 +28,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ErrorBody,
   GetApiV1WorkspaceContacts200,
   PatchApiV1WorkspaceContactsContactId200,
   PatchApiV1WorkspaceContactsContactIdBody,
@@ -80,7 +81,7 @@ export const getGetApiV1WorkspaceContactsQueryKey = () => {
     }
 
 
-export const getGetApiV1WorkspaceContactsQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1WorkspaceContactsQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -99,10 +100,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetApiV1WorkspaceContactsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>>
-export type GetApiV1WorkspaceContactsQueryError = ErrorType<unknown>
+export type GetApiV1WorkspaceContactsQueryError = ErrorType<ErrorBody>
 
 
-export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>(
+export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>,
@@ -112,7 +113,7 @@ export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof g
       >, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>(
+export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>,
@@ -122,12 +123,12 @@ export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof g
       >, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>(
+export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>(
+export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -144,7 +145,7 @@ export function useGetApiV1WorkspaceContacts<TData = Awaited<ReturnType<typeof g
 
 
 
-export const getGetApiV1WorkspaceContactsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
+export const getGetApiV1WorkspaceContactsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>( options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -163,23 +164,23 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetApiV1WorkspaceContactsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>>
-export type GetApiV1WorkspaceContactsSuspenseQueryError = ErrorType<unknown>
+export type GetApiV1WorkspaceContactsSuspenseQueryError = ErrorType<ErrorBody>
 
 
-export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>(
+export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
   options: { query:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>(
+export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
   options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>(
+export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
   options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
   ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<unknown>>(
+export function useGetApiV1WorkspaceContactsSuspense<TData = Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError = ErrorType<ErrorBody>>(
   options?: { query?:Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiV1WorkspaceContacts>>, TError, TData>>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient
  ):  UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -215,7 +216,7 @@ export const postApiV1WorkspaceContacts = (
 
 export const getPostApiV1WorkspaceContactsMutationKey = () => ['postApiV1WorkspaceContacts'] as const;
 
-export const getPostApiV1WorkspaceContactsMutationOptions = <TError = ErrorType<unknown>,
+export const getPostApiV1WorkspaceContactsMutationOptions = <TError = ErrorType<ErrorBody>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiV1WorkspaceContacts>>, TError,PostApiV1WorkspaceContactsMutationVariables, TContext>, request?: SecondParameter<typeof http>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiV1WorkspaceContacts>>, TError,PostApiV1WorkspaceContactsMutationVariables, TContext> => {
 
@@ -244,10 +245,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostApiV1WorkspaceContactsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiV1WorkspaceContacts>>>
     export type PostApiV1WorkspaceContactsMutationBody = BodyType<PostApiV1WorkspaceContactsBody> | undefined
-    export type PostApiV1WorkspaceContactsMutationError = ErrorType<unknown>
+    export type PostApiV1WorkspaceContactsMutationError = ErrorType<ErrorBody>
     export type PostApiV1WorkspaceContactsMutationVariables = {data?: BodyType<PostApiV1WorkspaceContactsBody>}
 
-    export const usePostApiV1WorkspaceContacts = <TError = ErrorType<unknown>,
+    export const usePostApiV1WorkspaceContacts = <TError = ErrorType<ErrorBody>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiV1WorkspaceContacts>>, TError,PostApiV1WorkspaceContactsMutationVariables, TContext>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiV1WorkspaceContacts>>,
@@ -277,7 +278,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 export const getPatchApiV1WorkspaceContactsContactIdMutationKey = () => ['patchApiV1WorkspaceContactsContactId'] as const;
 
-export const getPatchApiV1WorkspaceContactsContactIdMutationOptions = <TError = ErrorType<unknown>,
+export const getPatchApiV1WorkspaceContactsContactIdMutationOptions = <TError = ErrorType<ErrorBody>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiV1WorkspaceContactsContactId>>, TError,PatchApiV1WorkspaceContactsContactIdMutationVariables, TContext>, request?: SecondParameter<typeof http>}
 ): UseMutationOptions<Awaited<ReturnType<typeof patchApiV1WorkspaceContactsContactId>>, TError,PatchApiV1WorkspaceContactsContactIdMutationVariables, TContext> => {
 
@@ -306,10 +307,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PatchApiV1WorkspaceContactsContactIdMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiV1WorkspaceContactsContactId>>>
     export type PatchApiV1WorkspaceContactsContactIdMutationBody = BodyType<PatchApiV1WorkspaceContactsContactIdBody> | undefined
-    export type PatchApiV1WorkspaceContactsContactIdMutationError = ErrorType<unknown>
+    export type PatchApiV1WorkspaceContactsContactIdMutationError = ErrorType<ErrorBody>
     export type PatchApiV1WorkspaceContactsContactIdMutationVariables = {contactId: string;data?: BodyType<PatchApiV1WorkspaceContactsContactIdBody>}
 
-    export const usePatchApiV1WorkspaceContactsContactId = <TError = ErrorType<unknown>,
+    export const usePatchApiV1WorkspaceContactsContactId = <TError = ErrorType<ErrorBody>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiV1WorkspaceContactsContactId>>, TError,PatchApiV1WorkspaceContactsContactIdMutationVariables, TContext>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiV1WorkspaceContactsContactId>>,
@@ -336,7 +337,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 export const getDeleteApiV1WorkspaceContactsContactIdMutationKey = () => ['deleteApiV1WorkspaceContactsContactId'] as const;
 
-export const getDeleteApiV1WorkspaceContactsContactIdMutationOptions = <TError = ErrorType<unknown>,
+export const getDeleteApiV1WorkspaceContactsContactIdMutationOptions = <TError = ErrorType<ErrorBody>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiV1WorkspaceContactsContactId>>, TError,DeleteApiV1WorkspaceContactsContactIdMutationVariables, TContext>, request?: SecondParameter<typeof http>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiV1WorkspaceContactsContactId>>, TError,DeleteApiV1WorkspaceContactsContactIdMutationVariables, TContext> => {
 
@@ -365,10 +366,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type DeleteApiV1WorkspaceContactsContactIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiV1WorkspaceContactsContactId>>>
 
-    export type DeleteApiV1WorkspaceContactsContactIdMutationError = ErrorType<unknown>
+    export type DeleteApiV1WorkspaceContactsContactIdMutationError = ErrorType<ErrorBody>
     export type DeleteApiV1WorkspaceContactsContactIdMutationVariables = {contactId: string}
 
-    export const useDeleteApiV1WorkspaceContactsContactId = <TError = ErrorType<unknown>,
+    export const useDeleteApiV1WorkspaceContactsContactId = <TError = ErrorType<ErrorBody>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiV1WorkspaceContactsContactId>>, TError,DeleteApiV1WorkspaceContactsContactIdMutationVariables, TContext>, request?: SecondParameter<typeof http>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiV1WorkspaceContactsContactId>>,

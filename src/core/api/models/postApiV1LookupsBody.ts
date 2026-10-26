@@ -6,6 +6,7 @@
  */
 
 export type PostApiV1LookupsBody = {
+  /** @maxLength 255 */
   plate: string;
   /**
      * @minItems 1
