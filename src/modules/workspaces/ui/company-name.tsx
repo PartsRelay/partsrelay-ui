@@ -1,8 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { authClient } from '@/modules/auth/core/auth.client'
-import { optimistic } from '@/core/optimistic'
-import type { FullOrganization } from '@/modules/workspaces/core/workspace'
-import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
+import { updateCompany } from '@/modules/workspaces/core/workspace.mutation'
 import { requiredText, useAppForm } from '@/form'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -17,16 +14,9 @@ export function CompanyName({ name }: { name: string }) {
       const next = value.name.trim()
       if (next === name.trim()) return
 
-      const result = await run(
-        () =>
-          optimistic<FullOrganization>(
-            client,
-            workspaceKey,
-            (organization) => ({ ...organization, name: next }),
-            () => authClient.organization.update({ data: { name: next } })
-          ),
-        { notice: 'company.notices.renamed' }
-      )
+      const result = await run(() => updateCompany(client, { name: next }), {
+        notice: 'company.notices.renamed',
+      })
       // The prop stays the default and catches up later
       if (result.ok) formApi.reset({ name: next }, { keepDefaultValues: true })
     },

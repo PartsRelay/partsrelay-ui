@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/query-core'
+import { getGlobalBroadcastChannel } from 'better-auth/client'
 import { addDays } from 'date-fns'
-import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { type Session, sessionQuery } from '@/modules/auth/core/session.query'
 import { loadAccount, watchAccount } from '@/modules/workspaces/core/account'
 import type { Role } from '@/modules/workspaces/core/role'
@@ -115,6 +116,12 @@ describe('watchAccount', () => {
 
   const signOut = () => client.setQueryData(sessionQuery.queryKey, null)
 
+  const tabs = getGlobalBroadcastChannel()
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('reports when another account signs in', () => {
     signIn(people.mark)
     const onChange = vi.fn()
@@ -146,6 +153,29 @@ describe('watchAccount', () => {
     signIn(people.julia)
 
     expect(onChange).toHaveBeenCalledTimes(1)
+  })
+
+  it('asks the other tabs to check their session when an account signs in', () => {
+    const post = vi.spyOn(tabs, 'post')
+    watchAccount(client, vi.fn())
+
+    signIn(people.mark)
+    signIn(people.mark)
+    signOut()
+    signIn(people.julia)
+
+    expect(post).toHaveBeenCalledTimes(2)
+  })
+
+  it('checks the session again when another tab signs in', () => {
+    const subscribe = vi.spyOn(tabs, 'subscribe')
+    signIn(people.mark)
+    watchAccount(client, vi.fn())
+    const [[otherTab]] = subscribe.mock.calls
+
+    otherTab({ event: 'session', data: { trigger: 'getSession' }, clientId: 'tab', timestamp: 0 })
+
+    expect(client.getQueryState(sessionQuery.queryKey)?.isInvalidated).toBe(true)
   })
 
   it('stops once unsubscribed', () => {

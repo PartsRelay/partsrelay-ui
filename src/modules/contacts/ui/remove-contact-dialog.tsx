@@ -1,5 +1,6 @@
 import type { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
+import { alreadyGone } from '@/core/errors'
 import type { ContactRow } from '@/modules/contacts/core/contact-row'
 import { useRemoveContact } from '@/modules/contacts/ui/hooks/use-remove-contact'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
@@ -22,7 +23,14 @@ export function RemoveContactDialog({ row, open, onClose, returnTo }: RemoveCont
       description={t('contacts.confirm.remove.body', { phone: row.phone })}
       action={t('contacts.confirm.remove.action')}
       pending={remove.isPending}
-      onConfirm={() => remove.mutate(row.contact, { onSuccess: onClose })}
+      onConfirm={() =>
+        remove.mutate(row.contact, {
+          onSuccess: onClose,
+          onError: (error) => {
+            if (alreadyGone(error)) onClose()
+          },
+        })
+      }
       onClose={onClose}
       returnTo={returnTo}
     />
