@@ -117,7 +117,7 @@ function TransferForm({ onDone }: { onDone: () => void }) {
         <AlertDialogFooter>
           <AlertDialogCancel>{t('confirm.cancel')}</AlertDialogCancel>
           <form.SubmitButton
-            className="h-auto min-h-8 whitespace-normal wrap-anywhere"
+            className="h-auto min-h-8 min-w-0 shrink whitespace-normal wrap-anywhere"
             disabled={!candidate}
           >
             {t(...transferAction(candidate))}

@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/query-core'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { Navigate, Outlet, redirect, useLocation } from '@tanstack/react-router'
-import { useEffect, useMemo } from 'react'
+import { Navigate, Outlet, redirect, useLocation, useRouter } from '@tanstack/react-router'
+import { useEffect, useMemo, useState } from 'react'
 import { requireSession, type Session, sessionQuery } from '@/modules/auth/core/session.query'
 import { useLiveLookups } from '@/modules/lookups/ui/hooks/use-live-lookups'
 import { loadAccount } from '@/modules/workspaces/core/account'
@@ -37,7 +37,8 @@ export function AppLayout() {
 }
 
 function LoginRedirect() {
-  const next = useLocation({ select: (location) => location.href })
+  const router = useRouter()
+  const [next] = useState(() => router.state.location.href)
 
   return <Navigate to="/login" search={{ next }} replace />
 }

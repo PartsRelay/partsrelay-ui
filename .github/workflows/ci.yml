@@ -13,16 +13,14 @@ permissions:
   contents: read
 
 jobs:
-  oxc:
+  install:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
+    outputs:
+      playwright: ${{ steps.playwright.outputs.version }}
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-      # Installed once here, the other jobs restore it
       - id: modules
         uses: actions/cache/restore@v6
         with:
@@ -35,64 +33,48 @@ jobs:
         with:
           path: node_modules
           key: ${{ steps.modules.outputs.cache-primary-key }}
-      - run: bun run check
+      - id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
 
-  build:
-    needs: oxc
+  check:
+    name: ${{ matrix.name }}
+    needs: install
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-      - uses: actions/cache/restore@v6
-        with:
-          path: node_modules
-          key: modules-${{ runner.os }}-${{ hashFiles('bun.lock', 'package.json') }}
-          fail-on-cache-miss: true
-      - run: bun run build
-
-  # Unit and e2e start with build, neither needs its output
-  unit:
-    needs: oxc
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-      - uses: actions/cache/restore@v6
-        with:
-          path: node_modules
-          key: modules-${{ runner.os }}-${{ hashFiles('bun.lock', 'package.json') }}
-          fail-on-cache-miss: true
-      - run: bun run test:unit
-
-  # One job per engine, headless only: Chrome, Firefox and Safari
-  e2e:
-    needs: oxc
-    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container: mcr.microsoft.com/playwright:v${{ needs.install.outputs.playwright }}-noble
     strategy:
+      fail-fast: true
       matrix:
-        browser: [chromium, firefox, webkit]
+        include:
+          - name: check
+            run: check
+          - name: build
+            run: build
+          - name: unit
+            run: test:unit
+          - name: e2e (chromium)
+            run: test:e2e --project=chromium
+            report: chromium
+          - name: e2e (firefox)
+            run: test:e2e --project=firefox
+            report: firefox
+          - name: e2e (webkit)
+            run: test:e2e --project=webkit
+            report: webkit
     steps:
       - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
       - uses: actions/cache/restore@v6
         with:
           path: node_modules
           key: modules-${{ runner.os }}-${{ hashFiles('bun.lock', 'package.json') }}
           fail-on-cache-miss: true
-      - run: bunx playwright install --with-deps --only-shell ${{ matrix.browser }}
-      - run: bun run test:e2e --project=${{ matrix.browser }}
-      - if: ${{ failure() }}
+      - run: npm install --global "$(node -p "require('./package.json').packageManager")"
+      - run: bun run ${{ matrix.run }}
+        env:
+          HOME: /root
+      - if: ${{ failure() && matrix.report }}
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report-${{ matrix.report }}
           path: playwright-report
           retention-days: 7

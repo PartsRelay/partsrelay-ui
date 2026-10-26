@@ -9,8 +9,8 @@ import {
 } from 'lucide-react'
 import { type ReactNode, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { env } from '@/env'
 import { errorMessage } from '@/core/errors'
+import { Logo } from '@/ui/components/logo'
 import { Button } from '@/ui/components/ui/button'
 import {
   Empty,
@@ -31,8 +31,8 @@ type StatusScreenProps = {
 function StatusScreen({ icon: Icon, title, description, children }: StatusScreenProps) {
   return (
     <main className="flex min-h-svh flex-col items-center justify-center gap-6 p-6">
-      <Link to="/" className="text-sm font-semibold">
-        {env.APP_NAME}
+      <Link to="/" className="rounded-lg">
+        <Logo />
       </Link>
       <Empty className="w-full max-w-md flex-none border">
         <EmptyHeader>
