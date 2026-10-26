@@ -1,17 +1,19 @@
+import type { AnyFieldApi } from '@tanstack/react-form'
 import type { ComponentProps, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MAX_STRING_LENGTH } from '@/core/strings'
-import { useFieldContext } from '@/form-context'
 import { TextField } from '@/ui/components/text-field'
 import { Input } from '@/ui/components/ui/input'
 
+export const MAX_STRING_LENGTH = 255
+
 type InputFieldProps = Omit<ComponentProps<typeof Input>, 'name' | 'value' | 'onChange'> & {
+  field: AnyFieldApi
   label: ReactNode
   description?: ReactNode
 }
 
-// An input bound to its field, errors are translation keys
 export function InputField({
+  field,
   label,
   description,
   required,
@@ -19,8 +21,9 @@ export function InputField({
   ...props
 }: InputFieldProps) {
   const { t } = useTranslation()
-  const field = useFieldContext<string>()
-  const error = field.state.meta.errors.find((item): item is string => typeof item === 'string')
+  const [error] = field.state.meta.errors.map((item) =>
+    typeof item === 'string' ? item : item?.message
+  )
 
   return (
     <TextField
