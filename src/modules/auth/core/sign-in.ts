@@ -22,6 +22,7 @@ const LOGIN_ERRORS = new Map([
   ['failed-to-create-session', 'errors.failed-to-create-session'],
   ['unable-to-create-session', 'errors.failed-to-create-session'],
   ['email-not-verified', 'errors.email-not-verified'],
+  ['too-many-requests', 'errors.too-many-requests'],
 ])
 
 function absolute(path: string) {
