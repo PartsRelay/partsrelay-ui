@@ -7,7 +7,8 @@ import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 
 export function DeleteCompany({ workspace }: { workspace: Workspace }) {
   const { t } = useTranslation()
@@ -18,9 +19,7 @@ export function DeleteCompany({ workspace }: { workspace: Workspace }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2>{t('company.delete.title')}</h2>
-        </CardTitle>
+        <CardHeading>{t('company.delete.title')}</CardHeading>
         <CardDescription>{t('company.delete.description')}</CardDescription>
       </CardHeader>
       <CardContent>

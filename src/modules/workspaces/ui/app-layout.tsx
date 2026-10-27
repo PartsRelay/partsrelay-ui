@@ -80,7 +80,7 @@ function AppShell() {
         <AppHeader />
         <AppTabs />
         <div className="flex flex-1 flex-col p-4 md:p-6">
-          <div className="mx-auto grid w-full max-w-5xl gap-6">
+          <div className="mx-auto grid w-full max-w-6xl gap-6">
             {allowed ? <Outlet /> : <AccessDenied />}
           </div>
         </div>

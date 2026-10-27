@@ -3,7 +3,7 @@ import { ChevronsUpDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSignOut } from '@/modules/auth/ui/hooks/use-sign-out'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/components/ui/avatar'
+import { PersonAvatar } from '@/ui/components/person-avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,12 +23,7 @@ import {
 function Identity({ name, email, image }: { name: string; email: string; image: string | null }) {
   return (
     <>
-      <Avatar>
-        {image && <AvatarImage src={image} alt={name} />}
-        <AvatarFallback>
-          <UserIcon aria-hidden />
-        </AvatarFallback>
-      </Avatar>
+      <PersonAvatar name={name} image={image} />
       <div className="grid flex-1 text-left text-sm leading-tight">
         <span className="truncate font-medium">{name}</span>
         <span className="truncate text-xs text-muted-foreground">{email}</span>

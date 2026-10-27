@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { MailXIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Message } from '@/core/message'
-import { AuthTitle } from '@/ui/components/auth-title'
+import { CardHeading } from '@/ui/components/card-heading'
 import { Callout } from '@/ui/components/callout'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/ui/components/ui/card'
@@ -15,7 +15,7 @@ export function InvitationUnavailable({ reason }: InvitationUnavailableProps) {
   return (
     <Card>
       <CardHeader>
-        <AuthTitle>{t('invitation.unavailable.title')}</AuthTitle>
+        <CardHeading level={1}>{t('invitation.unavailable.title')}</CardHeading>
       </CardHeader>
       <CardContent className="grid gap-6">
         <Callout tone="warning" icon={MailXIcon}>

@@ -10,7 +10,8 @@ import { InputField } from '@/ui/components/input-field'
 import { PersonItem } from '@/ui/components/person-item'
 import { SubmitButton } from '@/ui/components/submit-button'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
 
 type IdentityCardProps = { view: ProfileView; userName: string }
@@ -41,9 +42,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2>{t('profile.identity.title')}</h2>
-        </CardTitle>
+        <CardHeading>{t('profile.identity.title')}</CardHeading>
         <CardDescription>{t('profile.identity.description')}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">

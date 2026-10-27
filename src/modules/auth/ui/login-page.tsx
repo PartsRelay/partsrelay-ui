@@ -6,7 +6,7 @@ import { env } from '@/env'
 import { notify } from '@/core/notify'
 import { redirectSignedIn } from '@/modules/auth/core/session.query'
 import { loginError, type loginSearchSchema } from '@/modules/auth/core/sign-in'
-import { AuthTitle } from '@/ui/components/auth-title'
+import { CardHeading } from '@/ui/components/card-heading'
 import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
 import { Callout } from '@/ui/components/callout'
 import { ExternalLink } from '@/ui/components/external-link'
@@ -39,7 +39,7 @@ export function LoginPage() {
   return (
     <Card>
       <CardHeader>
-        <AuthTitle>{t('login.title')}</AuthTitle>
+        <CardHeading level={1}>{t('login.title')}</CardHeading>
         <CardDescription>{t('login.description')}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">

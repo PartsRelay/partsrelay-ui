@@ -2,16 +2,10 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import type { LookupRow } from '@/modules/lookups/core/lookup-row'
 import { useText } from '@/modules/lookups/ui/hooks/use-text'
+import { DataTable } from '@/ui/components/data-table'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/ui/components/ui/item'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/ui/components/ui/table'
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
 const columns = ['plate', 'parts', 'status', 'channel', 'requester', 'requested']
 
@@ -37,7 +31,7 @@ export function LookupsTable({ rows }: { rows: LookupRow[] }) {
   return (
     <>
       <div className="hidden md:block">
-        <Table>
+        <DataTable>
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
@@ -56,13 +50,13 @@ export function LookupsTable({ rows }: { rows: LookupRow[] }) {
                   <Link
                     {...resultOf(row)}
                     aria-label={t('lookups.list.open', { plate: row.identifier })}
-                    className="font-mono font-medium underline-offset-4 hover:underline"
+                    className="font-heading font-bold tracking-wide underline-offset-4 hover:underline"
                     onClick={(event) => event.stopPropagation()}
                   >
                     {row.identifier}
                   </Link>
                   {row.lookup.plate && row.lookup.vin && (
-                    <p className="font-mono text-xs text-muted-foreground">{row.lookup.vin}</p>
+                    <p className="text-xs tracking-wide text-muted-foreground">{row.lookup.vin}</p>
                   )}
                 </TableCell>
                 <TableCell>
@@ -77,7 +71,7 @@ export function LookupsTable({ rows }: { rows: LookupRow[] }) {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+        </DataTable>
       </div>
       <ul className="grid gap-2 md:hidden">
         {rows.map((row) => (
@@ -85,7 +79,9 @@ export function LookupsTable({ rows }: { rows: LookupRow[] }) {
             <Item variant="outline" asChild>
               <Link {...resultOf(row)}>
                 <ItemContent className="min-w-0">
-                  <ItemTitle className="font-mono">{row.identifier}</ItemTitle>
+                  <ItemTitle className="font-heading font-bold tracking-wide">
+                    {row.identifier}
+                  </ItemTitle>
                   <div className="text-sm">
                     <Parts row={row} />
                   </div>

@@ -3,7 +3,7 @@ import { CloudAlertIcon, RotateCwIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { failedQueries } from '@/modules/auth/core/invitation.query'
 import type { Message } from '@/core/message'
-import { AuthTitle } from '@/ui/components/auth-title'
+import { CardHeading } from '@/ui/components/card-heading'
 import { Callout } from '@/ui/components/callout'
 import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/ui/components/ui/card'
@@ -17,7 +17,7 @@ export function InvitationFailed({ reason }: { reason: Message }) {
   return (
     <Card>
       <CardHeader>
-        <AuthTitle>{t('invitation.failed.title')}</AuthTitle>
+        <CardHeading level={1}>{t('invitation.failed.title')}</CardHeading>
       </CardHeader>
       <CardContent className="grid gap-6">
         <Callout tone="danger" icon={CloudAlertIcon}>

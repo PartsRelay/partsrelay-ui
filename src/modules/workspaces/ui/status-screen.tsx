@@ -11,15 +11,8 @@ import { type ReactNode, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessage } from '@/core/errors'
 import { Logo } from '@/ui/components/logo'
+import { EmptyState } from '@/ui/components/empty-state'
 import { Button } from '@/ui/components/ui/button'
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '@/ui/components/ui/empty'
 
 type StatusScreenProps = {
   icon: LucideIcon
@@ -34,18 +27,14 @@ function StatusScreen({ icon: Icon, title, description, children }: StatusScreen
       <Link to="/" className="rounded-lg">
         <Logo />
       </Link>
-      <Empty className="w-full max-w-md flex-none border">
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <Icon aria-hidden />
-          </EmptyMedia>
-          <EmptyTitle>
-            <h1>{title}</h1>
-          </EmptyTitle>
-          <EmptyDescription>{description}</EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent className="flex-row flex-wrap justify-center">{children}</EmptyContent>
-      </Empty>
+      <EmptyState
+        className="w-full max-w-md flex-none"
+        icon={<Icon />}
+        title={<h1>{title}</h1>}
+        description={description}
+      >
+        <div className="flex flex-wrap justify-center gap-2">{children}</div>
+      </EmptyState>
     </main>
   )
 }

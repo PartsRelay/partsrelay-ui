@@ -3,14 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { LookupDetail, LookupState } from '@/modules/lookups/core/lookup-detail'
 import { textKey } from '@/modules/lookups/core/lookup-row'
 import { NewLookupButton } from '@/modules/lookups/ui/new-lookup-button'
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '@/ui/components/ui/empty'
+import { EmptyState } from '@/ui/components/empty-state'
 import { Spinner } from '@/ui/components/ui/spinner'
 
 const icons: Record<Exclude<LookupState, 'results'>, LucideIcon> = {
@@ -28,21 +21,14 @@ export function LookupOutcome({ detail }: { detail: LookupDetail }) {
   const running = state === 'running'
 
   return (
-    <Empty className="border">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          {running ? <Spinner aria-hidden /> : <Icon aria-hidden />}
-        </EmptyMedia>
-        <EmptyTitle>
-          <h2>{t(...detail.announcement)}</h2>
-        </EmptyTitle>
-        <EmptyDescription>{t(`lookups.outcome.${textKey(state)}.description`)}</EmptyDescription>
-      </EmptyHeader>
+    <EmptyState
+      icon={running ? <Spinner /> : <Icon />}
+      title={<h2>{t(...detail.announcement)}</h2>}
+      description={t(`lookups.outcome.${textKey(state)}.description`)}
+    >
       {!running && (
-        <EmptyContent>
-          <NewLookupButton prefill={detail.retry}>{t('lookups.detail.retry')}</NewLookupButton>
-        </EmptyContent>
+        <NewLookupButton prefill={detail.retry}>{t('lookups.detail.retry')}</NewLookupButton>
       )}
-    </Empty>
+    </EmptyState>
   )
 }

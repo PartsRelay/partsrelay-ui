@@ -7,7 +7,7 @@ import { setupDefaults, setupSchemas } from '@/modules/workspaces/core/setup'
 import { toLocale } from '@/modules/workspaces/core/locale'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
-import { AuthTitle } from '@/ui/components/auth-title'
+import { CardHeading } from '@/ui/components/card-heading'
 import { AccountActions } from '@/modules/workspaces/ui/account-actions'
 import { InvitationHint } from '@/modules/workspaces/ui/invitation-hint'
 import { LocaleSelect } from '@/ui/components/locale-select'
@@ -50,7 +50,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
   return (
     <Card>
       <CardHeader>
-        <AuthTitle>{t('setup.title')}</AuthTitle>
+        <CardHeading level={1}>{t('setup.title')}</CardHeading>
         <CardDescription>{t('setup.description')}</CardDescription>
       </CardHeader>
       <CardContent>

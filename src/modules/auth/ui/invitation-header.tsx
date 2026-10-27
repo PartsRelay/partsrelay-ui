@@ -1,7 +1,7 @@
 import { intlFormat } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { type InvitationDetails, invitationHeadline } from '@/modules/auth/core/invitation'
-import { AuthTitle } from '@/ui/components/auth-title'
+import { CardHeading } from '@/ui/components/card-heading'
 import { CardDescription, CardHeader } from '@/ui/components/ui/card'
 
 export function InvitationHeader({ details }: { details?: InvitationDetails }) {
@@ -10,7 +10,7 @@ export function InvitationHeader({ details }: { details?: InvitationDetails }) {
   if (!details) {
     return (
       <CardHeader>
-        <AuthTitle>{t('invitation.title')}</AuthTitle>
+        <CardHeading level={1}>{t('invitation.title')}</CardHeading>
         <CardDescription>{t('invitation.sign-in.account')}</CardDescription>
       </CardHeader>
     )
@@ -18,7 +18,7 @@ export function InvitationHeader({ details }: { details?: InvitationDetails }) {
 
   return (
     <CardHeader>
-      <AuthTitle>{t(...invitationHeadline(details))}</AuthTitle>
+      <CardHeading level={1}>{t(...invitationHeadline(details))}</CardHeading>
       <CardDescription className="grid gap-1">
         <span>{t(`invitation.join-as.${details.role}`, { role: t(...details.roleLabel) })}</span>
         <span>

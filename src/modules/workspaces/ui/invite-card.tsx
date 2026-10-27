@@ -9,7 +9,8 @@ import { InputField } from '@/ui/components/input-field'
 import { SubmitButton } from '@/ui/components/submit-button'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { RoleField } from '@/modules/workspaces/ui/role-field'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
 
 export function InviteCard() {
@@ -43,9 +44,7 @@ export function InviteCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2>{t('workspace.invite.title')}</h2>
-        </CardTitle>
+        <CardHeading>{t('workspace.invite.title')}</CardHeading>
         <CardDescription>{t('workspace.invite.description')}</CardDescription>
       </CardHeader>
       <CardContent>

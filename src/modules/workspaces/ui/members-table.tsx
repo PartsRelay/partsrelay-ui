@@ -7,7 +7,8 @@ import { PersonItem } from '@/ui/components/person-item'
 import { ResponsiveTable } from '@/ui/components/responsive-table'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { MemberActions } from '@/modules/workspaces/ui/member-actions'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
 const columns = ['member', 'role', 'actions']
@@ -22,11 +23,9 @@ export function MembersTable({ onTransfer }: { onTransfer: () => void }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2 ref={heading} tabIndex={-1} className="outline-none">
-            {t('workspace.members.title')}
-          </h2>
-        </CardTitle>
+        <CardHeading ref={heading} tabIndex={-1} className="outline-none">
+          {t('workspace.members.title')}
+        </CardHeading>
         <CardDescription>{t('workspace.members.description')}</CardDescription>
       </CardHeader>
       <CardContent>

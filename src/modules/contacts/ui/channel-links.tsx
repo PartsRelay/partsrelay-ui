@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { channelsQuery } from '@/modules/contacts/core/channels'
 import { CopyButton } from '@/ui/components/copy-button'
 import { Button } from '@/ui/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/ui/components/ui/item'
 
 export function ChannelLinks() {
@@ -16,16 +17,16 @@ export function ChannelLinks() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2>{t('contacts.channels.title')}</h2>
-        </CardTitle>
+        <CardHeading>{t('contacts.channels.title')}</CardHeading>
         <CardDescription>{t('contacts.channels.description')}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-2">
         {channels.map((channel) => (
           <Item key={channel.source} variant="outline">
             <ItemContent>
-              <ItemTitle className="tabular-nums">{channel.address}</ItemTitle>
+              <ItemTitle className="font-heading text-base whitespace-nowrap tabular-nums">
+                {channel.address}
+              </ItemTitle>
               <ItemDescription>{t(...channel.label)}</ItemDescription>
             </ItemContent>
             <ItemActions className="flex-wrap">

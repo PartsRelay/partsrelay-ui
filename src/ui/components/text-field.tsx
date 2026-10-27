@@ -30,7 +30,11 @@ export function TextField({
     <Field data-invalid={invalid || undefined} className={className}>
       <FieldLabel htmlFor={control}>
         {label}
-        {required && <span aria-hidden>*</span>}
+        {required && (
+          <span aria-hidden className="-ms-1 text-muted-foreground">
+            *
+          </span>
+        )}
       </FieldLabel>
       <Slot.Root
         id={control}

@@ -12,27 +12,15 @@ import { BlockContactDialog } from '@/modules/contacts/ui/block-contact-dialog'
 import { ContactsTable } from '@/modules/contacts/ui/contacts-table'
 import { RemoveContactDialog } from '@/modules/contacts/ui/remove-contact-dialog'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
+import { EmptyState } from '@/ui/components/empty-state'
+import { ListSkeleton } from '@/ui/components/list-skeleton'
 import { LoadError, RefetchError } from '@/ui/components/load-error'
 import { PaginationBar } from '@/ui/components/pagination-bar'
 import { SearchField } from '@/ui/components/search-field'
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/ui/components/ui/card'
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '@/ui/components/ui/empty'
-import { Skeleton } from '@/ui/components/ui/skeleton'
+import { Card, CardAction, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/components/ui/tabs'
 import { usePageInfo } from '@/ui/hooks/use-page-info'
+import { CardHeading } from '@/ui/components/card-heading'
 
 const route = getRouteApi('/_app/(contacts)/contacts')
 
@@ -44,17 +32,11 @@ function NoContacts({ tab, searched }: { tab: ContactTab; searched: boolean }) {
   const hint = me.permissions.manageContacts ? 'manager' : 'viewer'
 
   return (
-    <Empty className="border">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <BookUserIcon aria-hidden />
-        </EmptyMedia>
-        <EmptyTitle>{t(searched ? 'contacts.empty.search' : `contacts.empty.${tab}`)}</EmptyTitle>
-        {tab === 'all' && !searched && (
-          <EmptyDescription>{t(`contacts.empty.${hint}`)}</EmptyDescription>
-        )}
-      </EmptyHeader>
-    </Empty>
+    <EmptyState
+      icon={<BookUserIcon />}
+      title={t(searched ? 'contacts.empty.search' : `contacts.empty.${tab}`)}
+      description={tab === 'all' && !searched && t(`contacts.empty.${hint}`)}
+    />
   )
 }
 
@@ -80,11 +62,9 @@ export function ContactDirectory() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2 ref={heading} tabIndex={-1} className="outline-none">
-            {t('contacts.list.title')}
-          </h2>
-        </CardTitle>
+        <CardHeading ref={heading} tabIndex={-1} className="outline-none">
+          {t('contacts.list.title')}
+        </CardHeading>
         <CardDescription aria-live="polite">
           {info ? t('contacts.list.count', { count: info.total }) : t('contacts.list.description')}
         </CardDescription>
@@ -146,7 +126,7 @@ export function ContactDirectory() {
             ) : list.isLoadingError ? (
               <LoadError error={list.error} onRetry={retry} />
             ) : (
-              <Skeleton className="h-48 w-full" />
+              <ListSkeleton />
             )}
           </TabsContent>
         </Tabs>

@@ -16,12 +16,12 @@ import {
 import { useStartLookup } from '@/modules/lookups/ui/hooks/use-start-lookup'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { Callout } from '@/ui/components/callout'
+import { ChoiceGroup } from '@/ui/components/choice-group'
 import { Form } from '@/ui/components/form'
 import { InputField } from '@/ui/components/input-field'
 import { SubmitButton } from '@/ui/components/submit-button'
 import { Button } from '@/ui/components/ui/button'
 import { FieldGroup } from '@/ui/components/ui/field'
-import { ToggleGroup, ToggleGroupItem } from '@/ui/components/ui/toggle-group'
 import {
   Sheet,
   SheetClose,
@@ -85,22 +85,15 @@ function NewLookupForm({ prefill }: { prefill: LookupPrefill }) {
         <FieldGroup>
           <form.Field name="by">
             {(field) => (
-              <ToggleGroup
-                type="single"
-                variant="outline"
+              <ChoiceGroup
                 aria-label={t('lookups.new.identify')}
+                options={identifiers.map((by) => ({ value: by, label: t(`lookups.new.by.${by}`) }))}
                 value={field.state.value}
                 onValueChange={(value) => {
                   const by = toIdentifier(value)
                   if (by) field.handleChange(by)
                 }}
-              >
-                {identifiers.map((by) => (
-                  <ToggleGroupItem key={by} value={by}>
-                    {t(`lookups.new.by.${by}`)}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
+              />
             )}
           </form.Field>
           <form.Subscribe selector={(state) => state.values.by}>

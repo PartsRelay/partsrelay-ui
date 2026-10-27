@@ -3,7 +3,8 @@ import type { Locale } from '@/modules/workspaces/core/locale'
 import { updateCompany } from '@/modules/workspaces/core/workspace.mutation'
 import { LocaleSelect } from '@/ui/components/locale-select'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 
 export function CompanyLanguage({ locale }: { locale: Locale }) {
   const { t } = useTranslation()
@@ -12,9 +13,7 @@ export function CompanyLanguage({ locale }: { locale: Locale }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2>{t('company.language.title')}</h2>
-        </CardTitle>
+        <CardHeading>{t('company.language.title')}</CardHeading>
         <CardDescription>{t('company.language.description')}</CardDescription>
       </CardHeader>
       <CardContent>
