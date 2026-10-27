@@ -8,7 +8,7 @@ import { NewLookupSheet } from '@/modules/lookups/ui/new-lookup-sheet'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { PageHeader } from '@/ui/components/page-header'
 
-const route = getRouteApi('/_app/(lookups)/searches/')
+const route = getRouteApi('/_app/(lookups)/lookups/')
 
 export function LookupsPage() {
   const { t } = useTranslation()

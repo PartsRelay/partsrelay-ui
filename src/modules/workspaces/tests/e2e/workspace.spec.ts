@@ -192,7 +192,7 @@ test.describe('as a viewer', () => {
 
   test('home is the searches and the workspace is not available', async ({ page }) => {
     await page.goto('/')
-    await expect(page).toHaveURL('/searches')
+    await expect(page).toHaveURL('/lookups')
     await expect(
       page.getByRole('heading', {
         level: 1,
@@ -207,6 +207,6 @@ test.describe('as a viewer', () => {
       page.getByRole('heading', { level: 1, name: "You don't have access to this page." })
     ).toBeVisible()
     await page.getByRole('link', { name: 'Back to home' }).click()
-    await expect(page).toHaveURL('/searches')
+    await expect(page).toHaveURL('/lookups')
   })
 })

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import type { LookupDetail } from '@/modules/lookups/core/lookup-detail'
-import { useText } from '@/modules/lookups/ui/hooks/use-text'
 import { CardHeading } from '@/ui/components/card-heading'
 import { type Fact, Facts } from '@/ui/components/facts'
 import { StatusBadge } from '@/ui/components/status-badge'
@@ -11,7 +10,6 @@ const facts = 'grid-cols-2 border-t pt-4 md:grid-cols-3'
 
 export function LookupVehicle({ detail }: { detail: LookupDetail }) {
   const { t } = useTranslation()
-  const text = useText()
   const vehicle =
     detail.vehicle ?? (detail.state === 'vehicle_not_found' ? t('lookups.detail.no-vehicle') : null)
 
@@ -43,7 +41,7 @@ export function LookupVehicle({ detail }: { detail: LookupDetail }) {
                   },
                 ]
               : []),
-            { label: t('lookups.columns.requester'), value: text(detail.searcher) },
+            { label: t('lookups.columns.requester'), value: t(...detail.searcher) },
             { label: t('lookups.columns.channel'), value: t(...detail.sourceLabel) },
             { label: t('lookups.columns.requested'), value: detail.requested },
           ]}

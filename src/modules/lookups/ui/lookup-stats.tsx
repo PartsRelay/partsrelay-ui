@@ -4,7 +4,6 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { statsView } from '@/modules/lookups/core/lookup-stats'
 import { lookupStatsQuery } from '@/modules/lookups/core/lookups.query'
-import { useText } from '@/modules/lookups/ui/hooks/use-text'
 import { CardHeading } from '@/ui/components/card-heading'
 import { LoadError } from '@/ui/components/load-error'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
@@ -46,7 +45,6 @@ function StatsSkeleton() {
 
 export function LookupStats() {
   const { t, i18n } = useTranslation()
-  const text = useText()
   const stats = useQuery(lookupStatsQuery)
   const count = (value: number) => value.toLocaleString(i18n.language)
 
@@ -86,14 +84,14 @@ export function LookupStats() {
                   </span>
                   {searcher ? (
                     <Link
-                      to="/searches"
+                      to="/lookups"
                       search={{ searcherType: searcher.type, searcherId: searcher.id }}
                       className="justify-self-start text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                     >
-                      {text(label)}
+                      {t(...label)}
                     </Link>
                   ) : (
-                    <span className="text-sm text-muted-foreground">{text(label)}</span>
+                    <span className="text-sm text-muted-foreground">{t(...label)}</span>
                   )}
                 </li>
               ))}

@@ -14,7 +14,7 @@ import { PageHeader } from '@/ui/components/page-header'
 import { EmptyState } from '@/ui/components/empty-state'
 import { Button } from '@/ui/components/ui/button'
 
-const route = getRouteApi('/_app/(lookups)/searches/$lookupId')
+const route = getRouteApi('/_app/(lookups)/lookups/$lookupId')
 
 function NotFound() {
   const { t } = useTranslation()
@@ -45,7 +45,7 @@ export function LookupPage() {
         action={
           <Button variant="outline" asChild>
             <Link
-              to="/searches"
+              to="/lookups"
               onClick={(event) => {
                 if (!canGoBack) return
                 event.preventDefault()

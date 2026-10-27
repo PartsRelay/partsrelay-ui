@@ -60,7 +60,7 @@ function NewLookupForm({ prefill }: { prefill: LookupPrefill }) {
       try {
         const { id } = await start.mutateAsync(newLookup(value))
         await navigate({
-          to: '/searches/$lookupId',
+          to: '/lookups/$lookupId',
           params: { lookupId: String(id) },
           replace: true,
         })

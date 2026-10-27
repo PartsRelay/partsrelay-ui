@@ -47,7 +47,7 @@ describe('operations desk', () => {
     const labels = statsView(stats()).topSearchers.map(({ label }) => label)
 
     expect(labels).toEqual([
-      'Oakfield Garage',
+      message('lookups.searcher.named', { name: 'Oakfield Garage' }),
       message('lookups.searcher.gone'),
       message('lookups.searcher.unnamed-contact'),
     ])

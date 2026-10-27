@@ -2,7 +2,7 @@ import { message } from '@/core/message'
 import type { Permissions } from '@/modules/workspaces/core/permissions'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
-const sections = ['searches', 'contacts', 'workspace', 'company'] as const
+const sections = ['lookups', 'contacts', 'workspace', 'company'] as const
 
 const pages = [...sections, 'profile'] as const
 
@@ -11,18 +11,18 @@ export type Section = (typeof sections)[number]
 export type Page = (typeof pages)[number]
 
 const pagePaths = {
-  searches: '/searches',
+  lookups: '/lookups',
   contacts: '/contacts',
   workspace: '/workspace',
   company: '/company',
   profile: '/profile',
 } as const satisfies Record<Page, string>
 
-export type CrumbId = Page | 'search'
+export type CrumbId = Page | 'lookup'
 
 const CRUMB_PARENTS = {
-  searches: null,
-  search: 'searches',
+  lookups: null,
+  lookup: 'lookups',
   contacts: null,
   workspace: null,
   company: 'workspace',

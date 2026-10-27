@@ -13,7 +13,7 @@ export type LookupRow = {
   statusLabel: Message
   tone: LookupTone
   sourceLabel: Message
-  searcher: string | Message
+  searcher: Message
   requested: string
 }
 
@@ -28,10 +28,9 @@ const TONES: Record<LookupObjectStatus, LookupTone> = {
 export const textKey = kebabCase
 
 export function searcherName(searcher: Searcher | null) {
-  return (
-    searcher?.name ??
-    message(searcher ? 'lookups.searcher.unnamed-contact' : 'lookups.searcher.gone')
-  )
+  if (searcher?.name) return message('lookups.searcher.named', { name: searcher.name })
+
+  return message(searcher ? 'lookups.searcher.unnamed-contact' : 'lookups.searcher.gone')
 }
 
 function partsFound({ categories = [] }: LookupObject) {

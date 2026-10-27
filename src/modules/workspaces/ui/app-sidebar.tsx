@@ -28,7 +28,7 @@ import {
 } from '@/ui/components/ui/sidebar'
 
 const icons: Record<Section, LucideIcon> = {
-  searches: ScanSearchIcon,
+  lookups: ScanSearchIcon,
   contacts: BookUserIcon,
   workspace: UsersIcon,
   company: Building2Icon,

@@ -27,7 +27,7 @@ test.describe('as a newcomer invited to a company', () => {
     await page.getByRole('textbox', { name: 'Your name' }).fill('Anna North')
     await page.getByRole('button', { name: 'Accept invitation' }).click()
 
-    await expect(page).toHaveURL('/searches')
+    await expect(page).toHaveURL('/lookups')
     await expect(notices(page).getByText('Ironworks Garage Ltd is now your company.')).toBeVisible()
     await expect(page.getByRole('link', { name: /Ironworks Garage Ltd/ })).toBeVisible()
     await expect(page.getByRole('button', { name: /Anna North/ })).toBeVisible()
@@ -81,6 +81,6 @@ test.describe('as the owner of a company', () => {
     ).toBeVisible()
 
     await page.getByRole('link', { name: /^Go to / }).click()
-    await expect(page).toHaveURL('/searches')
+    await expect(page).toHaveURL('/lookups')
   })
 })

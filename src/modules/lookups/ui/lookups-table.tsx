@@ -1,7 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import type { LookupRow } from '@/modules/lookups/core/lookup-row'
-import { useText } from '@/modules/lookups/ui/hooks/use-text'
 import { DataTable } from '@/ui/components/data-table'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/ui/components/ui/item'
@@ -10,7 +9,7 @@ import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/com
 const columns = ['plate', 'parts', 'status', 'channel', 'requester', 'requested']
 
 const resultOf = ({ lookup }: LookupRow) =>
-  ({ to: '/searches/$lookupId', params: { lookupId: String(lookup.id) } }) as const
+  ({ to: '/lookups/$lookupId', params: { lookupId: String(lookup.id) } }) as const
 
 function Parts({ row }: { row: LookupRow }) {
   if (!row.part && !row.vehicle) return <span aria-hidden>-</span>
@@ -25,7 +24,6 @@ function Parts({ row }: { row: LookupRow }) {
 
 export function LookupsTable({ rows }: { rows: LookupRow[] }) {
   const { t } = useTranslation()
-  const text = useText()
   const navigate = useNavigate()
 
   return (
@@ -66,7 +64,7 @@ export function LookupsTable({ rows }: { rows: LookupRow[] }) {
                   <StatusBadge tone={row.tone}>{t(...row.statusLabel)}</StatusBadge>
                 </TableCell>
                 <TableCell>{t(...row.sourceLabel)}</TableCell>
-                <TableCell>{text(row.searcher)}</TableCell>
+                <TableCell>{t(...row.searcher)}</TableCell>
                 <TableCell>{row.requested}</TableCell>
               </TableRow>
             ))}
@@ -86,7 +84,7 @@ export function LookupsTable({ rows }: { rows: LookupRow[] }) {
                     <Parts row={row} />
                   </div>
                   <ItemDescription className="line-clamp-none text-xs">
-                    {[text(row.searcher), t(...row.sourceLabel), row.requested].join(' · ')}
+                    {[t(...row.searcher), t(...row.sourceLabel), row.requested].join(' · ')}
                   </ItemDescription>
                 </ItemContent>
                 <ItemActions className="self-start">

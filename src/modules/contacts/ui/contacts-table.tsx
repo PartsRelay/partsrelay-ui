@@ -19,7 +19,7 @@ function SearchesLink({ row }: { row: ContactRow }) {
 
   return (
     <Link
-      to="/searches"
+      to="/lookups"
       search={{ searcherType: 'contact', searcherId: row.contact.id }}
       aria-label={t('contacts.searches-link', { count, name: row.name })}
       className="underline underline-offset-4"

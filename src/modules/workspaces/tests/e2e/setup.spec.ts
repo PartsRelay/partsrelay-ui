@@ -34,7 +34,7 @@ test.describe('as a newcomer', () => {
     await page.getByRole('option', { name: 'Italian' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page).toHaveURL('/searches')
+    await expect(page).toHaveURL('/lookups')
     await expect(page.getByRole('link', { name: /North Garage Ltd/ })).toBeVisible()
     await expect(
       page.getByRole('heading', {
@@ -63,7 +63,7 @@ test.describe('as a newcomer', () => {
     await expect(page.getByRole('combobox', { name: 'Reply language' })).toHaveText('Italian')
 
     await page.goto('/')
-    await expect(page).toHaveURL('/searches')
+    await expect(page).toHaveURL('/lookups')
   })
 
   test('signing out leaves the setup', async ({ page }) => {

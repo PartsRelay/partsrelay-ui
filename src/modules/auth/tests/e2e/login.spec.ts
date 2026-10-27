@@ -78,7 +78,7 @@ test('a failed Google sign in explains the codes it knows', async ({ page }) => 
 test('Google sign in comes back signed in', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue with Google' }).click()
 
-  await expect(page).toHaveURL('/searches')
+  await expect(page).toHaveURL('/lookups')
   await expect(notices(page).getByText('Signed in as mark.reed@redwoodparts.com.')).toBeVisible()
   await expect(
     page.getByRole('heading', { level: 1, name: /^Good (morning|afternoon|evening), Mark Reed\.$/ })

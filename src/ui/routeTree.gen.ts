@@ -20,8 +20,8 @@ import { Route as AppcontactsContactsRouteImport } from './routes/_app/(contacts
 import { Route as AppworkspacesIndexRouteImport } from './routes/_app/(workspaces)/index'
 import { Route as AppworkspacesCompanyRouteImport } from './routes/_app/(workspaces)/company'
 import { Route as AppworkspacesWorkspaceRouteImport } from './routes/_app/(workspaces)/workspace'
-import { Route as ApplookupsSearchesIndexRouteImport } from './routes/_app/(lookups)/searches.index'
-import { Route as ApplookupsSearchesLookupIdRouteImport } from './routes/_app/(lookups)/searches.$lookupId'
+import { Route as ApplookupsLookupsIndexRouteImport } from './routes/_app/(lookups)/lookups.index'
+import { Route as ApplookupsLookupsLookupIdRouteImport } from './routes/_app/(lookups)/lookups.$lookupId'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -77,15 +77,15 @@ const AppworkspacesWorkspaceRoute = AppworkspacesWorkspaceRouteImport.update({
   path: '/workspace',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const ApplookupsSearchesIndexRoute = ApplookupsSearchesIndexRouteImport.update({
-  id: '/(lookups)/searches/',
-  path: '/searches/',
+const ApplookupsLookupsIndexRoute = ApplookupsLookupsIndexRouteImport.update({
+  id: '/(lookups)/lookups/',
+  path: '/lookups/',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const ApplookupsSearchesLookupIdRoute =
-  ApplookupsSearchesLookupIdRouteImport.update({
-    id: '/(lookups)/searches/$lookupId',
-    path: '/searches/$lookupId',
+const ApplookupsLookupsLookupIdRoute =
+  ApplookupsLookupsLookupIdRouteImport.update({
+    id: '/(lookups)/lookups/$lookupId',
+    path: '/lookups/$lookupId',
     getParentRoute: () => AppRouteRoute,
   } as any)
 
@@ -99,8 +99,8 @@ export interface FileRoutesByFullPath {
   '/contacts': typeof AppcontactsContactsRoute
   '/company': typeof AppworkspacesCompanyRoute
   '/workspace': typeof AppworkspacesWorkspaceRoute
-  '/searches/$lookupId': typeof ApplookupsSearchesLookupIdRoute
-  '/searches/': typeof ApplookupsSearchesIndexRoute
+  '/lookups/$lookupId': typeof ApplookupsLookupsLookupIdRoute
+  '/lookups/': typeof ApplookupsLookupsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
@@ -112,8 +112,8 @@ export interface FileRoutesByTo {
   '/company': typeof AppworkspacesCompanyRoute
   '/workspace': typeof AppworkspacesWorkspaceRoute
   '/': typeof AppworkspacesIndexRoute
-  '/searches/$lookupId': typeof ApplookupsSearchesLookupIdRoute
-  '/searches': typeof ApplookupsSearchesIndexRoute
+  '/lookups/$lookupId': typeof ApplookupsLookupsLookupIdRoute
+  '/lookups': typeof ApplookupsLookupsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -128,8 +128,8 @@ export interface FileRoutesById {
   '/_app/(workspaces)/company': typeof AppworkspacesCompanyRoute
   '/_app/(workspaces)/workspace': typeof AppworkspacesWorkspaceRoute
   '/_app/(workspaces)/': typeof AppworkspacesIndexRoute
-  '/_app/(lookups)/searches/$lookupId': typeof ApplookupsSearchesLookupIdRoute
-  '/_app/(lookups)/searches/': typeof ApplookupsSearchesIndexRoute
+  '/_app/(lookups)/lookups/$lookupId': typeof ApplookupsLookupsLookupIdRoute
+  '/_app/(lookups)/lookups/': typeof ApplookupsLookupsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -143,8 +143,8 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/company'
     | '/workspace'
-    | '/searches/$lookupId'
-    | '/searches/'
+    | '/lookups/$lookupId'
+    | '/lookups/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -156,8 +156,8 @@ export interface FileRouteTypes {
     | '/company'
     | '/workspace'
     | '/'
-    | '/searches/$lookupId'
-    | '/searches'
+    | '/lookups/$lookupId'
+    | '/lookups'
   id:
     | '__root__'
     | '/(auth)'
@@ -171,8 +171,8 @@ export interface FileRouteTypes {
     | '/_app/(workspaces)/company'
     | '/_app/(workspaces)/workspace'
     | '/_app/(workspaces)/'
-    | '/_app/(lookups)/searches/$lookupId'
-    | '/_app/(lookups)/searches/'
+    | '/_app/(lookups)/lookups/$lookupId'
+    | '/_app/(lookups)/lookups/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -260,18 +260,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppworkspacesWorkspaceRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/_app/(lookups)/searches/': {
-      id: '/_app/(lookups)/searches/'
-      path: '/searches'
-      fullPath: '/searches/'
-      preLoaderRoute: typeof ApplookupsSearchesIndexRouteImport
+    '/_app/(lookups)/lookups/': {
+      id: '/_app/(lookups)/lookups/'
+      path: '/lookups'
+      fullPath: '/lookups/'
+      preLoaderRoute: typeof ApplookupsLookupsIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/_app/(lookups)/searches/$lookupId': {
-      id: '/_app/(lookups)/searches/$lookupId'
-      path: '/searches/$lookupId'
-      fullPath: '/searches/$lookupId'
-      preLoaderRoute: typeof ApplookupsSearchesLookupIdRouteImport
+    '/_app/(lookups)/lookups/$lookupId': {
+      id: '/_app/(lookups)/lookups/$lookupId'
+      path: '/lookups/$lookupId'
+      fullPath: '/lookups/$lookupId'
+      preLoaderRoute: typeof ApplookupsLookupsLookupIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
   }
@@ -299,8 +299,8 @@ interface AppRouteRouteChildren {
   AppworkspacesCompanyRoute: typeof AppworkspacesCompanyRoute
   AppworkspacesWorkspaceRoute: typeof AppworkspacesWorkspaceRoute
   AppworkspacesIndexRoute: typeof AppworkspacesIndexRoute
-  ApplookupsSearchesLookupIdRoute: typeof ApplookupsSearchesLookupIdRoute
-  ApplookupsSearchesIndexRoute: typeof ApplookupsSearchesIndexRoute
+  ApplookupsLookupsLookupIdRoute: typeof ApplookupsLookupsLookupIdRoute
+  ApplookupsLookupsIndexRoute: typeof ApplookupsLookupsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -309,8 +309,8 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppworkspacesCompanyRoute: AppworkspacesCompanyRoute,
   AppworkspacesWorkspaceRoute: AppworkspacesWorkspaceRoute,
   AppworkspacesIndexRoute: AppworkspacesIndexRoute,
-  ApplookupsSearchesLookupIdRoute: ApplookupsSearchesLookupIdRoute,
-  ApplookupsSearchesIndexRoute: ApplookupsSearchesIndexRoute,
+  ApplookupsLookupsLookupIdRoute: ApplookupsLookupsLookupIdRoute,
+  ApplookupsLookupsIndexRoute: ApplookupsLookupsIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

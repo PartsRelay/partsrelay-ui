@@ -19,7 +19,7 @@ describe('lookup rows', () => {
       statusLabel: message('lookups.status.done'),
       tone: 'success',
       sourceLabel: message('lookups.source.web'),
-      searcher: 'Mark Reed',
+      searcher: message('lookups.searcher.named', { name: 'Mark Reed' }),
       requested: expect.stringMatching(/^Oct 12, 2026, 9:59\sAM$/u),
     })
     expect(row({ vehicleDescription: undefined }).vehicle).toBeNull()
@@ -64,8 +64,12 @@ describe('lookup rows', () => {
   it('names who searched, also when they are gone', () => {
     const name = (searcher: LookupObject['searcher']) => searcherName(searcher ?? null)
 
-    expect(name({ type: 'user', id: 102, name: 'Julia White' })).toBe('Julia White')
-    expect(name({ type: 'contact', id: 3, name: 'Oakfield Garage' })).toBe('Oakfield Garage')
+    expect(name({ type: 'user', id: 102, name: 'Julia White' })).toEqual(
+      message('lookups.searcher.named', { name: 'Julia White' })
+    )
+    expect(name({ type: 'contact', id: 3, name: 'Oakfield Garage' })).toEqual(
+      message('lookups.searcher.named', { name: 'Oakfield Garage' })
+    )
     expect(name({ type: 'contact', id: 3, name: null })).toEqual(
       message('lookups.searcher.unnamed-contact')
     )

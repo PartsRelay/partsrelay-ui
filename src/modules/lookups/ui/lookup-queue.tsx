@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { lookupRow } from '@/modules/lookups/core/lookup-row'
 import { filtered, lookupListParams } from '@/modules/lookups/core/lookups'
 import { lookupsQuery } from '@/modules/lookups/core/lookups.query'
-import { useText } from '@/modules/lookups/ui/hooks/use-text'
 import { LookupFilters } from '@/modules/lookups/ui/lookup-filters'
 import { LookupsTable } from '@/modules/lookups/ui/lookups-table'
 import { NewLookupButton } from '@/modules/lookups/ui/new-lookup-button'
@@ -20,7 +19,7 @@ import { Button } from '@/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { usePageInfo } from '@/ui/hooks/use-page-info'
 
-const route = getRouteApi('/_app/(lookups)/searches/')
+const route = getRouteApi('/_app/(lookups)/lookups/')
 
 function FirstLookup() {
   const { t } = useTranslation()
@@ -60,7 +59,7 @@ function NoMatches() {
       description={t('lookups.empty.filtered-description')}
     >
       <Button variant="outline" asChild>
-        <Link to="/searches" search={{}}>
+        <Link to="/lookups" search={{}}>
           {t('lookups.empty.clear')}
         </Link>
       </Button>
@@ -70,7 +69,6 @@ function NoMatches() {
 
 export function LookupQueue() {
   const { t, i18n } = useTranslation()
-  const text = useText()
   const search = route.useSearch()
   const list = useQuery(lookupsQuery(lookupListParams(search)))
   const narrowed = filtered(search)
@@ -90,7 +88,7 @@ export function LookupQueue() {
       <CardContent className="grid grid-cols-1 gap-4">
         {(!info || info.total > 0 || narrowed) && (
           <LookupFilters
-            requester={first && !list.isPlaceholderData ? text(first.searcher) : undefined}
+            requester={first && !list.isPlaceholderData ? t(...first.searcher) : undefined}
           />
         )}
         <div
