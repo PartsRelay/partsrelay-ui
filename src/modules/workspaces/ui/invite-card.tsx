@@ -1,6 +1,7 @@
 import { useForm } from '@tanstack/react-form'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
+import { googleEnabled } from '@/modules/auth/core/sign-in'
 import { inviteDefaults, inviteeError, roleHint } from '@/modules/workspaces/core/invite-form'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
@@ -45,7 +46,13 @@ export function InviteCard() {
     <Card>
       <CardHeader>
         <CardHeading>{t('workspace.invite.title')}</CardHeading>
-        <CardDescription>{t('workspace.invite.description')}</CardDescription>
+        <CardDescription>
+          {t(
+            googleEnabled
+              ? 'workspace.invite.description'
+              : 'workspace.invite.magic-link-description'
+          )}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form form={form}>

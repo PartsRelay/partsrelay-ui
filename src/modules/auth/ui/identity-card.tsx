@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { profileNameSchema, type ProfileView } from '@/modules/auth/core/profile'
 import { sessionQuery } from '@/modules/auth/core/session.query'
+import { googleEnabled } from '@/modules/auth/core/sign-in'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { Facts } from '@/ui/components/facts'
 import { Form } from '@/ui/components/form'
@@ -43,7 +44,13 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
     <Card>
       <CardHeader>
         <CardHeading>{t('profile.identity.title')}</CardHeading>
-        <CardDescription>{t('profile.identity.description')}</CardDescription>
+        <CardDescription>
+          {t(
+            googleEnabled
+              ? 'profile.identity.description'
+              : 'profile.identity.magic-link-description'
+          )}
+        </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         <PersonItem name={view.name} description={view.email} image={view.image} />
