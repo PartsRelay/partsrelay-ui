@@ -156,15 +156,52 @@ test.describe('as the owner', () => {
     await expect(page.getByRole('heading', { level: 2, name: 'CA770NE' })).toBeVisible()
     await expect(page.getByText('Fiat Panda 1.2')).toBeVisible()
     await expect(page.getByRole('heading', { level: 2, name: 'Front brake pads' })).toBeVisible()
-    await expect(page.getByText('OE 77367141')).toBeVisible()
-    await expect(page.getByText('P 23 141')).toBeVisible()
-
+    await expect(page.getByText('3 original parts · 4 aftermarket matches')).toBeVisible()
     await expect(page.getByText('Part requested')).toBeVisible()
     await expect(page.getByText('pastiglie freno anteriori')).toBeVisible()
 
     await page.getByRole('link', { name: 'Back to searches' }).click()
     await expect(page.getByText('25 searches')).toBeVisible()
     await expect(queue(page).getByRole('row').nth(1)).toContainText(/CA770NE.*Done.*Mark Reed/)
+  })
+
+  test('the result lists each unit of the catalog with its code, view and positions', async ({
+    page,
+  }) => {
+    await startSearch(page, 'CA770NE', 'front brake pads')
+    const part = (code: string) => page.getByRole('listitem').filter({ hasText: `OE ${code}` })
+
+    await expect(page.getByRole('heading', { level: 3, name: '50110 Front brakes' })).toBeVisible()
+    await expect(part('77367141')).toContainText('Pos. 4')
+    await expect(part('77367141')).toContainText(/BREMBO.*P 23 141/)
+
+    await expect(
+      page.getByRole('heading', { level: 3, name: '50112 Front brake caliper' })
+    ).toBeVisible()
+    await expect(part('77365620')).toContainText(/Pos\. 6.*Brake pad fitting kit.*TRW.*PFK543/)
+    await expect(part('46402682')).toContainText(/Pos\. 7.*Pad retaining spring/)
+    await expect(part('46402682')).toContainText('No aftermarket matches.')
+
+    const view = page.getByRole('link', { name: 'Exploded view of Front brake caliper' })
+    const thumbnail = view.getByRole('img')
+    await expect(view).toHaveAttribute('href', /\/exploded-view\.svg\?.*size=source$/)
+    await expect(thumbnail).toHaveAttribute('src', /\/exploded-view\.svg\?.*size=250$/)
+    await thumbnail.scrollIntoViewIfNeeded()
+    await expect
+      .poll(() => thumbnail.evaluate((image: HTMLImageElement) => image.naturalWidth))
+      .toBeGreaterThan(0)
+
+    const popup = page.waitForEvent('popup')
+    await view.click()
+    await expect(await popup).toHaveURL(/\/exploded-view\.svg\?.*size=source$/)
+  })
+
+  test('a category without parts for the vehicle says so', async ({ page }) => {
+    await startSearch(page, 'CA770NE', 'filtro abitacolo')
+
+    await expect(page.getByRole('heading', { level: 2, name: 'Cabin filter' })).toBeVisible()
+    await expect(page.getByText('0 original parts · 0 aftermarket matches')).toBeVisible()
+    await expect(page.getByText('No parts found for this vehicle in this category.')).toBeVisible()
   })
 
   test('a plate the catalog does not know offers the same search again', async ({ page }) => {

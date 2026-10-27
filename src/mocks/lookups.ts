@@ -19,6 +19,7 @@ import {
 import { member } from '@/mocks/auth'
 import { checkedPage, page, people, type Person } from '@/mocks/data'
 import { apiBody, fail, invalid, rejected } from '@/mocks/errors'
+import explodedView from '@/mocks/exploded-view.svg?no-inline'
 import { DEFAULT_PER_PAGE } from '@/core/pagination'
 
 type Text = [en: string, it: string]
@@ -27,12 +28,14 @@ type Language = 0 | 1
 
 type Match = [brand: string, code: string, description: string]
 
-type Category = {
+type Unit = {
+  code: string
   name: Text
-  words: string[]
-  unit: { code: string; name: Text; image: boolean }
-  original: { code: string; name: Text; aftermarket: Match[] }[]
+  image: boolean
+  original: { code: string; name: Text; position: string | null; aftermarket: Match[] }[]
 }
+
+type Category = { name: Text; words: string[]; units: Unit[] }
 
 type Stored = Omit<LookupObject, 'searcher' | 'vehicleDescription' | 'categories'> & {
   company: string
@@ -62,15 +65,22 @@ const CATALOG: Record<string, Category> = {
   g1: {
     name: ['Oil filter', 'Filtro olio'],
     words: ['oil', 'olio'],
-    unit: { code: 'u1', name: ['Engine oil filter', 'Filtro olio motore'], image: true },
-    original: [
+    units: [
       {
-        code: '55256470',
-        name: ['Oil filter', 'Filtro olio'],
-        aftermarket: [
-          ['MANN-FILTER', 'W 712/95', 'Oil filter'],
-          ['BOSCH', 'F 026 407 209', 'Oil filter'],
-          ['UFI', '23.123.00', 'Oil filter'],
+        code: '10106',
+        name: ['Oil filter and supports', 'Filtro olio e supporti'],
+        image: true,
+        original: [
+          {
+            code: '55256470',
+            name: ['Oil filter', 'Filtro olio'],
+            position: '3',
+            aftermarket: [
+              ['MANN-FILTER', 'W 712/95', 'Oil filter'],
+              ['BOSCH', 'F 026 407 209', 'Oil filter'],
+              ['UFI', '23.123.00', 'Oil filter'],
+            ],
+          },
         ],
       },
     ],
@@ -78,30 +88,68 @@ const CATALOG: Record<string, Category> = {
   g2: {
     name: ['Air filter', 'Filtro aria'],
     words: ['air', 'aria'],
-    unit: { code: 'u2', name: ['Air filter housing', 'Scatola filtro aria'], image: true },
-    original: [
+    units: [
       {
-        code: '51854724',
-        name: ['Air filter', 'Filtro aria'],
-        aftermarket: [
-          ['MANN-FILTER', 'C 2433/2', 'Air filter'],
-          ['MAHLE', 'LX 2826', 'Air filter'],
+        code: '10420',
+        name: ['Air cleaner', 'Depuratore aria'],
+        image: true,
+        original: [
+          {
+            code: '51854724',
+            name: ['Air filter', 'Filtro aria'],
+            position: '3',
+            aftermarket: [
+              ['MANN-FILTER', 'C 2433/2', 'Air filter'],
+              ['MAHLE', 'LX 2826', 'Air filter'],
+            ],
+          },
         ],
       },
     ],
   },
+  g3: {
+    name: ['Cabin filter', 'Filtro abitacolo'],
+    words: ['cabin', 'pollen', 'abitacolo', 'polline'],
+    units: [],
+  },
   g4: {
     name: ['Front brake pads', 'Pastiglie freno anteriori'],
     words: ['brake', 'pad', 'freno', 'freni', 'pastiglie'],
-    unit: { code: 'u4', name: ['Front brake', 'Freno anteriore'], image: true },
-    original: [
+    units: [
       {
-        code: '77367141',
-        name: ['Front brake pad set', 'Kit pastiglie freno anteriori'],
-        aftermarket: [
-          ['BREMBO', 'P 23 141', 'Brake pad set, disc brake'],
-          ['TRW', 'GDB1891', 'Brake pad set, disc brake'],
-          ['BOSCH', '0 986 494 597', 'Brake pad set, disc brake'],
+        code: '50110',
+        name: ['Front brakes', 'Freni anteriori'],
+        image: true,
+        original: [
+          {
+            code: '77367141',
+            name: ['Front brake pad set', 'Kit pastiglie freno anteriori'],
+            position: '4',
+            aftermarket: [
+              ['BREMBO', 'P 23 141', 'Brake pad set, disc brake'],
+              ['TRW', 'GDB1891', 'Brake pad set, disc brake'],
+              ['BOSCH', '0 986 494 597', 'Brake pad set, disc brake'],
+            ],
+          },
+        ],
+      },
+      {
+        code: '50112',
+        name: ['Front brake caliper', 'Pinza freno anteriore'],
+        image: true,
+        original: [
+          {
+            code: '77365620',
+            name: ['Brake pad fitting kit', 'Kit accessori pastiglie'],
+            position: '6',
+            aftermarket: [['TRW', 'PFK543', 'Accessory kit, disc brake pads']],
+          },
+          {
+            code: '46402682',
+            name: ['Pad retaining spring', 'Molla fermo pastiglie'],
+            position: '7',
+            aftermarket: [],
+          },
         ],
       },
     ],
@@ -109,30 +157,52 @@ const CATALOG: Record<string, Category> = {
   g5: {
     name: ['Clutch kit', 'Kit frizione'],
     words: ['clutch', 'frizione'],
-    unit: { code: 'u5', name: ['Clutch', 'Frizione'], image: false },
-    original: [{ code: '55238862', name: ['Clutch kit', 'Kit frizione'], aftermarket: [] }],
+    units: [
+      {
+        code: '18010',
+        name: ['Clutch', 'Frizione'],
+        image: false,
+        original: [
+          {
+            code: '55238862',
+            name: ['Clutch kit', 'Kit frizione'],
+            position: null,
+            aftermarket: [],
+          },
+        ],
+      },
+    ],
   },
   g6: {
     name: ['Timing belt kit', 'Kit distribuzione'],
     words: ['timing', 'belt', 'distribuzione', 'cinghia'],
-    unit: { code: 'u6', name: ['Timing drive', 'Distribuzione'], image: true },
-    original: [
+    units: [
       {
-        code: '71771580',
-        name: ['Timing belt kit', 'Kit cinghia distribuzione'],
-        aftermarket: [
-          ['GATES', 'K015607XS', 'Timing belt kit'],
-          ['CONTITECH', 'CT1028K1', 'Timing belt kit'],
+        code: '10132',
+        name: ['Timing drive', 'Comando distribuzione'],
+        image: true,
+        original: [
+          {
+            code: '71771580',
+            name: ['Timing belt kit', 'Kit cinghia distribuzione'],
+            position: '1',
+            aftermarket: [
+              ['GATES', 'K015607XS', 'Timing belt kit'],
+              ['CONTITECH', 'CT1028K1', 'Timing belt kit'],
+            ],
+          },
         ],
       },
     ],
   },
 }
 
-const explodedView = (code: string) =>
-  `data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><rect width="240" height="240" fill="#fff"/><g fill="none" stroke="#475569" stroke-width="3"><circle cx="120" cy="78" r="34"/><circle cx="120" cy="78" r="12"/><rect x="78" y="136" width="84" height="40" rx="8"/><path d="M120 112v24M58 36l32 20M182 36l-32 20"/></g><text x="120" y="216" font-family="sans-serif" font-size="16" text-anchor="middle" fill="#0f172a">${code}</text></svg>`
-  )}`
+function imageOf(size: string) {
+  const url = new URL(explodedView, window.location.origin)
+  url.searchParams.set('size', size)
+
+  return url.href
+}
 
 const user = (person: Person): Searcher => ({
   type: 'user',
@@ -225,29 +295,27 @@ const languageOf = (request: Request): Language =>
 
 function categoriesOf(nodeIds: string[], language: Language) {
   return nodeIds.map((id) => {
-    const { name, unit, original } = CATALOG[id]!
+    const { name, units } = CATALOG[id]!
 
     return {
       id,
       name: name[language],
-      units: [
-        {
-          code: unit.code,
-          name: unit.name[language],
-          imageUrl: unit.image ? explodedView(unit.code) : null,
-          thumbnailUrl: unit.image ? explodedView(unit.code) : null,
-          original: original.map((part) => ({
-            code: part.code,
-            name: part.name[language],
-            position: null,
-            aftermarket: part.aftermarket.map(([brand, code, description]) => ({
-              brand,
-              code,
-              description,
-            })),
+      units: units.map((unit) => ({
+        code: unit.code,
+        name: unit.name[language],
+        imageUrl: unit.image ? imageOf('source') : null,
+        thumbnailUrl: unit.image ? imageOf('250') : null,
+        original: unit.original.map((part) => ({
+          code: part.code,
+          name: part.name[language],
+          position: part.position,
+          aftermarket: part.aftermarket.map(([brand, code, description]) => ({
+            brand,
+            code,
+            description,
           })),
-        },
-      ],
+        })),
+      })),
     }
   })
 }
