@@ -15,7 +15,6 @@ export function invitationQuery(id: string) {
   }
 }
 
-// Its own key, so errors here stay silent
 export const currentCompanyKey = [...workspaceKey, 'invitation'] as const
 
 export const currentCompanyQuery = {

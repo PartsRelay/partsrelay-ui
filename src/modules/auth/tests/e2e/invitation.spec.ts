@@ -4,7 +4,6 @@ const notices = (page: Page) => page.getByRole('region', { name: /Notifications/
 
 test.describe('as a newcomer invited to a company', () => {
   test.beforeEach(async ({ page }) => {
-    // A new account with a pending invitation from Ironworks Garage
     await page.addInitScript(() => {
       localStorage.setItem('mock.user', 'new')
       localStorage.setItem('mock.invitation', '1')
@@ -25,11 +24,23 @@ test.describe('as a newcomer invited to a company', () => {
     ).toBeVisible()
     await expect(page.getByText(/^You'll join as Admin/)).toBeVisible()
 
+    await page.getByRole('textbox', { name: 'Your name' }).fill('Anna North')
     await page.getByRole('button', { name: 'Accept invitation' }).click()
 
-    await expect(page).toHaveURL('/contacts')
+    await expect(page).toHaveURL('/lookups')
     await expect(notices(page).getByText('Ironworks Garage Ltd is now your company.')).toBeVisible()
     await expect(page.getByRole('link', { name: /Ironworks Garage Ltd/ })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Anna North/ })).toBeVisible()
+  })
+
+  test('my name is required before joining', async ({ page }) => {
+    await page.goto('/invitations/31')
+    await page.getByRole('button', { name: 'Accept invitation' }).click()
+
+    const name = page.getByRole('textbox', { name: 'Your name' })
+    await expect(name).toBeFocused()
+    await expect(name).toHaveAccessibleDescription('Enter your name.')
+    await expect(page).toHaveURL('/invitations/31')
   })
 
   test('not now keeps my own company', async ({ page }) => {
@@ -43,7 +54,6 @@ test.describe('as a newcomer invited to a company', () => {
 
 test.describe('as the owner of a company', () => {
   test('an invitation for another address asks to switch account', async ({ page }) => {
-    // One of the pending invitations of my own company
     await page.goto('/invitations/7')
 
     const problem = page.getByRole('alert')
@@ -71,6 +81,6 @@ test.describe('as the owner of a company', () => {
     ).toBeVisible()
 
     await page.getByRole('link', { name: /^Go to / }).click()
-    await expect(page).toHaveURL('/contacts')
+    await expect(page).toHaveURL('/lookups')
   })
 })

@@ -1,6 +1,5 @@
 import { defineConfig, type OutputOptions } from 'orval'
 
-// Orval covers the core API, Better Auth has its own client
 const output: OutputOptions = {
   client: 'react-query',
   httpClient: 'axios',

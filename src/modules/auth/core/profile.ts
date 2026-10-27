@@ -1,3 +1,4 @@
+import { requiredText } from '@/core/schemas'
 import { roleLabel } from '@/modules/workspaces/core/role'
 import type { Me, Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -13,3 +14,5 @@ export function profileView(me: Me, workspace: Workspace) {
     canLeave: me.permissions.leaveCompany,
   }
 }
+
+export const profileNameSchema = requiredText('profile.errors.name-required')

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { MemberRow } from '@/modules/workspaces/core/workspace'
-import { ActionButton } from '@/modules/workspaces/ui/action-button'
+import { ActionButton } from '@/ui/components/action-button'
 
 type MemberActionsProps = { row: MemberRow; onTransfer: () => void; onRemove: () => void }
 

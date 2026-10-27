@@ -3,7 +3,7 @@ import type { ComponentProps, ComponentType } from 'react'
 import { Badge } from '@/ui/components/ui/badge'
 import { Spinner } from '@/ui/components/ui/spinner'
 
-export type StatusTone = 'success' | 'warning' | 'danger' | 'neutral'
+type StatusTone = 'success' | 'warning' | 'danger' | 'neutral'
 
 type Icon = ComponentType<ComponentProps<'svg'>>
 

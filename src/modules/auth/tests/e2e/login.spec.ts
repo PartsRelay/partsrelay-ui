@@ -1,12 +1,10 @@
 import { expect, type Page, test } from '@playwright/test'
 
-// The mocks start signed in, as Mark Reed, the owner
 async function signOut(page: Page) {
   await page.goto('/profile')
   await page.getByRole('button', { name: /Mark Reed/ }).click()
   await page.getByRole('menuitem', { name: 'Sign out' }).click()
   await expect(page).toHaveURL('/login')
-  // Leaving before the lazy login page loads reloads it
   await expect(page.getByRole('heading', { level: 1, name: /^Sign in to / })).toBeVisible()
 }
 
@@ -54,7 +52,7 @@ test('the magic link form sends a link and waits before sending another', async 
 })
 
 test('a new sign-in link clears the error of the previous one', async ({ page }) => {
-  await page.goto('/login?next=%2Fcompany&error=INVALID_TOKEN')
+  await page.goto('/login?next=%2Fcompany&error=invalid-token')
   const expired = page.getByText(
     'This sign-in link has expired or was already used. Ask for a new one.'
   )
@@ -68,12 +66,23 @@ test('a new sign-in link clears the error of the previous one', async ({ page })
   await expect(page).toHaveURL('/login?next=%2Fcompany')
 })
 
+test('a failed Google sign in explains the codes it knows', async ({ page }) => {
+  await page.goto('/login?error=access-denied&error_description=The+user+denied+access')
+  await expect(page.getByText('Google sign in was cancelled.')).toBeVisible()
+  await expect(page.getByText('The user denied access')).toHaveCount(0)
+
+  await page.goto('/login?error=state-mismatch')
+  await expect(page.getByText('Sign in failed. Try again.')).toBeVisible()
+})
+
 test('Google sign in comes back signed in', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue with Google' }).click()
 
-  await expect(page).toHaveURL('/contacts')
+  await expect(page).toHaveURL('/lookups')
   await expect(notices(page).getByText('Signed in as mark.reed@redwoodparts.com.')).toBeVisible()
-  await expect(page.getByRole('heading', { level: 1, name: 'Contacts' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { level: 1, name: /^Good (morning|afternoon|evening), Mark Reed\.$/ })
+  ).toBeVisible()
 })
 
 test('a protected page asks to sign in, then opens', async ({ page }) => {

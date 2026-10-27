@@ -11,6 +11,4 @@ export interface IamPart {
   brand: string | null;
   /** @nullable */
   description: string | null;
-  /** @nullable */
-  price: number | null;
 }

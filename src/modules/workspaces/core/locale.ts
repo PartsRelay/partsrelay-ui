@@ -1,6 +1,6 @@
-export const locales = ['en-US', 'it-IT'] as const
+import { locales } from '@/i18n'
 
-export type Locale = (typeof locales)[number]
+export type Locale = string
 
 export const FALLBACK_LOCALE: Locale = 'en-US'
 

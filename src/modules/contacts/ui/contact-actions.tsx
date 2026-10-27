@@ -2,7 +2,7 @@ import type { Ref } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ContactRow } from '@/modules/contacts/core/contact-row'
 import { useUpdateContact } from '@/modules/contacts/ui/hooks/use-update-contact'
-import { ActionButton } from '@/modules/workspaces/ui/action-button'
+import { ActionButton } from '@/ui/components/action-button'
 
 type ContactActionsProps = {
   row: ContactRow

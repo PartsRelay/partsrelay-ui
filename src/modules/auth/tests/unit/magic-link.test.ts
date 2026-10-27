@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vite-plus/test'
-import { emailError, RESEND_AFTER_SECONDS, resendWait } from '@/modules/auth/core/magic-link'
+import { emailSchema, RESEND_AFTER_SECONDS, resendWait } from '@/modules/auth/core/magic-link'
 
-describe('emailError', () => {
+const emailError = (value: string) => emailSchema.safeParse(value).error?.issues[0]?.message
+
+describe('emailSchema', () => {
   it('accepts a valid address, spaces around it included', () => {
     expect(emailError('mark.reed@redwoodparts.com')).toBeUndefined()
     expect(emailError('  mark.reed@redwoodparts.com  ')).toBeUndefined()

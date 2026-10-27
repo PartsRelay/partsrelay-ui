@@ -2,56 +2,41 @@ import { useQuery } from '@tanstack/react-query'
 import { getRouteApi } from '@tanstack/react-router'
 import { cn } from 'cn'
 import { BookUserIcon } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { pageInfo } from '@/core/pagination'
 import { type ContactRow, contactRow } from '@/modules/contacts/core/contact-row'
 import { type ContactTab, contactTabs, tabStatus } from '@/modules/contacts/core/contacts'
 import { contactListParams, contactsQuery } from '@/modules/contacts/core/contacts.query'
 import { AddContactDialog } from '@/modules/contacts/ui/add-contact-dialog'
 import { BlockContactDialog } from '@/modules/contacts/ui/block-contact-dialog'
 import { ContactsTable } from '@/modules/contacts/ui/contacts-table'
-import { LoadError, RefetchError } from '@/modules/contacts/ui/load-error'
 import { RemoveContactDialog } from '@/modules/contacts/ui/remove-contact-dialog'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
+import { EmptyState } from '@/ui/components/empty-state'
+import { ListSkeleton } from '@/ui/components/list-skeleton'
+import { LoadError, RefetchError } from '@/ui/components/load-error'
 import { PaginationBar } from '@/ui/components/pagination-bar'
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/ui/components/ui/card'
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '@/ui/components/ui/empty'
-import { Skeleton } from '@/ui/components/ui/skeleton'
+import { SearchField } from '@/ui/components/search-field'
+import { Card, CardAction, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/components/ui/tabs'
+import { usePageInfo } from '@/ui/hooks/use-page-info'
+import { CardHeading } from '@/ui/components/card-heading'
 
 const route = getRouteApi('/_app/(contacts)/contacts')
 
 type Confirmation = { action: 'block' | 'remove'; row: ContactRow }
 
-function NoContacts({ tab }: { tab: ContactTab }) {
+function NoContacts({ tab, searched }: { tab: ContactTab; searched: boolean }) {
   const { t } = useTranslation()
   const { me } = useMe()
   const hint = me.permissions.manageContacts ? 'manager' : 'viewer'
 
   return (
-    <Empty className="border">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <BookUserIcon aria-hidden />
-        </EmptyMedia>
-        <EmptyTitle>{t(`contacts.empty.${tab}`)}</EmptyTitle>
-        {tab === 'all' && <EmptyDescription>{t(`contacts.empty.${hint}`)}</EmptyDescription>}
-      </EmptyHeader>
-    </Empty>
+    <EmptyState
+      icon={<BookUserIcon />}
+      title={t(searched ? 'contacts.empty.search' : `contacts.empty.${tab}`)}
+      description={tab === 'all' && !searched && t(`contacts.empty.${hint}`)}
+    />
   )
 }
 
@@ -61,12 +46,10 @@ export function ContactDirectory() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
   const list = useQuery(contactsQuery(contactListParams(search)))
-  const info = list.data && pageInfo(list.data.metadata)
-  const lastPage = info?.outOfRange ? info.pages : undefined
+  const info = usePageInfo(list.data?.metadata)
   const tab: ContactTab = search.status ?? 'all'
   const rows = list.data?.data.map((contact) => contactRow(contact, me, i18n.language))
   const heading = useRef<HTMLHeadingElement>(null)
-  // Outlives the row, which leaves before the core answers
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
   const [confirming, setConfirming] = useState(false)
   const confirm = (action: Confirmation['action']) => (row: ContactRow) => {
@@ -76,18 +59,12 @@ export function ContactDirectory() {
   const close = () => setConfirming(false)
   const retry = () => void list.refetch()
 
-  useEffect(() => {
-    if (lastPage) void navigate({ search: (prev) => ({ ...prev, page: lastPage }), replace: true })
-  }, [lastPage, navigate])
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2 ref={heading} tabIndex={-1} className="outline-none">
-            {t('contacts.list.title')}
-          </h2>
-        </CardTitle>
+        <CardHeading ref={heading} tabIndex={-1} className="outline-none">
+          {t('contacts.list.title')}
+        </CardHeading>
         <CardDescription aria-live="polite">
           {info ? t('contacts.list.count', { count: info.total }) : t('contacts.list.description')}
         </CardDescription>
@@ -100,9 +77,22 @@ export function ContactDirectory() {
       <CardContent>
         <Tabs
           value={tab}
-          onValueChange={(value) => void navigate({ search: { status: tabStatus(value) } })}
+          onValueChange={(value) =>
+            void navigate({
+              search: (prev) => ({ ...prev, status: tabStatus(value), page: undefined }),
+            })
+          }
           className="gap-4"
         >
+          <SearchField
+            label={t('contacts.search.label')}
+            placeholder={t('contacts.search.placeholder')}
+            value={search.search}
+            className="sm:max-w-xs"
+            onSearch={(value) =>
+              void navigate({ search: (prev) => ({ ...prev, search: value, page: undefined }) })
+            }
+          />
           <TabsList aria-label={t('contacts.tabs.label')}>
             {contactTabs.map((item) => (
               <TabsTrigger key={item} value={item} className="text-muted-foreground">
@@ -115,7 +105,11 @@ export function ContactDirectory() {
             aria-busy={list.isPlaceholderData}
             className={cn('grid gap-4', list.isPlaceholderData && 'opacity-60')}
           >
-            {list.isRefetchError && <RefetchError error={list.error} onRetry={retry} />}
+            {list.isRefetchError && (
+              <RefetchError error={list.error} onRetry={retry}>
+                {t('contacts.list.stale')}
+              </RefetchError>
+            )}
             {list.data && rows && !info?.outOfRange ? (
               rows.length > 0 ? (
                 <>
@@ -127,12 +121,12 @@ export function ContactDirectory() {
                   <PaginationBar metadata={list.data.metadata} />
                 </>
               ) : (
-                <NoContacts tab={tab} />
+                <NoContacts tab={tab} searched={search.search !== undefined} />
               )
             ) : list.isLoadingError ? (
               <LoadError error={list.error} onRetry={retry} />
             ) : (
-              <Skeleton className="h-48 w-full" />
+              <ListSkeleton />
             )}
           </TabsContent>
         </Tabs>

@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vite-plus/test'
 import { acceptError, invitationHeadline, invitationView } from '@/modules/auth/core/invitation'
 import type { Member } from '@/modules/workspaces/core/workspace'
 
-// What the Better Auth client throws
-const authError = (status: number, code: string) => ({ status, error: { code } })
+const authError = (status: number, code: string) => ({
+  status,
+  error: { code, status, message: 'Failed' },
+})
 
 const invitation = {
   organizationId: '3',
@@ -23,7 +25,6 @@ const member = (id: string): Member => ({
   joinedAt: new Date('2026-10-01T10:00:00Z'),
 })
 
-// My current company, alone in it unless told otherwise
 const company = ({
   id = '2',
   members = 1,
@@ -48,26 +49,26 @@ describe('invitationView', () => {
   })
 
   it('asks to sign in first', () => {
-    expect(view({ signedIn: false, error: authError(401, 'UNAUTHORIZED') })).toEqual({
+    expect(view({ signedIn: false, error: authError(401, 'unauthorized') })).toEqual({
       state: 'signIn',
     })
   })
 
   it('tells the wrong account to switch', () => {
-    const error = authError(403, 'YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION')
+    const error = authError(403, 'you-are-not-the-recipient-of-the-invitation')
 
     expect(view({ invitation: undefined, error })).toEqual({ state: 'otherAccount' })
   })
 
   it('explains an invitation that can no longer be used', () => {
-    expect(view({ invitation: undefined, error: authError(400, 'BAD_REQUEST') })).toEqual({
+    expect(view({ invitation: undefined, error: authError(400, 'bad-request') })).toEqual({
       state: 'unavailable',
       reason: ['invitation.unavailable.expired'],
     })
     expect(
       view({
         invitation: undefined,
-        error: authError(400, 'INVITER_IS_NO_LONGER_A_MEMBER_OF_THE_ORGANIZATION'),
+        error: authError(400, 'inviter-is-no-longer-a-member-of-the-organization'),
       })
     ).toEqual({
       state: 'unavailable',
@@ -80,7 +81,7 @@ describe('invitationView', () => {
       state: 'failed',
       reason: ['errors.network-error'],
     })
-    expect(view({ company: { error: authError(500, 'INTERNAL_SERVER_ERROR') } })).toEqual({
+    expect(view({ company: { error: authError(500, 'internal-server-error') } })).toEqual({
       state: 'failed',
       reason: ['errors.internal-server-error'],
     })
@@ -138,13 +139,13 @@ describe('invitationHeadline', () => {
 
 describe('acceptError', () => {
   it('explains a company that cannot be left', () => {
-    expect(acceptError(authError(403, 'WORKSPACE_NOT_RELEASABLE'))).toEqual([
+    expect(acceptError(authError(403, 'workspace-not-releasable'))).toEqual([
       'invitation.unavailable.company-not-empty',
     ])
   })
 
   it('translates the other error codes', () => {
-    expect(acceptError(authError(400, 'INVITATION_NOT_FOUND'))).toEqual([
+    expect(acceptError(authError(400, 'invitation-not-found'))).toEqual([
       'errors.invitation-not-found',
     ])
   })

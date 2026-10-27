@@ -9,7 +9,6 @@ import type { PatchApiV1WorkspaceContactsContactIdBodyStatus } from './patchApiV
 export type PatchApiV1WorkspaceContactsContactIdBody = {
   /**
      * @minLength 1
-     * @maxLength 255
      * @nullable
      */
   name?: string | null;

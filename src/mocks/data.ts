@@ -1,0 +1,191 @@
+import { subDays } from 'date-fns'
+import { rejected } from '@/mocks/errors'
+
+export type Role = 'owner' | 'admin' | 'viewer'
+
+export type Person = {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image?: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type Member = {
+  id: string
+  organizationId: string
+  userId: string
+  role: Role
+  createdAt: string
+  user: { id: string; name: string; email: string; image?: string | null }
+}
+
+export type Invitation = {
+  id: string
+  organizationId: string
+  email: string
+  role: Exclude<Role, 'owner'>
+  status: 'pending' | 'accepted' | 'rejected' | 'canceled'
+  inviterId: string
+  createdAt: string
+  expiresAt: string
+}
+
+export type Company = {
+  id: string
+  name: string
+  slug: string
+  metadata: string
+  locale: string
+  createdAt: string
+  members: Member[]
+  invitations: Invitation[]
+}
+
+export const daysAgo = (days: number) => subDays(new Date(), days).toISOString()
+
+export const setting = (name: 'user' | 'setup' | 'invitation') =>
+  localStorage.getItem(`mock.${name}`)
+
+const person = (id: string, name: string, email: string): Person => ({
+  id,
+  name,
+  email,
+  emailVerified: true,
+  createdAt: daysAgo(400),
+  updatedAt: daysAgo(1),
+})
+
+export const people = {
+  mark: person('1', 'Mark Reed', 'mark.reed@redwoodparts.com'),
+  julia: person('2', 'Julia Bennett', 'julia.bennett@redwoodparts.com'),
+  luke: person('3', 'Luke Foster', 'luke.foster@gmail.com'),
+  sarah: person('4', 'Sarah Collins', 'sarah.collins@redwoodparts.com'),
+  steven: person('9', 'Steven Hale', 's.hale@ironworksgarage.com'),
+  newcomer: person('12', '', 'north.garage@gmail.com'),
+}
+
+const users = {
+  owner: people.mark,
+  admin: people.julia,
+  viewer: people.sarah,
+  new: people.newcomer,
+}
+
+export const signedInAs = () => users[setting('user') as keyof typeof users] ?? people.mark
+
+const member = (
+  organizationId: string,
+  id: string,
+  { id: userId, name, email }: Person,
+  role: Role,
+  createdAt: string
+): Member => ({
+  id,
+  organizationId,
+  userId,
+  role,
+  createdAt,
+  user: { id: userId, name, email },
+})
+
+const invitation = (
+  id: string,
+  email: string,
+  role: Invitation['role'],
+  sentDaysAgo: number,
+  status: Invitation['status'] = 'pending'
+): Invitation => ({
+  id,
+  organizationId: '1',
+  email,
+  role,
+  status,
+  inviterId: people.mark.id,
+  createdAt: daysAgo(sentDaysAgo),
+  expiresAt: daysAgo(sentDaysAgo - 7),
+})
+
+export const redwoodParts = (): Company => ({
+  id: '1',
+  name: 'Redwood Parts Ltd',
+  slug: 'redwood-parts',
+  metadata: '{"setup":"done"}',
+  locale: 'en-US',
+  createdAt: daysAgo(400),
+  members: [
+    member('1', '1', people.mark, 'owner', daysAgo(400)),
+    member('1', '2', people.julia, 'admin', daysAgo(388)),
+    member('1', '3', people.luke, 'viewer', daysAgo(122)),
+    member('1', '4', people.sarah, 'viewer', daysAgo(31)),
+  ],
+  invitations: [
+    invitation('7', 'f.roberts@redwoodparts.com', 'viewer', 1),
+    invitation('6', 'a.evans@redwoodparts.com', 'admin', 3),
+    invitation('5', 'north.garage@gmail.com', 'viewer', 9),
+    invitation('4', 'luke.foster@gmail.com', 'viewer', 125, 'accepted'),
+    invitation('3', 'p.green@redwoodparts.com', 'viewer', 40, 'canceled'),
+    invitation('2', 'm.baker@gmail.com', 'admin', 60, 'rejected'),
+  ],
+})
+
+export function newCompany(owner: Person): Company {
+  const createdAt = new Date().toISOString()
+
+  return {
+    id: '2',
+    name: owner.name || owner.email,
+    slug: crypto.randomUUID(),
+    metadata: '{"setup":"pending"}',
+    locale: 'en-US',
+    createdAt,
+    members: [member('2', '10', owner, 'owner', createdAt)],
+    invitations: [],
+  }
+}
+
+export function ironworksGarage(newMember: Person, role: Role): Company {
+  return {
+    id: '3',
+    name: 'Ironworks Garage Ltd',
+    slug: 'ironworks-garage',
+    metadata: '{"setup":"done"}',
+    locale: 'en-US',
+    createdAt: daysAgo(700),
+    members: [
+      member('3', '20', people.steven, 'owner', daysAgo(700)),
+      member('3', '21', newMember, role, new Date().toISOString()),
+    ],
+    invitations: [],
+  }
+}
+
+export function checkedPage(query: URLSearchParams, name: string, fallback: number) {
+  const value = Number(query.get(name) ?? fallback)
+  if (Number.isNaN(value)) rejected(name, 'number')
+  if (value < 1) rejected(name, 'min')
+
+  return value
+}
+
+export function page<T>(items: T[], currentPage: number, perPage: number) {
+  const lastPage = Math.max(1, Math.ceil(items.length / perPage))
+  const link = (target: number) => `/?page=${target}`
+
+  return {
+    data: items.slice((currentPage - 1) * perPage, currentPage * perPage),
+    metadata: {
+      total: items.length,
+      perPage,
+      currentPage,
+      lastPage,
+      firstPage: 1,
+      firstPageUrl: link(1),
+      lastPageUrl: link(lastPage),
+      nextPageUrl: currentPage < lastPage ? link(currentPage + 1) : null,
+      previousPageUrl: currentPage > 1 ? link(currentPage - 1) : null,
+    },
+  }
+}

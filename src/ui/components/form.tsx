@@ -1,10 +1,9 @@
+import type { AnyFormApi } from '@tanstack/react-form'
 import type { ComponentProps } from 'react'
-import { useFormContext } from '@/form-context'
 
-// Submits the form state, then focuses the first invalid field
-export function Form(props: Omit<ComponentProps<'form'>, 'noValidate' | 'onSubmit'>) {
-  const form = useFormContext()
+type FormProps = Omit<ComponentProps<'form'>, 'noValidate' | 'onSubmit'> & { form: AnyFormApi }
 
+export function Form({ form, ...props }: FormProps) {
   return (
     <form
       {...props}

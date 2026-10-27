@@ -1,17 +1,9 @@
 import { message } from '@/core/message'
 
-// Page size of every paginated list of the app
 export const DEFAULT_PER_PAGE = 20
 
-// The page a list asks for, perPage defaults to DEFAULT_PER_PAGE
-export type PaginationParams = { page: number; perPage?: number }
+export const OPTIONS_PER_PAGE = 100
 
-// What a list request sends, with the default page size
-export function withPerPage<Params extends PaginationParams>(params: Params) {
-  return { ...params, perPage: params.perPage ?? DEFAULT_PER_PAGE }
-}
-
-// The metadata of every paginated list of the core
 export type PageMetadata = {
   total: number
   perPage: number

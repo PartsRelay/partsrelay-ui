@@ -7,11 +7,12 @@ import { loadEnv } from 'vite'
 import { defineConfig } from 'vite-plus'
 import { readEnv } from './src/env'
 
-const generated = [
+const ignored = [
   '**/dist/**',
   'src/core/api/**',
   'src/ui/routeTree.gen.ts',
   'public/mockServiceWorker.js',
+  'src/locales/**',
 ]
 
 const env = readEnv(loadEnv(process.env.APP_ENV ?? 'development', process.cwd(), ''))
@@ -20,7 +21,7 @@ const reactImports = ['react', 'react-dom', '@tanstack/react-*', '@/ui/*', '@/mo
 
 export default defineConfig({
   plugins: [
-    devtools(),
+    devtools({ eventBusConfig: { enabled: false } }),
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
@@ -35,7 +36,6 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
 
-  // Every variable of the environment, without prefixes
   define: {
     __ENV__: JSON.stringify(env),
   },
@@ -47,13 +47,13 @@ export default defineConfig({
   },
 
   lint: {
-    ignorePatterns: generated,
+    ignorePatterns: ignored,
     plugins: ['react'],
     env: { browser: true },
     options: { typeAware: true, typeCheck: true },
     overrides: [
       {
-        files: ['src/core/**', 'src/modules/*/core/**'],
+        files: ['src/core/**', 'src/mocks/**', 'src/modules/*/core/**'],
         rules: {
           'no-restricted-imports': [
             'error',
@@ -72,7 +72,7 @@ export default defineConfig({
   },
 
   fmt: {
-    ignorePatterns: generated,
+    ignorePatterns: ignored,
     printWidth: 100,
     semi: false,
     singleQuote: true,

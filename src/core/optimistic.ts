@@ -1,6 +1,5 @@
 import type { QueryClient, QueryKey } from '@tanstack/query-core'
 
-// Shows the change at once and undoes it if the call fails
 export async function optimistic<TData>(
   client: QueryClient,
   queryKey: QueryKey,

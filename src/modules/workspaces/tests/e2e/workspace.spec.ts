@@ -158,7 +158,6 @@ test.describe('as the owner', () => {
 
 test.describe('as an admin', () => {
   test.beforeEach(async ({ page }) => {
-    // The mocks read who is signed in from localStorage
     await page.addInitScript(() => localStorage.setItem('mock.user', 'admin'))
     await page.goto('/workspace')
     await expect(page.getByRole('heading', { level: 1, name: 'Workspace' })).toBeVisible()
@@ -191,10 +190,16 @@ test.describe('as a viewer', () => {
     await page.addInitScript(() => localStorage.setItem('mock.user', 'viewer'))
   })
 
-  test('home is the contacts and the workspace is not available', async ({ page }) => {
+  test('home is the searches and the workspace is not available', async ({ page }) => {
     await page.goto('/')
-    await expect(page).toHaveURL('/contacts')
-    await expect(page.getByRole('heading', { level: 1, name: 'Contacts' })).toBeVisible()
+    await expect(page).toHaveURL('/lookups')
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: /^Good (morning|afternoon|evening), Sarah Collins\.$/,
+      })
+    ).toBeVisible()
+    await expect(page.getByText('Top searchers')).toHaveCount(0)
     await expect(page.getByRole('link', { name: 'Workspace' })).toHaveCount(0)
 
     await page.goto('/workspace')
@@ -202,6 +207,6 @@ test.describe('as a viewer', () => {
       page.getByRole('heading', { level: 1, name: "You don't have access to this page." })
     ).toBeVisible()
     await page.getByRole('link', { name: 'Back to home' }).click()
-    await expect(page).toHaveURL('/contacts')
+    await expect(page).toHaveURL('/lookups')
   })
 })

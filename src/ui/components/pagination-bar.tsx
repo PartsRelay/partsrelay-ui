@@ -12,10 +12,8 @@ import {
 const PreviousLink = createLink(PaginationPrevious)
 const NextLink = createLink(PaginationNext)
 
-// The router renders a disabled link without href
 const disabled = 'aria-disabled:pointer-events-none aria-disabled:opacity-50'
 
-// Links to the other pages of the current address
 export function PaginationBar({ metadata }: { metadata: PageMetadata }) {
   const { t } = useTranslation()
   const info = pageInfo(metadata)

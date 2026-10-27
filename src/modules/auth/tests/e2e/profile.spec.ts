@@ -36,6 +36,22 @@ test.describe('as the owner', () => {
     await expect(name).toHaveAccessibleDescription('Your team sees it next to your email.')
   })
 
+  test('the language is chosen for this device', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Language' }).click()
+    await page.getByRole('option', { name: 'Italian' }).click()
+
+    await expect(page.getByRole('heading', { level: 1, name: 'Profilo' })).toBeVisible()
+    await page.reload()
+    await expect(page.getByRole('combobox', { name: 'Lingua' })).toHaveText('Italiano')
+  })
+
+  test('signing out of this device opens the login', async ({ page }) => {
+    await page.getByRole('main').getByRole('button', { name: 'Sign out' }).click()
+
+    await expect(page).toHaveURL('/login')
+    await expect(notices(page).getByText('You signed out.')).toBeVisible()
+  })
+
   test('the owner has to hand over the company before leaving', async ({ page }) => {
     await expect(page.getByText('The owner cannot leave')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Leave company' })).toHaveCount(0)
@@ -48,7 +64,6 @@ test.describe('as the owner', () => {
 
 test.describe('as a viewer', () => {
   test.beforeEach(async ({ page }) => {
-    // The mocks read who is signed in from localStorage
     await page.addInitScript(() => localStorage.setItem('mock.user', 'viewer'))
   })
 

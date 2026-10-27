@@ -13,12 +13,15 @@ import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as workspacesSetupRouteImport } from './routes/(workspaces)/setup'
+import { Route as authAuthCallbackRouteImport } from './routes/(auth)/auth.callback'
 import { Route as authInvitationsInvitationIdRouteImport } from './routes/(auth)/invitations.$invitationId'
 import { Route as AppauthProfileRouteImport } from './routes/_app/(auth)/profile'
 import { Route as AppcontactsContactsRouteImport } from './routes/_app/(contacts)/contacts'
 import { Route as AppworkspacesIndexRouteImport } from './routes/_app/(workspaces)/index'
 import { Route as AppworkspacesCompanyRouteImport } from './routes/_app/(workspaces)/company'
 import { Route as AppworkspacesWorkspaceRouteImport } from './routes/_app/(workspaces)/workspace'
+import { Route as ApplookupsLookupsIndexRouteImport } from './routes/_app/(lookups)/lookups.index'
+import { Route as ApplookupsLookupsLookupIdRouteImport } from './routes/_app/(lookups)/lookups.$lookupId'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -37,6 +40,11 @@ const workspacesSetupRoute = workspacesSetupRouteImport.update({
   id: '/(workspaces)/setup',
   path: '/setup',
   getParentRoute: () => rootRouteImport,
+} as any)
+const authAuthCallbackRoute = authAuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authInvitationsInvitationIdRoute =
   authInvitationsInvitationIdRouteImport.update({
@@ -69,26 +77,43 @@ const AppworkspacesWorkspaceRoute = AppworkspacesWorkspaceRouteImport.update({
   path: '/workspace',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const ApplookupsLookupsIndexRoute = ApplookupsLookupsIndexRouteImport.update({
+  id: '/(lookups)/lookups/',
+  path: '/lookups/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const ApplookupsLookupsLookupIdRoute =
+  ApplookupsLookupsLookupIdRouteImport.update({
+    id: '/(lookups)/lookups/$lookupId',
+    path: '/lookups/$lookupId',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppworkspacesIndexRoute
   '/login': typeof authLoginRoute
   '/setup': typeof workspacesSetupRoute
+  '/auth/callback': typeof authAuthCallbackRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/profile': typeof AppauthProfileRoute
   '/contacts': typeof AppcontactsContactsRoute
   '/company': typeof AppworkspacesCompanyRoute
   '/workspace': typeof AppworkspacesWorkspaceRoute
+  '/lookups/$lookupId': typeof ApplookupsLookupsLookupIdRoute
+  '/lookups/': typeof ApplookupsLookupsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/setup': typeof workspacesSetupRoute
+  '/auth/callback': typeof authAuthCallbackRoute
   '/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/profile': typeof AppauthProfileRoute
   '/contacts': typeof AppcontactsContactsRoute
   '/company': typeof AppworkspacesCompanyRoute
   '/workspace': typeof AppworkspacesWorkspaceRoute
   '/': typeof AppworkspacesIndexRoute
+  '/lookups/$lookupId': typeof ApplookupsLookupsLookupIdRoute
+  '/lookups': typeof ApplookupsLookupsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -96,12 +121,15 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(workspaces)/setup': typeof workspacesSetupRoute
+  '/(auth)/auth/callback': typeof authAuthCallbackRoute
   '/(auth)/invitations/$invitationId': typeof authInvitationsInvitationIdRoute
   '/_app/(auth)/profile': typeof AppauthProfileRoute
   '/_app/(contacts)/contacts': typeof AppcontactsContactsRoute
   '/_app/(workspaces)/company': typeof AppworkspacesCompanyRoute
   '/_app/(workspaces)/workspace': typeof AppworkspacesWorkspaceRoute
   '/_app/(workspaces)/': typeof AppworkspacesIndexRoute
+  '/_app/(lookups)/lookups/$lookupId': typeof ApplookupsLookupsLookupIdRoute
+  '/_app/(lookups)/lookups/': typeof ApplookupsLookupsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -109,33 +137,42 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/setup'
+    | '/auth/callback'
     | '/invitations/$invitationId'
     | '/profile'
     | '/contacts'
     | '/company'
     | '/workspace'
+    | '/lookups/$lookupId'
+    | '/lookups/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/setup'
+    | '/auth/callback'
     | '/invitations/$invitationId'
     | '/profile'
     | '/contacts'
     | '/company'
     | '/workspace'
     | '/'
+    | '/lookups/$lookupId'
+    | '/lookups'
   id:
     | '__root__'
     | '/(auth)'
     | '/_app'
     | '/(auth)/login'
     | '/(workspaces)/setup'
+    | '/(auth)/auth/callback'
     | '/(auth)/invitations/$invitationId'
     | '/_app/(auth)/profile'
     | '/_app/(contacts)/contacts'
     | '/_app/(workspaces)/company'
     | '/_app/(workspaces)/workspace'
     | '/_app/(workspaces)/'
+    | '/_app/(lookups)/lookups/$lookupId'
+    | '/_app/(lookups)/lookups/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -173,6 +210,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/setup'
       preLoaderRoute: typeof workspacesSetupRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/auth/callback': {
+      id: '/(auth)/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof authAuthCallbackRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(auth)/invitations/$invitationId': {
       id: '/(auth)/invitations/$invitationId'
@@ -216,16 +260,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppworkspacesWorkspaceRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/(lookups)/lookups/': {
+      id: '/_app/(lookups)/lookups/'
+      path: '/lookups'
+      fullPath: '/lookups/'
+      preLoaderRoute: typeof ApplookupsLookupsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/(lookups)/lookups/$lookupId': {
+      id: '/_app/(lookups)/lookups/$lookupId'
+      path: '/lookups/$lookupId'
+      fullPath: '/lookups/$lookupId'
+      preLoaderRoute: typeof ApplookupsLookupsLookupIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
 interface authRouteRouteChildren {
   authLoginRoute: typeof authLoginRoute
+  authAuthCallbackRoute: typeof authAuthCallbackRoute
   authInvitationsInvitationIdRoute: typeof authInvitationsInvitationIdRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
   authLoginRoute: authLoginRoute,
+  authAuthCallbackRoute: authAuthCallbackRoute,
   authInvitationsInvitationIdRoute: authInvitationsInvitationIdRoute,
 }
 
@@ -239,6 +299,8 @@ interface AppRouteRouteChildren {
   AppworkspacesCompanyRoute: typeof AppworkspacesCompanyRoute
   AppworkspacesWorkspaceRoute: typeof AppworkspacesWorkspaceRoute
   AppworkspacesIndexRoute: typeof AppworkspacesIndexRoute
+  ApplookupsLookupsLookupIdRoute: typeof ApplookupsLookupsLookupIdRoute
+  ApplookupsLookupsIndexRoute: typeof ApplookupsLookupsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -247,6 +309,8 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppworkspacesCompanyRoute: AppworkspacesCompanyRoute,
   AppworkspacesWorkspaceRoute: AppworkspacesWorkspaceRoute,
   AppworkspacesIndexRoute: AppworkspacesIndexRoute,
+  ApplookupsLookupsLookupIdRoute: ApplookupsLookupsLookupIdRoute,
+  ApplookupsLookupsIndexRoute: ApplookupsLookupsIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

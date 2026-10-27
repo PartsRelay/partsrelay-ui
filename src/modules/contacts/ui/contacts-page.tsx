@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { ChannelLinks } from '@/modules/contacts/ui/channel-links'
 import { ContactDirectory } from '@/modules/contacts/ui/contact-directory'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { PageHeader } from '@/ui/components/page-header'
@@ -19,6 +20,7 @@ export function ContactsPage() {
           )
         }
       />
+      <ChannelLinks />
       <ContactDirectory />
     </>
   )

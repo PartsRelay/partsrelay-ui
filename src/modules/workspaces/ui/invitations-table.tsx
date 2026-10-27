@@ -1,3 +1,4 @@
+import { MailIcon } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { authClient } from '@/modules/auth/core/auth.client'
@@ -6,12 +7,13 @@ import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { RevokeInvitationDialog } from '@/modules/workspaces/ui/revoke-invitation-dialog'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { CopyButton } from '@/ui/components/copy-button'
+import { EmptyState } from '@/ui/components/empty-state'
 import { ResponsiveTable } from '@/ui/components/responsive-table'
 import { StatusBadge } from '@/ui/components/status-badge'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
-import { ActionButton } from '@/modules/workspaces/ui/action-button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
-import { Empty, EmptyHeader, EmptyTitle } from '@/ui/components/ui/empty'
+import { ActionButton } from '@/ui/components/action-button'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components/ui/table'
 
 const columns = ['invitation', 'role', 'sent', 'actions']
@@ -21,27 +23,20 @@ export function InvitationsTable() {
   const { workspace, me } = useMe()
   const rows = invitationRows(workspace, me, new Date(), window.location.origin, i18n.language)
   const heading = useRef<HTMLHeadingElement>(null)
-  // Outlives the row, which leaves before the core answers
   const [revoking, setRevoking] = useState<InvitationRow | null>(null)
   const [confirming, setConfirming] = useState(false)
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2 ref={heading} tabIndex={-1} className="outline-none">
-            {t('workspace.invitations.title')}
-          </h2>
-        </CardTitle>
+        <CardHeading ref={heading} tabIndex={-1} className="outline-none">
+          {t('workspace.invitations.title')}
+        </CardHeading>
         <CardDescription>{t('workspace.invitations.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         {rows.length === 0 ? (
-          <Empty className="border">
-            <EmptyHeader>
-              <EmptyTitle>{t('workspace.invitations.empty')}</EmptyTitle>
-            </EmptyHeader>
-          </Empty>
+          <EmptyState icon={<MailIcon />} title={t('workspace.invitations.empty')} />
         ) : (
           <ResponsiveTable>
             <TableHeader>

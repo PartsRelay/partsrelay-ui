@@ -8,24 +8,25 @@ import {
   removeContact,
   updateContact,
 } from '@/modules/contacts/core/contacts.mutation'
-import { type ContactsPage, contactsListKey } from '@/modules/contacts/core/contacts.query'
+import { type ContactsPage, contactsQuery } from '@/modules/contacts/core/contacts.query'
 import { contactFixture, coreError, pageFixture } from '@/modules/contacts/tests/unit/fixtures'
 
 vi.mock('@/core/http/client', () => ({ http: vi.fn() }))
 
 const all = { page: 1 }
-const active = { status: ['active' as const], page: 1 }
-const blocked = { status: ['blocked' as const], page: 1 }
+const active = { status: 'active' as const, page: 1 }
+const blocked = { status: 'blocked' as const, page: 1 }
 const never = () => new Promise<never>(() => {})
+const contactKey = (params: typeof all) => contactsQuery(params).queryKey
 
 function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   const oakfield = contactFixture(1, { name: 'Oakfield Garage', profileName: 'Tom Walker' })
   const quickFit = contactFixture(2, { status: 'blocked', profileName: 'Sam Lee' })
-  client.setQueryData(contactsListKey(all), pageFixture([quickFit, oakfield]))
-  client.setQueryData(contactsListKey(active), pageFixture([oakfield]))
-  client.setQueryData(contactsListKey(blocked), pageFixture([quickFit]))
-  const list = (params: typeof all) => client.getQueryData<ContactsPage>(contactsListKey(params))!
+  client.setQueryData(contactKey(all), pageFixture([quickFit, oakfield]))
+  client.setQueryData(contactKey(active), pageFixture([oakfield]))
+  client.setQueryData(contactKey(blocked), pageFixture([quickFit]))
+  const list = (params: typeof all) => client.getQueryData<ContactsPage>(contactKey(params))!
 
   return { client, oakfield, quickFit, list }
 }
@@ -58,7 +59,7 @@ describe('contact changes', () => {
     await updateContact(client, quickFit, { status: 'active' })
 
     expect(list(blocked).data).toHaveLength(0)
-    expect(client.getQueryState(contactsListKey(active))?.isInvalidated).toBe(true)
+    expect(client.getQueryState(contactKey(active))?.isInvalidated).toBe(true)
   })
 
   it('renames in place, null clears the given name', async () => {
@@ -74,7 +75,7 @@ describe('contact changes', () => {
 
   it('restores a deleted contact when the core refuses', async () => {
     const { client, oakfield, list } = setup()
-    vi.mocked(http).mockRejectedValue(coreError(403, 'AUTHORIZATION_FAILURE'))
+    vi.mocked(http).mockRejectedValue(coreError(403, 'authorization-failure'))
 
     await expect(removeContact(client, oakfield)).rejects.toBeTruthy()
     expect(list(all).data.map((item) => item.id)).toEqual([2, 1])
@@ -90,7 +91,7 @@ describe('contact changes', () => {
 
     await expect(addContact(client, contact)).resolves.toEqual(created)
     sent('POST', '/api/v1/workspace/contacts', contact)
-    expect(client.getQueryState(contactsListKey(all))?.isInvalidated).toBe(true)
+    expect(client.getQueryState(contactKey(all))?.isInvalidated).toBe(true)
   })
 
   it('tells what changed', () => {

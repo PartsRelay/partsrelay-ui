@@ -9,7 +9,8 @@ import { Callout } from '@/ui/components/callout'
 import { ConfirmDialog } from '@/ui/components/confirm-dialog'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Button } from '@/ui/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 
 type LeaveCompanyCardProps = { view: ProfileView; workspace: Workspace }
 
@@ -22,9 +23,7 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2>{t('profile.leave.title')}</h2>
-        </CardTitle>
+        <CardHeading>{t('profile.leave.title')}</CardHeading>
         <CardDescription>
           {t('profile.leave.description', { company: view.company })}
         </CardDescription>
@@ -66,7 +65,6 @@ export function LeaveCompanyCard({ view, workspace }: LeaveCompanyCardProps) {
           void run(
             async () => {
               await authClient.organization.leave({ organizationId: workspace.id })
-              // The core deletes the account, so this ends the session
               endSession(client)
               await navigate({ to: '/login' })
             },
