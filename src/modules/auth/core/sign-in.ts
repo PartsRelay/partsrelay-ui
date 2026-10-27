@@ -1,6 +1,10 @@
 import { z } from 'zod'
+import { env } from '@/env'
+import { mocksEnabled } from '@/mocks/enabled'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { message } from '@/core/message'
+
+export const googleEnabled = Boolean(env.GOOGLE_CLIENT_ID) || mocksEnabled
 
 const optionalString = z.string().optional().catch(undefined)
 

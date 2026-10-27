@@ -5,7 +5,7 @@ import type { z } from 'zod'
 import { env } from '@/env'
 import { notify } from '@/core/notify'
 import { redirectSignedIn } from '@/modules/auth/core/session.query'
-import { loginError, type loginSearchSchema } from '@/modules/auth/core/sign-in'
+import { googleEnabled, loginError, type loginSearchSchema } from '@/modules/auth/core/sign-in'
 import { CardHeading } from '@/ui/components/card-heading'
 import { SignInOptions } from '@/modules/auth/ui/sign-in-options'
 import { Callout } from '@/ui/components/callout'
@@ -40,7 +40,9 @@ export function LoginPage() {
     <Card>
       <CardHeader>
         <CardHeading level={1}>{t('login.title')}</CardHeading>
-        <CardDescription>{t('login.description')}</CardDescription>
+        <CardDescription>
+          {t(googleEnabled ? 'login.description' : 'login.magic-link.description')}
+        </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         {failure && <Callout tone="danger">{t(...failure)}</Callout>}
