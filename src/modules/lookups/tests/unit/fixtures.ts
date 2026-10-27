@@ -55,10 +55,9 @@ export function lookupFixture(id: number, overrides: Partial<LookupObject> = {})
               {
                 code: '2116445',
                 name: 'Oil filter',
-                price: null,
                 aftermarket: [
-                  { code: 'W 7015', brand: 'MANN-FILTER', description: 'Oil filter', price: null },
-                  { code: 'F 026 407 209', brand: 'BOSCH', description: null, price: null },
+                  { code: 'W 7015', brand: 'MANN-FILTER', description: 'Oil filter' },
+                  { code: 'F 026 407 209', brand: 'BOSCH', description: null },
                 ],
               },
             ],

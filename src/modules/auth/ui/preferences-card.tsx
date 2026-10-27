@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toLocale } from '@/modules/workspaces/core/locale'
-import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
+import { LocaleSelect } from '@/ui/components/locale-select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 
 export function PreferencesCard() {

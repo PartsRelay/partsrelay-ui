@@ -1,8 +1,7 @@
 import { useForm } from '@tanstack/react-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import { authClient } from '@/modules/auth/core/auth.client'
-import type { ProfileView } from '@/modules/auth/core/profile'
+import { profileNameSchema, type ProfileView } from '@/modules/auth/core/profile'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
 import { Facts } from '@/ui/components/facts'
@@ -58,10 +57,7 @@ export function IdentityCard({ view, userName }: IdentityCardProps) {
         />
         <Form form={form}>
           <FieldGroup>
-            <form.Field
-              name="name"
-              validators={{ onSubmit: z.string().trim().min(1, 'profile.errors.name-required') }}
-            >
+            <form.Field name="name" validators={{ onSubmit: profileNameSchema }}>
               {(field) => (
                 <InputField
                   field={field}

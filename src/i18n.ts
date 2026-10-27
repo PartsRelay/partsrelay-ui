@@ -15,6 +15,8 @@ for (const [path, messages] of Object.entries(files)) {
   resources[locale].translation[file.replace(/\.json$/, '')] = messages
 }
 
+export const locales = Object.keys(resources)
+
 i18n.on('languageChanged', (language) =>
   globalThis.document?.documentElement.setAttribute('lang', language)
 )
@@ -25,7 +27,7 @@ void i18n
   .use(initReactI18next)
   .init({
     resources,
-    supportedLngs: Object.keys(resources),
+    supportedLngs: locales,
     load: 'currentOnly',
     fallbackLng: 'en-US',
     detection: { order: ['localStorage', 'navigator'], caches: ['localStorage'] },

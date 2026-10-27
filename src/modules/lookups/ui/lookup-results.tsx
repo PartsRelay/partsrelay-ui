@@ -1,20 +1,11 @@
+import { cn } from 'cn'
 import { useTranslation } from 'react-i18next'
-import type { CategoryView, PartView, UnitView } from '@/modules/lookups/core/lookup-detail'
+import type { OemPart } from '@/core/api/models'
+import type { CategoryView, UnitView } from '@/modules/lookups/core/lookup-detail'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
-import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/ui/components/ui/item'
+import { Item, ItemContent, ItemDescription, ItemTitle } from '@/ui/components/ui/item'
 
-function Price({ value }: { value: string }) {
-  const { t } = useTranslation()
-
-  return (
-    <span className="tabular-nums">
-      <span className="sr-only">{t('lookups.results.price')} </span>
-      {value}
-    </span>
-  )
-}
-
-function Part({ part }: { part: PartView }) {
+function Part({ part }: { part: OemPart }) {
   const { t } = useTranslation()
 
   return (
@@ -26,9 +17,6 @@ function Part({ part }: { part: PartView }) {
           </ItemTitle>
           {part.name && <ItemDescription>{part.name}</ItemDescription>}
         </ItemContent>
-        <ItemActions>
-          <Price value={part.price} />
-        </ItemActions>
       </Item>
       {part.aftermarket.length > 0 ? (
         <ul className="grid gap-1 pl-4">
@@ -42,9 +30,6 @@ function Part({ part }: { part: PartView }) {
                   </ItemTitle>
                   {match.description && <ItemDescription>{match.description}</ItemDescription>}
                 </ItemContent>
-                <ItemActions>
-                  <Price value={match.price} />
-                </ItemActions>
               </Item>
             </li>
           ))}
@@ -61,7 +46,9 @@ function Unit({ unit, category }: { unit: UnitView; category: string }) {
   const name = unit.name ?? (unit.code && t('lookups.results.unit', { code: unit.code }))
 
   return (
-    <section className="grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+    <section
+      className={cn('grid gap-4', unit.imageUrl && 'md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]')}
+    >
       {unit.imageUrl && (
         <a href={unit.imageUrl} target="_blank" rel="noreferrer">
           <img

@@ -1,17 +1,16 @@
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { sessionQuery } from '@/modules/auth/core/session.query'
-import { setupDefaults } from '@/modules/workspaces/core/setup'
+import { setupDefaults, setupSchemas } from '@/modules/workspaces/core/setup'
 import { toLocale } from '@/modules/workspaces/core/locale'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 import { workspaceKey } from '@/modules/workspaces/core/workspace.query'
-import { AuthTitle } from '@/modules/auth/ui/auth-title'
+import { AuthTitle } from '@/ui/components/auth-title'
 import { AccountActions } from '@/modules/workspaces/ui/account-actions'
 import { InvitationHint } from '@/modules/workspaces/ui/invitation-hint'
-import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
+import { LocaleSelect } from '@/ui/components/locale-select'
 import { Form } from '@/ui/components/form'
 import { InputField } from '@/ui/components/input-field'
 import { SubmitButton } from '@/ui/components/submit-button'
@@ -58,10 +57,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
         <Form form={form}>
           <FieldGroup>
             <InvitationHint />
-            <form.Field
-              name="name"
-              validators={{ onSubmit: z.string().trim().min(1, 'setup.errors.name-required') }}
-            >
+            <form.Field name="name" validators={{ onSubmit: setupSchemas.name }}>
               {(field) => (
                 <InputField
                   field={field}
@@ -83,12 +79,7 @@ export function WorkspaceForm({ workspace, askName }: WorkspaceFormProps) {
               )}
             </form.Field>
             {askName && (
-              <form.Field
-                name="userName"
-                validators={{
-                  onSubmit: z.string().trim().min(1, 'setup.errors.user-name-required'),
-                }}
-              >
+              <form.Field name="userName" validators={{ onSubmit: setupSchemas.userName }}>
                 {(field) => (
                   <InputField
                     field={field}

@@ -4,7 +4,7 @@
  * Parts Relay
  * OpenAPI spec version: 1.0.0
  */
-import type { GetApiV1WorkspaceContactsStatusItem } from './getApiV1WorkspaceContactsStatusItem';
+import type { GetApiV1WorkspaceContactsStatus } from './getApiV1WorkspaceContactsStatus';
 
 export type GetApiV1WorkspaceContactsParams = {
 /**
@@ -16,6 +16,6 @@ page?: number;
  * @maximum 100
  */
 perPage?: number;
-status?: GetApiV1WorkspaceContactsStatusItem[];
+status?: GetApiV1WorkspaceContactsStatus;
 search?: string;
 };

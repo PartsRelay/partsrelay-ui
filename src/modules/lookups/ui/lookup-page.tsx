@@ -1,27 +1,53 @@
 import { useQuery } from '@tanstack/react-query'
-import { getRouteApi, Link } from '@tanstack/react-router'
-import { ArrowLeftIcon } from 'lucide-react'
+import { getRouteApi, Link, useCanGoBack, useRouter } from '@tanstack/react-router'
+import { ArrowLeftIcon, MapPinOffIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { alreadyGone } from '@/core/errors'
 import { lookupDetail } from '@/modules/lookups/core/lookup-detail'
 import { lookupQuery } from '@/modules/lookups/core/lookups.query'
 import { LookupOutcome } from '@/modules/lookups/ui/lookup-outcome'
 import { LookupResults } from '@/modules/lookups/ui/lookup-results'
 import { LookupVehicle } from '@/modules/lookups/ui/lookup-vehicle'
-import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { Callout } from '@/ui/components/callout'
 import { LoadError, RefetchError } from '@/ui/components/load-error'
 import { PageHeader } from '@/ui/components/page-header'
 import { Button } from '@/ui/components/ui/button'
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/ui/components/ui/empty'
 import { Skeleton } from '@/ui/components/ui/skeleton'
 
 const route = getRouteApi('/_app/(lookups)/searches/$lookupId')
 
+function NotFound() {
+  const { t } = useTranslation()
+
+  return (
+    <Empty className="border">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <MapPinOffIcon aria-hidden />
+        </EmptyMedia>
+        <EmptyTitle>
+          <h2>{t('app.not-found.title')}</h2>
+        </EmptyTitle>
+        <EmptyDescription>{t('app.not-found.description')}</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  )
+}
+
 export function LookupPage() {
   const { t, i18n } = useTranslation()
-  const { workspace } = useMe()
+  const router = useRouter()
+  const canGoBack = useCanGoBack()
   const { lookupId } = route.useParams()
   const lookup = useQuery(lookupQuery(Number(lookupId)))
-  const detail = lookup.data && lookupDetail(lookup.data, workspace, i18n.language)
+  const detail = lookup.data && lookupDetail(lookup.data, i18n.language)
   const retry = () => void lookup.refetch()
 
   return (
@@ -31,7 +57,14 @@ export function LookupPage() {
         description={t('lookups.detail.description')}
         action={
           <Button variant="outline" asChild>
-            <Link to="/searches">
+            <Link
+              to="/searches"
+              onClick={(event) => {
+                if (!canGoBack) return
+                event.preventDefault()
+                router.history.back()
+              }}
+            >
               <ArrowLeftIcon data-icon="inline-start" />
               {t('lookups.detail.back')}
             </Link>
@@ -58,6 +91,8 @@ export function LookupPage() {
             <LookupOutcome detail={detail} />
           )}
         </>
+      ) : lookup.isLoadingError && alreadyGone(lookup.error) ? (
+        <NotFound />
       ) : lookup.isLoadingError ? (
         <LoadError error={lookup.error} onRetry={retry} />
       ) : (

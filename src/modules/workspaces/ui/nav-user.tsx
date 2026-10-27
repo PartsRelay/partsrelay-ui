@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { ChevronsUpDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSignOut } from '@/modules/auth/ui/hooks/use-sign-out'
@@ -41,8 +41,7 @@ export function NavUser() {
   const { t } = useTranslation()
   const { isMobile, setOpenMobile } = useSidebar()
   const { me } = useMe()
-  const navigate = useNavigate()
-  const { pending, signOut } = useSignOut()
+  const { pending, signOut } = useSignOut({ to: '/login' })
   const { name, email, image } = me.member
 
   return (
@@ -79,12 +78,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              disabled={pending}
-              onSelect={async () => {
-                if ((await signOut()).ok) await navigate({ to: '/login' })
-              }}
-            >
+            <DropdownMenuItem disabled={pending} onSelect={() => void signOut()}>
               <LogOutIcon aria-hidden />
               {t('shell.user.sign-out')}
             </DropdownMenuItem>

@@ -21,7 +21,7 @@ const reactImports = ['react', 'react-dom', '@tanstack/react-*', '@/ui/*', '@/mo
 
 export default defineConfig({
   plugins: [
-    devtools(),
+    devtools({ eventBusConfig: { enabled: false } }),
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,

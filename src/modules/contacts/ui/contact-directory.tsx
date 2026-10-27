@@ -2,9 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { getRouteApi } from '@tanstack/react-router'
 import { cn } from 'cn'
 import { BookUserIcon } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { pageInfo } from '@/core/pagination'
 import { type ContactRow, contactRow } from '@/modules/contacts/core/contact-row'
 import { type ContactTab, contactTabs, tabStatus } from '@/modules/contacts/core/contacts'
 import { contactListParams, contactsQuery } from '@/modules/contacts/core/contacts.query'
@@ -33,6 +32,7 @@ import {
 } from '@/ui/components/ui/empty'
 import { Skeleton } from '@/ui/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/components/ui/tabs'
+import { usePageInfo } from '@/ui/hooks/use-page-info'
 
 const route = getRouteApi('/_app/(contacts)/contacts')
 
@@ -64,8 +64,7 @@ export function ContactDirectory() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
   const list = useQuery(contactsQuery(contactListParams(search)))
-  const info = list.data && pageInfo(list.data.metadata)
-  const lastPage = info?.outOfRange ? info.pages : undefined
+  const info = usePageInfo(list.data?.metadata)
   const tab: ContactTab = search.status ?? 'all'
   const rows = list.data?.data.map((contact) => contactRow(contact, me, i18n.language))
   const heading = useRef<HTMLHeadingElement>(null)
@@ -77,10 +76,6 @@ export function ContactDirectory() {
   }
   const close = () => setConfirming(false)
   const retry = () => void list.refetch()
-
-  useEffect(() => {
-    if (lastPage) void navigate({ search: (prev) => ({ ...prev, page: lastPage }), replace: true })
-  }, [lastPage, navigate])
 
   return (
     <Card>

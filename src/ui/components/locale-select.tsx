@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { type Locale, locales, toLocale } from '@/modules/workspaces/core/locale'
+import { locales } from '@/i18n'
 import { TextField } from '@/ui/components/text-field'
 import {
   Select,
@@ -13,9 +13,9 @@ import {
 type LocaleSelectProps = {
   label: ReactNode
   description?: ReactNode
-  value: Locale
+  value: string
   disabled?: boolean
-  onValueChange: (locale: Locale) => void
+  onValueChange: (locale: string) => void
 }
 
 export function LocaleSelect({
@@ -28,11 +28,7 @@ export function LocaleSelect({
   const { t } = useTranslation()
 
   return (
-    <Select
-      value={value}
-      disabled={disabled}
-      onValueChange={(next) => onValueChange(toLocale(next))}
-    >
+    <Select value={value} disabled={disabled} onValueChange={onValueChange}>
       <TextField label={label} description={description}>
         <SelectTrigger className="w-full">
           <SelectValue />

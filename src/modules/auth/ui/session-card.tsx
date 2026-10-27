@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router'
 import { LogOutIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSignOut } from '@/modules/auth/ui/hooks/use-sign-out'
@@ -7,8 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/
 
 export function SessionCard() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const { pending, signOut } = useSignOut()
+  const { pending, signOut } = useSignOut({ to: '/login' })
 
   return (
     <Card>
@@ -19,13 +17,7 @@ export function SessionCard() {
         <CardDescription>{t('profile.session.description')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Button
-          variant="outline"
-          disabled={pending}
-          onClick={async () => {
-            if ((await signOut()).ok) await navigate({ to: '/login' })
-          }}
-        >
+        <Button variant="outline" disabled={pending} onClick={() => void signOut()}>
           <LogOutIcon data-icon="inline-start" />
           {t('profile.session.sign-out')}
         </Button>

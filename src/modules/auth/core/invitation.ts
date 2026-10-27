@@ -1,6 +1,7 @@
 import { toDate } from 'date-fns'
 import { errorCode, errorMessage, errorStatus } from '@/core/errors'
 import { type Message, message } from '@/core/message'
+import { requiredText } from '@/core/schemas'
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -114,3 +115,5 @@ export function acceptError(error: unknown) {
     ? message('invitation.unavailable.company-not-empty')
     : errorMessage(error)
 }
+
+export const invitedNameSchema = requiredText('invitation.errors.name-required')

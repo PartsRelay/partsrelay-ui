@@ -1,7 +1,7 @@
 import { intlFormat } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { type InvitationDetails, invitationHeadline } from '@/modules/auth/core/invitation'
-import { AuthTitle } from '@/modules/auth/ui/auth-title'
+import { AuthTitle } from '@/ui/components/auth-title'
 import { CardDescription, CardHeader } from '@/ui/components/ui/card'
 
 export function InvitationHeader({ details }: { details?: InvitationDetails }) {

@@ -4,7 +4,7 @@ import { z } from 'zod'
 export function readEnv(source: Record<string, string | undefined>) {
   return createEnv({
     server: {
-      APP_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+      MOCKS: z.stringbool().default(false),
       APP_NAME: z.string().default('Parts Relay'),
       API_URL: z.url().default(''),
       GOOGLE_CLIENT_ID: z.string().optional(),

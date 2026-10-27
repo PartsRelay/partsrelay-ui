@@ -2,18 +2,16 @@ import { describe, expect, it } from 'vite-plus/test'
 import type { LookupObject } from '@/core/api/models'
 import { message } from '@/core/message'
 import { lookupRow, searcherName } from '@/modules/lookups/core/lookup-row'
-import { lookupFixture, workspaceFixture } from '@/modules/lookups/tests/unit/fixtures'
-
-const workspace = workspaceFixture()
+import { lookupFixture } from '@/modules/lookups/tests/unit/fixtures'
 
 const row = (overrides: Partial<LookupObject> = {}) =>
-  lookupRow(lookupFixture(1, overrides), workspace, 'en-US')
+  lookupRow(lookupFixture(1, overrides), 'en-US')
 
 describe('lookup rows', () => {
   it('shows the plate, the part, the vehicle, who searched and when', () => {
     const lookup = lookupFixture(1)
 
-    expect(lookupRow(lookup, workspace, 'en-US')).toEqual({
+    expect(lookupRow(lookup, 'en-US')).toEqual({
       lookup,
       identifier: 'AB12CDE',
       part: 'Oil filter change',
@@ -43,7 +41,7 @@ describe('lookup rows', () => {
   })
 
   it('dates the lookup in the app language', () => {
-    expect(lookupRow(lookupFixture(1), workspace, 'it-IT').requested).toBe('12 ott 2026, 09:59')
+    expect(lookupRow(lookupFixture(1), 'it-IT').requested).toBe('12 ott 2026, 09:59')
   })
 
   it('gives each status its label and tone', () => {
@@ -64,11 +62,9 @@ describe('lookup rows', () => {
   })
 
   it('names who searched, also when they are gone', () => {
-    const name = (searcher: LookupObject['searcher']) => searcherName(searcher ?? null, workspace)
+    const name = (searcher: LookupObject['searcher']) => searcherName(searcher ?? null)
 
     expect(name({ type: 'user', id: 102, name: 'Julia White' })).toBe('Julia White')
-    expect(name({ type: 'user', id: 102, name: '' })).toBe('julia.white@redwoodparts.com')
-    expect(name({ type: 'user', id: 999, name: '' })).toEqual(message('lookups.searcher.member'))
     expect(name({ type: 'contact', id: 3, name: 'Oakfield Garage' })).toBe('Oakfield Garage')
     expect(name({ type: 'contact', id: 3, name: null })).toEqual(
       message('lookups.searcher.unnamed-contact')

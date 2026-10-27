@@ -2,9 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getRouteApi, Link } from '@tanstack/react-router'
 import { cn } from 'cn'
 import { ScanSearchIcon } from 'lucide-react'
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { pageInfo } from '@/core/pagination'
 import { lookupRow } from '@/modules/lookups/core/lookup-row'
 import { filtered, lookupListParams } from '@/modules/lookups/core/lookups'
 import { lookupsQuery } from '@/modules/lookups/core/lookups.query'
@@ -26,6 +24,7 @@ import {
   EmptyTitle,
 } from '@/ui/components/ui/empty'
 import { Skeleton } from '@/ui/components/ui/skeleton'
+import { usePageInfo } from '@/ui/hooks/use-page-info'
 
 const route = getRouteApi('/_app/(lookups)/searches/')
 
@@ -85,21 +84,14 @@ function NoMatches() {
 
 export function LookupQueue() {
   const { t, i18n } = useTranslation()
-  const { workspace } = useMe()
   const text = useText()
   const search = route.useSearch()
-  const navigate = route.useNavigate()
   const list = useQuery(lookupsQuery(lookupListParams(search)))
   const narrowed = filtered(search)
-  const info = list.data && pageInfo(list.data.metadata)
-  const lastPage = info?.outOfRange ? info.pages : undefined
-  const rows = list.data?.data.map((lookup) => lookupRow(lookup, workspace, i18n.language))
+  const info = usePageInfo(list.data?.metadata)
+  const rows = list.data?.data.map((lookup) => lookupRow(lookup, i18n.language))
   const [first] = rows ?? []
   const retry = () => void list.refetch()
-
-  useEffect(() => {
-    if (lastPage) void navigate({ search: (prev) => ({ ...prev, page: lastPage }), replace: true })
-  }, [lastPage, navigate])
 
   return (
     <Card>
@@ -111,7 +103,7 @@ export function LookupQueue() {
           {info ? t('lookups.list.count', { count: info.total }) : t('lookups.list.description')}
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid grid-cols-1 gap-4">
         {(!info || info.total > 0 || narrowed) && (
           <LookupFilters
             requester={first && !list.isPlaceholderData ? text(first.searcher) : undefined}
@@ -119,7 +111,7 @@ export function LookupQueue() {
         )}
         <div
           aria-busy={list.isPlaceholderData}
-          className={cn('grid gap-4', list.isPlaceholderData && 'opacity-60')}
+          className={cn('grid grid-cols-1 gap-4', list.isPlaceholderData && 'opacity-60')}
         >
           {list.isRefetchError && (
             <RefetchError error={list.error} onRetry={retry}>

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { Locale } from '@/modules/workspaces/core/locale'
 import { updateCompany } from '@/modules/workspaces/core/workspace.mutation'
-import { LocaleSelect } from '@/modules/workspaces/ui/locale-select'
+import { LocaleSelect } from '@/ui/components/locale-select'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 

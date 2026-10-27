@@ -2,9 +2,13 @@ import { useForm } from '@tanstack/react-form'
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import { fieldErrors } from '@/core/errors'
-import { contactFieldErrors, emptyContact, newContact } from '@/modules/contacts/core/contact-form'
+import {
+  contactFieldErrors,
+  emptyContact,
+  newContact,
+  phoneSchema,
+} from '@/modules/contacts/core/contact-form'
 import { useAddContact } from '@/modules/contacts/ui/hooks/use-add-contact'
 import { Form } from '@/ui/components/form'
 import { InputField } from '@/ui/components/input-field'
@@ -64,10 +68,7 @@ function AddContactForm({ onDone }: { onDone: () => void }) {
         <DialogDescription>{t('contacts.add.description')}</DialogDescription>
       </DialogHeader>
       <FieldGroup>
-        <form.Field
-          name="phone"
-          validators={{ onSubmit: z.string().trim().min(1, 'contacts.add.errors.phone-required') }}
-        >
+        <form.Field name="phone" validators={{ onSubmit: phoneSchema }}>
           {(field) => (
             <InputField
               field={field}

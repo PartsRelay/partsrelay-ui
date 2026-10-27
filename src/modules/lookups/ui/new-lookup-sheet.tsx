@@ -11,6 +11,7 @@ import {
   newLookup,
   QUERY_LENGTH,
   querySchema,
+  toIdentifier,
 } from '@/modules/lookups/core/lookup-form'
 import { useStartLookup } from '@/modules/lookups/ui/hooks/use-start-lookup'
 import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
@@ -90,7 +91,7 @@ function NewLookupForm({ prefill }: { prefill: LookupPrefill }) {
                 aria-label={t('lookups.new.identify')}
                 value={field.state.value}
                 onValueChange={(value) => {
-                  const by = identifiers.find((item) => item === value)
+                  const by = toIdentifier(value)
                   if (by) field.handleChange(by)
                 }}
               >
@@ -104,7 +105,7 @@ function NewLookupForm({ prefill }: { prefill: LookupPrefill }) {
           </form.Field>
           <form.Subscribe selector={(state) => state.values.by}>
             {(by) => (
-              <form.Field name="identifier" validators={{ onSubmit: identifierSchemas[by] }}>
+              <form.Field key={by} name={by} validators={{ onSubmit: identifierSchemas[by] }}>
                 {(field) => (
                   <InputField
                     field={field}

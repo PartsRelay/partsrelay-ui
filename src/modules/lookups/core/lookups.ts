@@ -75,9 +75,9 @@ export const filterOptions = {
 }
 
 export const filterValues = {
-  status: (value: string) => Object.values(LookupObjectStatus).find((item) => item === value),
-  source: (value: string) => Object.values(LookupObjectSource).find((item) => item === value),
-  days: (value: string) => PERIODS.find((item) => String(item) === value),
+  status: (value: string) => filtersSchema.shape.status.parse(value),
+  source: (value: string) => filtersSchema.shape.source.parse(value),
+  days: (value: string) => filtersSchema.shape.days.parse(Number(value)),
 }
 
 export function filtered(search: LookupFilters) {

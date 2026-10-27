@@ -57,7 +57,7 @@ export function ContactsTable({ rows, onBlock, onRemove }: ContactsTableProps) {
 
           return (
             <TableRow key={row.contact.id}>
-              <TableCell className="w-56 min-w-56 whitespace-normal wrap-anywhere">
+              <TableCell className="w-48 min-w-48 whitespace-normal wrap-anywhere">
                 {editing ? (
                   <ContactNameForm
                     row={row}

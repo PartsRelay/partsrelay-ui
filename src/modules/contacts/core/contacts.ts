@@ -13,6 +13,6 @@ export const contactsSearchSchema = z.object({
 
 export type ContactsSearch = z.infer<typeof contactsSearchSchema>
 
-export function tabStatus(tab: string): ContactStatus | undefined {
-  return Object.values(ContactStatus).find((status) => status === tab)
+export function tabStatus(tab: string) {
+  return contactsSearchSchema.shape.status.parse(tab)
 }

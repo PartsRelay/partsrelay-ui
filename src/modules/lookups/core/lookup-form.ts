@@ -8,7 +8,7 @@ export type Identifier = (typeof identifiers)[number]
 
 export type LookupPrefill = { plate?: string; vin?: string; query?: string }
 
-export type LookupValues = { by: Identifier; identifier: string; query: string }
+export type LookupValues = { by: Identifier; plate: string; vin: string; query: string }
 
 const PATTERNS: Record<Identifier, RegExp> = {
   plate: /^[A-Z0-9]{4,8}$/,
@@ -17,11 +17,15 @@ const PATTERNS: Record<Identifier, RegExp> = {
 
 export const QUERY_LENGTH = { min: 2, max: 200 }
 
-export function emptyLookup({ plate, vin, query = '' }: LookupPrefill = {}): LookupValues {
-  return vin && !plate
-    ? { by: 'vin', identifier: vin, query }
-    : { by: 'plate', identifier: plate ?? '', query }
+export function emptyLookup({
+  plate = '',
+  vin = '',
+  query = '',
+}: LookupPrefill = {}): LookupValues {
+  return { by: vin && !plate ? 'vin' : 'plate', plate, vin, query }
 }
+
+export const toIdentifier = (value: string) => z.enum(identifiers).safeParse(value).data
 
 export function compactIdentifier(value: string) {
   return value
@@ -47,16 +51,14 @@ export const querySchema = z
   .min(QUERY_LENGTH.min, 'lookups.new.errors.query')
   .max(QUERY_LENGTH.max, 'lookups.new.errors.query')
 
-export function newLookup({ by, identifier, query }: LookupValues): PostApiV1LookupsBody {
-  return { [by]: compactIdentifier(identifier), query: query.trim() }
+export function newLookup(values: LookupValues): PostApiV1LookupsBody {
+  return { [values.by]: compactIdentifier(values[values.by]), query: values.query.trim() }
 }
 
 export function lookupFieldErrors(error: unknown) {
-  const fields = fieldErrors(error, {
+  return fieldErrors(error, {
     plate: 'lookups.new.errors.plate',
     vin: 'lookups.new.errors.vin',
     query: 'lookups.new.errors.query',
   })
-
-  return fields && { identifier: fields.plate ?? fields.vin, query: fields.query }
 }

@@ -1,6 +1,7 @@
 import { compareDesc, intlFormat, isAfter, toDate } from 'date-fns'
 import { z } from 'zod'
 import { type Message, message } from '@/core/message'
+import { requiredText } from '@/core/schemas'
 import type { authClient } from '@/modules/auth/core/auth.client'
 import { type Locale, toLocale } from '@/modules/workspaces/core/locale'
 import {
@@ -218,3 +219,5 @@ export function withoutInvitation(organization: FullOrganization, invitationId: 
     invitations: organization.invitations.filter((item) => item.id !== invitationId),
   }
 }
+
+export const companyNameSchema = requiredText('company.errors.name-required')

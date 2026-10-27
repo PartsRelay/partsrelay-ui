@@ -25,13 +25,13 @@ type Text = [en: string, it: string]
 
 type Language = 0 | 1
 
-type Match = [brand: string, code: string, description: string, price: number | null]
+type Match = [brand: string, code: string, description: string]
 
 type Category = {
   name: Text
   words: string[]
   unit: { code: string; name: Text; image: boolean }
-  original: { code: string; name: Text; price: number | null; aftermarket: Match[] }[]
+  original: { code: string; name: Text; aftermarket: Match[] }[]
 }
 
 type Stored = Omit<LookupObject, 'searcher' | 'vehicleDescription' | 'categories'> & {
@@ -67,11 +67,10 @@ const CATALOG: Record<string, Category> = {
       {
         code: '55256470',
         name: ['Oil filter', 'Filtro olio'],
-        price: null,
         aftermarket: [
-          ['MANN-FILTER', 'W 712/95', 'Oil filter', null],
-          ['BOSCH', 'F 026 407 209', 'Oil filter', null],
-          ['UFI', '23.123.00', 'Oil filter', null],
+          ['MANN-FILTER', 'W 712/95', 'Oil filter'],
+          ['BOSCH', 'F 026 407 209', 'Oil filter'],
+          ['UFI', '23.123.00', 'Oil filter'],
         ],
       },
     ],
@@ -84,10 +83,9 @@ const CATALOG: Record<string, Category> = {
       {
         code: '51854724',
         name: ['Air filter', 'Filtro aria'],
-        price: null,
         aftermarket: [
-          ['MANN-FILTER', 'C 2433/2', 'Air filter', null],
-          ['MAHLE', 'LX 2826', 'Air filter', null],
+          ['MANN-FILTER', 'C 2433/2', 'Air filter'],
+          ['MAHLE', 'LX 2826', 'Air filter'],
         ],
       },
     ],
@@ -100,11 +98,10 @@ const CATALOG: Record<string, Category> = {
       {
         code: '77367141',
         name: ['Front brake pad set', 'Kit pastiglie freno anteriori'],
-        price: 84.2,
         aftermarket: [
-          ['BREMBO', 'P 23 141', 'Brake pad set, disc brake', 38.7],
-          ['TRW', 'GDB1891', 'Brake pad set, disc brake', 46.9],
-          ['BOSCH', '0 986 494 597', 'Brake pad set, disc brake', 52.4],
+          ['BREMBO', 'P 23 141', 'Brake pad set, disc brake'],
+          ['TRW', 'GDB1891', 'Brake pad set, disc brake'],
+          ['BOSCH', '0 986 494 597', 'Brake pad set, disc brake'],
         ],
       },
     ],
@@ -113,9 +110,7 @@ const CATALOG: Record<string, Category> = {
     name: ['Clutch kit', 'Kit frizione'],
     words: ['clutch', 'frizione'],
     unit: { code: 'u5', name: ['Clutch', 'Frizione'], image: false },
-    original: [
-      { code: '55238862', name: ['Clutch kit', 'Kit frizione'], price: null, aftermarket: [] },
-    ],
+    original: [{ code: '55238862', name: ['Clutch kit', 'Kit frizione'], aftermarket: [] }],
   },
   g6: {
     name: ['Timing belt kit', 'Kit distribuzione'],
@@ -125,10 +120,9 @@ const CATALOG: Record<string, Category> = {
       {
         code: '71771580',
         name: ['Timing belt kit', 'Kit cinghia distribuzione'],
-        price: null,
         aftermarket: [
-          ['GATES', 'K015607XS', 'Timing belt kit', null],
-          ['CONTITECH', 'CT1028K1', 'Timing belt kit', null],
+          ['GATES', 'K015607XS', 'Timing belt kit'],
+          ['CONTITECH', 'CT1028K1', 'Timing belt kit'],
         ],
       },
     ],
@@ -244,12 +238,10 @@ function categoriesOf(nodeIds: string[], language: Language) {
           original: original.map((part) => ({
             code: part.code,
             name: part.name[language],
-            price: part.price,
-            aftermarket: part.aftermarket.map(([brand, code, description, price]) => ({
+            aftermarket: part.aftermarket.map(([brand, code, description]) => ({
               brand,
               code,
               description,
-              price,
             })),
           })),
         },
@@ -349,7 +341,7 @@ function topSearchers(lookups: Stored[]) {
 
   for (const { searcher, gone } of lookups) {
     const key = `${searcher.type}:${searcher.id}`
-    const top = counts.get(key) ?? { ...searcher, name: gone ? null : searcher.name, total: 0 }
+    const top = counts.get(key) ?? { searcher: gone ? null : searcher, total: 0 }
     counts.set(key, { ...top, total: top.total + 1 })
   }
 

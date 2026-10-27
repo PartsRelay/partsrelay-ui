@@ -10,7 +10,5 @@ export interface OemPart {
   code: string;
   /** @nullable */
   name: string | null;
-  /** @nullable */
-  price: number | null;
   aftermarket: IamPart[];
 }

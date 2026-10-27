@@ -1,4 +1,5 @@
 import type { ContactObject, PostApiV1WorkspaceContactsBody } from '@/core/api/models'
+import { requiredText } from '@/core/schemas'
 import type { ContactChange } from '@/modules/contacts/core/contacts.mutation'
 
 export type ContactValues = { phone: string; name: string }
@@ -20,3 +21,5 @@ export function renameChange(value: string, contact: ContactObject): ContactChan
 
   return name === contact.name ? null : { name }
 }
+
+export const phoneSchema = requiredText('contacts.add.errors.phone-required')

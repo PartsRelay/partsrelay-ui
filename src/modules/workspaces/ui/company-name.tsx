@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
+import { companyNameSchema } from '@/modules/workspaces/core/workspace'
 import { updateCompany } from '@/modules/workspaces/core/workspace.mutation'
 import { Form } from '@/ui/components/form'
 import { InputField } from '@/ui/components/input-field'
@@ -36,10 +36,7 @@ export function CompanyName({ name }: { name: string }) {
       <CardContent>
         <Form form={form}>
           <FieldGroup>
-            <form.Field
-              name="name"
-              validators={{ onSubmit: z.string().trim().min(1, 'company.errors.name-required') }}
-            >
+            <form.Field name="name" validators={{ onSubmit: companyNameSchema }}>
               {(field) => (
                 <InputField
                   field={field}

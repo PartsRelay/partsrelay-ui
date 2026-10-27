@@ -1,15 +1,16 @@
+import { z } from 'zod'
 import { message } from '@/core/message'
 
-const roles = ['owner', 'admin', 'viewer'] as const
+const roleSchema = z.enum(['owner', 'admin', 'viewer'])
 
-export type Role = (typeof roles)[number]
+export type Role = z.infer<typeof roleSchema>
 
 export function isRole(value: unknown): value is Role {
-  return roles.includes(value as Role)
+  return roleSchema.safeParse(value).success
 }
 
 export function toRole(value: string | undefined): Role {
-  return isRole(value) ? value : 'viewer'
+  return roleSchema.catch('viewer').parse(value)
 }
 
 export function roleLabel(role: Role) {

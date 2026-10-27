@@ -2,7 +2,6 @@ import { getHours } from 'date-fns'
 import type { LookupStatsObject } from '@/core/api/models'
 import { message } from '@/core/message'
 import { searcherName } from '@/modules/lookups/core/lookup-row'
-import type { Workspace } from '@/modules/workspaces/core/workspace'
 
 export function greeting(name: string, now: Date) {
   const hour = getHours(now)
@@ -18,7 +17,7 @@ function changeNote({ days, total, previousTotal }: LookupStatsObject) {
     : message('lookups.stats.no-previous', { days })
 }
 
-export function statsView(stats: LookupStatsObject, workspace: Workspace) {
+export function statsView(stats: LookupStatsObject) {
   const { days } = stats
 
   return {
@@ -28,9 +27,6 @@ export function statsView(stats: LookupStatsObject, workspace: Workspace) {
       { id: 'done', value: stats.done, note: message('lookups.stats.done-note') },
       { id: 'failed', value: stats.failed, note: message('lookups.stats.failed-note') },
     ].map((card) => ({ ...card, label: message(`lookups.stats.${card.id}`, { days }) })),
-    topSearchers: stats.topSearchers.map((searcher) => ({
-      ...searcher,
-      label: searcherName(searcher, workspace),
-    })),
+    topSearchers: stats.topSearchers.map((top) => ({ ...top, label: searcherName(top.searcher) })),
   }
 }

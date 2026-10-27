@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vite-plus/test'
 import type { LookupStatsObject } from '@/core/api/models'
 import { message } from '@/core/message'
 import { greeting, statsView } from '@/modules/lookups/core/lookup-stats'
-import { workspaceFixture } from '@/modules/lookups/tests/unit/fixtures'
 
 const stats = (overrides: Partial<LookupStatsObject> = {}): LookupStatsObject => ({
   days: 30,
@@ -11,9 +10,9 @@ const stats = (overrides: Partial<LookupStatsObject> = {}): LookupStatsObject =>
   failed: 12,
   previousTotal: 100,
   topSearchers: [
-    { type: 'contact', id: 1, name: 'Oakfield Garage', total: 40 },
-    { type: 'user', id: 102, name: '', total: 20 },
-    { type: 'contact', id: 9, name: null, total: 2 },
+    { searcher: { type: 'contact', id: 1, name: 'Oakfield Garage' }, total: 40 },
+    { searcher: null, total: 20 },
+    { searcher: { type: 'contact', id: 9, name: null }, total: 2 },
   ],
   ...overrides,
 })
@@ -29,7 +28,7 @@ describe('operations desk', () => {
   })
 
   it('counts the searches of the period against the previous one', () => {
-    const [total, done, failed] = statsView(stats(), workspaceFixture()).cards
+    const [total, done, failed] = statsView(stats()).cards
 
     expect(total).toEqual({
       id: 'total',
@@ -39,17 +38,17 @@ describe('operations desk', () => {
     })
     expect(done).toMatchObject({ value: 100, note: message('lookups.stats.done-note') })
     expect(failed).toMatchObject({ value: 12, note: message('lookups.stats.failed-note') })
-    expect(statsView(stats({ previousTotal: 0 }), workspaceFixture()).cards[0]?.note).toEqual(
+    expect(statsView(stats({ previousTotal: 0 })).cards[0]?.note).toEqual(
       message('lookups.stats.no-previous', { days: 30 })
     )
   })
 
   it('names the top searchers like the queue does', () => {
-    const labels = statsView(stats(), workspaceFixture()).topSearchers.map(({ label }) => label)
+    const labels = statsView(stats()).topSearchers.map(({ label }) => label)
 
     expect(labels).toEqual([
       'Oakfield Garage',
-      'julia.white@redwoodparts.com',
+      message('lookups.searcher.gone'),
       message('lookups.searcher.unnamed-contact'),
     ])
   })

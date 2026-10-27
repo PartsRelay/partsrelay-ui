@@ -1,3 +1,4 @@
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import { http, HttpResponse } from 'msw'
 import { getGetApiV1ChannelsMockHandler } from '@/core/api/endpoints/channels/channels.msw'
 import {
@@ -20,8 +21,6 @@ import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
 type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
 
 type Searches = [total: number, month: number, lastDaysAgo: number | null]
-
-const INTERNATIONAL = /^\+[1-9]\d{7,14}$/
 
 const contact = (
   id: number,
@@ -109,12 +108,9 @@ function toWaId(phone: unknown) {
   if (phone === undefined || phone === null || phone === '') return rejected('phone', 'required')
   if (typeof phone !== 'string') return rejected('phone', 'string')
 
-  const international = phone
-    .replace(/\(0\)/g, '')
-    .replace(/[\s().-]/g, '')
-    .replace(/^00/, '+')
+  const number = parsePhoneNumberFromString(phone)
 
-  return INTERNATIONAL.test(international) ? international.slice(1) : rejected('phone', 'waId')
+  return number?.isValid() ? number.number.slice(1) : rejected('phone', 'waId')
 }
 
 function checkedName(name: unknown) {
@@ -135,11 +131,8 @@ export const contactMocks = [
   getGetApiV1WorkspaceContactsMockHandler(async ({ request }) => {
     const { company } = member()
     const query = new URL(request.url).searchParams
-    const statuses = query.getAll('status[]')
-    if (query.has('status')) rejected('status', 'array')
-    for (const [index, status] of statuses.entries()) {
-      if (!isStatus(status)) rejected(`status.${index}`, 'enum')
-    }
+    const status = query.get('status')
+    if (status !== null && !isStatus(status)) rejected('status', 'enum')
     const currentPage = checkedPage(query, 'page', 1)
     const perPage = checkedPage(query, 'perPage', DEFAULT_PER_PAGE, MAX_PER_PAGE)
     const search = query.get('search')?.trim().toLowerCase()
@@ -147,7 +140,7 @@ export const contactMocks = [
 
     return directory((state) => {
       const matching = contactsOf(state, company)
-        .filter((item) => statuses.length === 0 || statuses.includes(item.status))
+        .filter((item) => status === null || item.status === status)
         .filter(
           ({ name, profileName, waId }) =>
             !search ||

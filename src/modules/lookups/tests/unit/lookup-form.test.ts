@@ -21,15 +21,17 @@ const query = error(querySchema)
 
 describe('new search form', () => {
   it('starts empty, or with the plate or VIN and the part of a previous search', () => {
-    expect(emptyLookup()).toEqual({ by: 'plate', identifier: '', query: '' })
+    expect(emptyLookup()).toEqual({ by: 'plate', plate: '', vin: '', query: '' })
     expect(emptyLookup({ plate: 'CA770NE', query: 'Oil filter' })).toEqual({
       by: 'plate',
-      identifier: 'CA770NE',
+      plate: 'CA770NE',
+      vin: '',
       query: 'Oil filter',
     })
     expect(emptyLookup({ vin: 'WVWZZZAUZHW204411' })).toEqual({
       by: 'vin',
-      identifier: 'WVWZZZAUZHW204411',
+      plate: '',
+      vin: 'WVWZZZAUZHW204411',
       query: '',
     })
   })
@@ -71,19 +73,21 @@ describe('new search form', () => {
     const vinOnly = coreError(422, 'validation-error', [{ field: 'vin', rule: 'regex' }])
 
     expect(lookupFieldErrors(plateAndQuery)).toEqual({
-      identifier: 'lookups.new.errors.plate',
+      plate: 'lookups.new.errors.plate',
       query: 'lookups.new.errors.query',
     })
-    expect(lookupFieldErrors(vinOnly)).toEqual({ identifier: 'lookups.new.errors.vin' })
+    expect(lookupFieldErrors(vinOnly)).toEqual({ vin: 'lookups.new.errors.vin' })
     expect(lookupFieldErrors(coreError(404, 'row-not-found'))).toBeNull()
   })
 
   it('sends the compact plate or VIN and the trimmed part as free text', () => {
-    expect(newLookup({ by: 'plate', identifier: 'ca 770-ne', query: '  filtro olio ' })).toEqual({
+    const values = { plate: 'ca 770-ne', vin: 'wvwzzzauzhw204411', query: '  filtro olio ' }
+
+    expect(newLookup({ ...values, by: 'plate' })).toEqual({
       plate: 'CA770NE',
       query: 'filtro olio',
     })
-    expect(newLookup({ by: 'vin', identifier: 'wvwzzzauzhw204411', query: 'oil' })).toEqual({
+    expect(newLookup({ ...values, by: 'vin', query: 'oil' })).toEqual({
       vin: 'WVWZZZAUZHW204411',
       query: 'oil',
     })

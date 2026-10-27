@@ -1,7 +1,7 @@
+import { kebabCase } from 'change-case'
 import { intlFormat } from 'date-fns'
 import type { LookupObject, LookupObjectStatus, Searcher } from '@/core/api/models'
 import { type Message, message } from '@/core/message'
-import type { Workspace } from '@/modules/workspaces/core/workspace'
 
 type LookupTone = 'success' | 'warning' | 'danger'
 
@@ -25,26 +25,20 @@ const TONES: Record<LookupObjectStatus, LookupTone> = {
   failed: 'danger',
 }
 
-export function textKey(value: string) {
-  return value.replaceAll('_', '-')
-}
+export const textKey = kebabCase
 
-export function searcherName(searcher: Searcher | null, workspace: Workspace) {
-  if (!searcher) return message('lookups.searcher.gone')
-  if (searcher.type === 'contact') {
-    return searcher.name ?? message('lookups.searcher.unnamed-contact')
-  }
-
-  const member = workspace.members.find(({ userId }) => userId === String(searcher.id))
-
-  return searcher.name || member?.email || message('lookups.searcher.member')
+export function searcherName(searcher: Searcher | null) {
+  return (
+    searcher?.name ??
+    message(searcher ? 'lookups.searcher.unnamed-contact' : 'lookups.searcher.gone')
+  )
 }
 
 function partsFound({ categories = [] }: LookupObject) {
   return categories.map(({ id, name }) => name ?? id).join(', ') || null
 }
 
-export function lookupRow(lookup: LookupObject, workspace: Workspace, locale: string): LookupRow {
+export function lookupRow(lookup: LookupObject, locale: string): LookupRow {
   return {
     lookup,
     identifier: lookup.plate ?? lookup.vin ?? '',
@@ -53,7 +47,7 @@ export function lookupRow(lookup: LookupObject, workspace: Workspace, locale: st
     statusLabel: message(`lookups.status.${textKey(lookup.status)}`),
     tone: TONES[lookup.status],
     sourceLabel: message(`lookups.source.${lookup.source}`),
-    searcher: searcherName(lookup.searcher ?? null, workspace),
+    searcher: searcherName(lookup.searcher ?? null),
     requested: intlFormat(
       lookup.createdAt,
       { dateStyle: 'medium', timeStyle: 'short' },

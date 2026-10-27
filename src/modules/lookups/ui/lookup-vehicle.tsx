@@ -15,8 +15,8 @@ import {
 export function LookupVehicle({ detail }: { detail: LookupDetail }) {
   const { t } = useTranslation()
   const text = useText()
-  const identifying = detail.vin !== null || detail.state === 'running'
-  const vehicle = detail.vehicle ?? (identifying ? null : t('lookups.detail.no-vehicle'))
+  const vehicle =
+    detail.vehicle ?? (detail.state === 'vehicle_not_found' ? t('lookups.detail.no-vehicle') : null)
 
   return (
     <Card>
@@ -34,10 +34,14 @@ export function LookupVehicle({ detail }: { detail: LookupDetail }) {
           className="grid-cols-2 md:grid-cols-3"
           items={[
             { label: t('lookups.detail.query'), value: detail.lookup.query ?? '-' },
-            {
-              label: t('lookups.detail.vin'),
-              value: <span className="font-mono break-all">{detail.vin ?? '-'}</span>,
-            },
+            ...(detail.lookup.plate
+              ? [
+                  {
+                    label: t('lookups.detail.vin'),
+                    value: <span className="font-mono break-all">{detail.vin ?? '-'}</span>,
+                  },
+                ]
+              : []),
             { label: t('lookups.columns.requester'), value: text(detail.searcher) },
             { label: t('lookups.columns.channel'), value: t(...detail.sourceLabel) },
             { label: t('lookups.columns.requested'), value: detail.requested },

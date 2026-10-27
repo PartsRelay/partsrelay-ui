@@ -18,7 +18,7 @@ export function contactListParams({
   page,
   search,
 }: ContactsSearch): GetApiV1WorkspaceContactsParams {
-  return { page, status: status && [status], search }
+  return { page, status, search }
 }
 
 export function listParamsOf(key: readonly unknown[]) {

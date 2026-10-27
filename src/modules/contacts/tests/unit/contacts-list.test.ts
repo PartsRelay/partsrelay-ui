@@ -28,12 +28,12 @@ describe('contact list', () => {
     expect(tabStatus('all')).toBeUndefined()
   })
 
-  it('asks the core for one status as a list and the search, through the generated client', async () => {
+  it('asks the core for one status and the search, through the generated client', async () => {
     vi.mocked(http).mockResolvedValue(pageFixture([oakfield]))
     const params = contactListParams({ status: 'blocked', page: 2, search: 'oak' })
 
     expect(contactListParams({ page: 1 })).toEqual({ page: 1 })
-    expect(params).toEqual({ status: ['blocked'], page: 2, search: 'oak' })
+    expect(params).toEqual({ status: 'blocked', page: 2, search: 'oak' })
     expect(contactsQuery(params).queryKey).toEqual(['/api/v1/workspace/contacts', params])
     expect(contactsQuery(params).meta).toEqual({ silent: true })
 
@@ -43,7 +43,7 @@ describe('contact list', () => {
       undefined
     )
     expect(axios.getUri({ url: '/contacts', params })).toBe(
-      '/contacts?page=2&status%5B%5D=blocked&search=oak'
+      '/contacts?page=2&status=blocked&search=oak'
     )
   })
 

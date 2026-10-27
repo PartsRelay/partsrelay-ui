@@ -40,7 +40,7 @@ function withContactChange(
 
   const changed: ContactObject = { ...contact, ...change }
   const status = listParamsOf(key)?.status
-  if (status && !status.includes(changed.status)) return withoutContact(page, id)
+  if (status && status !== changed.status) return withoutContact(page, id)
 
   return { ...page, data: page.data.map((item) => (item.id === id ? changed : item)) }
 }

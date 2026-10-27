@@ -4,14 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { statsView } from '@/modules/lookups/core/lookup-stats'
 import { lookupStatsQuery } from '@/modules/lookups/core/lookups.query'
 import { useText } from '@/modules/lookups/ui/hooks/use-text'
-import { useMe } from '@/modules/workspaces/ui/hooks/use-me'
 import { LoadError } from '@/ui/components/load-error'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
 import { Skeleton } from '@/ui/components/ui/skeleton'
 
 export function LookupStats() {
   const { t, i18n } = useTranslation()
-  const { workspace } = useMe()
   const text = useText()
   const stats = useQuery(lookupStatsQuery)
   const count = (value: number) => value.toLocaleString(i18n.language)
@@ -21,7 +19,7 @@ export function LookupStats() {
   }
   if (!stats.data) return <Skeleton className="h-32 w-full" />
 
-  const view = statsView(stats.data, workspace)
+  const view = statsView(stats.data)
 
   return (
     <>
@@ -48,16 +46,20 @@ export function LookupStats() {
           </CardHeader>
           <CardContent>
             <ol className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-              {view.topSearchers.map(({ type, id, total, label }) => (
-                <li key={`${type}:${id}`} className="grid content-start gap-1">
+              {view.topSearchers.map(({ searcher, total, label }, index) => (
+                <li key={index} className="grid content-start gap-1">
                   <span className="text-2xl font-semibold tabular-nums">{count(total)}</span>
-                  <Link
-                    to="/searches"
-                    search={{ searcherType: type, searcherId: id }}
-                    className="text-sm text-muted-foreground underline-offset-4 hover:underline"
-                  >
-                    {text(label)}
-                  </Link>
+                  {searcher ? (
+                    <Link
+                      to="/searches"
+                      search={{ searcherType: searcher.type, searcherId: searcher.id }}
+                      className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+                    >
+                      {text(label)}
+                    </Link>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">{text(label)}</span>
+                  )}
                 </li>
               ))}
             </ol>

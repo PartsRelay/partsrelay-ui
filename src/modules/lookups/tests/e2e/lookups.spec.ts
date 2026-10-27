@@ -90,6 +90,17 @@ test.describe('as the owner', () => {
     await expect(page.getByText('24 searches')).toBeVisible()
   })
 
+  test('goes back to the queue with its filters', async ({ page }) => {
+    await pick(page, 'Status', 'Done')
+    await expect(page).toHaveURL('/searches?status=done')
+    await queue(page).getByRole('link', { name: 'Open the search of FT915ZR' }).first().click()
+    await expect(page).toHaveURL(/\/searches\/\d+$/)
+
+    await page.getByRole('link', { name: 'Back to searches' }).click()
+    await expect(page).toHaveURL('/searches?status=done')
+    await expect(page.getByText('17 searches')).toBeVisible()
+  })
+
   test('finds the searches of a plate or a VIN', async ({ page }) => {
     await page.getByRole('searchbox', { name: 'Plate or VIN' }).fill('wvwzzz')
 
@@ -172,8 +183,15 @@ test.describe('as the owner', () => {
 
   test('a search by VIN finds the vehicle', async ({ page }) => {
     await page.getByRole('link', { name: 'New search' }).first().click()
+    const plate = sheet(page).getByRole('textbox', { name: 'Registration plate' })
+    await plate.fill('XX')
+    await sheet(page).getByRole('button', { name: 'Start search' }).click()
+    await expect(plate).toHaveAccessibleDescription('Check the plate: 4 to 8 letters and digits.')
+
     await sheet(page).getByRole('radio', { name: 'VIN' }).click()
     const vin = sheet(page).getByRole('textbox', { name: 'VIN' })
+    await expect(vin).toBeEmpty()
+    await expect(vin).toHaveAccessibleDescription('17 letters and digits, without I, O and Q.')
     await vin.fill('WVWZZZAUZHW2044')
     await sheet(page).getByRole('textbox', { name: 'Part needed' }).fill('front brake pads')
     await sheet(page).getByRole('button', { name: 'Start search' }).click()
@@ -190,10 +208,25 @@ test.describe('as the owner', () => {
     await expect(page.getByRole('heading', { level: 2, name: 'Front brake pads' })).toBeVisible()
   })
 
+  test('a VIN the catalog does not know says the vehicle was not identified', async ({ page }) => {
+    await page.getByRole('link', { name: 'New search' }).first().click()
+    await sheet(page).getByRole('radio', { name: 'VIN' }).click()
+    await sheet(page).getByRole('textbox', { name: 'VIN' }).fill('ZFA31200000000000')
+    await sheet(page).getByRole('textbox', { name: 'Part needed' }).fill('oil filter')
+    await sheet(page).getByRole('button', { name: 'Start search' }).click()
+
+    await expect(page.getByRole('heading', { level: 2, name: 'Vehicle not found' })).toBeVisible()
+    await expect(page.getByText('Vehicle not identified')).toBeVisible()
+    await expect(page.getByText('VIN', { exact: true })).toBeHidden()
+  })
+
   test('a search that does not exist says so', async ({ page }) => {
     await page.goto('/searches/9999')
 
-    await expect(page.getByText('The requested item does not exist.')).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'Page not found' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Try again' })).toBeHidden()
+    await page.getByRole('link', { name: 'Back to searches' }).click()
+    await expect(page).toHaveURL('/searches')
   })
 
   test('a running search says it is still searching', async ({ page }) => {

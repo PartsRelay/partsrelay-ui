@@ -2,9 +2,12 @@ import { useForm } from '@tanstack/react-form'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import { authClient } from '@/modules/auth/core/auth.client'
-import { acceptError, type InvitationDetails } from '@/modules/auth/core/invitation'
+import {
+  acceptError,
+  type InvitationDetails,
+  invitedNameSchema,
+} from '@/modules/auth/core/invitation'
 import { currentCompanyKey } from '@/modules/auth/core/invitation.query'
 import { sessionQuery } from '@/modules/auth/core/session.query'
 import { InvitationHeader } from '@/modules/auth/ui/invitation-header'
@@ -82,10 +85,7 @@ export function InvitationReady({
         {failure && <Callout tone="danger">{t(...failure)}</Callout>}
         <Form form={form} className="grid gap-6">
           {askName && (
-            <form.Field
-              name="name"
-              validators={{ onSubmit: z.string().trim().min(1, 'invitation.errors.name-required') }}
-            >
+            <form.Field name="name" validators={{ onSubmit: invitedNameSchema }}>
               {(field) => (
                 <InputField
                   field={field}
