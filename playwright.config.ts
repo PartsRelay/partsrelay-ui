@@ -4,7 +4,6 @@ const port = 5180
 const baseURL = `http://localhost:${port}`
 const ci = Boolean(process.env.CI)
 
-// E2E tests only, on the dev server with MSW mocks
 export default defineConfig({
   testDir: './src/modules',
   testMatch: '**/tests/e2e/**/*.spec.ts',
@@ -20,7 +19,6 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  // Headless only, Chromium on its headless shell
   projects: [
     { name: 'chromium', use: devices['Desktop Chrome'] },
     { name: 'firefox', use: devices['Desktop Firefox'] },
@@ -31,6 +29,6 @@ export default defineConfig({
     command: `bun run dev --port ${port}`,
     url: baseURL,
     reuseExistingServer: !ci,
-    env: { APP_ENV: 'development', GOOGLE_CLIENT_ID: '' },
+    env: { MOCKS: 'true', GOOGLE_CLIENT_ID: '' },
   },
 })

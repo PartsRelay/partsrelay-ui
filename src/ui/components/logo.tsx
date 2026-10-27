@@ -1,7 +1,7 @@
 import { cn } from 'cn'
+import logo from '@/assets/logo.svg'
+import reversedLogo from '@/assets/logo-reversed.svg'
 import { env } from '@/env'
-import logo from '@/ui/assets/logo.svg'
-import reversedLogo from '@/ui/assets/logo-reversed.svg'
 
 type LogoProps = { reversed?: boolean; className?: string }
 

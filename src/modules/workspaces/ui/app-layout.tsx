@@ -11,7 +11,9 @@ import { workspaceQuery } from '@/modules/workspaces/core/workspace.query'
 import { AccessDenied } from '@/modules/workspaces/ui/access-denied'
 import { AppHeader } from '@/modules/workspaces/ui/app-header'
 import { AppSidebar } from '@/modules/workspaces/ui/app-sidebar'
+import { AppTabs } from '@/modules/workspaces/ui/app-tabs'
 import { AccountContext, useMe } from '@/modules/workspaces/ui/hooks/use-me'
+import { LegalFooter } from '@/ui/components/legal-footer'
 import { SidebarInset, SidebarProvider } from '@/ui/components/ui/sidebar'
 
 type AppGuard = { context: { queryClient: QueryClient }; location: { href: string } }
@@ -76,11 +78,13 @@ function AppShell() {
       <AppSidebar />
       <SidebarInset>
         <AppHeader />
+        <AppTabs />
         <div className="flex flex-1 flex-col p-4 md:p-6">
-          <div className="mx-auto grid w-full max-w-5xl gap-6">
+          <div className="mx-auto grid w-full max-w-6xl gap-6">
             {allowed ? <Outlet /> : <AccessDenied />}
           </div>
         </div>
+        <LegalFooter />
       </SidebarInset>
     </SidebarProvider>
   )

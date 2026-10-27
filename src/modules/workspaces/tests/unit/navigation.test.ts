@@ -21,7 +21,6 @@ const member = (id: string, role: Role, name: string): Member => ({
   joinedAt: new Date('2025-09-28T10:00:00Z'),
 })
 
-// Redwood Parts Ltd, with its owner and an admin
 const workspace = (): Workspace => ({
   id: '1',
   name: 'Redwood Parts Ltd',
@@ -38,6 +37,8 @@ const viewer = permissionsFor('viewer')
 
 describe('pageAt', () => {
   it.each([
+    ['/lookups', 'lookups'],
+    ['/lookups/12', 'lookups'],
     ['/contacts', 'contacts'],
     ['/workspace', 'workspace'],
     ['/workspace/', 'workspace'],
@@ -52,12 +53,14 @@ describe('pageAt', () => {
 })
 
 describe('canOpen', () => {
-  it('opens the contacts to everyone', () => {
-    expect([owner, admin, viewer].map((permissions) => canOpen('contacts', permissions))).toEqual([
-      true,
-      true,
-      true,
-    ])
+  it('opens the searches and the contacts to everyone', () => {
+    for (const page of ['lookups', 'contacts'] as const) {
+      expect([owner, admin, viewer].map((permissions) => canOpen(page, permissions))).toEqual([
+        true,
+        true,
+        true,
+      ])
+    }
   })
 
   it('opens the workspace to owners and admins only', () => {
@@ -83,16 +86,17 @@ describe('canOpen', () => {
 })
 
 describe('homePath', () => {
-  it('starts on the contacts for every role', () => {
-    expect(homePath(owner)).toBe('/contacts')
-    expect(homePath(admin)).toBe('/contacts')
-    expect(homePath(viewer)).toBe('/contacts')
+  it('starts on the searches for every role', () => {
+    expect(homePath(owner)).toBe('/lookups')
+    expect(homePath(admin)).toBe('/lookups')
+    expect(homePath(viewer)).toBe('/lookups')
   })
 })
 
 describe('navigation', () => {
   it('lists the sections I can open and marks the current one', () => {
     expect(navigation(owner, 'company')).toEqual([
+      { page: 'lookups', path: '/lookups', label: ['nav.lookups'], active: false },
       { page: 'contacts', path: '/contacts', label: ['nav.contacts'], active: false },
       { page: 'workspace', path: '/workspace', label: ['nav.workspace'], active: false },
       { page: 'company', path: '/company', label: ['nav.company'], active: true },
@@ -100,18 +104,28 @@ describe('navigation', () => {
   })
 
   it('hides the sections I cannot open', () => {
-    expect(navigation(admin, 'profile').map(({ page }) => page)).toEqual(['contacts', 'workspace'])
+    expect(navigation(admin, 'profile').map(({ page }) => page)).toEqual([
+      'lookups',
+      'contacts',
+      'workspace',
+    ])
     expect(navigation(viewer, 'contacts')).toEqual([
+      { page: 'lookups', path: '/lookups', label: ['nav.lookups'], active: false },
       { page: 'contacts', path: '/contacts', label: ['nav.contacts'], active: true },
     ])
   })
 })
 
 describe('breadcrumbs', () => {
-  it('puts the contacts and the workspace at the top of their own trails', () => {
+  it('puts the searches, the contacts and the workspace at the top of their own trails', () => {
+    expect(breadcrumbs('lookups')).toEqual([['crumbs.lookups']])
     expect(breadcrumbs('contacts')).toEqual([['crumbs.contacts']])
     expect(breadcrumbs('workspace')).toEqual([['crumbs.workspace']])
     expect(breadcrumbs('company')).toEqual([['crumbs.workspace'], ['crumbs.company']])
+  })
+
+  it('puts a search result under the searches', () => {
+    expect(breadcrumbs('lookup')).toEqual([['crumbs.lookups'], ['crumbs.lookup']])
   })
 
   it('puts the profile under the account', () => {

@@ -1,6 +1,5 @@
-import { UserIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/components/ui/avatar'
+import { PersonAvatar } from '@/ui/components/person-avatar'
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/ui/components/ui/item'
 
 type PersonItemProps = {
@@ -14,12 +13,7 @@ export function PersonItem({ name, description, image, title = name }: PersonIte
   return (
     <Item size="sm" className="flex-nowrap gap-3 p-0">
       <ItemMedia>
-        <Avatar>
-          {image && <AvatarImage src={image} alt={name} />}
-          <AvatarFallback>
-            <UserIcon aria-hidden />
-          </AvatarFallback>
-        </Avatar>
+        <PersonAvatar name={name} image={image} />
       </ItemMedia>
       <ItemContent className="gap-0">
         <ItemTitle>{title}</ItemTitle>

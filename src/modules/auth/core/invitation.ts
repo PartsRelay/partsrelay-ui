@@ -1,6 +1,7 @@
 import { toDate } from 'date-fns'
-import { errorCode, errorKey, errorMessage, errorStatus } from '@/core/errors'
+import { errorCode, errorMessage, errorStatus } from '@/core/errors'
 import { type Message, message } from '@/core/message'
+import { requiredText } from '@/core/schemas'
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -30,9 +31,9 @@ type Invitation = {
 
 type Company = Pick<Workspace, 'id' | 'members' | 'setup'>
 
-const NOT_RECIPIENT = 'YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION'
+const NOT_RECIPIENT = 'you-are-not-the-recipient-of-the-invitation'
 
-const INVITER_GONE = 'INVITER_IS_NO_LONGER_A_MEMBER_OF_THE_ORGANIZATION'
+const INVITER_GONE = 'inviter-is-no-longer-a-member-of-the-organization'
 
 const expired: InvitationView = {
   state: 'unavailable',
@@ -81,7 +82,6 @@ function joinable(
     return { state: 'unavailable', reason: message('invitation.unavailable.company-not-empty') }
   }
 
-  // A company never set up has nothing to lose
   return { state: 'ready', details: details(invitation), confirm: company.data.setup === 'done' }
 }
 
@@ -111,9 +111,9 @@ export function invitationHeadline({ inviter, workspace }: InvitationDetails) {
 }
 
 export function acceptError(error: unknown) {
-  const code = errorCode(error)
-
-  return code === 'WORKSPACE_NOT_RELEASABLE'
+  return errorCode(error) === 'workspace-not-releasable'
     ? message('invitation.unavailable.company-not-empty')
-    : message(errorKey(code))
+    : errorMessage(error)
 }
+
+export const invitedNameSchema = requiredText('invitation.errors.name-required')

@@ -1,4 +1,5 @@
 import { isAfter } from 'date-fns'
+import { requiredText } from '@/core/schemas'
 import type { Locale } from '@/modules/workspaces/core/locale'
 import type { Workspace } from '@/modules/workspaces/core/workspace'
 
@@ -19,7 +20,6 @@ export function pendingInvitation(invitations: UserInvitation[] | undefined, now
   )
 }
 
-// A pending company starts empty, in the browser language
 export function setupDefaults(
   workspace: Pick<Workspace, 'name' | 'locale' | 'setup'>,
   browserLocale: Locale
@@ -31,4 +31,9 @@ export function setupDefaults(
     locale: pending ? browserLocale : workspace.locale,
     userName: '',
   }
+}
+
+export const setupSchemas = {
+  name: requiredText('setup.errors.name-required'),
+  userName: requiredText('setup.errors.user-name-required'),
 }

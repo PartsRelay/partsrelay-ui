@@ -1,18 +1,14 @@
-import { useSelector } from '@tanstack/react-form'
+import { type AnyFormApi, useSelector } from '@tanstack/react-form'
 import { cn } from 'cn'
 import type { ComponentProps } from 'react'
-import { useFormContext } from '@/form-context'
 import { Button } from '@/ui/components/ui/button'
 import { Spinner } from '@/ui/components/ui/spinner'
 
-// Disabled with a spinner while the form submits
-export function SubmitButton({
-  disabled,
-  className,
-  children,
-  ...props
-}: Omit<ComponentProps<typeof Button>, 'type'>) {
-  const form = useFormContext()
+type SubmitButtonProps = Omit<ComponentProps<typeof Button>, 'type' | 'form'> & {
+  form: AnyFormApi
+}
+
+export function SubmitButton({ form, disabled, className, children, ...props }: SubmitButtonProps) {
   const submitting = useSelector(form.store, (state) => state.isSubmitting)
 
   return (

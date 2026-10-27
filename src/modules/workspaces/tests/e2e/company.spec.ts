@@ -8,7 +8,6 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('the sidebar and the breadcrumbs show where I am', async ({ page }) => {
-  // The current breadcrumb is a disabled link too
   const company = page.getByRole('link', { name: 'Company', disabled: false })
   await expect(company).toHaveAttribute('aria-current', 'page')
   await expect(page.getByRole('link', { name: 'Workspace' })).not.toHaveAttribute('aria-current')

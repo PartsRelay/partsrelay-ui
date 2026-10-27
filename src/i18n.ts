@@ -1,40 +1,38 @@
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import ICU from 'i18next-icu'
 import { initReactI18next } from 'react-i18next'
-import { env } from '@/env'
 
-type Catalog = Record<string, Record<string, unknown>>
-
-const enUS: Catalog = import.meta.glob('@/core/locales/en-US/*.json', {
-  eager: true,
-  import: 'default',
-})
-const itIT: Catalog = import.meta.glob('@/core/locales/it-IT/*.json', {
+const files = import.meta.glob<Record<string, unknown>>('./locales/*/*.json', {
   eager: true,
   import: 'default',
 })
 
-const translation = (catalog: Catalog) => Object.assign({}, ...Object.values(catalog))
+const resources: Record<string, { translation: Record<string, unknown> }> = {}
+for (const [path, messages] of Object.entries(files)) {
+  const [, , locale, file] = path.split('/')
+  resources[locale] ??= { translation: {} }
+  resources[locale].translation[file.replace(/\.json$/, '')] = messages
+}
 
-i18n.on('languageChanged', (language) => document.documentElement.setAttribute('lang', language))
+export const locales = Object.keys(resources)
+
+i18n.on('languageChanged', (language) =>
+  globalThis.document?.documentElement.setAttribute('lang', language)
+)
 
 void i18n
+  .use(ICU)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      'en-US': { translation: translation(enUS) },
-      'it-IT': { translation: translation(itIT) },
-    },
-    // Browser languages like it or it-CH resolve to it-IT
-    supportedLngs: ['en-US', 'it-IT'],
+    resources,
+    supportedLngs: locales,
     load: 'currentOnly',
     fallbackLng: 'en-US',
-    detection: { order: ['navigator'], caches: [] },
-    // {{app}} is the app name from the environment
-    interpolation: { escapeValue: false, defaultVariables: { app: env.APP_NAME } },
-    // Error codes without their own text get the generic one
-    parseMissingKeyHandler: (key) => (key.startsWith('errors.') ? i18n.t('errors.unknown') : key),
+    detection: { order: ['localStorage', 'navigator'], caches: ['localStorage'] },
+    parseMissingKeyHandler: (key) =>
+      key.startsWith('errors.') ? i18n.t('errors.unknown-error') : key,
   })
 
 export { i18n }

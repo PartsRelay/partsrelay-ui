@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#fff"/>
+  <path d="M90 420H1110" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="28 8 4 8"/>
+  <g fill="none" stroke="#334155" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M140 290h170l50 50v160l-50 50H140z"/>
+    <path d="M140 270v300M118 270h22M118 570h22M118 270v300"/>
+    <path d="M190 330h110l30 30v120l-30 30H190z"/>
+    <circle cx="250" cy="420" r="34"/>
+    <circle cx="250" cy="420" r="12"/>
+    <ellipse cx="440" cy="420" rx="18" ry="122"/>
+    <ellipse cx="440" cy="420" rx="8" ry="100"/>
+    <rect x="510" y="318" width="200" height="204" rx="10"/>
+    <path d="M535 318v204M560 318v204M585 318v204M610 318v204M635 318v204M660 318v204M685 318v204"/>
+    <path d="M510 360h-14v120h14M710 360h14v120h-14"/>
+    <ellipse cx="780" cy="420" rx="12" ry="92"/>
+    <path d="M830 330h120q40 0 40 40v100q0 40-40 40H830z"/>
+    <path d="M830 350h-12v140h12"/>
+    <path d="M990 395h40l14 25-14 25h-40z"/>
+    <path d="M1044 420h36"/>
+    <rect x="232" y="118" width="36" height="28" rx="4"/>
+    <path d="M240 146v84h20v-84M240 162h20M240 178h20M240 194h20M240 210h20"/>
+    <ellipse cx="250" cy="256" rx="30" ry="8"/>
+    <rect x="882" y="118" width="36" height="28" rx="4"/>
+    <path d="M890 146v84h20v-84M890 162h20M890 178h20M890 194h20M890 210h20"/>
+  </g>
+  <g fill="none" stroke="#64748b" stroke-width="1.5">
+    <path d="M250 554v62M440 546v70M610 526v90M780 516v100M905 554v62M268 130l64-36M222 256l-70 34M900 236v14"/>
+  </g>
+  <g fill="#fff" stroke="#0f172a" stroke-width="2.5">
+    <circle cx="250" cy="640" r="24"/>
+    <circle cx="440" cy="640" r="24"/>
+    <circle cx="610" cy="640" r="24"/>
+    <circle cx="780" cy="640" r="24"/>
+    <circle cx="905" cy="640" r="24"/>
+    <circle cx="354" cy="82" r="24"/>
+    <circle cx="130" cy="300" r="24"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#0f172a" text-anchor="middle" dominant-baseline="central">
+    <text x="250" y="640">1</text>
+    <text x="440" y="640">2</text>
+    <text x="610" y="640">3</text>
+    <text x="780" y="640">4</text>
+    <text x="905" y="640">5</text>
+    <text x="354" y="82">6</text>
+    <text x="130" y="300">7</text>
+  </g>
+</svg>

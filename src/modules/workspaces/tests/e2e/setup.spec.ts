@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test'
 
 test.describe('as a newcomer', () => {
   test.beforeEach(async ({ page }) => {
-    // A new account, its company still to set up
     await page.addInitScript(() => localStorage.setItem('mock.user', 'new'))
     await page.goto('/')
     await expect(page).toHaveURL('/setup')
@@ -35,9 +34,27 @@ test.describe('as a newcomer', () => {
     await page.getByRole('option', { name: 'Italian' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page).toHaveURL('/contacts')
+    await expect(page).toHaveURL('/lookups')
     await expect(page.getByRole('link', { name: /North Garage Ltd/ })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 1, name: 'Contacts' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: /^Good (morning|afternoon|evening), Anna North\.$/,
+      })
+    ).toBeVisible()
+    await expect(page.getByText('No searches yet')).toBeVisible()
+    await expect(page.getByText('For example: GH482KL · Front brake pads')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Invite your team' })).toHaveAttribute(
+      'href',
+      '/workspace'
+    )
+    await expect(page.getByRole('link', { name: 'Connect workshops' })).toHaveAttribute(
+      'href',
+      '/contacts'
+    )
+    await page.getByRole('link', { name: 'Start a search' }).click()
+    await expect(page.getByRole('dialog', { name: 'Find the part.' })).toBeVisible()
+    await page.keyboard.press('Escape')
 
     await page.goto('/workspace')
     await expect(page.getByRole('row', { name: /Anna North \(you\)/ })).toContainText('Owner')
@@ -46,7 +63,7 @@ test.describe('as a newcomer', () => {
     await expect(page.getByRole('combobox', { name: 'Reply language' })).toHaveText('Italian')
 
     await page.goto('/')
-    await expect(page).toHaveURL('/contacts')
+    await expect(page).toHaveURL('/lookups')
   })
 
   test('signing out leaves the setup', async ({ page }) => {

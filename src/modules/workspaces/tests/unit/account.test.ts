@@ -24,7 +24,6 @@ const member = (person: typeof people.mark, role: Role) => ({
   user: person,
 })
 
-// The company as the core sends it
 const redwoodParts = (): FullOrganization => ({
   id: '1',
   name: 'Redwood Parts Ltd',
@@ -57,7 +56,6 @@ const sessionOf = ({ id, name, email }: { id: string; name: string; email: strin
     },
   }) satisfies NonNullable<Session>
 
-// The company before Julia joined
 const withoutJulia = () => {
   const organization = redwoodParts()
 
@@ -70,7 +68,6 @@ const withoutJulia = () => {
 let client: QueryClient
 
 beforeEach(() => {
-  // Fresh cached data stays, like within the app staleTime
   client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } })
   getFullOrganization.mockReset()
 })

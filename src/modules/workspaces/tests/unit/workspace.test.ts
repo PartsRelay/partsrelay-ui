@@ -18,7 +18,6 @@ import {
   workspaceSummary,
 } from '@/modules/workspaces/core/workspace'
 
-// Data like the dev mocks
 const now = new Date('2026-10-21T10:00:00Z')
 
 const origin = 'http://localhost:5173'
@@ -80,7 +79,6 @@ function redwoodParts(): FullOrganization {
     metadata: '{"setup":"done"}',
     locale: 'en-US',
     createdAt: day(-400),
-    // Sarah before Luke, the rows sort them by name
     members: [
       member(people.sarah, 'viewer', 31),
       member(people.julia, 'admin', 388),
@@ -91,11 +89,9 @@ function redwoodParts(): FullOrganization {
       invitation('7', 'f.roberts@redwoodparts.com', 'viewer', 1),
       invitation('6', 'a.evans@redwoodparts.com', 'admin', 3),
       invitation('5', 'north.garage@gmail.com', 'viewer', 9),
-      // Older rows the core keeps for the same addresses
       invitation('2', 'A.Evans@redwoodparts.com', 'viewer', 5, 'canceled'),
       invitation('8', 'm.baker@gmail.com', 'admin', 4),
       invitation('9', 'm.baker@gmail.com', 'admin', 2, 'rejected'),
-      // Accepted, then invited again by mistake
       invitation('4', 'luke.foster@gmail.com', 'viewer', 125, 'accepted'),
       invitation('10', 'Luke.Foster@gmail.com', 'viewer', 2),
       invitation('3', 'p.green@redwoodparts.com', 'viewer', 40, 'canceled'),

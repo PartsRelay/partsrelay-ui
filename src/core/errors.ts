@@ -1,73 +1,76 @@
 import { isAxiosError } from 'axios'
+import { kebabCase } from 'change-case'
+import { getReasonPhrase } from 'http-status-codes'
+import type { ErrorBody, FieldError } from '@/core/api/models'
 import { message } from '@/core/message'
+import { i18n } from '@/i18n'
 
-// A field the core rejected and the rule it broke
-export type FieldError = { field: string; rule?: string }
+export type { ErrorBody, FieldError }
 
-// The same body the core sends, message only in development
-export type ErrorBody = {
-  code: string
-  status: number
-  message?: string
-  fields?: FieldError[]
-}
-
-// What the Better Auth client throws
-type AuthClientError = { status: number; error: Partial<ErrorBody> | null }
-
-// No HTTP response, like a network failure
 export const NO_STATUS = 0
 
-// Other coded 401s, like removing a member, keep the session
-const SESSION_CODES = ['UNAUTHORIZED', 'UNAUTHORIZED_ACCESS']
+const SESSION_CODES = ['unauthorized', 'unauthorized-access']
 
-// Codes the core takes from the status alone
-const STATUS_CODES = [
-  'BAD_REQUEST',
-  'UNAUTHORIZED',
-  'FORBIDDEN',
-  'NOT_FOUND',
-  'INTERNAL_SERVER_ERROR',
-]
+const GONE_CODES = ['row-not-found', 'member-not-found', 'invitation-not-found']
 
-const GONE_CODES = ['ROW_NOT_FOUND', 'MEMBER_NOT_FOUND', 'INVITATION_NOT_FOUND']
+const NETWORK_ERROR: ErrorBody = {
+  code: 'network-error',
+  status: NO_STATUS,
+  message: 'Network Error',
+}
 
-function isAuthClientError(error: unknown): error is AuthClientError {
+function statusBody(status: number): ErrorBody {
+  try {
+    const reason = getReasonPhrase(status)
+
+    return { code: kebabCase(reason), status, message: reason }
+  } catch {
+    return { code: 'unknown-error', status, message: 'Unknown Error' }
+  }
+}
+
+export function statusCode(status: number) {
+  return statusBody(status).code
+}
+
+function nonEmpty(value: unknown) {
+  return typeof value === 'string' && value ? value : null
+}
+
+function fromResponse(status: number, data: unknown): ErrorBody {
+  const body: Partial<Record<keyof ErrorBody, unknown>> =
+    typeof data === 'object' && data !== null ? data : {}
+  const fallback = statusBody(status)
+  const error = {
+    code: nonEmpty(body.code) ?? fallback.code,
+    status,
+    message: nonEmpty(body.message) ?? fallback.message,
+  }
+
+  return Array.isArray(body.fields) && body.fields.length > 0
+    ? { ...error, fields: body.fields as FieldError[] }
+    : error
+}
+
+function isAuthClientError(error: unknown): error is { status: number; error: unknown } {
   return (
     typeof error === 'object' &&
     error !== null &&
     'error' in error &&
-    typeof (error as AuthClientError).status === 'number'
+    'status' in error &&
+    typeof error.status === 'number'
   )
 }
 
-function errorBody(code: string, status: number, text?: string): ErrorBody {
-  return import.meta.env.DEV && text ? { code, status, message: text } : { code, status }
-}
-
-function fromCore(status: number, body: Partial<ErrorBody> | null | undefined) {
-  const error = errorBody(body?.code ?? 'UNKNOWN', status, body?.message)
-
-  return body?.fields?.length ? { ...error, fields: body.fields } : error
-}
-
 export function toErrorBody(error: unknown): ErrorBody {
-  if (isAxiosError<Partial<ErrorBody>>(error)) {
-    if (error.response) return fromCore(error.response.status, error.response.data)
-
-    return errorBody('NETWORK_ERROR', NO_STATUS, error.message)
+  if (isAxiosError(error)) {
+    return error.response ? fromResponse(error.response.status, error.response.data) : NETWORK_ERROR
   }
+  if (error instanceof Response) return statusBody(error.status)
+  if (isAuthClientError(error)) return fromResponse(error.status, error.error)
+  if (error instanceof TypeError) return NETWORK_ERROR
 
-  if (isAuthClientError(error)) return fromCore(error.status, error.error)
-
-  // fetch rejects with a TypeError when offline
-  const code = error instanceof TypeError ? 'NETWORK_ERROR' : 'UNKNOWN'
-
-  return errorBody(code, NO_STATUS, error instanceof Error ? error.message : undefined)
-}
-
-export function isGenericCode(code: string) {
-  return code === 'UNKNOWN' || STATUS_CODES.includes(code)
+  return statusBody(NO_STATUS)
 }
 
 export function errorStatus(error: unknown) {
@@ -82,7 +85,6 @@ export function alreadyGone(error: unknown) {
   return GONE_CODES.includes(errorCode(error))
 }
 
-// The fields the core rejected, each with the form's error key
 export function fieldErrors<Field extends string>(error: unknown, keys: Record<Field, string>) {
   const fields = (toErrorBody(error).fields ?? [])
     .map(({ field }) => field)
@@ -95,13 +97,15 @@ export function fieldErrors<Field extends string>(error: unknown, keys: Record<F
     : null
 }
 
-// Locale keys are kebab case, error codes are not
-export function errorKey(code: string) {
-  return `errors.${code.toLowerCase().replaceAll('_', '-')}`
+export function errorKey(error: unknown) {
+  const { code, status } = toErrorBody(error)
+  const keys = [code, statusCode(status)].map((item) => `errors.${item}`)
+
+  return keys.find((key) => i18n.exists(key)) ?? 'errors.unknown-error'
 }
 
 export function errorMessage(error: unknown) {
-  return message(errorKey(errorCode(error)))
+  return message(errorKey(error))
 }
 
 export function sessionEnded(error: unknown) {

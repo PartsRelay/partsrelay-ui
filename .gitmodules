@@ -1,0 +1,4 @@
+[submodule "src/locales"]
+	path = src/locales
+	url = ../locales.git
+	branch = main

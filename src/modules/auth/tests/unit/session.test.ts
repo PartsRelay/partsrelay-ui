@@ -13,8 +13,10 @@ const { getSession } = vi.hoisted(() => ({ getSession: vi.fn() }))
 
 vi.mock('@/modules/auth/core/auth.client', () => ({ authClient: { getSession } }))
 
-// What the Better Auth client throws
-const authError = (status: number, code: string) => ({ status, error: { code } })
+const authError = (status: number, code: string) => ({
+  status,
+  error: { code, status, message: 'Failed' },
+})
 
 const session = {
   user: {
@@ -93,19 +95,19 @@ describe('failureNotice', () => {
   it('ends an expired session and says so', () => {
     client.setQueryData(sessionQuery.queryKey, session)
 
-    expect(failureNotice(client, authError(401, 'UNAUTHORIZED'))).toEqual([
+    expect(failureNotice(client, authError(401, 'unauthorized'))).toEqual([
       'errors.unauthorized-access',
     ])
     expect(client.getQueryData(sessionQuery.queryKey)).toBeNull()
   })
 
   it('stays quiet about a session that was never there', () => {
-    expect(failureNotice(client, authError(401, 'UNAUTHORIZED'))).toBeNull()
+    expect(failureNotice(client, authError(401, 'unauthorized'))).toBeNull()
   })
 
   it('keeps the session on other coded 401s', () => {
     client.setQueryData(sessionQuery.queryKey, session)
-    const error = authError(401, 'YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER')
+    const error = authError(401, 'you-are-not-allowed-to-delete-this-member')
 
     expect(failureNotice(client, error)).toEqual([
       'errors.you-are-not-allowed-to-delete-this-member',
@@ -116,7 +118,7 @@ describe('failureNotice', () => {
   it('ends the session and says so even when the caller shows its errors itself', () => {
     client.setQueryData(sessionQuery.queryKey, session)
 
-    expect(failureNotice(client, authError(401, 'UNAUTHORIZED_ACCESS'), true)).toEqual([
+    expect(failureNotice(client, authError(401, 'unauthorized-access'), true)).toEqual([
       'errors.unauthorized-access',
     ])
     expect(client.getQueryData(sessionQuery.queryKey)).toBeNull()
@@ -125,7 +127,7 @@ describe('failureNotice', () => {
   it('leaves other errors to the caller that shows them itself', () => {
     client.setQueryData(sessionQuery.queryKey, session)
 
-    expect(failureNotice(client, authError(400, 'BAD_REQUEST'), true)).toBeNull()
+    expect(failureNotice(client, authError(400, 'bad-request'), true)).toBeNull()
     expect(client.getQueryData(sessionQuery.queryKey)).toBe(session)
   })
 })

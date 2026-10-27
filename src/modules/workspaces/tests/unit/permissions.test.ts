@@ -5,6 +5,7 @@ describe('permissionsFor', () => {
   it('lets the owner do everything but leave', () => {
     expect(permissionsFor('owner')).toEqual({
       manageContacts: true,
+      viewStats: true,
       viewWorkspace: true,
       viewCompany: true,
       inviteRoles: ['viewer', 'admin'],
@@ -18,6 +19,7 @@ describe('permissionsFor', () => {
   it('lets an admin see the workspace and invite viewers', () => {
     expect(permissionsFor('admin')).toEqual({
       manageContacts: true,
+      viewStats: false,
       viewWorkspace: true,
       viewCompany: false,
       inviteRoles: ['viewer'],
@@ -31,6 +33,7 @@ describe('permissionsFor', () => {
   it('lets a viewer only leave', () => {
     expect(permissionsFor('viewer')).toEqual({
       manageContacts: false,
+      viewStats: false,
       viewWorkspace: false,
       viewCompany: false,
       inviteRoles: [],

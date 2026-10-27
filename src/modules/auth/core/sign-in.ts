@@ -1,66 +1,80 @@
+import type { QueryClient } from '@tanstack/query-core'
 import { z } from 'zod'
+import { env } from '@/env'
+import { mocksEnabled } from '@/mocks/enabled'
 import { authClient } from '@/modules/auth/core/auth.client'
 import { redirectPath } from '@/modules/auth/core/redirect-path'
+import { sessionQuery } from '@/modules/auth/core/session.query'
 import { message } from '@/core/message'
+
+export const googleEnabled = Boolean(env.GOOGLE_CLIENT_ID) || mocksEnabled
 
 const optionalString = z.string().optional().catch(undefined)
 
 export const signInErrorSearchSchema = z.object({ error: optionalString })
+
+export const callbackSearchSchema = z.object({ token: optionalString, next: optionalString })
 
 export const loginSearchSchema = signInErrorSearchSchema.extend({
   next: optionalString,
   signedIn: z.boolean().optional().catch(undefined),
 })
 
-// Where the browser lands after signing in or failing
 export type SignInFlow = { back: string; failed: string; selectAccount: boolean }
 
 const LOGIN_ERRORS = new Map([
-  ['access_denied', 'login.errors.cancelled'],
-  ['INVALID_TOKEN', 'errors.invalid-token'],
-  ['failed_to_create_session', 'errors.failed-to-create-session'],
-  ['email_not_verified', 'errors.email-not-verified'],
+  ['access-denied', 'login.errors.cancelled'],
+  ['invalid-token', 'errors.invalid-token'],
+  ['failed-to-create-session', 'errors.failed-to-create-session'],
+  ['unable-to-create-session', 'errors.failed-to-create-session'],
+  ['email-not-verified', 'errors.email-not-verified'],
+  ['too-many-requests', 'errors.too-many-requests'],
 ])
 
 function absolute(path: string) {
   return new URL(path, window.location.origin).href
 }
 
-function loginPath(next: string, signedIn = false) {
-  const search = new URLSearchParams()
-  if (next !== '/') search.set('next', next)
-  if (signedIn) search.set('signedIn', 'true')
-  const query = search.toString()
+function coreURL(path: string, params: Record<string, string | undefined>) {
+  const url = new URL(path, env.API_URL || window.location.origin)
+  for (const [name, value] of Object.entries(params)) if (value) url.searchParams.set(name, value)
 
-  return query ? `/login?${query}` : '/login'
+  return url.href
 }
 
-export function googleSignIn({ back, failed, selectAccount }: SignInFlow) {
-  return {
-    provider: 'google',
-    callbackURL: absolute(back),
+const handoffURL = (back: string) => coreURL('/auth/handoff', { next: back })
+
+export function googleSignInURL({ back, failed, selectAccount }: SignInFlow) {
+  if (mocksEnabled) return `/auth/callback?${new URLSearchParams({ token: 'mock', next: back })}`
+
+  return coreURL('/auth/google', {
+    callbackURL: handoffURL(back),
     errorCallbackURL: absolute(failed),
-    additionalParams: selectAccount ? { prompt: 'select_account' } : undefined,
-  } satisfies Parameters<typeof authClient.signIn.social>[0]
+    prompt: selectAccount ? 'select_account' : undefined,
+  })
 }
 
-// The core decodes magic link URLs once more
-function encodedAgain(path: string) {
-  return absolute(path).replaceAll('%', '%25')
-}
+const encodedAgain = (url: string) => url.replaceAll('%', '%25')
 
 export function magicLinkSignIn({ back, failed }: SignInFlow, email: string) {
   return {
     email,
-    callbackURL: encodedAgain(back),
-    errorCallbackURL: encodedAgain(failed),
+    callbackURL: encodedAgain(handoffURL(back)),
+    errorCallbackURL: encodedAgain(absolute(failed)),
   } satisfies Parameters<typeof authClient.signIn.magicLink>[0]
 }
 
-export function loginFlow(next?: unknown): SignInFlow {
-  const target = redirectPath(next)
+export async function completeSignIn(
+  client: QueryClient,
+  { token, next }: z.infer<typeof callbackSearchSchema>
+) {
+  const back = new URL(redirectPath(next), window.location.origin)
+  const verified = token ? await authClient.oneTimeToken.verify({ token }).catch(() => null) : null
 
-  return { back: loginPath(target, true), failed: loginPath(target), selectAccount: false }
+  if (verified) await client.resetQueries({ queryKey: sessionQuery.queryKey })
+  else back.searchParams.set('error', 'invalid-token')
+
+  return `${back.pathname}${back.search}${back.hash}`
 }
 
 function withoutSignInError(href: string) {

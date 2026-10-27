@@ -1,5 +1,6 @@
 import type { DataTag, QueryClient } from '@tanstack/query-core'
 import { authClient } from '@/modules/auth/core/auth.client'
+import { authToken } from '@/modules/auth/core/auth-token'
 import { redirectPath } from '@/modules/auth/core/redirect-path'
 import { errorNotice, sessionEnded } from '@/core/errors'
 import { message } from '@/core/message'
@@ -8,7 +9,12 @@ export type Session = typeof authClient.$Infer.Session | null
 
 export const sessionQuery = {
   queryKey: ['session'] as DataTag<['session'], Session>,
-  queryFn: (): Promise<Session> => authClient.getSession(),
+  queryFn: async (): Promise<Session> => {
+    const session = await authClient.getSession()
+    if (!session) authToken.clear()
+
+    return session
+  },
 }
 
 export async function requireSession(client: QueryClient, href: string) {
@@ -34,13 +40,16 @@ export async function redirectSignedIn(
 export function failureNotice(client: QueryClient, error: unknown, silent = false) {
   const signedIn = Boolean(client.getQueryData(sessionQuery.queryKey))
   const ended = sessionEnded(error)
-  if (ended) client.setQueryData(sessionQuery.queryKey, null)
+  if (ended) {
+    authToken.clear()
+    client.setQueryData(sessionQuery.queryKey, null)
+  }
 
   return silent && !ended ? null : errorNotice(error, signedIn)
 }
 
-// The session is over: nothing cached belongs to anyone now
 export function endSession(client: QueryClient) {
+  authToken.clear()
   client.clear()
   client.setQueryData(sessionQuery.queryKey, null)
 }

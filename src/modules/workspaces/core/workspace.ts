@@ -1,6 +1,7 @@
 import { compareDesc, intlFormat, isAfter, toDate } from 'date-fns'
 import { z } from 'zod'
 import { type Message, message } from '@/core/message'
+import { requiredText } from '@/core/schemas'
 import type { authClient } from '@/modules/auth/core/auth.client'
 import { type Locale, toLocale } from '@/modules/workspaces/core/locale'
 import {
@@ -22,7 +23,7 @@ export type Member = {
   joinedAt: Date
 }
 
-export type Invitation = {
+type Invitation = {
   id: string
   email: string
   role: Role
@@ -31,7 +32,7 @@ export type Invitation = {
   createdAt: Date
 }
 
-export type Metadata = Record<string, unknown>
+type Metadata = Record<string, unknown>
 
 export type Workspace = {
   id: string
@@ -51,7 +52,6 @@ export type Me = {
 
 const metadataSchema = z.record(z.string(), z.unknown()).catch({})
 
-// The core stores metadata as JSON text
 function readMetadata(metadata: unknown): Metadata {
   try {
     return metadataSchema.parse(typeof metadata === 'string' ? JSON.parse(metadata) : metadata)
@@ -133,7 +133,6 @@ function byRole(members: Member[]) {
   )
 }
 
-// Newest invitation per email decides, the core keeps old rows
 function pendingInvitations(workspace: Workspace) {
   const newest = new Map<string, Invitation>()
 
@@ -207,7 +206,6 @@ export function invitationRows(
   }))
 }
 
-// Cache updates shown before the core answers
 export function withoutMember(organization: FullOrganization, memberId: string) {
   return {
     ...organization,
@@ -221,3 +219,5 @@ export function withoutInvitation(organization: FullOrganization, invitationId: 
     invitations: organization.invitations.filter((item) => item.id !== invitationId),
   }
 }
+
+export const companyNameSchema = requiredText('company.errors.name-required')

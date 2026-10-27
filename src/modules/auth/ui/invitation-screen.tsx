@@ -40,6 +40,7 @@ export function InvitationScreen({
           details={view.details}
           confirm={view.confirm}
           email={session.email}
+          askName={session.name === ''}
           invitationId={invitationId}
         />
       )

@@ -14,7 +14,6 @@ export function useAddContact() {
     mutationFn: (contact: PostApiV1WorkspaceContactsBody) => addContact(client, contact),
     onSuccess: (contact) =>
       notify('success', 'contacts.notices.added', { name: contactName(contact) }),
-    // The form shows the field errors itself
     onError: (error) => reportError(error, fieldErrors(error, contactFieldErrors) !== null),
   })
 }

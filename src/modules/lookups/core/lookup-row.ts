@@ -1,18 +1,19 @@
+import { kebabCase } from 'change-case'
 import { intlFormat } from 'date-fns'
 import type { LookupObject, LookupObjectStatus, Searcher } from '@/core/api/models'
 import { type Message, message } from '@/core/message'
-import type { Workspace } from '@/modules/workspaces/core/workspace'
 
-export type LookupTone = 'success' | 'warning' | 'danger'
+type LookupTone = 'success' | 'warning' | 'danger'
 
 export type LookupRow = {
   lookup: LookupObject
-  plate: string
+  identifier: string
+  part: string | null
   vehicle: string | null
   statusLabel: Message
   tone: LookupTone
   sourceLabel: Message
-  searcher: string | Message
+  searcher: Message
   requested: string
 }
 
@@ -24,32 +25,28 @@ const TONES: Record<LookupObjectStatus, LookupTone> = {
   failed: 'danger',
 }
 
-// Locale keys are kebab case, core values are not
-export function textKey(value: string) {
-  return value.replaceAll('_', '-')
+export const textKey = kebabCase
+
+export function searcherName(searcher: Searcher | null) {
+  if (searcher?.name) return message('lookups.searcher.named', { name: searcher.name })
+
+  return message(searcher ? 'lookups.searcher.unnamed-contact' : 'lookups.searcher.gone')
 }
 
-// Deleted members and contacts leave the searcher empty
-export function searcherName(searcher: Searcher | null, workspace: Workspace) {
-  if (!searcher) return message('lookups.searcher.gone')
-  if (searcher.type === 'contact') {
-    return searcher.name ?? message('lookups.searcher.unnamed-contact')
-  }
-
-  const member = workspace.members.find(({ userId }) => userId === String(searcher.id))
-
-  return searcher.name || member?.email || message('lookups.searcher.member')
+function partsFound({ categories = [] }: LookupObject) {
+  return categories.map(({ id, name }) => name ?? id).join(', ') || null
 }
 
-export function lookupRow(lookup: LookupObject, workspace: Workspace, locale: string): LookupRow {
+export function lookupRow(lookup: LookupObject, locale: string): LookupRow {
   return {
     lookup,
-    plate: lookup.plate,
+    identifier: lookup.plate ?? lookup.vin ?? '',
+    part: lookup.query ?? partsFound(lookup),
     vehicle: lookup.vehicleDescription ?? null,
     statusLabel: message(`lookups.status.${textKey(lookup.status)}`),
     tone: TONES[lookup.status],
     sourceLabel: message(`lookups.source.${lookup.source}`),
-    searcher: searcherName(lookup.searcher ?? null, workspace),
+    searcher: searcherName(lookup.searcher ?? null),
     requested: intlFormat(
       lookup.createdAt,
       { dateStyle: 'medium', timeStyle: 'short' },

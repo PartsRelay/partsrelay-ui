@@ -1,8 +1,8 @@
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type Role, roleLabel, toRole } from '@/modules/workspaces/core/role'
+import { ChoiceGroup } from '@/ui/components/choice-group'
 import { FieldDescription, FieldSet, FieldTitle } from '@/ui/components/ui/field'
-import { ToggleGroup, ToggleGroupItem } from '@/ui/components/ui/toggle-group'
 
 type RoleFieldProps = {
   label: string
@@ -12,7 +12,6 @@ type RoleFieldProps = {
   onValueChange: (role: Role) => void
 }
 
-// The title names the choice once, the hint describes it
 export function RoleField({ label, hint, roles, value, onValueChange }: RoleFieldProps) {
   const { t } = useTranslation()
   const labelId = useId()
@@ -21,22 +20,13 @@ export function RoleField({ label, hint, roles, value, onValueChange }: RoleFiel
   return (
     <FieldSet className="gap-2">
       <FieldTitle id={labelId}>{label}</FieldTitle>
-      <ToggleGroup
-        type="single"
-        variant="outline"
+      <ChoiceGroup
         aria-labelledby={labelId}
         aria-describedby={hintId}
+        options={roles.map((role) => ({ value: role, label: t(...roleLabel(role)) }))}
         value={value}
-        onValueChange={(role) => {
-          if (role) onValueChange(toRole(role))
-        }}
-      >
-        {roles.map((role) => (
-          <ToggleGroupItem key={role} value={role}>
-            {t(...roleLabel(role))}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
+        onValueChange={(role) => onValueChange(toRole(role))}
+      />
       <FieldDescription id={hintId}>{hint}</FieldDescription>
     </FieldSet>
   )

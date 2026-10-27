@@ -1,14 +1,19 @@
+import { useForm } from '@tanstack/react-form'
 import { useTranslation } from 'react-i18next'
+import { companyNameSchema } from '@/modules/workspaces/core/workspace'
 import { updateCompany } from '@/modules/workspaces/core/workspace.mutation'
-import { requiredText, useAppForm } from '@/form'
+import { Form } from '@/ui/components/form'
+import { InputField } from '@/ui/components/input-field'
+import { SubmitButton } from '@/ui/components/submit-button'
 import { useBetterAuthAction } from '@/ui/hooks/use-better-auth-action'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/components/ui/card'
+import { CardHeading } from '@/ui/components/card-heading'
+import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { Field, FieldGroup } from '@/ui/components/ui/field'
 
 export function CompanyName({ name }: { name: string }) {
   const { t } = useTranslation()
   const { client, run } = useBetterAuthAction()
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: { name },
     onSubmit: async ({ value, formApi }) => {
       const next = value.name.trim()
@@ -17,7 +22,6 @@ export function CompanyName({ name }: { name: string }) {
       const result = await run(() => updateCompany(client, { name: next }), {
         notice: 'company.notices.renamed',
       })
-      // The prop stays the default and catches up later
       if (result.ok) formApi.reset({ name: next }, { keepDefaultValues: true })
     },
   })
@@ -25,33 +29,27 @@ export function CompanyName({ name }: { name: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2>{t('company.name.title')}</h2>
-        </CardTitle>
+        <CardHeading>{t('company.name.title')}</CardHeading>
         <CardDescription>{t('company.name.description')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form.AppForm>
-          <form.Form>
-            <FieldGroup>
-              <form.AppField
-                name="name"
-                validators={{ onSubmit: requiredText('company.errors.name-required') }}
-              >
-                {(field) => (
-                  <field.InputField
-                    label={t('company.name.label')}
-                    required
-                    autoComplete="organization"
-                  />
-                )}
-              </form.AppField>
-              <Field orientation="horizontal">
-                <form.SubmitButton>{t('company.name.save')}</form.SubmitButton>
-              </Field>
-            </FieldGroup>
-          </form.Form>
-        </form.AppForm>
+        <Form form={form}>
+          <FieldGroup>
+            <form.Field name="name" validators={{ onSubmit: companyNameSchema }}>
+              {(field) => (
+                <InputField
+                  field={field}
+                  label={t('company.name.label')}
+                  required
+                  autoComplete="organization"
+                />
+              )}
+            </form.Field>
+            <Field orientation="horizontal">
+              <SubmitButton form={form}>{t('company.name.save')}</SubmitButton>
+            </Field>
+          </FieldGroup>
+        </Form>
       </CardContent>
     </Card>
   )

@@ -13,17 +13,17 @@ export type ContactRow = {
   tone: 'success' | 'danger'
   searches: { total: number; month: number }
   lastSearch: string | null
+  joined: string
   actions: { rename: boolean; block: boolean; unblock: boolean; remove: boolean }
 }
 
 const TONES = { active: 'success', blocked: 'danger' } as const
 
-// WhatsApp ids are international numbers without the plus
-function phoneOf({ waId }: ContactObject) {
-  const phone = `+${waId}`
-
+export function formatPhone(phone: string) {
   return parsePhoneNumberFromString(phone)?.formatInternational() ?? phone
 }
+
+const phoneOf = ({ waId }: ContactObject) => formatPhone(`+${waId}`)
 
 export function contactName(contact: ContactObject) {
   return contact.name ?? contact.profileName ?? phoneOf(contact)
@@ -43,6 +43,7 @@ export function contactRow(contact: ContactObject, me: Me, locale: string): Cont
     lastSearch: contact.lastLookupAt
       ? intlFormat(contact.lastLookupAt, { dateStyle: 'medium', timeStyle: 'short' }, { locale })
       : null,
+    joined: intlFormat(contact.createdAt, { dateStyle: 'medium' }, { locale }),
     actions: {
       rename: manage,
       block: manage && contact.status === 'active',

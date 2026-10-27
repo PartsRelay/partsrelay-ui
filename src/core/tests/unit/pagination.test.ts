@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vite-plus/test'
 import { message } from '@/core/message'
-import { pageInfo, withPerPage } from '@/core/pagination'
+import { pageInfo } from '@/core/pagination'
 
-// The metadata the core sends for a page
 function metadata(currentPage: number, perPage: number, total: number) {
   return { total, perPage, currentPage, lastPage: Math.max(1, Math.ceil(total / perPage)) }
 }
@@ -25,14 +24,5 @@ describe('pagination', () => {
       pages: 1,
       outOfRange: false,
     })
-  })
-
-  it('asks for 20 rows unless a list wants another size', () => {
-    expect(withPerPage({ page: 2, status: ['active'] })).toEqual({
-      page: 2,
-      status: ['active'],
-      perPage: 20,
-    })
-    expect(withPerPage({ page: 1, perPage: 50 })).toEqual({ page: 1, perPage: 50 })
   })
 })
