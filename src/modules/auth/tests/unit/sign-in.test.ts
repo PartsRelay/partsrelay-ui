@@ -1,13 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
+import type { QueryClient } from '@tanstack/query-core'
 import {
-  googleSignIn,
+  completeSignIn,
+  googleSignInURL,
   invitationFlow,
   loginError,
   loginSearchSchema,
   magicLinkSignIn,
 } from '@/modules/auth/core/sign-in'
 
-vi.mock('@/modules/auth/core/auth.client', () => ({ authClient: {} }))
+const { verify } = vi.hoisted(() => ({ verify: vi.fn() }))
+
+vi.mock('@/modules/auth/core/auth.client', () => ({ authClient: { oneTimeToken: { verify } } }))
 
 beforeEach(() => {
   vi.stubGlobal('window', { location: new URL('http://localhost:5173/workspace') })
@@ -31,30 +35,68 @@ describe('invitationFlow', () => {
   })
 })
 
-describe('googleSignIn', () => {
-  it('sends absolute callback URLs', () => {
-    expect(googleSignIn(loginFlow)).toEqual({
-      provider: 'google',
-      callbackURL: 'http://localhost:5173/login?next=%2Fcompany&signedIn=true',
-      errorCallbackURL: 'http://localhost:5173/login?next=%2Fcompany',
-      additionalParams: undefined,
-    })
+const handoff =
+  'http://localhost:5173/auth/handoff?next=%2Flogin%3Fnext%3D%252Fcompany%26signedIn%3Dtrue'
+
+describe('googleSignInURL', () => {
+  it('starts Google on the core and comes back through the handoff', () => {
+    const url = new URL(googleSignInURL(loginFlow))
+
+    expect(url.origin + url.pathname).toBe('http://localhost:5173/auth/google')
+    expect(url.searchParams.get('callbackURL')).toBe(handoff)
+    expect(url.searchParams.get('errorCallbackURL')).toBe(
+      'http://localhost:5173/login?next=%2Fcompany'
+    )
+    expect(url.searchParams.has('prompt')).toBe(false)
   })
 
   it('lets the invited person pick another Google account', () => {
-    expect(googleSignIn(invitationFlow('/invitations/31')).additionalParams).toEqual({
-      prompt: 'select_account',
-    })
+    const url = new URL(googleSignInURL(invitationFlow('/invitations/31')))
+
+    expect(url.searchParams.get('prompt')).toBe('select_account')
   })
 })
 
 describe('magicLinkSignIn', () => {
-  it('encodes the callback URLs once more for the core', () => {
+  it('comes back through the handoff, encoded once more for the core', () => {
     expect(magicLinkSignIn(loginFlow, 'mark.reed@redwoodparts.com')).toEqual({
       email: 'mark.reed@redwoodparts.com',
-      callbackURL: 'http://localhost:5173/login?next=%252Fcompany&signedIn=true',
+      callbackURL: handoff.replaceAll('%', '%25'),
       errorCallbackURL: 'http://localhost:5173/login?next=%252Fcompany',
     })
+  })
+})
+
+describe('completeSignIn', () => {
+  const client = { resetQueries: vi.fn() }
+  const complete = (search: { token?: string; next?: string }) =>
+    completeSignIn(client as unknown as QueryClient, search)
+
+  beforeEach(() => {
+    verify.mockReset()
+    client.resetQueries.mockReset()
+  })
+
+  it('exchanges the one-time token and goes back', async () => {
+    verify.mockResolvedValue({})
+
+    await expect(complete({ token: 'ott', next: loginFlow.back })).resolves.toBe(loginFlow.back)
+    expect(verify).toHaveBeenCalledWith({ token: 'ott' })
+    expect(client.resetQueries).toHaveBeenCalledWith({ queryKey: ['session'] })
+  })
+
+  it('goes back with an error when the token is refused', async () => {
+    verify.mockRejectedValue(new Error('Invalid token'))
+
+    await expect(complete({ token: 'used', next: '/invitations/31' })).resolves.toBe(
+      '/invitations/31?error=invalid-token'
+    )
+    expect(client.resetQueries).not.toHaveBeenCalled()
+  })
+
+  it('never leaves the app without a token', async () => {
+    await expect(complete({ next: '//evil.example' })).resolves.toBe('/?error=invalid-token')
+    expect(verify).not.toHaveBeenCalled()
   })
 })
 

@@ -118,41 +118,35 @@ const get = (path: string, resolve: Resolve) => http.get(`*/api/auth${path}`, re
 
 const post = (path: string, resolve: Resolve) => http.post(`*/api/auth${path}`, respond(resolve))
 
-export const authMocks = [
-  get('/get-session', () =>
-    world(({ signedIn, me, company }) =>
-      signedIn
-        ? {
-            user: me,
-            session: {
-              id: '1',
-              token: 'mock',
-              userId: me.id,
-              activeOrganizationId: company.id,
-              expiresAt: daysAgo(-7),
-              createdAt: daysAgo(0),
-              updatedAt: daysAgo(0),
-            },
-          }
-        : null
+const sessionOf = ({ me, company }: World) => ({
+  user: me,
+  session: {
+    id: '1',
+    token: 'mock',
+    userId: me.id,
+    activeOrganizationId: company.id,
+    expiresAt: daysAgo(-7),
+    createdAt: daysAgo(0),
+    updatedAt: daysAgo(0),
+  },
+})
+
+const signIn = (path: string, answer: (state: World) => JsonBodyType) =>
+  http.post(`*/api/auth${path}`, () =>
+    HttpResponse.json(
+      world((state) => {
+        state.signedIn = true
+
+        return answer(state)
+      }),
+      { headers: { 'set-auth-token': 'mock' } }
     )
-  ),
-  post('/sign-in/social', async ({ request }) => {
-    const { callbackURL } = await body<{ callbackURL?: string }>(request)
+  )
 
-    return world((state) => {
-      state.signedIn = true
-
-      return { url: callbackURL, redirect: true }
-    })
-  }),
-  post('/one-tap/callback', () =>
-    world((state) => {
-      state.signedIn = true
-
-      return { token: 'mock', user: state.me }
-    })
-  ),
+export const authMocks = [
+  get('/get-session', () => world((state) => (state.signedIn ? sessionOf(state) : null))),
+  signIn('/one-time-token/verify', sessionOf),
+  signIn('/one-tap/callback', ({ me }) => ({ token: 'mock', user: me })),
   post('/sign-in/magic-link', () => ({ status: true })),
   post('/sign-out', () =>
     world((state) => {
