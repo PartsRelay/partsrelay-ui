@@ -129,12 +129,6 @@
   --muted-foreground: color-mix(in oklab, var(--sidebar-foreground) 72%, transparent);
 }
 
-@media (width >= 48rem) {
-  [data-slot='card'][data-size='default'] {
-    --card-spacing: --spacing(6);
-  }
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
