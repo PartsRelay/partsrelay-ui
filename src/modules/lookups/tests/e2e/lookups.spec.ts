@@ -289,6 +289,7 @@ test.describe('as a viewer', () => {
   test('the stats stay with the owner', async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem('mock.user', 'viewer'))
     await page.goto('/lookups')
+    await expect(page.getByRole('heading', { level: 1, name: /Sarah Collins/ })).toBeVisible()
 
     await expect(page.getByText('24 searches')).toBeVisible()
     await expect(page.getByText('Searches · last 30 days')).toHaveCount(0)
