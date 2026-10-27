@@ -57,18 +57,17 @@ describe('new search form', () => {
     expect(vin('WVWZZZAUZHW20441O')).toBe('lookups.new.errors.vin')
   })
 
-  it('asks for the part in 2 to 200 characters', () => {
+  it('asks for the part in at least 2 characters', () => {
     expect(query(' ')).toBe('lookups.new.errors.query-required')
     expect(query(' a ')).toBe('lookups.new.errors.query')
     expect(query('ab')).toBeUndefined()
-    expect(query('a'.repeat(200))).toBeUndefined()
-    expect(query('a'.repeat(201))).toBe('lookups.new.errors.query')
+    expect(query('a'.repeat(1000))).toBeUndefined()
   })
 
   it('shows each error of the core under the field it names', () => {
     const plateAndQuery = coreError(422, 'validation-error', [
       { field: 'plate', rule: 'plate' },
-      { field: 'query', rule: 'maxLength' },
+      { field: 'query', rule: 'minLength' },
     ])
     const vinOnly = coreError(422, 'validation-error', [{ field: 'vin', rule: 'regex' }])
 

@@ -13,7 +13,6 @@ export type GetApiV1WorkspaceContactsParams = {
 page?: number;
 /**
  * @minimum 1
- * @maximum 100
  */
 perPage?: number;
 status?: GetApiV1WorkspaceContactsStatus;

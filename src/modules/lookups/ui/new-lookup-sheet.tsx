@@ -9,7 +9,6 @@ import {
   type LookupPrefill,
   lookupFieldErrors,
   newLookup,
-  QUERY_LENGTH,
   querySchema,
   toIdentifier,
 } from '@/modules/lookups/core/lookup-form'
@@ -123,7 +122,6 @@ function NewLookupForm({ prefill }: { prefill: LookupPrefill }) {
                 required
                 description={t('lookups.new.query-hint')}
                 autoComplete="off"
-                maxLength={QUERY_LENGTH.max}
                 placeholder={t('lookups.new.query-placeholder')}
               />
             )}

@@ -15,8 +15,6 @@ const PATTERNS: Record<Identifier, RegExp> = {
   vin: /^[A-HJ-NPR-Z0-9]{17}$/,
 }
 
-export const QUERY_LENGTH = { min: 2, max: 200 }
-
 export function emptyLookup({
   plate = '',
   vin = '',
@@ -48,8 +46,7 @@ export const querySchema = z
   .string()
   .trim()
   .min(1, { error: 'lookups.new.errors.query-required', abort: true })
-  .min(QUERY_LENGTH.min, 'lookups.new.errors.query')
-  .max(QUERY_LENGTH.max, 'lookups.new.errors.query')
+  .min(2, 'lookups.new.errors.query')
 
 export function newLookup(values: LookupValues): PostApiV1LookupsBody {
   return { [values.by]: compactIdentifier(values[values.by]), query: values.query.trim() }

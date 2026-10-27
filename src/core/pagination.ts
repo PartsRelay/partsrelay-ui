@@ -2,7 +2,7 @@ import { message } from '@/core/message'
 
 export const DEFAULT_PER_PAGE = 20
 
-export const MAX_PER_PAGE = 100
+export const OPTIONS_PER_PAGE = 100
 
 export type PageMetadata = {
   total: number

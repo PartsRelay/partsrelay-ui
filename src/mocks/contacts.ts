@@ -16,7 +16,7 @@ import {
 import { member } from '@/mocks/auth'
 import { checkedPage, daysAgo, page } from '@/mocks/data'
 import { apiBody, fail, rejected } from '@/mocks/errors'
-import { DEFAULT_PER_PAGE, MAX_PER_PAGE } from '@/core/pagination'
+import { DEFAULT_PER_PAGE } from '@/core/pagination'
 
 type Directory = { companies: Record<string, ContactObject[]>; nextId: number }
 
@@ -134,7 +134,7 @@ export const contactMocks = [
     const status = query.get('status')
     if (status !== null && !isStatus(status)) rejected('status', 'enum')
     const currentPage = checkedPage(query, 'page', 1)
-    const perPage = checkedPage(query, 'perPage', DEFAULT_PER_PAGE, MAX_PER_PAGE)
+    const perPage = checkedPage(query, 'perPage', DEFAULT_PER_PAGE)
     const search = query.get('search')?.trim().toLowerCase()
     const digits = search?.replace(/\D/g, '')
 

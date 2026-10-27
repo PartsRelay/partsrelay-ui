@@ -9,9 +9,6 @@ export type PostApiV1LookupsBody = {
   plate?: string;
   /** @pattern ^[A-HJ-NPR-Z0-9]{17}$ */
   vin?: string;
-  /**
-     * @minLength 2
-     * @maxLength 200
-     */
+  /** @minLength 2 */
   query: string;
 };

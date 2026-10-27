@@ -162,16 +162,10 @@ export function ironworksGarage(newMember: Person, role: Role): Company {
   }
 }
 
-export function checkedPage(
-  query: URLSearchParams,
-  name: string,
-  fallback: number,
-  max = Infinity
-) {
+export function checkedPage(query: URLSearchParams, name: string, fallback: number) {
   const value = Number(query.get(name) ?? fallback)
   if (Number.isNaN(value)) rejected(name, 'number')
   if (value < 1) rejected(name, 'min')
-  if (value > max) rejected(name, 'max')
 
   return value
 }

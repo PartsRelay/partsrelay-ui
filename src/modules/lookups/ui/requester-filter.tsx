@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { MAX_PER_PAGE } from '@/core/pagination'
+import { OPTIONS_PER_PAGE } from '@/core/pagination'
 import { contactsQuery } from '@/modules/contacts/core/contacts.query'
 import {
   EVERYONE,
@@ -41,7 +41,7 @@ export function RequesterFilter({ selected }: { selected?: string }) {
   const { t } = useTranslation()
   const { workspace } = useMe()
   const { search, change } = useLookupFilters()
-  const contacts = useQuery(contactsQuery({ perPage: MAX_PER_PAGE }))
+  const contacts = useQuery(contactsQuery({ perPage: OPTIONS_PER_PAGE }))
   const options = requesterOptions(workspace, contacts.data?.data ?? [])
   const value = requesterValue(search)
   const known = [...options.members, ...options.contacts].some((option) => option.value === value)

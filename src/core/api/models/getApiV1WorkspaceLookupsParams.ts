@@ -15,7 +15,6 @@ export type GetApiV1WorkspaceLookupsParams = {
 page?: number;
 /**
  * @minimum 1
- * @maximum 100
  */
 perPage?: number;
 searcherType?: GetApiV1WorkspaceLookupsSearcherType;
