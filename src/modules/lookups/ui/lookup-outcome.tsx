@@ -1,4 +1,11 @@
-import { ArchiveXIcon, CarIcon, CircleAlertIcon, type LucideIcon, SearchXIcon } from 'lucide-react'
+import {
+  ArchiveXIcon,
+  CarIcon,
+  CircleAlertIcon,
+  CircleQuestionMarkIcon,
+  type LucideIcon,
+  SearchXIcon,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { LookupDetail, LookupState } from '@/modules/lookups/core/lookup-detail'
 import { textKey } from '@/modules/lookups/core/lookup-row'
@@ -8,7 +15,7 @@ import { Spinner } from '@/ui/components/ui/spinner'
 
 const icons: Record<Exclude<LookupState, 'results'>, LucideIcon> = {
   running: CarIcon,
-  vehicle_not_found: CarIcon,
+  vehicle_not_found: CircleQuestionMarkIcon,
   not_matched: SearchXIcon,
   failed: CircleAlertIcon,
   unavailable: ArchiveXIcon,
