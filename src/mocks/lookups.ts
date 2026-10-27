@@ -235,9 +235,11 @@ function categoriesOf(nodeIds: string[], language: Language) {
           code: unit.code,
           name: unit.name[language],
           imageUrl: unit.image ? explodedView(unit.code) : null,
+          thumbnailUrl: unit.image ? explodedView(unit.code) : null,
           original: original.map((part) => ({
             code: part.code,
             name: part.name[language],
+            position: null,
             aftermarket: part.aftermarket.map(([brand, code, description]) => ({
               brand,
               code,

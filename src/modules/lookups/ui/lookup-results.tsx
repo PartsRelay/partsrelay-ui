@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import type { OemPart } from '@/core/api/models'
 import type { CategoryView, UnitView } from '@/modules/lookups/core/lookup-detail'
 import { CardHeading } from '@/ui/components/card-heading'
+import { ExternalLink } from '@/ui/components/external-link'
+import { Badge } from '@/ui/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader } from '@/ui/components/ui/card'
 import { Skeleton } from '@/ui/components/ui/skeleton'
 
@@ -12,6 +14,11 @@ function Part({ part }: { part: OemPart }) {
   return (
     <li className="overflow-hidden rounded-lg border">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 bg-muted/50 px-3 py-2.5">
+        {part.position && (
+          <Badge variant="outline" className="bg-background">
+            {t('lookups.results.position', { position: part.position })}
+          </Badge>
+        )}
         <span className="font-heading font-bold tracking-wide">
           {t('lookups.results.original-code', { code: part.code })}
         </span>
@@ -49,25 +56,30 @@ function Unit({ unit, category }: { unit: UnitView; category: string }) {
 
   return (
     <section
-      className={cn('grid gap-4', unit.imageUrl && 'md:grid-cols-[16rem_minmax(0,1fr)] md:gap-6')}
+      className={cn('grid gap-4', unit.image && 'md:grid-cols-[16rem_minmax(0,1fr)] md:gap-6')}
     >
-      {unit.imageUrl && (
-        <a
-          href={unit.imageUrl}
-          target="_blank"
-          rel="noreferrer"
+      {unit.image && (
+        <ExternalLink
+          href={unit.image.full}
           className="mx-auto block w-full max-w-72 self-start rounded-lg md:max-w-none"
         >
           <img
-            src={unit.imageUrl}
+            src={unit.image.thumbnail}
             alt={t('lookups.results.image', { name: name || category })}
             loading="lazy"
             className="aspect-square w-full rounded-lg border bg-white object-contain p-2 transition-shadow hover:shadow-md"
           />
-        </a>
+        </ExternalLink>
       )}
       <div className="grid content-start gap-3">
-        {name && <h3 className="font-heading font-semibold">{name}</h3>}
+        {name && (
+          <h3 className="font-heading font-semibold">
+            {unit.name && unit.code && (
+              <span className="tracking-wide text-muted-foreground">{unit.code} </span>
+            )}
+            {name}
+          </h3>
+        )}
         {unit.parts.length > 0 ? (
           <ul className="grid gap-3">
             {unit.parts.map((part, index) => (
@@ -115,9 +127,11 @@ export function LookupResults({ categories }: { categories: CategoryView[] }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6 [&>section+section]:border-t [&>section+section]:pt-6">
-        {category.units.map((unit) => (
-          <Unit key={unit.key} unit={unit} category={category.name} />
-        ))}
+        {category.units.length > 0 ? (
+          category.units.map((unit) => <Unit key={unit.key} unit={unit} category={category.name} />)
+        ) : (
+          <p className="text-muted-foreground">{t('lookups.results.no-category-parts')}</p>
+        )}
       </CardContent>
     </Card>
   ))

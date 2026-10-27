@@ -15,7 +15,7 @@ export type UnitView = {
   key: string
   code: string | null
   name: string | null
-  imageUrl: string | null
+  image: { full: string; thumbnail: string } | null
   parts: OemPart[]
 }
 
@@ -41,7 +41,15 @@ export function lookupState(lookup: LookupObject): LookupState {
 }
 
 function unitView(unit: CatalogUnit, key: string): UnitView {
-  return { key, code: unit.code, name: unit.name, imageUrl: unit.imageUrl, parts: unit.original }
+  return {
+    key,
+    code: unit.code,
+    name: unit.name,
+    image: unit.imageUrl
+      ? { full: unit.imageUrl, thumbnail: unit.thumbnailUrl ?? unit.imageUrl }
+      : null,
+    parts: unit.original,
+  }
 }
 
 function categoryView(category: LookupCategory): CategoryView {

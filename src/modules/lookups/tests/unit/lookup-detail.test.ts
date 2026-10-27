@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vite-plus/test'
-import type { LookupObject } from '@/core/api/models'
+import type { CatalogUnit, LookupObject } from '@/core/api/models'
 import { message } from '@/core/message'
 import { lookupDetail, lookupState } from '@/modules/lookups/core/lookup-detail'
 import { lookupRow } from '@/modules/lookups/core/lookup-row'
-import { lookupFixture } from '@/modules/lookups/tests/unit/fixtures'
+import { lookupFixture, unitFixture } from '@/modules/lookups/tests/unit/fixtures'
 
 const lookup = (overrides: Partial<LookupObject> = {}) => lookupFixture(1, overrides)
 
@@ -60,13 +60,17 @@ describe('lookup detail', () => {
         units: [
           {
             key: 'g1:0',
-            code: 'u1',
+            code: '115-10',
             name: 'Engine oil filter',
-            imageUrl: 'https://images.example/u1.jpg',
+            image: {
+              full: 'https://images.example/source/115-10.png',
+              thumbnail: 'https://images.example/250/115-10.png',
+            },
             parts: [
               {
                 code: '2116445',
                 name: 'Oil filter',
+                position: '3',
                 aftermarket: [
                   { code: 'W 7015', brand: 'MANN-FILTER', description: 'Oil filter' },
                   { code: 'F 026 407 209', brand: 'BOSCH', description: null },
@@ -77,6 +81,20 @@ describe('lookup detail', () => {
         ],
       },
     ])
+  })
+
+  it('shows the full image as the thumbnail of a unit cached without one', () => {
+    const imageOf = (unit: Partial<CatalogUnit>) => {
+      const cached = lookup({ categories: [{ id: 'g1', name: null, units: [unitFixture(unit)] }] })
+
+      return lookupDetail(cached, 'en-US').categories[0]?.units[0]?.image
+    }
+
+    expect(imageOf({ thumbnailUrl: null })).toEqual({
+      full: 'https://images.example/source/115-10.png',
+      thumbnail: 'https://images.example/source/115-10.png',
+    })
+    expect(imageOf({ imageUrl: null, thumbnailUrl: null })).toBeNull()
   })
 
   it('names a category by its id when the catalog has no name', () => {

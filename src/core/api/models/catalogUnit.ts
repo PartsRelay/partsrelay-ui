@@ -13,5 +13,7 @@ export interface CatalogUnit {
   name: string | null;
   /** @nullable */
   imageUrl: string | null;
+  /** @nullable */
+  thumbnailUrl: string | null;
   original: OemPart[];
 }

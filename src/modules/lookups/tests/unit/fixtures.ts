@@ -1,4 +1,4 @@
-import type { GetApiV1WorkspaceLookups200, LookupObject } from '@/core/api/models'
+import type { CatalogUnit, GetApiV1WorkspaceLookups200, LookupObject } from '@/core/api/models'
 import { DEFAULT_PER_PAGE } from '@/core/pagination'
 import type { Role } from '@/modules/workspaces/core/role'
 import type { Member, Workspace } from '@/modules/workspaces/core/workspace'
@@ -31,6 +31,27 @@ export function workspaceFixture(): Workspace {
   }
 }
 
+export function unitFixture(overrides: Partial<CatalogUnit> = {}): CatalogUnit {
+  return {
+    code: '115-10',
+    name: 'Engine oil filter',
+    imageUrl: 'https://images.example/source/115-10.png',
+    thumbnailUrl: 'https://images.example/250/115-10.png',
+    original: [
+      {
+        code: '2116445',
+        name: 'Oil filter',
+        position: '3',
+        aftermarket: [
+          { code: 'W 7015', brand: 'MANN-FILTER', description: 'Oil filter' },
+          { code: 'F 026 407 209', brand: 'BOSCH', description: null },
+        ],
+      },
+    ],
+    ...overrides,
+  }
+}
+
 export function lookupFixture(id: number, overrides: Partial<LookupObject> = {}): LookupObject {
   return {
     id,
@@ -46,23 +67,7 @@ export function lookupFixture(id: number, overrides: Partial<LookupObject> = {})
       {
         id: 'g1',
         name: 'Oil filter',
-        units: [
-          {
-            code: 'u1',
-            name: 'Engine oil filter',
-            imageUrl: 'https://images.example/u1.jpg',
-            original: [
-              {
-                code: '2116445',
-                name: 'Oil filter',
-                aftermarket: [
-                  { code: 'W 7015', brand: 'MANN-FILTER', description: 'Oil filter' },
-                  { code: 'F 026 407 209', brand: 'BOSCH', description: null },
-                ],
-              },
-            ],
-          },
-        ],
+        units: [unitFixture()],
       },
     ],
     createdAt: new Date(2026, 9, 12, 9, 59).toISOString(),
