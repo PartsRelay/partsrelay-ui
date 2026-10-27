@@ -79,6 +79,7 @@ test.describe('as the owner', () => {
     await pick(page, 'Channel', 'WhatsApp')
     await pick(page, 'Period', 'Last 7 days')
     await expect(page).toHaveURL('/lookups?status=done&source=whatsapp&days=7')
+    await expect(page.getByText('4 searches', { exact: true })).toBeVisible()
     for (const row of await queue(page).getByRole('row').all()) {
       await expect(row).toContainText(/Requester|Done.*WhatsApp/)
     }
