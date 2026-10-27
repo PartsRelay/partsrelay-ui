@@ -10,7 +10,7 @@ import { router } from '@/router'
 
 if (mocksEnabled) {
   const { worker } = await import('@/mocks/browser')
-  await worker.start({ onUnhandledRequest: 'bypass' })
+  await worker.start({ onUnhandledFrame: 'bypass' })
 }
 
 watchAccount(queryClient, () => window.location.reload())
