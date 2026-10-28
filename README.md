@@ -14,6 +14,8 @@ bun run dev
 
 A clone made without `--recurse-submodules` needs `git submodule update --init`.
 
+The dev container of `.devcontainer` does the same: it checks out the submodule, copies `.env`, installs and starts `bun run dev`. In GitHub Codespaces it also makes port 5173 public, so the UI opens from outside the codespace.
+
 With `MOCKS=true`, the default of `.env.example`, the MSW mocks of `src/mocks` answer every request, signed in as Mark Reed, the owner of Redwood Parts Ltd.
 
 To use a core running on your machine, start it with `UI_URL=http://localhost:5173`, then run the UI without the mocks:

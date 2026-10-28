@@ -11,7 +11,8 @@
   "updateRemoteUserUID": true,
 
   "features": {
-    "ghcr.io/devcontainers-extra/features/bun:1": { "version": "latest" }
+    "ghcr.io/devcontainers-extra/features/bun:1": { "version": "latest" },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
 
   "forwardPorts": [5173],
@@ -26,6 +27,7 @@
   "onCreateCommand": "bash .devcontainer/on-create.sh",
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "postStartCommand": "bash .devcontainer/post-start.sh",
+  "postAttachCommand": "bash .devcontainer/post-attach.sh",
   "waitFor": "postCreateCommand",
 
   "customizations": {
