@@ -170,7 +170,7 @@ test.describe('as the owner', () => {
     page,
   }) => {
     await startSearch(page, 'AB123CD', 'front brake pads')
-    const part = (code: string) => page.getByRole('listitem').filter({ hasText: `OE ${code}` })
+    const part = (code: string) => page.getByRole('listitem').filter({ hasText: `OEM ${code}` })
 
     await expect(page.getByRole('heading', { level: 3, name: '50110 Front brakes' })).toBeVisible()
     await expect(part('77367141')).toContainText('Pos. 4')
