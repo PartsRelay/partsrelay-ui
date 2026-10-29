@@ -27,6 +27,7 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -103,11 +104,13 @@ function TransferForm({ onDone }: { onDone: () => void }) {
                 </SelectTrigger>
               </TextField>
               <SelectContent className="max-w-[calc(100vw-2rem)]">
-                {candidates.map((member) => (
-                  <SelectItem key={member.id} value={member.id} className="wrap-anywhere">
-                    {candidateLabel(member)}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  {candidates.map((member) => (
+                    <SelectItem key={member.id} value={member.id} className="wrap-anywhere">
+                      {candidateLabel(member)}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
           )}

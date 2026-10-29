@@ -54,10 +54,12 @@ export function RequesterFilter({ selected }: { selected?: string }) {
         </SelectTrigger>
       </TextField>
       <SelectContent className="max-w-[calc(100vw-2rem)]">
-        <SelectItem value={EVERYONE}>{t('lookups.filter.everyone')}</SelectItem>
-        {value !== EVERYONE && !known && (
-          <SelectItem value={value}>{selected ?? t('lookups.filter.selected')}</SelectItem>
-        )}
+        <SelectGroup>
+          <SelectItem value={EVERYONE}>{t('lookups.filter.everyone')}</SelectItem>
+          {value !== EVERYONE && !known && (
+            <SelectItem value={value}>{selected ?? t('lookups.filter.selected')}</SelectItem>
+          )}
+        </SelectGroup>
         <OptionGroup label={t('lookups.filter.members')} options={options.members} />
         <OptionGroup label={t('lookups.filter.contacts')} options={options.contacts} />
       </SelectContent>
