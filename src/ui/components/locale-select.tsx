@@ -5,6 +5,7 @@ import { TextField } from '@/ui/components/text-field'
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -35,11 +36,13 @@ export function LocaleSelect({
         </SelectTrigger>
       </TextField>
       <SelectContent>
-        {locales.map((locale) => (
-          <SelectItem key={locale} value={locale}>
-            {t(`languages.${locale}`)}
-          </SelectItem>
-        ))}
+        <SelectGroup>
+          {locales.map((locale) => (
+            <SelectItem key={locale} value={locale}>
+              {t(`languages.${locale}`)}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   )
